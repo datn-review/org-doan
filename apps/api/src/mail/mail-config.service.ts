@@ -32,6 +32,8 @@ export class MailConfigService implements MailerOptionsFactory {
           this.configService.getOrThrow('app.workingDirectory', {
             infer: true,
           }),
+          'apps',
+          'api',
           'src',
           'mail',
           'mail-templates',
