@@ -10,6 +10,8 @@ export class MailConfigService implements MailerOptionsFactory {
   constructor(private readonly configService: ConfigService<AllConfigType>) {}
 
   createMailerOptions(): MailerOptions {
+    console.log('createMailerOptions', this.configService.get('mail.host', { infer: true }));
+
     return {
       transport: {
         host: this.configService.get('mail.host', { infer: true }),

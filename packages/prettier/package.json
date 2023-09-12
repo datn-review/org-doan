@@ -1,0 +1,15 @@
+{
+  "name": "@org/prettier",
+  "version": "*",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Shared prettier config",
+  "main": "index.js",
+  "devDependencies": {
+    "@types/prettier": "^2.7.1"
+  },
+  "peerDependencies": {
+    "prettier": "^2.7.1"
+  }
+}
