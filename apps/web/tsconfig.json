@@ -26,11 +26,9 @@
       "@utils/*": ["./utils/*"],
       "@hooks/*": ["./hooks/*"],
       "@types/*": ["./types/*"],
-      "@contexts/*": ["./contexts/*"],
-
-
+      "@contexts/*": ["./contexts/*"]
     }
   },
-  "include": ["src","custom.d.ts"],
+  "include": ["src", "custom.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
