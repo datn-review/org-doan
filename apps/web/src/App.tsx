@@ -32,7 +32,6 @@ function App() {
   return (
     <ChakraBaseProvider theme={theme}>
       <ModalProvider>
-        test
         <GrammarForWriting />
       </ModalProvider>
     </ChakraBaseProvider>
