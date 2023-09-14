@@ -2,7 +2,9 @@
   "name": "org-doan",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "prepare": "husky install"
+  },
   "private": true,
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
