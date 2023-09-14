@@ -2,7 +2,9 @@
 
 Provide summary of changes with issue number if any.
 
-## Change type
+## Change type :
+
+**_ Please choose change type before create pull request _**
 
 - [ ] feat: (new feature for the user, not a new feature for build script)
 - [ ] fix: (bug fix for the user, not a fix to a build script)
