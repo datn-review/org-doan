@@ -1,13 +1,21 @@
-1. What did you do? (mandatory)
+## Change Summary
 
-2. Why would you do that? (mandatory)
+Provide summary of changes with issue number if any.
 
-3. An explanation about your `solution or decision or choise` (if needed)
+## Change type
 
-4. Checklist (if needed)
+- [ ] feat: (new feature for the user, not a new feature for build script)
+- [ ] fix: (bug fix for the user, not a fix to a build script)
+- [ ] docs: (changes to the documentation)
+- [ ] style: (formatting, missing semi colons, etc; no production code change)
+- [ ] refactor: (refactoring production code, eg. renaming a variable)
+- [ ] test: (adding missing tests, refactoring tests; no production code change)
+- [ ] chore: (updating grunt tasks etc; no production code change)
 
-5. Action need to do before merge (if needed)
+## Test/ Verification
 
-6. Action need to do after merge (if needed)
+Provide summary of changes.
 
-7. Others note (if needed)
+## Additional information / screenshots (optional)
+
+Anything for maintainers to be made aware of
