@@ -2,7 +2,7 @@
   "name": "web",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "main":"src/main.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -34,7 +34,10 @@
     "vite-plugin-svgr": "^3.2.0",
     "yarn": "^1.22.19",
     "yjs": "^13.6.1",
-    "zustand": "^4.3.8"
+    "zustand": "^4.3.8",
+
+
+    "react-router-dom": "6.14.2"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",

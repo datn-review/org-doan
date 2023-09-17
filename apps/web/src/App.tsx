@@ -1,5 +1,7 @@
 import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react';
-import { Button } from '@org/ui';
+
+import { RouterProvider } from 'react-router-dom';
+import { router } from './routes';
 
 const theme = extendBaseTheme({
   styles: {
@@ -9,7 +11,6 @@ const theme = extendBaseTheme({
         color: '#000',
         lineHeight: 'auto',
         padding: 0,
-        fontFamily: 'HelveticaNeue',
       },
       a: {
         color: 'teal.500',
@@ -24,7 +25,7 @@ const theme = extendBaseTheme({
 function App() {
   return (
     <ChakraBaseProvider theme={theme}>
-      <Button />
+      <RouterProvider router={router} />
     </ChakraBaseProvider>
   );
 }

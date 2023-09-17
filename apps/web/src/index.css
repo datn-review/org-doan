@@ -3,52 +3,18 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  margin: 0;
-  color: #000;
-  font-family: HelveticaNeue;
-  /* overflow: hidden; */
-  background: #fff !important;
-  padding: 0 !important;
+html {
+  font-size: 62.5% !important; /* Now 10px = 1rem! */
 }
+
+body {
+  font-size: 16px; /* px fallback */
+  font-size: 1.6rem; /* default font-size for document */
+  line-height: 1.5; /* a nice line-height */
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+}
+
 #root {
   height: max-content;
-}
-
-@media print {
-  .editor-shell {
-    border: 0.15rem solid #747474 !important;
-    margin-top: 30px;
-  }
-  .point,
-  .question,
-  .content-question,
-  .editor-question,
-  .show-point {
-    break-inside: avoid;
-
-    display: block !important;
-  }
-
-  .chakra-form-control:not(:last-child) .content-question:last-child {
-    page-break-before: always;
-  }
-  .editor-question {
-    display: block !important;
-  }
-
-  .toolbar {
-    -webkit-print-color-adjust: exact;
-  }
-  @page {
-    size: auto; /* auto is the initial value */
-
-    margin: 25mm 25mm 25mm 25mm;
-  }
-  * {
-    -webkit-print-color-adjust: exact !important; /* Chrome, Safari 6 – 15.3, Edge */
-    color-adjust: exact !important; /* Firefox 48 – 96 */
-    print-color-adjust: exact !important; /* Firefox 97+, Safari 15.4+ */
-    scale: unset;
-  }
 }
