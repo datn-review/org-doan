@@ -31,7 +31,6 @@ export default defineConfig({
       '@assets': path.resolve(__dirname, './src/assets'),
       '@interfaces': path.resolve(__dirname, './src/interfaces'),
       '@modules': path.resolve(__dirname, './src/modules'),
-      '@contants': path.resolve(__dirname, './src/contants'),
       '@plugin': path.resolve(__dirname, './src/plugin'),
       '@utils': path.resolve(__dirname, './src/utils'),
       '@hooks': path.resolve(__dirname, './src/hooks'),

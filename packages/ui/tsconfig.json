@@ -17,15 +17,7 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@components/*": ["src/components/*"],
-      "@assets/*": ["src/assets/*"],
-      "@interfaces/*": ["src/interfaces/*"],
-      "@plugin/*": ["src/plugin/*"],
-      "@modules/*": ["src/modules/*"],
-      "@utils/*": ["src/utils/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@types/*": ["src/types/*"],
-      "@contexts/*": ["src/contexts/*"]
+      "src": ["src/*"]
     }
   },
   "include": ["src", "custom.d.ts", "./.eslintrc.cjs"],
