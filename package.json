@@ -5,6 +5,10 @@
   "scripts": {
     "prepare": "husky install"
   },
+  "engines": {
+    "node": ">=16.14",
+    "npm": "8.x"
+  },
   "private": true,
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
