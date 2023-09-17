@@ -1,9 +1,6 @@
 {
   "name": "@org/prettier",
-  "version": "*",
-  "publishConfig": {
-    "access": "public"
-  },
+  "version": "1.0.0",
   "description": "Shared prettier config",
   "main": "index.js",
   "devDependencies": {
