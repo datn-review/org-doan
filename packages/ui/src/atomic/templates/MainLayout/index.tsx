@@ -1,4 +1,4 @@
-import { Header } from "../../organisms/Header";
+import Header from "../../organisms/Header";
 export const MainLayout = ({ children }: any) => {
   return (
     <>
