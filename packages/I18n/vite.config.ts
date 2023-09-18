@@ -1,19 +1,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import svgr from "vite-plugin-svgr";
+
 import * as path from "path";
-import dts from "vite-plugin-dts";
+
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    svgr({
-      svgrOptions: {
-        // svgr options
-      },
-    }),
-    dts(),
-  ],
+  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src/"),
@@ -24,7 +16,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, "src/index.ts"),
       fileName: "index",
       formats: ["es"],
-      name: "ui",
+      name: "i18n",
     },
     outDir: "./lib",
     rollupOptions: {
