@@ -2,6 +2,7 @@ import { Button, Badge, I18nIcon, NoticationIcon } from '@org/ui';
 // import { ReactComponent as I18nIcon2 } from '@assets/icon-svg/arrow-clockwise.svg';
 import * as S from './styled';
 import { Link } from 'react-router-dom';
+import { useTranslation } from '@org/i18n';
 
 type MenuItem = {
   name: string;
@@ -11,6 +12,7 @@ type MenuItem = {
   subMenu: any[];
 };
 export const Header = () => {
+  const { t, i18n } = useTranslation();
   const menu: MenuItem[] = [
     {
       name: 'Home',
@@ -27,6 +29,10 @@ export const Header = () => {
       subMenu: [],
     },
   ];
+  const changeLangue = (value: string) => () => {
+    console.log('🚀 ~ file: index.tsx:33 ~ changeLangue ~ value:', value);
+    i18n.changeLanguage(value);
+  };
 
   return (
     <S.Header>
@@ -38,18 +44,19 @@ export const Header = () => {
             className='h-[40px]'
           />
         </Link>
+
         <div className={'flex items-end gap-2'}>
           <>SEARCH</>
-
           <I18nIcon />
-
+          <button onClick={changeLangue('en-EN')}>EN</button>
+          ||||
+          <button onClick={changeLangue('vi-VN')}>VN</button>
           <Badge
             count={10}
             overflowCount={9}
           >
             <NoticationIcon />
           </Badge>
-
           <>User</>
         </div>
       </S.HeaderUser>
@@ -66,6 +73,7 @@ export const Header = () => {
           </Link>
         ))}
       </S.HeaderCategory>
+      <div>{t('title')}</div>
     </S.Header>
   );
 };

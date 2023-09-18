@@ -2,6 +2,7 @@ import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react';
 
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes';
+import { ProviderI18n } from '@org/i18n';
 
 const theme = extendBaseTheme({
   styles: {
@@ -24,9 +25,11 @@ const theme = extendBaseTheme({
 });
 function App() {
   return (
-    <ChakraBaseProvider theme={theme}>
-      <RouterProvider router={router} />
-    </ChakraBaseProvider>
+    <ProviderI18n>
+      <ChakraBaseProvider theme={theme}>
+        <RouterProvider router={router} />
+      </ChakraBaseProvider>
+    </ProviderI18n>
   );
 }
 
