@@ -6,7 +6,7 @@
     "prepare": "husky install"
   },
   "engines": {
-    "node": ">=16.14",
+    "node": ">=16.8.0 <20",
     "npm": "8.x"
   },
   "private": true,
