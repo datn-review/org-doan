@@ -1,11 +1,11 @@
 import React from "react";
 // import { Button } from "src/atomic/atoms";
-import { Dropdown as DropdownBase, DropdownProps } from "antd";
+import { Avatar as AvatarBase, AvatarProps } from "antd";
 export { type MenuProps } from "antd";
-export function Dropdown(rest: DropdownProps) {
+export function Avatar(rest: AvatarProps) {
   return (
     <>
-      <DropdownBase {...rest} />
+      <AvatarBase {...rest} />
     </>
   );
 }
