@@ -7,3 +7,6 @@ export const typeofValue = (value: unknown) => {
 export const IIFE = <T extends (...args: any) => any>(cb: T): ReturnType<T> => {
   return cb();
 };
+export const mergeClassName = (...classNames: any[]): string => {
+  return classNames.filter((className) => Boolean(className)).join(" ");
+};

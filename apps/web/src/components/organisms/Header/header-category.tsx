@@ -1,4 +1,4 @@
-import { Button } from '@org/ui';
+import { Button, TYPE_BUTTON, VARIANT } from '@org/ui';
 import { Link } from 'react-router-dom';
 import { menuCategory } from './header-constant';
 import { MenuItem } from './header-type';
@@ -12,7 +12,10 @@ function HeaderCategory() {
           to={path}
           key={path}
         >
-          <Button>
+          <Button
+            $variant={VARIANT.Text}
+            $type={TYPE_BUTTON.Secondary}
+          >
             {icon} {name}
           </Button>
         </Link>

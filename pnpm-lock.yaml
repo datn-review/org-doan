@@ -259,6 +259,9 @@ importers:
       '@org/ui':
         specifier: workspace:^
         version: link:../../packages/ui
+      '@org/utils':
+        specifier: workspace:^
+        version: link:../../packages/utils
       framer-motion:
         specifier: ^10.12.16
         version: 10.16.4(react-dom@18.2.0)(react@18.2.0)

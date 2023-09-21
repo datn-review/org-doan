@@ -24,6 +24,7 @@
     "@org/i18n": "workspace:^",
     "@org/ui": "workspace:^",
     "@org/home": "workspace:^",
+    "@org/utils": "workspace:^",
     "framer-motion": "^10.12.16",
     "lodash": "^4.17.21",
     "node-sass": "^9.0.0",

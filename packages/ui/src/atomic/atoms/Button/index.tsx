@@ -1,30 +1,51 @@
-import React, { ReactNode } from "react";
+import React, { ButtonHTMLAttributes, PropsWithChildren } from "react";
 import * as S from "./styled";
+// import { mergeClassName } from "@org/utils";
 export enum VARIANT {
-  Primary,
-  Secondary,
-  Success,
-  Danger,
-  Warning,
-  Info,
-  Light,
-  Dark,
+  Default = "Default",
+  Outlined = "Outlined",
+  Text = "Text",
+  // Tonal = "Tonal",
+  // IconOnly = "IconOnly",
+  // Icon = "Icon",
+}
+export enum TYPE_BUTTON {
+  Primary = "Primary",
+  Secondary = "Secondary",
+  Success = "Success",
+  Info = "Info",
+  Warning = "Warning",
+  Error = "Error",
+}
+export enum SIZE {
+  ExtraLarge = "ExtraLarge",
+  Large = "Large",
+  Normal = "Normal",
+  Small = "Small",
+  ExtraSmall = "ExtraSmall",
 }
 
-type IButton = {
+export type IButton = {
   $variant?: VARIANT;
-  children: ReactNode;
-  disabled?: boolean;
-  [k: string]: any;
+  $type?: TYPE_BUTTON;
+  $size?: SIZE;
 };
 export function Button({
-  $variant = VARIANT.Primary,
+  $variant = VARIANT.Default,
+  $type = TYPE_BUTTON.Primary,
+  $size = SIZE.Normal,
   children,
-
   ...rest
-}: IButton) {
+}: PropsWithChildren<IButton & ButtonHTMLAttributes<HTMLButtonElement>>) {
   return (
-    <S.Button className="" {...rest} $variant={$variant}>
+    <S.Button
+      {...rest}
+      $type={$type}
+      $variant={$variant}
+      $size={$size}
+
+      // className={mergeClassName(S[$size])}
+    >
       {children}
     </S.Button>
   );

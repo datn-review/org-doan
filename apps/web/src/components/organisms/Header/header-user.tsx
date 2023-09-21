@@ -9,7 +9,7 @@ const LinkItem = ({ path, icon, title }: any) => {
   return (
     <Link
       to={path}
-      className='flex w-[20rem] pl-5'
+      className='flex w-[16rem]'
     >
       <Space className='w-[3rem] '>{icon}</Space>
       <Space> {title}</Space>
@@ -19,7 +19,7 @@ const LinkItem = ({ path, icon, title }: any) => {
 
 const Item = ({ icon, title }: any) => {
   return (
-    <Space className='flex w-[20rem] pl-5'>
+    <Space className='flex w-[20rem]'>
       <Space className='w-[3rem] '>{icon}</Space>
       <Space> {title}</Space>
     </Space>

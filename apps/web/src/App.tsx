@@ -1,34 +1,28 @@
-import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react';
+// import { extendBaseTheme } from '@chakra-ui/react';
 
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes';
 import { ProviderI18n } from '@org/i18n';
+import { GlobalStyle } from '@org/ui';
 
-const theme = extendBaseTheme({
-  styles: {
-    global: {
-      'html, body': {
-        fontSize: '16px',
-        color: '#000',
-        lineHeight: 'auto',
-        padding: 0,
-      },
-      a: {
-        color: 'teal.500',
-      },
-    },
-  },
-  components: {
-    // Button,
-    // Popover,
-  },
-});
+// const theme = extendBaseTheme({
+//   styles: {
+//     color: '2F2B3DC7',
+//   },
+//   components: {
+//     // Button,
+//     // Popover,
+//   },
+// });
+
 function App() {
   return (
     <ProviderI18n>
-      <ChakraBaseProvider theme={theme}>
+      {/* <ChakraBaseProvider theme={theme}> */}
+      <GlobalStyle>
         <RouterProvider router={router} />
-      </ChakraBaseProvider>
+      </GlobalStyle>
+      {/* </ChakraBaseProvider> */}
     </ProviderI18n>
   );
 }
