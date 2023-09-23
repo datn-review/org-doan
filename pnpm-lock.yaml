@@ -350,6 +350,9 @@ importers:
       '@org/i18n':
         specifier: workspace:^
         version: link:../../packages/I18n
+      '@org/store':
+        specifier: workspace:^
+        version: link:../../packages/store
       '@org/ui':
         specifier: workspace:^
         version: link:../../packages/ui
