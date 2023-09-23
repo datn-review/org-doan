@@ -4,6 +4,7 @@ import { RouterProvider } from 'react-router-dom';
 import { router } from './routes';
 import { ProviderI18n } from '@org/i18n';
 import { GlobalStyle } from '@org/ui';
+import { StoreProvider } from '@org/store';
 
 // const theme = extendBaseTheme({
 //   styles: {
@@ -17,13 +18,13 @@ import { GlobalStyle } from '@org/ui';
 
 function App() {
   return (
-    <ProviderI18n>
-      {/* <ChakraBaseProvider theme={theme}> */}
-      <GlobalStyle>
-        <RouterProvider router={router} />
-      </GlobalStyle>
-      {/* </ChakraBaseProvider> */}
-    </ProviderI18n>
+    <StoreProvider>
+      <ProviderI18n>
+        <GlobalStyle>
+          <RouterProvider router={router} />
+        </GlobalStyle>
+      </ProviderI18n>
+    </StoreProvider>
   );
 }
 

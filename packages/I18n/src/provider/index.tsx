@@ -17,7 +17,6 @@ function Provider({ children }: { children: ReactNode }) {
       },
     },
   });
-  console.log("🚀 ~ file: index.tsx:20 ~ i18next.use ~ i18next:", i18next);
   return <I18nextProvider i18n={i18next}>{children}</I18nextProvider>;
 }
 
