@@ -3,8 +3,9 @@
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes';
 import { ProviderI18n } from '@org/i18n';
-import { GlobalStyle } from '@org/ui';
+import { ComponentInject, GlobalStyle } from '@org/ui';
 import { StoreProvider } from '@org/store';
+import { PortalProvider } from '@org/core';
 
 // const theme = extendBaseTheme({
 //   styles: {
@@ -16,16 +17,10 @@ import { StoreProvider } from '@org/store';
 //   },
 // });
 
-function App() {
-  return (
-    <StoreProvider>
-      <ProviderI18n>
-        <GlobalStyle>
-          <RouterProvider router={router} />
-        </GlobalStyle>
-      </ProviderI18n>
-    </StoreProvider>
-  );
-}
+const App = ComponentInject({
+  providers: [StoreProvider, PortalProvider, ProviderI18n],
+  template: [GlobalStyle],
+  bootstrap: <RouterProvider router={router} />,
+});
 
 export default App;

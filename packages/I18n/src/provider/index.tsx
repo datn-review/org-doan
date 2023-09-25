@@ -1,10 +1,10 @@
-import React, { ReactNode } from "react";
+import React, { PropsWithChildren } from "react";
 import i18next from "i18next";
 import { initReactI18next, I18nextProvider } from "react-i18next";
 import translationsVI from "../locales/vi/translations.json";
 import translationsEN from "../locales/en/translations.json";
 
-function Provider({ children }: { children: ReactNode }) {
+function Provider({ children }: PropsWithChildren) {
   i18next.use(initReactI18next).init({
     interpolation: { escapeValue: false },
     lng: "vi-VN",

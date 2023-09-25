@@ -26,6 +26,7 @@
     "@org/home": "workspace:^",
     "@org/utils": "workspace:^",
     "@org/store": "workspace:^",
+    "@org/core": "workspace:^",
     "framer-motion": "^10.12.16",
     "lodash": "^4.17.21",
     "node-sass": "^9.0.0",

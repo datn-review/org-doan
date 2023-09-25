@@ -10,3 +10,13 @@ export const IIFE = <T extends (...args: any) => any>(cb: T): ReturnType<T> => {
 export const mergeClassName = (...classNames: any[]): string => {
   return classNames.filter((className) => Boolean(className)).join(" ");
 };
+export const handleExecuteEvent = <T>(
+  isExecute: unknown,
+  fn: T
+): T | VoidFunction => {
+  if (isExecute) {
+    return fn;
+  }
+
+  return () => null;
+};
