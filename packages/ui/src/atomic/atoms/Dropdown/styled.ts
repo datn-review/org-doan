@@ -1,5 +1,5 @@
 import { COLOR } from "@org/utils/src/constant/themes/color";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 export const StyleDropdown = styled.div`
   .ant-dropdown-menu-item {

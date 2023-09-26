@@ -16,11 +16,16 @@ import { PortalProvider } from '@org/core';
 //     // Popover,
 //   },
 // });
+const Router = () => (
+  <>
+    <RouterProvider router={router} />
+  </>
+);
 
 const App = ComponentInject({
   providers: [StoreProvider, PortalProvider, ProviderI18n],
   template: [GlobalStyle],
-  bootstrap: <RouterProvider router={router} />,
+  bootstrap: Router,
 });
 
 export default App;

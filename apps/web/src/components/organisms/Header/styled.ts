@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from '@emotion/styled/macro';
 import { COLOR } from '@org/utils';
 
 export const Header = styled.div``;

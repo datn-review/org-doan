@@ -23,7 +23,7 @@ export default defineConfig({
     },
     port: 8000,
     host: true, // Here
-    strictPort: true,
+    // strictPort: true,
   },
   resolve: {
     alias: {

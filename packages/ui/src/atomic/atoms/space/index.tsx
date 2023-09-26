@@ -4,7 +4,7 @@ import type { PropsWithChildren, CSSProperties, HTMLAttributes } from "react";
 type Props = PropsWithChildren &
   HTMLAttributes<HTMLDivElement> & {
     style?: CSSProperties;
-    className?: string;
+    className?: string | any;
   };
 
 export const Space = forwardRef(function Space(props: Props, ref?: any) {

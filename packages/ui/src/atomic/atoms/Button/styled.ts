@@ -1,6 +1,8 @@
-import styled, { css } from "styled-components";
+import styled from "@emotion/styled";
+import { css } from "@emotion/react";
+
 import { SIZE, TYPE_BUTTON, VARIANT } from "./index";
-import { COLOR } from "./../../../../../utils/src/constant/themes/color";
+import { COLOR } from "@org/utils/src/constant/themes/color";
 
 const Button = styled.button<{
   $type: TYPE_BUTTON;

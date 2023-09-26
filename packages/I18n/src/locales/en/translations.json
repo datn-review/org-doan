@@ -1,3 +1,6 @@
 {
-  "title": "Hello"
+  "title": "Hello",
+  "auth":{
+    "title":{ "login" : "Login"}
+  }
 }

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import { HEADLINES, TEXTS } from "@org/utils";
 export const Wrapper = styled.div`
   h1,

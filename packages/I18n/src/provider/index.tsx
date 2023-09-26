@@ -7,7 +7,7 @@ import translationsEN from "../locales/en/translations.json";
 function Provider({ children }: PropsWithChildren) {
   i18next.use(initReactI18next).init({
     interpolation: { escapeValue: false },
-    lng: "vi-VN",
+    lng: "en-EN",
     resources: {
       "vi-VN": {
         translation: translationsVI,

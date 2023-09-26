@@ -1,3 +1,4 @@
+import React from "react";
 import type { PropsWithChildren, ReactNode } from "react";
 import { createContext, Fragment, useContext, useMemo } from "react";
 import { type IFnModal } from "./portal-provider.type";

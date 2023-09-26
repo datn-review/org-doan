@@ -1,3 +1,6 @@
 {
-  "title": "Xin Chào 1111"
+  "title": "Xin Chào 1111",
+  "auth": {
+    "title": { "login": "Đăng Nhập" }
+  }
 }
