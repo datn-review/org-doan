@@ -1,13 +1,13 @@
-import React, { ReactNode } from "react";
+import React, { PropsWithChildren } from "react";
 import i18next from "i18next";
 import { initReactI18next, I18nextProvider } from "react-i18next";
 import translationsVI from "../locales/vi/translations.json";
 import translationsEN from "../locales/en/translations.json";
 
-function Provider({ children }: { children: ReactNode }) {
+function Provider({ children }: PropsWithChildren) {
   i18next.use(initReactI18next).init({
     interpolation: { escapeValue: false },
-    lng: "vi-VN",
+    lng: "en-EN",
     resources: {
       "vi-VN": {
         translation: translationsVI,
@@ -17,7 +17,6 @@ function Provider({ children }: { children: ReactNode }) {
       },
     },
   });
-  console.log("🚀 ~ file: index.tsx:20 ~ i18next.use ~ i18next:", i18next);
   return <I18nextProvider i18n={i18next}>{children}</I18nextProvider>;
 }
 
