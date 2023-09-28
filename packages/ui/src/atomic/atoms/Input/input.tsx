@@ -1,7 +1,10 @@
-import React from "react";
+import React, { ComponentType, HTMLAttributes } from "react";
+import { withForm } from "../../../form";
 
-function Input() {
-  return <input />;
+export function Input(
+  props: ComponentType<any> & HTMLAttributes<HTMLInputElement>
+) {
+  return <input {...props} />;
 }
 
-export default Input;
+export const InputForm = withForm<any>(Input);

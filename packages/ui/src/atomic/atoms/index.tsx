@@ -1,5 +1,5 @@
 export * from "./button";
-export * from "./input";
+export * from "./Input";
 export * from "./dropdown";
 export * from "./space";
 export * from "./avatar";

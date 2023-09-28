@@ -28,17 +28,17 @@ export const InputForm = ({ name }: { name: string }) => {
   return <NestedInput {...methods} name={name} />;
 };
 
-export default function App() {
-  const methods = useForm();
-  const onSubmit = (data: any) => console.log(data);
-  console.log(methods.formState.isDirty); // make sure formState is read before render to enable the Proxy
+// export default function App() {
+//   const methods = useForm();
+//   const onSubmit = (data: any) => console.log(data);
+//   console.log(methods.formState.isDirty); // make sure formState is read before render to enable the Proxy
 
-  return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <InputForm name="ok" />
-        <input type="submit" />
-      </form>
-    </FormProvider>
-  );
-}
+//   return (
+//     <FormProvider {...methods}>
+//       <form onSubmit={methods.handleSubmit(onSubmit)}>
+//         <InputForm name="ok" />
+//         <input type="submit" />
+//       </form>
+//     </FormProvider>
+//   );
+// }
