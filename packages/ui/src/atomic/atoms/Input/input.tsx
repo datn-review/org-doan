@@ -1,10 +1,21 @@
-import React, { ComponentType, HTMLAttributes } from "react";
+import React, { ComponentType, FormEvent, HTMLAttributes } from "react";
 import { withForm } from "../../../form";
 
 export function Input(
-  props: ComponentType<any> & HTMLAttributes<HTMLInputElement>
+  props: HTMLAttributes<HTMLInputElement> & {
+    onChange: (value: string) => void;
+    value?: any;
+  }
 ) {
-  return <input {...props} />;
+  return (
+    <input
+      {...props}
+      onChange={(e: FormEvent<HTMLInputElement>) => {
+        props.onChange && props.onChange(e.target?.value);
+      }}
+      value={props.value && props.value}
+    />
+  );
 }
 
 export const InputForm = withForm<any>(Input);

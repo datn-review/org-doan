@@ -1,6 +1,6 @@
 import React from "react";
-import { LoginProvider } from "./login-context";
-import LoginApp from "./login-app";
+import { LoginProvider } from "./LoginContext";
+import LoginApp from "./LoginApp";
 import { ComponentInject } from "@org/ui";
 import { AuthTemplate } from "../../templates";
 

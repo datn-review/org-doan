@@ -1,9 +1,21 @@
 import React, { useEffect } from "react";
-import { Button, InputForm } from "@org/ui";
 import { useTranslation } from "@org/i18n";
 import { useAppDispatch, setActiveGroup } from "@org/store";
-import { Link } from "react-router-dom";
-import { FormProvider, useForm } from "@org/ui/src/form";
+import { FormProvider, useForm, Button, InputForm, yupResolver } from "@org/ui";
+import * as yup from "yup";
+
+interface ILogin {
+  userName: string;
+  password: string;
+}
+
+const schema = yup
+  .object({
+    userName: yup.string().required("userName required"),
+    password: yup.string().required("password required"),
+  })
+  .required();
+
 function Login() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -13,7 +25,24 @@ function Login() {
       dispatch(setActiveGroup({ current: "" }));
     };
   }, []);
-  const methods = useForm();
+
+  const methods = useForm<ILogin>({
+    defaultValues: {
+      userName: "hehe",
+    },
+    resolver: yupResolver(schema),
+  });
+  useEffect(() => {
+    console.log(methods.getValues("userName"));
+  }, [methods.getValues("userName")]);
+  console.log("🚀 ~ file: LoginApp.tsx:35 ~ Login ~ methods:", methods);
+
+  useEffect(() => {
+    const callAPi = setTimeout(() => {
+      methods.setValue("userName", "testDefault");
+    }, 1000);
+    return () => clearTimeout(callAPi);
+  }, []);
   const onSubmit = (data: any) => console.log(data);
   return (
     <div>
@@ -23,7 +52,8 @@ function Login() {
 
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
-          <InputForm name="name" />
+          <InputForm name="userName" />
+          <InputForm name="password" />
 
           <input type="submit" />
         </form>

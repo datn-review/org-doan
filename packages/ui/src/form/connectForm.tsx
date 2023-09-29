@@ -1,6 +1,6 @@
-import React, { useEffect, type ReactElement, ReactNode } from "react";
-import { FormProvider, useForm, useFormContext } from "react-hook-form";
-import type { UseFormReturn, FieldValues } from "react-hook-form";
+import React, { type ReactElement } from "react";
+import type { FieldValues, UseFormReturn } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 
 interface ConnectFormProps<TFieldValues extends FieldValues> {
   children(children: UseFormReturn<TFieldValues>): ReactElement;
@@ -13,37 +13,55 @@ const ConnectForm = <TFieldValues extends FieldValues>({
 
   return children({ ...methods });
 };
+interface IProps {
+  name: string;
+  onChange?: (e: any) => void;
+  value?: any;
+}
 
-export const withForm = <T,>(WrappedComponent: React.ComponentType<T>) => {
-  const WithForm = (props: T & { name: string }) => {
-    useEffect(() => {
-      // Log data on component mount
-      console.log(`Component ${WrappedComponent.name} mounted.`);
-      return () => {
-        // Log data on component unmount
-        console.log(`Component ${WrappedComponent.name} unmounted.`);
-      };
-    }, []);
-
-    useEffect(() => {
-      // Log data on component update
-      console.log(`Component ${WrappedComponent.name} updated.`);
-    });
-
+export const withForm = <T extends IProps>(
+  WrappedComponent: React.ComponentType<T>
+) => {
+  const WithForm = ({ name, onChange, value, ...props }: T & IProps) => {
     return (
-      <ConnectForm<any>>
-        {({ register, formState: { errors } }) => (
-          <section>
-            <WrappedComponent {...register(props.name)} {...props} />;
-            {errors[props.name] && <p>{errors[props.name]?.message}</p>}
-          </section>
-        )}
+      <ConnectForm>
+        {({ control, formState: { errors } }) => {
+          // const handleChange = (value: any) => {
+          //   // setValue(name, value);
+          //   onChange && onChange(value);
+          // };
+          return (
+            <>
+              <Controller
+                name={name}
+                control={control}
+                render={({ field }) => {
+                  const handleChange = (value: any) => {
+                    field.onChange(value);
+
+                    onChange && onChange(value);
+                  };
+                  return (
+                    <WrappedComponent
+                      {...field}
+                      {...(props as T)}
+                      onChange={handleChange}
+                      value={value !== undefined ? value : field.value}
+                      // defaultValue={getValues(name)}
+                    />
+                  );
+                }}
+              />
+              <>{errors?.[name] && errors[name]?.message}</>
+            </>
+          );
+        }}
       </ConnectForm>
     );
   };
 
   WithForm.displayName = `withLogger(${
-    WrappedComponent.displayName || WrappedComponent.name
+    WrappedComponent.name || WrappedComponent.displayName
   })`;
   return WithForm;
 };
