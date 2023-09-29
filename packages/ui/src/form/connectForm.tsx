@@ -33,12 +33,12 @@ export const withForm = <T extends IProps>(
           return (
             <>
               <Controller
+                defaultValue={""}
                 name={name}
                 control={control}
                 render={({ field }) => {
                   const handleChange = (value: any) => {
                     field.onChange(value);
-
                     onChange && onChange(value);
                   };
                   return (
