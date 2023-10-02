@@ -29,12 +29,14 @@ export type IButton = {
   $variant?: VARIANT;
   $type?: TYPE_BUTTON;
   $size?: SIZE;
+  className?: any;
 };
 export function Button({
   $variant = VARIANT.Default,
   $type = TYPE_BUTTON.Primary,
   $size = SIZE.Normal,
   children,
+  className,
   ...rest
 }: PropsWithChildren<IButton & ButtonHTMLAttributes<HTMLButtonElement>>) {
   return (
@@ -43,6 +45,7 @@ export function Button({
       $type={$type}
       $variant={$variant}
       $size={$size}
+      className={className}
 
       // className={mergeClassName(S[$size])}
     >
