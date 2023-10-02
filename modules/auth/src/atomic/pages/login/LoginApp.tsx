@@ -1,6 +1,6 @@
 import { css } from "@emotion/css";
 import { useTranslation } from "@org/i18n";
-import { setActiveGroup, useAppDispatch } from "@org/store";
+import { setActiveGroup, setLoginUser, useAppDispatch } from "@org/store";
 import {
   BoxCenter,
   Button,
@@ -8,10 +8,11 @@ import {
   FormProvider,
   InputForm,
   Space,
+  TextLink,
   useForm,
   yupResolver,
 } from "@org/ui";
-import { COLOR } from "@org/utils/src/constant/themes/color";
+import { RolesEnum, SiteMap } from "@org/utils";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import * as yup from "yup";
@@ -47,7 +48,19 @@ function Login() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = (data: ILogin) => {
+    console.log("🚀 ~ file: LoginApp.tsx:52 ~ onSubmit ~ data:", data);
+    dispatch(
+      setLoginUser({
+        access_token: "okkk",
+        refresh_token: "okkk",
+        userId: "okkk",
+        role: RolesEnum.WEB_ADMIN,
+        username: "okkk",
+        authorities: [RolesEnum.WEB_ADMIN],
+      })
+    );
+  };
   return (
     <div>
       <Space
@@ -81,8 +94,9 @@ function Login() {
             <Space>
               <CheckBoxForm labelCB="Remember" name="remember" />
             </Space>
-
-            <Space>Forgot Password?</Space>
+            <Link to={SiteMap.Auth.ForgotPassword.path}>
+              <TextLink>Forgot password? </TextLink>
+            </Link>
           </Space>
           <Button
             type="submit"
@@ -96,14 +110,17 @@ function Login() {
         </form>
         <BoxCenter>
           New on our platform?{" "}
-          <Link
-            to="/register"
-            className={css`
-              color: ${COLOR.Primary};
-              padding-left: 1rem;
-            `}
-          >
-            Create an account
+          <Link to="/register">
+            <Link to={SiteMap.Auth.Register.path}>
+              <TextLink
+                className={css`
+                  margin-left: 1rem;
+                `}
+              >
+                {" "}
+                Create an account{" "}
+              </TextLink>
+            </Link>
           </Link>
         </BoxCenter>
         <BoxCenter
