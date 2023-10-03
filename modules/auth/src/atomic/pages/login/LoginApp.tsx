@@ -1,6 +1,10 @@
 import { css } from "@emotion/css";
 import { useTranslation } from "@org/i18n";
-import { setActiveGroup, setLoginUser, useAppDispatch } from "@org/store";
+import {
+  setActiveGroup,
+  useAppDispatch,
+  useLoginUserEmailMutation,
+} from "@org/store";
 import {
   BoxCenter,
   Button,
@@ -12,7 +16,7 @@ import {
   useForm,
   yupResolver,
 } from "@org/ui";
-import { RolesEnum, SiteMap } from "@org/utils";
+import { SiteMap } from "@org/utils";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import * as yup from "yup";
@@ -48,18 +52,14 @@ function Login() {
     resolver: yupResolver(schema),
   });
 
+  const [loginUserEmail] = useLoginUserEmailMutation();
+
   const onSubmit = (data: ILogin) => {
-    console.log("🚀 ~ file: LoginApp.tsx:52 ~ onSubmit ~ data:", data);
-    dispatch(
-      setLoginUser({
-        access_token: "okkk",
-        refresh_token: "okkk",
-        userId: "okkk",
-        role: RolesEnum.WEB_ADMIN,
-        username: "okkk",
-        authorities: [RolesEnum.WEB_ADMIN],
-      })
-    );
+    loginUserEmail({ email: data.email, password: data.password })
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+      });
   };
   return (
     <div>

@@ -8,7 +8,12 @@ import validationOptions from './utils/validation-options';
 import { AllConfigType } from './config/config.type';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: false });
+  const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: ['*'],
+    methods: ['*'],
+    credentials: true,
+  });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(ConfigService<AllConfigType>);
 

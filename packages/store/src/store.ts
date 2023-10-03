@@ -1,8 +1,9 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import { activeMenu, auth } from "./slices";
+import { activeMenu } from "./slices";
+import { AuthAPI } from "./services";
 const rootReducer = combineReducers({
   activeMenu,
-  auth,
+  [AuthAPI.reducerPath]: AuthAPI.reducer,
 });
 
 export const store = configureStore({
