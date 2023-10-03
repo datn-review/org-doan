@@ -1,7 +1,7 @@
 import { Col, Row, Space, BoxCenter } from "@org/ui";
 import React, { PropsWithChildren } from "react";
 import { css } from "@emotion/css";
-import bg from "../../image/background.png";
+import bg from "../../assets/images/background.png";
 import { Link } from "react-router-dom";
 
 export function AuthTemplate({ children }: PropsWithChildren) {
