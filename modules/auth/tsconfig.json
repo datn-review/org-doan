@@ -15,10 +15,10 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["@/*"]
-    }
+    "baseUrl": "."
+    // "paths": {
+    //   "@/*": ["@/*"]
+    // }
   },
   "include": ["src", "svg.d.ts", "./.eslintrc.cjs", "vite.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]

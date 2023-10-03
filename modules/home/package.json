@@ -18,7 +18,11 @@
     "@org/i18n": "workspace:^",
     "@org/ui": "workspace:^",
     "@org/utils": "workspace:^",
-    "@org/store": "workspace:^"
+    "@org/store": "workspace:^",
+    "@org/auth": "workspace:^"
+
+
+    
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

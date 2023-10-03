@@ -1,10 +1,10 @@
 import { useAppSelector } from '@org/store';
 import { Button, TYPE_BUTTON, VARIANT } from '@org/ui';
 import { Link } from 'react-router-dom';
-import { menuCategory } from './header-constant';
-import { MenuItem } from './header-type';
-import * as S from './styled';
 
+import { menuCategory } from '../Header/header-constant';
+import { MenuItem } from '../Header/header-type';
+import * as S from '../Header/styled';
 function HeaderCategory() {
   const { menu } = useAppSelector((state) => state.activeMenu);
 

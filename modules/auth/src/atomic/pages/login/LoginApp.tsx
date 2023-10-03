@@ -1,24 +1,38 @@
-import React, { useEffect } from "react";
+import { css } from "@emotion/css";
 import { useTranslation } from "@org/i18n";
-import { useAppDispatch, setActiveGroup } from "@org/store";
-import { FormProvider, useForm, Button, InputForm, yupResolver } from "@org/ui";
+import { setActiveGroup, setLoginUser, useAppDispatch } from "@org/store";
+import {
+  BoxCenter,
+  Button,
+  CheckBoxForm,
+  FormProvider,
+  InputForm,
+  Space,
+  TextLink,
+  useForm,
+  yupResolver,
+} from "@org/ui";
+import { RolesEnum, SiteMap } from "@org/utils";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import * as yup from "yup";
 
 interface ILogin {
-  userName: string;
+  email: string;
   password: string;
+  remember?: boolean;
 }
 
-const schema = yup
-  .object({
-    userName: yup.string().required("userName required"),
-    password: yup.string().required("password required"),
-  })
-  .required();
+const schema = yup.object({
+  email: yup.string().required("Email required."),
+  password: yup.string().required("Password required"),
+  remember: yup.boolean(),
+});
 
 function Login() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     dispatch(setActiveGroup({ current: "login" }));
     return () => {
@@ -28,41 +42,105 @@ function Login() {
 
   const methods = useForm<ILogin>({
     defaultValues: {
-      userName: "hehe",
+      email: "",
+      remember: false,
     },
     resolver: yupResolver(schema),
   });
-  useEffect(() => {
-    console.log(methods.getValues("userName"));
-  }, [methods.getValues("userName")]);
-  console.log("🚀 ~ file: LoginApp.tsx:35 ~ Login ~ methods:", methods);
 
-  useEffect(() => {
-    const callAPi = setTimeout(() => {
-      methods.setValue("userName", "testDefault");
-    }, 1000);
-    return () => clearTimeout(callAPi);
-  }, []);
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = (data: ILogin) => {
+    console.log("🚀 ~ file: LoginApp.tsx:52 ~ onSubmit ~ data:", data);
+    dispatch(
+      setLoginUser({
+        access_token: "okkk",
+        refresh_token: "okkk",
+        userId: "okkk",
+        role: RolesEnum.WEB_ADMIN,
+        username: "okkk",
+        authorities: [RolesEnum.WEB_ADMIN],
+      })
+    );
+  };
   return (
     <div>
-      {/* <h1>{t("auth.title.login")}</h1> */}
-      <h5>Welcome to Smart! 👋🏻</h5>
-      <p>Please sign-in to your account and start the adventure</p>
+      <Space
+        className={css`
+          padding-top: 1rem;
+          padding-bottom: 3rem;
+        `}
+      >
+        <h5
+          className={css`
+            padding-bottom: 0.8rem;
+          `}
+        >
+          Welcome to Smart! 👋🏻
+        </h5>
+        <p>Please sign-in to your account and start the adventure</p>
+      </Space>
 
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
-          <InputForm name="userName" />
-          <InputForm name="password" />
+          <InputForm name="email" label={"Email"} />
+          <InputForm name="password" label={"Password"} />
 
-          <input type="submit" />
+          <Space
+            className={css`
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 2rem;
+            `}
+          >
+            <Space>
+              <CheckBoxForm labelCB="Remember" name="remember" />
+            </Space>
+            <Link to={SiteMap.Auth.ForgotPassword.path}>
+              <TextLink>Forgot password? </TextLink>
+            </Link>
+          </Space>
+          <Button
+            type="submit"
+            className={css`
+              width: 100% !important;
+              margin-bottom: 2rem;
+            `}
+          >
+            {t("auth.title.login")}
+          </Button>
         </form>
+        <BoxCenter>
+          New on our platform?{" "}
+          <Link to="/register">
+            <Link to={SiteMap.Auth.Register.path}>
+              <TextLink
+                className={css`
+                  margin-left: 1rem;
+                `}
+              >
+                {" "}
+                Create an account{" "}
+              </TextLink>
+            </Link>
+          </Link>
+        </BoxCenter>
+        <BoxCenter
+          className={css`
+            margin: 2rem;
+          `}
+        >
+          or
+        </BoxCenter>
+
+        <BoxCenter
+          className={css`
+            gap: 0.5rem;
+          `}
+        >
+          <Space>FB</Space>
+          <Space>GG</Space>
+          <Space>TT</Space>
+        </BoxCenter>
       </FormProvider>
-      {/* InputFrom */}
-      {/* <Link to="/">
-        <Button>Home</Button>
-      </Link> */}
-      <Button>{t("auth.title.login")}</Button>
     </div>
   );
 }
