@@ -1,6 +1,8 @@
-import React, { type ReactElement } from "react";
+import { css } from "@emotion/css";
+import React, { ReactNode, type ReactElement } from "react";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 import { Controller, useFormContext } from "react-hook-form";
+import { Space } from "../atomic/atoms";
 
 interface ConnectFormProps<TFieldValues extends FieldValues> {
   children(children: UseFormReturn<TFieldValues>): ReactElement;
@@ -17,21 +19,33 @@ interface IProps {
   name: string;
   onChange?: (e: any) => void;
   value?: any;
+  label?: ReactNode;
 }
 
 export const withForm = <T extends IProps>(
   WrappedComponent: React.ComponentType<T>
 ) => {
-  const WithForm = ({ name, onChange, value, ...props }: T & IProps) => {
+  const WithForm = ({ name, onChange, value, label, ...props }: T & IProps) => {
     return (
       <ConnectForm>
         {({ control, formState: { errors } }) => {
-          // const handleChange = (value: any) => {
-          //   // setValue(name, value);
-          //   onChange && onChange(value);
-          // };
           return (
-            <>
+            <Space
+              className={css`
+                position: relative;
+                padding-bottom: 2.5rem;
+              `}
+            >
+              {label && (
+                <label
+                  className={css`
+                    display: block;
+                    padding-bottom: 0.3rem;
+                    font-size: 1.3rem;
+                  `}
+                  dangerouslySetInnerHTML={{ __html: label }}
+                />
+              )}
               <Controller
                 defaultValue={""}
                 name={name}
@@ -52,8 +66,18 @@ export const withForm = <T extends IProps>(
                   );
                 }}
               />
-              <>{errors?.[name] && errors[name]?.message}</>
-            </>
+              <div
+                className={css`
+                  color: red;
+                  position: absolute;
+                  left: 0;
+                  font-size: 1.3rem;
+                  bottom: 1rem;
+                `}
+              >
+                {errors?.[name] && String(errors[name]?.message)}
+              </div>
+            </Space>
           );
         }}
       </ConnectForm>

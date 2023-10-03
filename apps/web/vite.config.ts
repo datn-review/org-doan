@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     react({
       include: ['**/*.tsx', '**/*.ts'],
-      jsxRuntime: 'classic',
+      jsxRuntime: 'automatic',
     }),
     macrosPlugin(),
     svgr({

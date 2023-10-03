@@ -8,7 +8,8 @@ import {
   IconSetting,
   MenuProps,
 } from '@org/ui';
-import { IMenuIcon, MenuItem } from './header-type';
+
+import type { IMenuIcon, MenuItem } from '../Header/header-type';
 
 export const itemsLanguge: MenuProps['items'] = [
   {
