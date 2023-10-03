@@ -16,10 +16,17 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
+    "types": ["vite/client"],
     "paths": {
       "@/*": ["@/*"]
     }
   },
-  "include": ["src", "svg.d.ts", "./.eslintrc.cjs", "vite.config.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "src",
+    "svg.d.ts",
+    "./.eslintrc.cjs",
+    "vite.config.ts",
+    "env.d.ts"
+  ]
+  // "references": [{ "path": "./tsconfig.node.json" }]
 }
