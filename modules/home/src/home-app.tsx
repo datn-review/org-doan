@@ -1,12 +1,21 @@
 import React, { useEffect } from "react";
 import { Button } from "@org/ui";
 import { useTranslation } from "@org/i18n";
-import { useAppDispatch, setActiveGroup, logout } from "@org/store";
+import {
+  useAppDispatch,
+  setActiveGroup,
+  logout,
+  removeUserInfo,
+  useAppSelector,
+} from "@org/store";
 import { Authorization } from "@org/auth";
-import { RolesEnum, TypeRolesEnum } from "@org/utils";
-import { Link } from "react-router-dom";
+import { RolesEnum, SiteMap, TypeRolesEnum } from "@org/utils";
+import { Link, useNavigate } from "react-router-dom";
+import { Show } from "./../../../packages/ui/src/atomic/atoms/show/index";
 function HomeApp() {
   const { t } = useTranslation();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(setActiveGroup({ current: "home" }));
@@ -16,24 +25,38 @@ function HomeApp() {
   }, []);
   return (
     <div>
-      HomeApp Nè
+      HomeApp
       {t("title")}
       <Authorization
         type={TypeRolesEnum.IF_ANY_GRANTED}
         roles={[RolesEnum.WEB_ADMIN]}
       >
-        ADMIN
+        WEB_ADMIN
       </Authorization>
-      <Button
-        onClick={() => {
-          dispatch(logout());
-        }}
+      <Authorization
+        type={TypeRolesEnum.IF_ANY_GRANTED}
+        roles={[RolesEnum.WEB_STAFF]}
       >
-        Logout
-      </Button>
-      <Link to="/login">
-        <Button>Login</Button>
-      </Link>
+        WEB_STAFF
+      </Authorization>
+      <Show
+        when={isAuthenticated}
+        fallback={
+          <Link to="/login">
+            <Button>Login</Button>
+          </Link>
+        }
+      >
+        <Button
+          onClick={() => {
+            dispatch(logout());
+            dispatch(removeUserInfo());
+            navigate(SiteMap.Auth.Login.path);
+          }}
+        >
+          Logout
+        </Button>
+      </Show>
     </div>
   );
 }

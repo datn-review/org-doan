@@ -1,13 +1,6 @@
 import { css } from "@emotion/css";
 import { useTranslation } from "@org/i18n";
-import {
-  ILoginUserEmail,
-  setActiveGroup,
-  setLoginUser,
-  setUserInfo,
-  useAppDispatch,
-  useLoginUserEmailMutation,
-} from "@org/store";
+import { useAppDispatch, useRegisterUserEmailMutation } from "@org/store";
 import {
   BoxCenter,
   Button,
@@ -17,82 +10,73 @@ import {
   Space,
   Spin,
   TextLink,
+  message,
   useForm,
   yupResolver,
 } from "@org/ui";
-import { RolesEnum, SiteMap } from "@org/utils";
-import { useEffect } from "react";
+import { SiteMap } from "@org/utils";
 import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 
-interface ILogin {
+interface IRegister {
   email: string;
   password: string;
-  remember?: boolean;
+  firstName: string;
+  lastName: string;
+  policy?: boolean;
 }
 
 const schema = yup.object({
+  firstName: yup.string().required("firstName required."),
+  lastName: yup.string().required("lastName required."),
   email: yup.string().required("Email required."),
   password: yup.string().required("Password required"),
-  remember: yup.boolean(),
+  policy: yup.boolean(),
 });
 
-function Login() {
+function RegisterApp() {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    dispatch(setActiveGroup({ current: "login" }));
-    return () => {
-      dispatch(setActiveGroup({ current: "" }));
-    };
-  }, []);
+  const [messageApi, contextHolder] = message.useMessage();
 
-  const methods = useForm<ILogin>({
+  const methods = useForm<IRegister>({
     defaultValues: {
       email: "",
-      remember: false,
     },
     resolver: yupResolver(schema),
   });
 
-  const [loginUserEmail, { isLoading }] = useLoginUserEmailMutation();
+  const [registerUserEmail, { isLoading }] = useRegisterUserEmailMutation();
 
-  const onSubmit = (data: ILogin) => {
-    loginUserEmail({ email: data.email, password: data.password })
-      .unwrap()
-      .then((res: ILoginUserEmail) => {
-        dispatch(
-          setLoginUser({
-            access_token: res.token,
-            refresh_token: res.token,
-            userId: res.user.id,
-            role: res.user.role.name,
-            username: res.user.email,
-            authorities: [res.user.role.name],
-          })
-        );
-
-        dispatch(setUserInfo(res.user));
-
-        console.log("User", { res });
-
-        switch (res.user.role.name) {
-          case RolesEnum.WEB_ADMIN:
-          case RolesEnum.WEB_STAFF:
-            return navigate(SiteMap.Dashboard.path);
-          default:
-            return navigate(SiteMap.Home.path);
-        }
+  const onSubmit = (data: IRegister) => {
+    if (data.policy) {
+      const { lastName, firstName, email, password } = data;
+      registerUserEmail({
+        firstName,
+        lastName,
+        email,
+        password,
       })
-      .catch((err) => {
-        console.log("🚀 ~ file: LoginApp.tsx:89 ~ .then ~ err:", err);
-        return {};
-      });
+        .unwrap()
+        .then(() => {
+          messageApi.open({
+            type: "success",
+            content: "Vui lòng xác nhận địa chi email của bạn ở hộp thư!",
+            duration: 5,
+          });
+          setTimeout(() => {
+            navigate(SiteMap.Auth.Login.path);
+          }, 5000);
+        })
+        .catch((err) => {
+          console.log("🚀 ~ file: LoginApp.tsx:89 ~ .then ~ err:", err);
+        });
+    }
   };
   return (
     <Spin spinning={isLoading}>
+      {contextHolder}
       <div>
         <Space
           className={css`
@@ -105,29 +89,37 @@ function Login() {
               padding-bottom: 0.8rem;
             `}
           >
-            Welcome to Smart! 👋🏻
+            Adventure starts here 🚀
           </h5>
-          <p>Please sign-in to your account and start the adventure</p>
+          <p>Make your app management easy and fun!</p>
         </Space>
 
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
+            <InputForm name="firstName" label={"First Name"} />
+            <InputForm name="lastName" label={"Last Name"} />
+
             <InputForm name="email" label={"Email"} />
             <InputForm name="password" label={"Password"} />
 
             <Space
               className={css`
                 display: flex;
-                justify-content: space-between;
+                justify-content: flex-start;
+                gap: 0.5rem;
                 margin-bottom: 2rem;
               `}
             >
               <Space>
-                <CheckBoxForm labelCB="Remember" name="remember" />
+                <CheckBoxForm
+                  labelCB={
+                    <Link to={SiteMap.Auth.ForgotPassword.path}>
+                      I agree to <TextLink> privacy policy & terms </TextLink>
+                    </Link>
+                  }
+                  name="policy"
+                />
               </Space>
-              <Link to={SiteMap.Auth.ForgotPassword.path}>
-                <TextLink>Forgot password? </TextLink>
-              </Link>
             </Space>
             <Button
               type="submit"
@@ -136,18 +128,18 @@ function Login() {
                 margin-bottom: 2rem;
               `}
             >
-              {t("auth.title.login")}
+              {t("auth.title.register")}
             </Button>
           </form>
           <BoxCenter>
-            New on our platform?{" "}
-            <Link to={SiteMap.Auth.Register.path}>
+            Already have an account?
+            <Link to={SiteMap.Auth.Login.path}>
               <TextLink
                 className={css`
                   margin-left: 1rem;
                 `}
               >
-                Create an account
+                Sign in instead
               </TextLink>
             </Link>
           </BoxCenter>
@@ -174,4 +166,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default RegisterApp;

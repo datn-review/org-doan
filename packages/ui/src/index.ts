@@ -3,4 +3,4 @@ export * from "./atomic/templates";
 export * from "./icons";
 export * from "./form";
 
-export { Badge as Badge } from "antd";
+export { Badge, Spin, message } from "antd";
