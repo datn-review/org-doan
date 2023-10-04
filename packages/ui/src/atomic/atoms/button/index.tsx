@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, PropsWithChildren } from "react";
+import { ButtonHTMLAttributes, PropsWithChildren } from "react";
 import * as S from "./styled";
 // import { mergeClassName } from "@org/utils";
 export enum VARIANT {
