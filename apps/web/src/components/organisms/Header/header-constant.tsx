@@ -1,24 +1,27 @@
 import {
   BillingIcon,
+  IconDashBoard,
   IconDolar,
   IconFAQ,
   IconHelp,
+  IconHome,
   IconLogout,
   IconPerson,
   IconSetting,
   MenuProps,
 } from '@org/ui';
 
-import type { IMenuIcon, MenuItem } from '../Header/header-type';
+import type { IMenuIcon, MenuItem } from '../header/header-type';
+import { Translation } from '@org/i18n';
 
 export const itemsLanguge: MenuProps['items'] = [
   {
     key: 'vi-VN',
-    label: 'vi-VN',
+    label: <Translation>{(t) => t('vi-VN')}</Translation>,
   },
   {
     key: 'en-EN',
-    label: 'en-EN',
+    label: <Translation>{(t) => t('en-EN')}</Translation>,
   },
 ];
 
@@ -27,14 +30,21 @@ export const menuCategory: MenuItem[] = [
     name: 'Home',
     path: '/',
     id: 'home',
-    icon: '',
+    icon: <IconHome />,
     subMenu: [],
   },
   {
-    name: 'DashBoard',
+    name: 'Dashboards',
     path: '/dashboard',
     id: 'dashboard',
-    icon: '',
+    icon: <IconDashBoard />,
+    subMenu: [],
+  },
+  {
+    name: 'Users',
+    path: '/users',
+    id: 'user',
+    icon: <IconDashBoard />,
     subMenu: [],
   },
 ];

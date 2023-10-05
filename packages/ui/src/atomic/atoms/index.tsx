@@ -9,3 +9,4 @@ export * from "./box-center";
 export * from "./checkbox";
 export * from "./text";
 export * from "./show";
+export * from "./menu";

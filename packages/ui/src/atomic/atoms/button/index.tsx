@@ -5,6 +5,9 @@ export enum VARIANT {
   Default = "Default",
   Outlined = "Outlined",
   Text = "Text",
+  Circle = "Circle",
+  Menu = "Menu",
+
   // Tonal = "Tonal",
   // IconOnly = "IconOnly",
   // Icon = "Icon",
@@ -23,6 +26,7 @@ export enum SIZE {
   Normal = "Normal",
   Small = "Small",
   ExtraSmall = "ExtraSmall",
+  Menu = "Menu",
 }
 
 export type IButton = {

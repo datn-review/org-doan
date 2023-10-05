@@ -1,7 +1,9 @@
+import { ReactNode } from 'react';
+
 export type MenuItem = {
   name: string;
   path: string;
-  icon: string;
+  icon: ReactNode;
   id: string;
   subMenu: any[];
 };

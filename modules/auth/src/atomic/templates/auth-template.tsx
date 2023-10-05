@@ -4,7 +4,10 @@ import { css } from "@emotion/css";
 import bg from "../../assets/images/background.png";
 import { Link } from "react-router-dom";
 
-export function AuthTemplate({ children }: PropsWithChildren) {
+export function AuthTemplate({
+  children,
+  background = bg,
+}: PropsWithChildren & { background?: string }) {
   return (
     <Row
       className={css`
@@ -27,7 +30,7 @@ export function AuthTemplate({ children }: PropsWithChildren) {
           `}
         >
           <img
-            src={bg}
+            src={background}
             alt="BG"
             className={css`
               height: 57rem;

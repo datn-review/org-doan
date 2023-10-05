@@ -1,5 +1,8 @@
 {
   "title": "Hello",
+  "vi-VN":"Vietnamese",
+  "en-EN":"English",
+
   "auth":{
     "title":{ "login" : "Login"}
   }

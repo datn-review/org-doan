@@ -7,3 +7,7 @@ export { ReactComponent as IconHelp } from "../assets/icons/svg/help.svg";
 export { ReactComponent as IconLogout } from "../assets/icons/svg/logout.svg";
 export { ReactComponent as IconPerson } from "../assets/icons/svg/person.svg";
 export { ReactComponent as IconSetting } from "../assets/icons/svg/setting.svg";
+export { ReactComponent as IconHome } from "../assets/icons/svg/home.svg";
+export { ReactComponent as IconDashBoard } from "../assets/icons/svg/dashboard.svg";
+
+export { IconSearch } from "./SearchIcon";

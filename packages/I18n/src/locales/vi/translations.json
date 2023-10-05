@@ -1,5 +1,9 @@
 {
   "title": "Xin Chào 1111",
+
+  "vi-VN":"Tiếng Việt",
+  "en-EN":"Tiếng Anh",
+
   "auth": {
     "title": { "login": "Đăng Nhập" }
   }

@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { DefaultLayout, MainLayout } from '@components/templates';
 import { HomePage } from '@org/home';
-import { LoginPage, RegisterPage } from '@org/auth';
+import { ConfirmEmailPage, LoginPage, RegisterPage } from '@org/auth';
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +27,10 @@ export const router = createBrowserRouter([
       {
         path: '/register',
         element: <RegisterPage />,
+      },
+      {
+        path: '/confirm-email/:hash',
+        element: <ConfirmEmailPage />,
       },
     ],
   },

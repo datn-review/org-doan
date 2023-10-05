@@ -51,7 +51,8 @@ function Login() {
 
   const methods = useForm<ILogin>({
     defaultValues: {
-      email: "",
+      email: "tamtest@gmail.com",
+      password: "123456",
       remember: false,
     },
     resolver: yupResolver(schema),
