@@ -1,0 +1,6 @@
+{
+    "name": "@org/ts-config",
+    "version": "1.0.0",
+    "description": "Shared ts config",
+    "main": "tsconfig.json"
+}
