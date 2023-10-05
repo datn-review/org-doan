@@ -9,6 +9,14 @@ export const AuthAPI = baseNoAuthSplitApi.injectEndpoints({
         method: "POST",
       }),
     }),
+    registerUserEmail: builder.mutation({
+      query: (body) => ({
+        url: "/auth/email/register",
+        body,
+        method: "POST",
+      }),
+    }),
   }),
 });
-export const { useLoginUserEmailMutation } = AuthAPI;
+export const { useLoginUserEmailMutation, useRegisterUserEmailMutation } =
+  AuthAPI;

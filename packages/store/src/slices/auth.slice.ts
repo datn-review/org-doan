@@ -3,7 +3,7 @@ import { RolesEnum } from "@org/utils";
 interface IAuthorizedData {
   isAuthenticated: boolean;
   role: RolesEnum;
-  userId: string | null;
+  userId: number | null;
   authorities: RolesEnum[];
 }
 const initialState: IAuthorizedData = {
@@ -12,7 +12,7 @@ const initialState: IAuthorizedData = {
     localStorage.getItem("role") != null
       ? (("" + localStorage.getItem("role")) as RolesEnum)
       : RolesEnum.ANONYMOUS,
-  userId: localStorage.getItem("userId"),
+  userId: Number(localStorage.getItem("userId")) || -1,
   authorities:
     localStorage.getItem("authorities") != null
       ? (("" + localStorage.getItem("authorities")).split(";") as RolesEnum[])
@@ -50,7 +50,7 @@ const authSlice = createSlice({
         payload: {
           access_token: string;
           refresh_token?: string;
-          userId: string;
+          userId: number;
           role: RolesEnum;
           username?: string;
           authorities: RolesEnum[];
@@ -64,6 +64,7 @@ const authSlice = createSlice({
         userId: action.payload.userId,
         role: action.payload.role,
         authorities: action.payload?.authorities,
+        isAuthenticated: !!action.payload.access_token,
       };
     },
     logout: (state) => {

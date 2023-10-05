@@ -1,13 +1,16 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
-
+const URL_API =
+  import.meta.env.NODE_ENV === "production"
+    ? import.meta.env.VITE_APP_API_AUTH_URL_PRO
+    : import.meta.env.VITE_APP_API_AUTH_URL_DEV;
+console.log(URL_API);
 export const baseNoAuthQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_APP_API_AUTH_URL,
+  baseUrl: URL_API,
   cache: "no-cache",
 });
-console.log(import.meta.env.VITE_APP_API_AUTH_URL);
 export const baseAuthQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_APP_API_AUTH_URL,
+  baseUrl: URL_API,
   // process.env.REACT_APP_API_AUTH_URL,
   prepareHeaders: (headers) => {
     const token = localStorage.getItem("accessToken");

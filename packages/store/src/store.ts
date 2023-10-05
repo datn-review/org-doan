@@ -1,9 +1,18 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import { activeMenu, auth } from "./slices";
+import { activeMenu, auth, user } from "./slices";
 import { AuthAPI } from "./services";
+import {
+  baseAuthSplitApi,
+  baseNoAuthSplitApi,
+} from "./services/base-auth-query";
+
 const rootReducer = combineReducers({
   activeMenu,
   auth,
+  user,
+  [baseNoAuthSplitApi.reducerPath]: baseNoAuthSplitApi.reducer,
+  [baseAuthSplitApi.reducerPath]: baseAuthSplitApi.reducer,
+
   [AuthAPI.reducerPath]: AuthAPI.reducer,
 });
 
@@ -12,7 +21,9 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }),
+    })
+      .concat(baseNoAuthSplitApi.middleware)
+      .concat(baseAuthSplitApi.middleware),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

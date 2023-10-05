@@ -11,6 +11,22 @@ export enum RolesEnum {
   PARENT = "PARENT",
   ANONYMOUS = "ANONYMOUS",
 }
+
+export const ROLEID: Record<RolesEnum, number> = {
+  [RolesEnum.WEB_ADMIN]: 1,
+
+  [RolesEnum.WEB_STAFF]: 2,
+
+  [RolesEnum.CENTER_ADMIN]: 3,
+  [RolesEnum.CENTER_TUTOR]: 4,
+
+  [RolesEnum.PESONAL_TUTOR]: 5,
+
+  [RolesEnum.STUDENT]: 6,
+  [RolesEnum.PARENT]: 7,
+
+  [RolesEnum.ANONYMOUS]: 8,
+};
 export enum TypeRolesEnum {
   IF_NOT_GRANTED = "ifNotGranted",
   IF_ALL_GRANTED = "ifAllGranted",
