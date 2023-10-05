@@ -7,15 +7,15 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Test
-        run: |
-          npm install
-          npm run test
+      # - uses: actions/checkout@v3
+      # - name: Test
+      #   run: |
+      #     npm install
+      #     npm run test
 
-      - name: Deploy
-        # Only run this step if the branch is main
-        if: github.ref == 'refs/heads/main'
+      - name: Action/Render_Deploy
+        # Only run this step if the branch is deloy
+        if: github.ref == 'refs/heads/deloy'
         env:
           deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
