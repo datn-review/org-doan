@@ -14,7 +14,6 @@ jobs:
       #     npm run test
 
       - name: Action/Render_Deploy
-        needs: [test]
         uses: johnbeynon/render-deploy-action@v0.0.8
         # Only run this step if the branch is deloy
         with:
