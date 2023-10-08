@@ -1,0 +1,24 @@
+
+import React, { PropsWithChildren, createContext, useContext } from "react";
+
+export type T<%= nameUpCap %>Context = {};
+
+const <%= nameUpCap %>Context = createContext<T<%= nameUpCap %>Context>(
+  null as unknown as T<%= nameUpCap %>Context
+);
+
+export const use<%= nameUpCap %>Context = () => {
+  return useContext(<%= nameUpCap %>Context);
+};
+
+export const <%= nameUpCap %>Provider = ({ children }: PropsWithChildren) => {
+  const value = {};
+
+  if (!value) return <>Loading...</>;
+
+  return (
+    <<%= nameUpCap %>Context.Provider value={value as T<%= nameUpCap %>Context}>
+      {children}
+    </<%= nameUpCap %>Context.Provider>
+  );
+};
