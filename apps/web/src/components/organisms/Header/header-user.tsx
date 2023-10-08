@@ -4,12 +4,13 @@ import {
   Button,
   Dropdown,
   I18nIcon,
-  IconSearch,
   MenuProps,
   NoticationIcon,
   Show,
   Space,
   VARIANT,
+  IconSearch,
+  Table,
 } from '@org/ui';
 import * as S from './styled';
 import { useTranslation } from '@org/i18n';
@@ -64,6 +65,7 @@ function HeaderUser() {
   const dispatch = useAppDispatch();
   const changeLangue: MenuProps['onClick'] = (value) => {
     i18n.changeLanguage(value.key);
+    localStorage.setItem('language', value.key);
   };
 
   const handleLogout = () => {
@@ -99,14 +101,17 @@ function HeaderUser() {
           `}
         >
           <IconSearch />
+          {SiteMap.Users.Admin.ADD}
         </Space>
 
         <Dropdown
           placement='bottomRight'
           arrow
+          trigger={['click']}
           menu={{
             items: itemsLanguge,
             onClick: changeLangue,
+            selectedKeys: [i18n.language],
           }}
         >
           <Space className='cursor-pointer'>

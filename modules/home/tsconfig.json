@@ -21,6 +21,7 @@
       "@/*": ["@/*"]
     }
   },
-  "include": ["src", "svg.d.ts", "./.eslintrc.cjs", "vite.config.ts"],
+  "include": ["src", "svg.d.ts", "./.eslintrc.cjs", "vite.config.ts" ],
+  
   "references": [{ "path": "./tsconfig.node.json" }]
 }

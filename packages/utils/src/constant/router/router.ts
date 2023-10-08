@@ -1,25 +1,78 @@
-import { RolesEnum } from "../roles/roles";
+import { RolesEnum } from '../roles/roles';
 
 export const SiteMap = {
   Home: {
-    path: "/",
-    menu: "home",
+    path: '/',
+    menu: 'home',
   },
   Auth: {
     Login: {
-      path: "/login",
+      path: '/login',
     },
     Register: {
-      path: "/register",
+      path: '/register',
     },
     ForgotPassword: {
-      path: "/forgot-password",
+      path: '/forgot-password',
     },
     roles: [],
   },
   Dashboard: {
-    path: "/dashboard",
-    menu: "dashboard",
+    path: '/dashboard',
+    menu: 'dashboard',
     roles: [RolesEnum.CENTER_ADMIN, RolesEnum.WEB_ADMIN],
+  },
+  Users: {
+    menu: 'users',
+    Admin: {
+      path: 'users/admin',
+      menu: 'users/admin',
+      ADD: 'users/admin/create/:id',
+      EDIT: 'users/admin/edit/:id',
+      DETAILS: 'users/admin/details/:id',
+      roles: [RolesEnum.WEB_ADMIN],
+    },
+    Staff: {
+      path: 'users/staff',
+      menu: 'users/staff',
+      roles: [RolesEnum.WEB_ADMIN, RolesEnum.WEB_STAFF],
+    },
+    CenterAdmin: {
+      path: 'users/center-admin',
+      menu: 'users/center-admin',
+      roles: [RolesEnum.WEB_ADMIN, RolesEnum.WEB_STAFF, RolesEnum.CENTER_ADMIN],
+    },
+    CenterStaff: {
+      path: 'users/center-staff',
+      menu: 'users/center-staff',
+      roles: [RolesEnum.WEB_ADMIN, RolesEnum.WEB_STAFF, RolesEnum.CENTER_ADMIN],
+    },
+    CenterTutor: {
+      path: 'users/center-tutor',
+      menu: 'users/center-tutor',
+      roles: [RolesEnum.WEB_ADMIN, RolesEnum.WEB_STAFF, RolesEnum.CENTER_ADMIN],
+    },
+    PesonalTutor: {
+      path: 'users/pesonal-tutor',
+      menu: 'users/pesonal-tutor',
+      roles: [RolesEnum.WEB_ADMIN, RolesEnum.WEB_STAFF],
+    },
+    Parent: {
+      path: 'users/parent',
+      menu: 'users/parent',
+      roles: [RolesEnum.WEB_ADMIN, RolesEnum.WEB_STAFF],
+    },
+    Student: {
+      path: 'users/student',
+      menu: 'users/student',
+      roles: [
+        RolesEnum.WEB_ADMIN,
+        RolesEnum.CENTER_TUTOR,
+        RolesEnum.CENTER_ADMIN,
+        RolesEnum.WEB_STAFF,
+        RolesEnum.PARENT,
+        RolesEnum.PESONAL_TUTOR,
+      ],
+    },
   },
 };

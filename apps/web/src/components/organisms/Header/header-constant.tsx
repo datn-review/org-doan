@@ -13,6 +13,7 @@ import {
 
 import type { IMenuIcon, MenuItem } from '../header/header-type';
 import { Translation } from '@org/i18n';
+import { SiteMap } from '@org/utils';
 
 export const itemsLanguge: MenuProps['items'] = [
   {
@@ -28,24 +29,67 @@ export const itemsLanguge: MenuProps['items'] = [
 export const menuCategory: MenuItem[] = [
   {
     name: 'Home',
-    path: '/',
-    id: 'home',
+    path: SiteMap.Home.menu,
+    id: SiteMap.Home.menu,
     icon: <IconHome />,
     subMenu: [],
   },
   {
     name: 'Dashboards',
-    path: '/dashboard',
-    id: 'dashboard',
+    path: SiteMap.Dashboard.path,
+    id: SiteMap.Dashboard.menu,
     icon: <IconDashBoard />,
     subMenu: [],
   },
   {
     name: 'Users',
-    path: '/users',
-    id: 'user',
+    path: '',
+    id: SiteMap.Users.menu,
     icon: <IconDashBoard />,
-    subMenu: [],
+    subMenu: [
+      {
+        label: 'Admin',
+        path: SiteMap.Users.Admin.path,
+        id: SiteMap.Users.Admin.menu,
+        icon: <IconDashBoard />,
+      },
+      {
+        label: 'Staff',
+        path: SiteMap.Users.Staff.path,
+        id: SiteMap.Users.Staff.menu,
+        icon: <IconDashBoard />,
+      },
+      {
+        label: 'Center Admin',
+        path: SiteMap.Users.CenterAdmin.path,
+        id: SiteMap.Users.CenterAdmin.menu,
+        icon: <IconDashBoard />,
+      },
+      {
+        label: 'Center Tutor',
+        path: SiteMap.Users.CenterTutor.path,
+        id: SiteMap.Users.CenterTutor.menu,
+        icon: <IconDashBoard />,
+      },
+      {
+        label: 'Pesonal Tutor',
+        path: SiteMap.Users.PesonalTutor.path,
+        id: SiteMap.Users.PesonalTutor.menu,
+        icon: <IconDashBoard />,
+      },
+      {
+        label: 'Parents',
+        path: SiteMap.Users.Parent.path,
+        id: SiteMap.Users.Parent.menu,
+        icon: <IconDashBoard />,
+      },
+      {
+        label: 'Students',
+        path: SiteMap.Users.Student.path,
+        id: SiteMap.Users.Student.menu,
+        icon: <IconDashBoard />,
+      },
+    ],
   },
 ];
 

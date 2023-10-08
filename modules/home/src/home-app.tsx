@@ -1,19 +1,19 @@
-import { Authorization } from "@org/auth";
-import { useTranslation } from "@org/i18n";
-import { setActiveGroup, useAppDispatch, useAppSelector } from "@org/store";
-import { Space } from "@org/ui";
-import { RolesEnum, TypeRolesEnum } from "@org/utils";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Authorization } from '@org/auth';
+import { useTranslation } from '@org/i18n';
+import { setActiveGroup, useAppDispatch, useAppSelector } from '@org/store';
+import { Space, Table } from '@org/ui';
+import { RolesEnum, TypeRolesEnum } from '@org/utils';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 function HomeApp() {
   const { t } = useTranslation();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(setActiveGroup({ current: "home" }));
+    dispatch(setActiveGroup({ current: 'home' }));
     return () => {
-      dispatch(setActiveGroup({ current: "" }));
+      dispatch(setActiveGroup({ current: '' }));
     };
   }, []);
   return (
@@ -24,6 +24,7 @@ function HomeApp() {
           type={TypeRolesEnum.IF_ANY_GRANTED}
           roles={[RolesEnum.WEB_ADMIN]}
         >
+          <Table />
           WEB_ADMIN
         </Authorization>
         <Authorization

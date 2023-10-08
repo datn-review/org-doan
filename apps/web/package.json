@@ -21,12 +21,14 @@
     "@chakra-ui/theme": "^3.3.0",
 
     "@org/i18n": "workspace:^",
-    "@org/ui": "workspace:^",
     "@org/home": "workspace:^",
     "@org/utils": "workspace:^",
     "@org/store": "workspace:^",
     "@org/core": "workspace:^",
     "@org/auth": "workspace:^",
+    "@org/users": "workspace:^",
+    "@org/ui": "workspace:^",
+
 
     "framer-motion": "^10.12.16",
     "lodash": "^4.17.21",
