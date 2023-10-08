@@ -11,3 +11,4 @@ export * from './text';
 export * from './show';
 export * from './menu';
 export * from './table';
+export * from './select';

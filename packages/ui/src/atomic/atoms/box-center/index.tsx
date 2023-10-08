@@ -6,7 +6,7 @@ interface IProps {
 export function BoxCenter({ children, className, ...rest }: IProps) {
   return (
     <div
-      className={`flex justify-center items-center ${className}`}
+      className={`flex justify-center items-center gpa-[.5rem] ${className}`}
       {...rest}
     >
       {children}

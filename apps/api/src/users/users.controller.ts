@@ -28,8 +28,6 @@ import { InfinityPaginationResultType } from '../utils/types/infinity-pagination
 import { NullableType } from '../utils/types/nullable.type';
 
 @ApiBearerAuth()
-@Roles(RoleEnum.admin)
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('Users')
 @Controller({
   path: 'users',
@@ -41,6 +39,8 @@ export class UsersController {
   @SerializeOptions({
     groups: ['admin'],
   })
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createProfileDto: CreateUserDto): Promise<User> {
@@ -50,7 +50,9 @@ export class UsersController {
   @SerializeOptions({
     groups: ['admin'],
   })
-  @Get()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Get('/admin')
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
@@ -64,6 +66,10 @@ export class UsersController {
       await this.usersService.findManyWithPagination({
         page,
         limit,
+        role: RoleEnum.WEB_ADMIN,
+      }),
+      await this.usersService.countAllByRoles({
+        role: RoleEnum.WEB_ADMIN,
       }),
       { page, limit },
     );
@@ -83,10 +89,7 @@ export class UsersController {
   })
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  update(
-    @Param('id') id: number,
-    @Body() updateProfileDto: UpdateUserDto,
-  ): Promise<User> {
+  update(@Param('id') id: number, @Body() updateProfileDto: UpdateUserDto): Promise<User> {
     return this.usersService.update(id, updateProfileDto);
   }
 

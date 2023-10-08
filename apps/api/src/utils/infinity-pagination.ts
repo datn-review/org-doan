@@ -3,10 +3,12 @@ import { InfinityPaginationResultType } from './types/infinity-pagination-result
 
 export const infinityPagination = <T>(
   data: T[],
+  totals: number,
   options: IPaginationOptions,
 ): InfinityPaginationResultType<T> => {
   return {
     data,
+    totals: Math.ceil(totals / options.limit),
     hasNextPage: data.length === options.limit,
   };
 };

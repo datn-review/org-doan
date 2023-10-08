@@ -6,7 +6,7 @@ import { RolesEnum, TypeRolesEnum } from '@org/utils';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 function HomeApp() {
-  const { t } = useTranslation();
+  useTranslation();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -19,12 +19,12 @@ function HomeApp() {
   return (
     <div>
       Home App
+      <Table />
       <Space>
         <Authorization
           type={TypeRolesEnum.IF_ANY_GRANTED}
           roles={[RolesEnum.WEB_ADMIN]}
         >
-          <Table />
           WEB_ADMIN
         </Authorization>
         <Authorization

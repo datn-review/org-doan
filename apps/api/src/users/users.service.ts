@@ -6,6 +6,7 @@ import { DeepPartial, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { NullableType } from '../utils/types/nullable.type';
+import { RoleEnum } from 'src/roles/roles.enum';
 
 @Injectable()
 export class UsersService {
@@ -15,17 +16,37 @@ export class UsersService {
   ) {}
 
   create(createProfileDto: CreateUserDto): Promise<User> {
-    return this.usersRepository.save(
-      this.usersRepository.create(createProfileDto),
-    );
+    return this.usersRepository.save(this.usersRepository.create(createProfileDto));
   }
 
-  findManyWithPagination(
-    paginationOptions: IPaginationOptions,
-  ): Promise<User[]> {
+  findManyWithPagination({
+    limit,
+    page,
+    role,
+  }: IPaginationOptions & { role: RoleEnum }): Promise<User[]> {
     return this.usersRepository.find({
-      skip: (paginationOptions.page - 1) * paginationOptions.limit,
-      take: paginationOptions.limit,
+      skip: (page - 1) * limit,
+      take: limit,
+      relations: {
+        role: true,
+      },
+      where: {
+        role: {
+          id: role,
+        },
+      },
+    });
+  }
+  countAllByRoles({ role }: { role: RoleEnum }): Promise<number> {
+    return this.usersRepository.count({
+      relations: {
+        role: true,
+      },
+      where: {
+        role: {
+          id: role,
+        },
+      },
     });
   }
 

@@ -101,7 +101,6 @@ function HeaderUser() {
           `}
         >
           <IconSearch />
-          {SiteMap.Users.Admin.ADD}
         </Space>
 
         <Dropdown
