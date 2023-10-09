@@ -57,6 +57,8 @@ export class UsersController {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('status', new DefaultValuePipe(10), ParseIntPipe) status: number,
+    @Query('searchName', new DefaultValuePipe('')) searchName: string,
   ): Promise<InfinityPaginationResultType<User>> {
     if (limit > 50) {
       limit = 50;
@@ -66,10 +68,14 @@ export class UsersController {
       await this.usersService.findManyWithPagination({
         page,
         limit,
+        status,
         role: RoleEnum.WEB_ADMIN,
+        searchName,
       }),
       await this.usersService.countAllByRoles({
         role: RoleEnum.WEB_ADMIN,
+        status,
+        searchName,
       }),
       { page, limit },
     );

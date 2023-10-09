@@ -1,45 +1,82 @@
 import { css } from '@emotion/css';
 import { useGetUserAdminQuery } from '@org/store/src/services/users.api';
+import dayjs from 'dayjs';
+import { UpsertUser } from '../../organisms/up-sert-user';
 import {
   BoxCenter,
   Button,
   IconDeleteAction,
   IconEditAction,
+  Input,
   Pagination,
   Select,
+  SelectLimitTable,
   Space,
   Table,
+  Tag,
+  useTable,
 } from '@org/ui';
-import React, { useState } from 'react';
+import { COLOR, COLOR_RGB, SiteMap, StatusEnum, StatusEnumColor, statusOption } from '@org/utils';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from '@org/i18n';
+import { setActiveGroup, useAppDispatch } from '@org/store';
 
 function WebAdmin() {
-  const [limit, setLimit] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
+  const tableInstance = useTable({});
+  const dispatch = useAppDispatch();
+  const { t } = useTranslation();
+  const [filter, setFilter] = useState({
+    status: StatusEnum.all,
+    name: '',
+  });
 
-  const { data } = useGetUserAdminQuery({
-    page: currentPage,
-    limit: limit,
+  const [open, setOpen] = useState(false);
+  const [idEdit, setIdEdit] = useState(0);
+
+  useEffect(() => {
+    dispatch(setActiveGroup({ current: SiteMap.Users.menu }));
+  });
+  const { data, isLoading } = useGetUserAdminQuery({
+    page: tableInstance.values.pagination.currentPage,
+    limit: tableInstance.limit,
+    status: filter.status,
+    searchName: filter.name,
   });
   const columns = [
     {
-      title: 'First Name',
+      key: 'firstName',
+      title: t('user.fullname'),
       dataIndex: 'firstName',
+      render: (_: string, record: any) => (
+        <>
+          {record?.lastName} {record?.firstName}
+        </>
+      ),
     },
-    {
-      title: 'Last Name',
-      dataIndex: 'lastName',
-    },
+
     {
       title: 'Email',
       dataIndex: 'email',
+      key: 'email',
     },
     {
-      title: 'Status',
+      title: t('user.createdAt'),
+      dataIndex: 'createdAt',
+      render: (_createdAt: string) => <>{dayjs(_createdAt).format('DD/MM/YYYY')}</>,
+    },
+    {
+      title: t('user.status'),
       dataIndex: '',
-      render: (_: any, record: any) => <>{record?.status?.name}</>,
+      key: 'status',
+      render: (_: any, record: any) => (
+        <Tag color={StatusEnumColor[record?.status?.name as keyof typeof StatusEnumColor]}>
+          {t(record?.status?.name)}
+        </Tag>
+      ),
     },
+
     {
-      title: 'Action',
+      title: t('user.action'),
       dataIndex: '',
       render: (_: any, record: any) => (
         <Space
@@ -50,20 +87,52 @@ function WebAdmin() {
             cursor: pointer;
           `}
         >
-          <IconEditAction />
-          <IconDeleteAction />
+          <IconEditAction
+            onClick={() => {
+              setOpen(true);
+              setIdEdit(record.id);
+            }}
+          />
+          <IconDeleteAction
+            onClick={() => {
+              console.log('DELETE');
+            }}
+          />
         </Space>
       ),
     },
   ];
-  const onChange = (pagination: any, filters: any, sorter: any, extra: any) => {
-    console.log('params', pagination, filters, sorter, extra);
-    console.log('🚀 ~ file: web-admin.app.tsx:39 ~ onChange ~ pagination:', pagination);
-  };
-  console.log(data?.totals);
 
   return (
     <Space>
+      <Space
+        className={css`
+          padding-bottom: 2rem;
+          border-bottom: 1px solid #bcbcbc71;
+          margin-bottom: 3rem;
+        `}
+      >
+        <Space
+          className={css`
+            font-size: 1.8rem;
+            margin: 0 0 1.5rem;
+            font-weight: 500;
+          `}
+        >
+          Search Filter
+        </Space>
+        <Select
+          label={'Status'}
+          options={statusOption}
+          defaultValue={StatusEnum.active}
+          value={filter.status}
+          onChange={(value) => setFilter((prev) => ({ ...prev, status: value }))}
+          className={css`
+            min-width: 20rem;
+            min-height: 3.8rem;
+          `}
+        />
+      </Space>
       <Space
         className={css`
           display: flex;
@@ -72,18 +141,9 @@ function WebAdmin() {
           margin-bottom: 2rem;
         `}
       >
-        <Select
-          defaultValue={limit}
-          onChange={(value) => setLimit(value)}
-          options={[
-            { value: 10, label: '10' },
-            { value: 25, label: '25' },
-            { value: 50, label: '50' },
-          ]}
-          className={css`
-            min-width: 6em;
-            min-height: 3.8rem;
-          `}
+        <SelectLimitTable
+          defaultValue={tableInstance.limit}
+          onChange={tableInstance.onChangeLimit}
         />
 
         <Space
@@ -93,30 +153,44 @@ function WebAdmin() {
             align-items: center;
           `}
         >
-          Filter <Button>Add New User</Button>
+          <Space
+            className={css`
+              width: 18rem;
+            `}
+          >
+            <Input
+              name='seach_name'
+              onChange={(value) => setFilter((prev) => ({ ...prev, name: String(value) }))}
+              value={filter.name}
+              placeholder='Search Name'
+              className={css`
+                margin-bottom: 0;
+              `}
+            />
+          </Space>
+
+          <Button onClick={() => setOpen(true)}>{t('user.add.title')}</Button>
         </Space>
       </Space>
       <Table
+        tableInstance={tableInstance}
+        totalPage={data?.totals}
         columns={columns}
-        dataSource={data?.data}
-        onChange={onChange}
-        pagination={{ position: ['none'] }}
+        data={data?.data}
+        loading={isLoading}
       />
-      <Space
-        className={css`
-          margin-top: 2rem;
-          display: flex;
-          justify-content: flex-end;
-        `}
-      >
-        <Pagination
-          defaultCurrent={currentPage}
-          current={currentPage}
-          onChange={(value) => setCurrentPage(value)}
-          simple
-          total={data?.totals}
-        />
-      </Space>
+      <UpsertUser
+        onClose={() => {
+          setOpen(false);
+          setIdEdit(0);
+        }}
+        onSave={() => {
+          setOpen(false);
+          setIdEdit(0);
+        }}
+        idEdit={idEdit}
+        open={open}
+      />
     </Space>
   );
 }

@@ -51,6 +51,7 @@
     "@org/prettier": "workspace:^",
     "@org/ts-config": "workspace:^",
     "@swc/helpers": "~0.5.2",
+    "dayjs": "^1.11.10",
     "tslib": "^2.3.0",
     "yup": "^1.3.1"
   }

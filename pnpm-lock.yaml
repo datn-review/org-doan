@@ -32,6 +32,9 @@ importers:
       '@swc/helpers':
         specifier: ~0.5.2
         version: 0.5.2
+      dayjs:
+        specifier: ^1.11.10
+        version: 1.11.10
       tslib:
         specifier: ^2.3.0
         version: 2.5.3
@@ -760,6 +763,9 @@ importers:
 
   packages/utils:
     dependencies:
+      '@org/i18n':
+        specifier: workspace:^
+        version: link:../I18n
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -9213,6 +9219,10 @@ packages:
     engines: {node: '>=0.11'}
     dependencies:
       '@babel/runtime': 7.22.15
+    dev: false
+
+  /dayjs@1.11.10:
+    resolution: {integrity: sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==}
     dev: false
 
   /dayjs@1.11.9:

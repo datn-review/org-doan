@@ -2,12 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, Like, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { NullableType } from '../utils/types/nullable.type';
 import { RoleEnum } from 'src/roles/roles.enum';
+interface IUser {
+  role: RoleEnum;
+  status?: number;
+  searchName?: string;
+}
 
+type UserICustomer = IUser & IPaginationOptions;
 @Injectable()
 export class UsersService {
   constructor(
@@ -22,30 +28,50 @@ export class UsersService {
   findManyWithPagination({
     limit,
     page,
+    status,
     role,
-  }: IPaginationOptions & { role: RoleEnum }): Promise<User[]> {
+    searchName,
+  }: UserICustomer): Promise<User[]> {
     return this.usersRepository.find({
       skip: (page - 1) * limit,
       take: limit,
       relations: {
         role: true,
+        status: true,
       },
+
       where: {
+        firstName: Like(`%${searchName}%`),
+        lastName: Like(`%${searchName}%`),
+
         role: {
           id: role,
         },
+        ...(status && {
+          status: {
+            id: status,
+          },
+        }),
       },
     });
   }
-  countAllByRoles({ role }: { role: RoleEnum }): Promise<number> {
+  countAllByRoles({ role, status, searchName }: IUser): Promise<number> {
     return this.usersRepository.count({
       relations: {
         role: true,
+        status: true,
       },
       where: {
+        firstName: Like(`%${searchName}%`),
+        lastName: Like(`%${searchName}%`),
         role: {
           id: role,
         },
+        ...(status && {
+          status: {
+            id: status,
+          },
+        }),
       },
     });
   }

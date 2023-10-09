@@ -4,4 +4,13 @@ export * from './form';
 export * from './icons';
 export * from './config-theme';
 
-export { Badge, Spin, message, Pagination, type PaginationProps } from 'antd';
+export {
+  Badge,
+  Spin,
+  message,
+  Pagination,
+  type PaginationProps,
+  Tag,
+  type TagProps,
+  Drawer,
+} from 'antd';

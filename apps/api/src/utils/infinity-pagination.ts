@@ -8,7 +8,7 @@ export const infinityPagination = <T>(
 ): InfinityPaginationResultType<T> => {
   return {
     data,
-    totals: Math.ceil(totals / options.limit),
+    totals: totals,
     hasNextPage: data.length === options.limit,
   };
 };
