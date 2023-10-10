@@ -184,7 +184,8 @@ function WebAdmin() {
           setOpen(false);
           setIdEdit(0);
         }}
-        onSave={() => {
+        onSave={(values: any) => {
+          console.log(values);
           setOpen(false);
           setIdEdit(0);
         }}

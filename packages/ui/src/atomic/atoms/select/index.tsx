@@ -2,7 +2,13 @@ import React from 'react';
 import { Select as SelectBase, SelectProps } from 'antd';
 import { Space } from '../space';
 import { css, cx } from '@emotion/css';
-export function Select({ label, ...rest }: SelectProps & { label?: string }) {
+import { withForm } from './../../../form/connectForm';
+interface ISelect extends SelectProps {
+  label?: string;
+  name?: string;
+  onChange?: (value: any) => void;
+}
+export function Select({ label, onChange, ...rest }: ISelect) {
   return (
     <Space>
       {label && (
@@ -24,8 +30,11 @@ export function Select({ label, ...rest }: SelectProps & { label?: string }) {
           `,
           rest.className,
         )}
+        onChange={onChange}
         {...rest}
       />
     </Space>
   );
 }
+
+export const SelectForm = withForm<ISelect & { name: string }>(Select);

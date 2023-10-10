@@ -19,7 +19,7 @@ function HomeApp() {
   return (
     <div>
       Home App
-      <Table />
+      {/* <Table /> */}
       <Space>
         <Authorization
           type={TypeRolesEnum.IF_ANY_GRANTED}

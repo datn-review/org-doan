@@ -3,6 +3,11 @@ import { Pagination, Spin, Table as TableBase, TableProps } from 'antd';
 import { Space } from '../space';
 import { css } from '@emotion/css';
 import { Select } from '../select';
+import { extend } from 'dayjs';
+
+interface ITable {
+  tableInstance: any;
+}
 
 export function Table({
   tableInstance,
@@ -12,7 +17,7 @@ export function Table({
   data,
   loading = false,
   ...props
-}: any) {
+}: ITable & any) {
   const {
     values: {
       pagination: { currentPage },

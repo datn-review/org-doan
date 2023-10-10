@@ -21,6 +21,7 @@ export function useTable({ initialSortValue, initialLimit = 10 }: TableHookAPI) 
   const pagination = { currentPage };
   const sort = { sortBy, sortDirection };
   const values = { pagination, sort };
+
   const convertOrder: Record<IDirection, string> = {
     asc: 'ascend',
     desc: 'descend',

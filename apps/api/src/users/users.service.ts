@@ -25,14 +25,14 @@ export class UsersService {
     return this.usersRepository.save(this.usersRepository.create(createProfileDto));
   }
 
-  findManyWithPagination({
+  async findManyWithPagination({
     limit,
     page,
+    searchName,
     status,
     role,
-    searchName,
-  }: UserICustomer): Promise<User[]> {
-    return this.usersRepository.find({
+  }: UserICustomer): Promise<{ data: User[]; totals: number }> {
+    const data: User[] = await this.usersRepository.find({
       skip: (page - 1) * limit,
       take: limit,
       relations: {
@@ -54,6 +54,9 @@ export class UsersService {
         }),
       },
     });
+    const totals = await this.countAllByRoles({ searchName, status, role });
+
+    return { data, totals };
   }
   countAllByRoles({ role, status, searchName }: IUser): Promise<number> {
     return this.usersRepository.count({

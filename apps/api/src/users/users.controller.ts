@@ -22,7 +22,6 @@ import { Roles } from 'src/roles/roles.decorator';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/roles/roles.guard';
-import { infinityPagination } from 'src/utils/infinity-pagination';
 import { User } from './entities/user.entity';
 import { InfinityPaginationResultType } from '../utils/types/infinity-pagination-result.type';
 import { NullableType } from '../utils/types/nullable.type';
@@ -64,21 +63,13 @@ export class UsersController {
       limit = 50;
     }
 
-    return infinityPagination(
-      await this.usersService.findManyWithPagination({
-        page,
-        limit,
-        status,
-        role: RoleEnum.WEB_ADMIN,
-        searchName,
-      }),
-      await this.usersService.countAllByRoles({
-        role: RoleEnum.WEB_ADMIN,
-        status,
-        searchName,
-      }),
-      { page, limit },
-    );
+    return await this.usersService.findManyWithPagination({
+      page,
+      limit,
+      status,
+      role: RoleEnum.WEB_ADMIN,
+      searchName,
+    });
   }
 
   @SerializeOptions({
