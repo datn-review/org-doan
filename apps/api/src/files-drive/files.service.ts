@@ -21,7 +21,7 @@ export class FilesService {
     private readonly fileRepository: Repository<FileEntity>,
   ) {}
 
-  async uploadFile(file: Express.Multer.File): Promise<any> {
+  async uploadFile(file?: Express.Multer.File | null): Promise<any> {
     if (!file) {
       throw new HttpException(
         {
@@ -41,11 +41,11 @@ export class FilesService {
       version: 'v3',
       auth: oauth2Client,
     });
-    const dataUpload = await this.uploadFile2({ drive, file });
+    const dataUploadDrive = await this.uploadFileToDrive({ drive, file });
 
     return this.fileRepository.save(
       this.fileRepository.create({
-        path: dataUpload?.fileId,
+        path: dataUploadDrive?.fileId,
       }),
     );
   }
@@ -69,7 +69,7 @@ export class FilesService {
       console.error(error);
     }
   }
-  async uploadFile2({ drive, file }: any) {
+  async uploadFileToDrive({ drive, file }: any) {
     try {
       const fileObject = file;
 

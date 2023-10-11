@@ -13,11 +13,13 @@ import {
   HttpStatus,
   HttpCode,
   SerializeOptions,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/roles/roles.decorator';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { AuthGuard } from '@nestjs/passport';
@@ -25,33 +27,43 @@ import { RolesGuard } from 'src/roles/roles.guard';
 import { User } from './entities/user.entity';
 import { InfinityPaginationResultType } from '../utils/types/infinity-pagination-result.type';
 import { NullableType } from '../utils/types/nullable.type';
-
+import { FileInterceptor } from '@nestjs/platform-express';
 @ApiBearerAuth()
 @ApiTags('Users')
+@Roles(RoleEnum.WEB_ADMIN)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
-  path: 'users',
+  path: 'users/admin',
   version: '1',
 })
-export class UsersController {
+export class UsersAdminController {
   constructor(private readonly usersService: UsersService) {}
 
   @SerializeOptions({
     groups: ['admin'],
   })
-  @Roles(RoleEnum.WEB_ADMIN)
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Post()
+  @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createProfileDto: CreateUserDto): Promise<User> {
-    return this.usersService.create(createProfileDto);
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('photo'))
+  create(
+    @UploadedFile() photo: Express.Multer.File,
+    @Body() createProfileDto: CreateUserDto,
+  ): Promise<User> {
+    console.log('🚀 ~ file: users.admin.controller.ts:53 ~ UsersAdminController ~ photo:', photo);
+    return this.usersService.create({
+      ...createProfileDto,
+      photo: photo,
+      role: {
+        id: RoleEnum.WEB_ADMIN,
+      },
+    });
   }
 
   @SerializeOptions({
     groups: ['admin'],
   })
-  @Roles(RoleEnum.WEB_ADMIN)
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Get('/admin')
+  @Get('/')
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
@@ -75,7 +87,7 @@ export class UsersController {
   @SerializeOptions({
     groups: ['admin'],
   })
-  @Get(':id')
+  @Get('/:id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string): Promise<NullableType<User>> {
     return this.usersService.findOne({ id: +id });

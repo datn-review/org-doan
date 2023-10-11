@@ -7,6 +7,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { NullableType } from '../utils/types/nullable.type';
 import { RoleEnum } from 'src/roles/roles.enum';
+import { FilesService } from './../files-drive/files.service';
 interface IUser {
   role: RoleEnum;
   status?: number;
@@ -19,10 +20,14 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private filesService: FilesService,
   ) {}
 
-  create(createProfileDto: CreateUserDto): Promise<User> {
-    return this.usersRepository.save(this.usersRepository.create(createProfileDto));
+  async create(createProfileDto: CreateUserDto): Promise<User> {
+    const photo = await this.filesService.uploadFile(createProfileDto.photo);
+    return this.usersRepository.save(
+      this.usersRepository.create({ ...createProfileDto, photo: photo.id }),
+    );
   }
 
   async findManyWithPagination({

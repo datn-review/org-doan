@@ -20,18 +20,20 @@ import { COLOR, COLOR_RGB, SiteMap, StatusEnum, StatusEnumColor, statusOption } 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from '@org/i18n';
 import { setActiveGroup, useAppDispatch } from '@org/store';
+import { useWebAdminContext } from './web-admin.context';
+import Upsert from './up-sert/Upsert';
 
 function WebAdmin() {
   const tableInstance = useTable({});
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+
+  const { setIdEdit, setIsUpsert } = useWebAdminContext();
+
   const [filter, setFilter] = useState({
     status: StatusEnum.all,
     name: '',
   });
-
-  const [open, setOpen] = useState(false);
-  const [idEdit, setIdEdit] = useState(0);
 
   useEffect(() => {
     dispatch(setActiveGroup({ current: SiteMap.Users.menu }));
@@ -89,7 +91,7 @@ function WebAdmin() {
         >
           <IconEditAction
             onClick={() => {
-              setOpen(true);
+              setIsUpsert(true);
               setIdEdit(record.id);
             }}
           />
@@ -169,7 +171,7 @@ function WebAdmin() {
             />
           </Space>
 
-          <Button onClick={() => setOpen(true)}>{t('user.add.title')}</Button>
+          <Button onClick={() => setIsUpsert(true)}>{t('user.add.title')}</Button>
         </Space>
       </Space>
       <Table
@@ -179,19 +181,7 @@ function WebAdmin() {
         data={data?.data}
         loading={isLoading}
       />
-      <UpsertUser
-        onClose={() => {
-          setOpen(false);
-          setIdEdit(0);
-        }}
-        onSave={(values: any) => {
-          console.log(values);
-          setOpen(false);
-          setIdEdit(0);
-        }}
-        idEdit={idEdit}
-        open={open}
-      />
+      <Upsert />
     </Space>
   );
 }

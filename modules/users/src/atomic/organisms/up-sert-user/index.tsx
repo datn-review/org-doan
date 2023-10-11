@@ -16,7 +16,10 @@ import {
   VARIANT,
   useForm,
   yupResolver,
+  UploadImage,
+  UnloadImageForm,
 } from '@org/ui';
+
 import { StatusEnum, statusOption } from '@org/utils';
 import React, { useRef } from 'react';
 import * as yup from 'yup';
@@ -26,7 +29,7 @@ interface IUser {
   password: string;
   firstName: string;
   lastName: string;
-  photo?: string;
+  photo?: [];
   status?: number;
 }
 
@@ -46,7 +49,7 @@ export function UpsertUser({ onClose, onSave, open, idEdit }: any) {
       password: '',
       firstName: '',
       lastName: '',
-      photo: '',
+      photo: [],
       status: 1,
     },
     resolver: yupResolver(schema),
@@ -72,6 +75,7 @@ export function UpsertUser({ onClose, onSave, open, idEdit }: any) {
             $type={TYPE_BUTTON.Primary}
             $size={SIZE.ExtraSmall}
             onClick={methods.handleSubmit((value) => {
+              onSave(value);
               console.log(value);
             })}
           >
@@ -107,6 +111,11 @@ export function UpsertUser({ onClose, onSave, open, idEdit }: any) {
             min-width: 20rem;
             min-height: 3.8rem;
           `}
+        />
+        <UnloadImageForm
+          maxLength={1}
+          name='photo'
+          label={t('user.photo')}
         />
       </FormProvider>
     </Drawer>

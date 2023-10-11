@@ -9,21 +9,33 @@ export const UsersAPI = baseAuthSplitApi.injectEndpoints({
         method: 'GET',
       }),
     }),
-    registerUserEmail: builder.mutation({
+    createUserAdmin: builder.mutation({
       query: (body) => ({
-        url: '/auth/email/register',
+        url: '/users/admin',
         body,
         method: 'POST',
       }),
     }),
-    confirmUserEmail: builder.mutation({
-      query: (body) => ({
-        url: '/auth/email/confirm',
+    updateUserAdmin: builder.mutation({
+      query: ({ body, id }) => ({
+        url: `/users/admin/${id}`,
         body,
-        method: 'POST',
+        method: 'PUT',
+      }),
+    }),
+    deleteUserAdmin: builder.mutation({
+      query: ({ body, id }) => ({
+        url: `/users/admin/${id}`,
+        body,
+        method: 'DELETE',
       }),
     }),
   }),
 });
 
-export const { useGetUserAdminQuery } = UsersAPI;
+export const {
+  useGetUserAdminQuery,
+  useUpdateUserAdminMutation,
+  useCreateUserAdminMutation,
+  useDeleteUserAdminMutation,
+} = UsersAPI;

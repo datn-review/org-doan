@@ -40,10 +40,10 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
 
   @ApiProperty({ type: () => FileEntity })
   @IsOptional()
-  @Validate(IsExist, ['FileEntity', 'id'], {
-    message: 'imageNotExists',
-  })
-  photo?: FileEntity | null;
+  // @Validate(IsExist, ['FileEntity', 'id'], {
+  //   message: 'imageNotExists',
+  // })
+  photo?: null | Express.Multer.File;
 
   @ApiProperty({ type: Role })
   @IsOptional()
