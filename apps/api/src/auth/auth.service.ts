@@ -31,18 +31,20 @@ export class AuthService {
 
   async validateLogin(
     loginDto: AuthEmailLoginDto,
-    onlyAdmin: boolean,
+    onlyAdmin?: boolean,
   ): Promise<LoginResponseType> {
     const user = await this.usersService.findOne({
       email: loginDto.email,
     });
+    console.log(onlyAdmin);
 
     if (
-      !user ||
-      (user?.role &&
-        !(onlyAdmin ? [RoleEnum.admin] : [RoleEnum.user]).includes(
-          user.role.id,
-        ))
+      !user
+      // ||
+      // (user?.role &&
+      //   !(onlyAdmin ? [RoleEnum.WEB_ADMIN] : [RoleEnum.user]).includes(
+      //     user.role.id,
+      //   ))
     ) {
       throw new HttpException(
         {
@@ -67,10 +69,7 @@ export class AuthService {
       );
     }
 
-    const isValidPassword = await bcrypt.compare(
-      loginDto.password,
-      user.password,
-    );
+    const isValidPassword = await bcrypt.compare(loginDto.password, user.password);
 
     if (!isValidPassword) {
       throw new HttpException(
@@ -117,7 +116,7 @@ export class AuthService {
       user = userByEmail;
     } else {
       const role = plainToClass(Role, {
-        id: RoleEnum.user,
+        id: RoleEnum.STUDENT,
       });
       const status = plainToClass(Status, {
         id: StatusEnum.active,
@@ -162,16 +161,13 @@ export class AuthService {
   }
 
   async register(dto: AuthRegisterLoginDto): Promise<void> {
-    const hash = crypto
-      .createHash('sha256')
-      .update(randomStringGenerator())
-      .digest('hex');
+    const hash = crypto.createHash('sha256').update(randomStringGenerator()).digest('hex');
 
     await this.usersService.create({
       ...dto,
       email: dto.email,
       role: {
-        id: RoleEnum.user,
+        id: RoleEnum.STUDENT,
       } as Role,
       status: {
         id: StatusEnum.inactive,
@@ -226,10 +222,7 @@ export class AuthService {
       );
     }
 
-    const hash = crypto
-      .createHash('sha256')
-      .update(randomStringGenerator())
-      .digest('hex');
+    const hash = crypto.createHash('sha256').update(randomStringGenerator()).digest('hex');
     await this.forgotService.create({
       hash,
       user,
@@ -275,10 +268,7 @@ export class AuthService {
     });
   }
 
-  async update(
-    user: User,
-    userDto: AuthUpdateDto,
-  ): Promise<NullableType<User>> {
+  async update(user: User, userDto: AuthUpdateDto): Promise<NullableType<User>> {
     if (userDto.password) {
       if (userDto.oldPassword) {
         const currentUser = await this.usersService.findOne({
@@ -297,10 +287,7 @@ export class AuthService {
           );
         }
 
-        const isValidOldPassword = await bcrypt.compare(
-          userDto.oldPassword,
-          currentUser.password,
-        );
+        const isValidOldPassword = await bcrypt.compare(userDto.oldPassword, currentUser.password);
 
         if (!isValidOldPassword) {
           throw new HttpException(

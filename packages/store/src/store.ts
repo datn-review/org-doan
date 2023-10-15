@@ -1,10 +1,7 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import { activeMenu, auth, user } from "./slices";
-import { AuthAPI } from "./services";
-import {
-  baseAuthSplitApi,
-  baseNoAuthSplitApi,
-} from "./services/base-auth-query";
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { activeMenu, auth, user } from './slices';
+import { AuthAPI, UsersAPI } from './services';
+import { baseAuthSplitApi, baseNoAuthSplitApi } from './services/base-auth-query';
 
 const rootReducer = combineReducers({
   activeMenu,
@@ -14,6 +11,7 @@ const rootReducer = combineReducers({
   [baseAuthSplitApi.reducerPath]: baseAuthSplitApi.reducer,
 
   [AuthAPI.reducerPath]: AuthAPI.reducer,
+  [UsersAPI.reducerPath]: UsersAPI.reducer,
 });
 
 export const store = configureStore({

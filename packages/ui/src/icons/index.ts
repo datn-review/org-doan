@@ -10,5 +10,12 @@ export { ReactComponent as IconSetting } from '../assets/icons/svg/setting.svg';
 export { ReactComponent as IconHome } from '../assets/icons/svg/home.svg';
 export { ReactComponent as IconDashBoard } from '../assets/icons/svg/dashboard.svg';
 export { ReactComponent as IconArrowDown } from '../assets/icons/svg/arrow_down.svg';
+export { ReactComponent as IconDeleteAction } from '../assets/icons/svg/delete-action.svg';
+export { ReactComponent as IconEditAction } from '../assets/icons/svg/edit-action.svg';
+export { ReactComponent as IconUser } from '../assets/icons/svg/user.svg';
+export { ReactComponent as IconEye } from '../assets/icons/svg/eye.svg';
+
+export { ReactComponent as IconEyeClose } from '../assets/icons/svg/eye-close.svg';
+
 export { IconSearch } from './SearchIcon';
 // export { IconSearch } from './SearchIcon';

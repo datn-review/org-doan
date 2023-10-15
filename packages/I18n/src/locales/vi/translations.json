@@ -6,5 +6,31 @@
 
   "auth": {
     "title": { "login": "Đăng Nhập" }
+  },
+  "all": "Tất Cả",
+  "inactive": "Chưa Xác Nhận",
+  "active": "Đã Xác Nhận",
+  "pending":"Chờ Phê Duyệt",
+
+  "user":{
+    "status": "Trạng Thái",
+    "createdAt": "Ngày Tạo",
+    "fullname": "Họ Và Tên",
+    "action": "Thao Tác",
+    "add" :{
+      "title": "Thêm Người Dùng"
+    },
+    "edit" :{
+      "title": "Chỉnh Sửa Người Dùng"
+    },
+    "delete" :{
+      "title": "Xóa Người Dùng"
+    }
+  },
+  "button" : {
+    "cancel": "Thoát",
+    "save": "Lưu",
+    "exit": "Thoát",
+    "oke": "Oke"
   }
 }

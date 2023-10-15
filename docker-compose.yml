@@ -1,0 +1,30 @@
+version: '1.25'
+
+services:
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    ports:
+      - '1111:1111'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=production
+    stdin_open: true
+    tty: true
+
+  api:
+    build:
+      dockerfile: Dockerfile.prod
+      context: ./apps/api
+    ports:
+      - '2222:2222'
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    env_file:
+      - .apps/api/.env
+    environment:
+      - NODE_ENV=production

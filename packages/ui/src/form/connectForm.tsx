@@ -1,8 +1,8 @@
-import { css } from "@emotion/css";
-import React, { ReactNode, type ReactElement } from "react";
-import type { FieldValues, UseFormReturn } from "react-hook-form";
-import { Controller, useFormContext } from "react-hook-form";
-import { Space } from "../atomic/atoms";
+import { css } from '@emotion/css';
+import React, { ReactNode, type ReactElement } from 'react';
+import type { FieldValues, UseFormReturn } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
+import { Space } from '../atomic/atoms';
 
 interface ConnectFormProps<TFieldValues extends FieldValues> {
   children(children: UseFormReturn<TFieldValues>): ReactElement;
@@ -22,9 +22,7 @@ interface IProps {
   label?: ReactNode;
 }
 
-export const withForm = <T extends IProps>(
-  WrappedComponent: React.ComponentType<T>
-) => {
+export const withForm = <T extends IProps>(WrappedComponent: React.ComponentType<T>) => {
   const WithForm = ({ name, onChange, value, label, ...props }: T & IProps) => {
     return (
       <ConnectForm>
@@ -47,7 +45,7 @@ export const withForm = <T extends IProps>(
                 />
               )}
               <Controller
-                defaultValue={""}
+                defaultValue={''}
                 name={name}
                 control={control}
                 render={({ field }) => {
@@ -84,8 +82,6 @@ export const withForm = <T extends IProps>(
     );
   };
 
-  WithForm.displayName = `withLogger(${
-    WrappedComponent.name || WrappedComponent.displayName
-  })`;
+  WithForm.displayName = `withLogger(${WrappedComponent.name || WrappedComponent.displayName})`;
   return WithForm;
 };

@@ -1,21 +1,14 @@
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from '../../roles/entities/role.entity';
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  MinLength,
-  Validate,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, MinLength, Validate } from 'class-validator';
 import { Status } from 'src/statuses/entities/status.entity';
 import { IsNotExist } from 'src/utils/validators/is-not-exists.validator';
-import { FileEntity } from 'src/files/entities/file.entity';
 import { IsExist } from 'src/utils/validators/is-exists.validator';
 import { lowerCaseTransformer } from 'src/utils/transformers/lower-case.transformer';
 
 export class CreateUserDto {
-  @ApiProperty({ example: 'test1@example.com' })
+  @ApiProperty({ type: 'string', example: 'test1@example.com' })
   @Transform(lowerCaseTransformer)
   @IsNotEmpty()
   @Validate(IsNotExist, ['User'], {
@@ -32,28 +25,30 @@ export class CreateUserDto {
 
   socialId?: string | null;
 
-  @ApiProperty({ example: 'John' })
+  @ApiProperty({ type: 'string', example: 'John' })
   @IsNotEmpty()
   firstName: string | null;
 
-  @ApiProperty({ example: 'Doe' })
+  @ApiProperty({ type: 'string', example: 'Doe' })
   @IsNotEmpty()
   lastName: string | null;
 
-  @ApiProperty({ type: () => FileEntity })
+  @ApiProperty({
+    type: 'string',
+    format: 'binary',
+  })
   @IsOptional()
-  @Validate(IsExist, ['FileEntity', 'id'], {
-    message: 'imageNotExists',
-  })
-  photo?: FileEntity | null;
+  // @Validate(IsExist, ['FileEntity', 'id'], {
+  //   message: 'imageNotExists',
+  // })
+  photo?: null | Express.Multer.File;
 
-  @ApiProperty({ type: Role })
-  @Validate(IsExist, ['Role', 'id'], {
-    message: 'roleNotExists',
-  })
-  role?: Role | null;
-
-  @ApiProperty({ type: Status })
+  // @ApiProperty({ type: Role })
+  // @Validate(IsExist, ['Role', 'id'], {
+  //   message: 'roleNotExists',
+  // })
+  role?: Role | null | any;
+  @ApiProperty({ type: 'string' })
   @Validate(IsExist, ['Status', 'id'], {
     message: 'statusNotExists',
   })

@@ -1,5 +1,5 @@
-import { css } from "@emotion/css";
-import { useTranslation } from "@org/i18n";
+import { css } from '@emotion/css';
+import { useTranslation } from '@org/i18n';
 import {
   ILoginUserEmail,
   setActiveGroup,
@@ -7,7 +7,7 @@ import {
   setUserInfo,
   useAppDispatch,
   useLoginUserEmailMutation,
-} from "@org/store";
+} from '@org/store';
 import {
   BoxCenter,
   Button,
@@ -17,13 +17,14 @@ import {
   Space,
   Spin,
   TextLink,
+  TypeInput,
   useForm,
   yupResolver,
-} from "@org/ui";
-import { RolesEnum, SiteMap } from "@org/utils";
-import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import * as yup from "yup";
+} from '@org/ui';
+import { RolesEnum, SiteMap } from '@org/utils';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
 
 interface ILogin {
   email: string;
@@ -32,8 +33,8 @@ interface ILogin {
 }
 
 const schema = yup.object({
-  email: yup.string().required("Email required."),
-  password: yup.string().required("Password required"),
+  email: yup.string().required('Email required.'),
+  password: yup.string().required('Password required'),
   remember: yup.boolean(),
 });
 
@@ -43,16 +44,16 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(setActiveGroup({ current: "login" }));
+    dispatch(setActiveGroup({ current: 'login' }));
     return () => {
-      dispatch(setActiveGroup({ current: "" }));
+      dispatch(setActiveGroup({ current: '' }));
     };
   }, []);
 
   const methods = useForm<ILogin>({
     defaultValues: {
-      email: "tamtest@gmail.com",
-      password: "123456",
+      email: 'tamtest@gmail.com',
+      password: '123456',
       remember: false,
     },
     resolver: yupResolver(schema),
@@ -72,12 +73,12 @@ function Login() {
             role: res.user.role.name,
             username: res.user.email,
             authorities: [res.user.role.name],
-          })
+          }),
         );
 
         dispatch(setUserInfo(res.user));
 
-        console.log("User", { res });
+        console.log('User', { res });
 
         switch (res.user.role.name) {
           case RolesEnum.WEB_ADMIN:
@@ -88,7 +89,7 @@ function Login() {
         }
       })
       .catch((err) => {
-        console.log("🚀 ~ file: LoginApp.tsx:89 ~ .then ~ err:", err);
+        console.log('🚀 ~ file: LoginApp.tsx:89 ~ .then ~ err:', err);
         return {};
       });
   };
@@ -113,8 +114,15 @@ function Login() {
 
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <InputForm name="email" label={"Email"} />
-            <InputForm name="password" label={"Password"} />
+            <InputForm
+              name='email'
+              label={'Email'}
+            />
+            <InputForm
+              name='password'
+              label={'Password'}
+              $type={TypeInput.Password}
+            />
 
             <Space
               className={css`
@@ -124,24 +132,27 @@ function Login() {
               `}
             >
               <Space>
-                <CheckBoxForm labelCB="Remember" name="remember" />
+                <CheckBoxForm
+                  labelCB='Remember'
+                  name='remember'
+                />
               </Space>
               <Link to={SiteMap.Auth.ForgotPassword.path}>
                 <TextLink>Forgot password? </TextLink>
               </Link>
             </Space>
             <Button
-              type="submit"
+              type='submit'
               className={css`
                 width: 100% !important;
                 margin-bottom: 2rem;
               `}
             >
-              {t("auth.title.login")}
+              {t('auth.title.login')}
             </Button>
           </form>
           <BoxCenter>
-            New on our platform?{" "}
+            New on our platform?{' '}
             <Link to={SiteMap.Auth.Register.path}>
               <TextLink
                 className={css`

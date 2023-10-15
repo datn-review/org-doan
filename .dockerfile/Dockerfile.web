@@ -1,0 +1,8 @@
+FROM node:17-alpine
+WORKDIR /app
+
+COPY ../ ./
+RUN npm i pnpm@8.7.4 
+RUN pnpm i
+RUN nx run web:build
+
