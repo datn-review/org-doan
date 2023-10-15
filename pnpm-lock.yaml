@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@babel/runtime':
+        specifier: ^7.22.15
+        version: 7.22.15
       '@emotion/css':
         specifier: ^11.11.2
         version: 11.11.2
@@ -328,6 +331,9 @@ importers:
 
   apps/mobile:
     dependencies:
+      '@org/utils':
+        specifier: workspace:^
+        version: link:../../packages/utils
       '@react-native-community/cli-platform-android':
         specifier: ^11.3.9
         version: 11.3.9
@@ -357,7 +363,7 @@ importers:
         specifier: ^7.20.0
         version: 7.22.15(@babel/core@7.22.17)
       '@babel/runtime':
-        specifier: ^7.20.0
+        specifier: ^7.22.15
         version: 7.22.15
       '@react-native/eslint-config':
         specifier: ^0.72.2
@@ -13277,7 +13283,7 @@ packages:
       jest-regex-util: 29.6.3
       jest-resolve: 29.6.4
       jest-runner: 29.6.4
-      jest-util: 29.7.0
+      jest-util: 29.6.3
       jest-validate: 29.6.3
       micromatch: 4.0.5
       parse-json: 5.2.0

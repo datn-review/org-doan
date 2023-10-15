@@ -43,6 +43,7 @@
     "apps/*"
   ],
   "dependencies": {
+    "@babel/runtime": "^7.22.15",
     "@emotion/css": "^11.11.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
