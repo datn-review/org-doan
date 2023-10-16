@@ -20,7 +20,6 @@ export type IInput = HTMLAttributes<HTMLInputElement> & {
 
 export function Input({ onChange, value, labelInput, className, $type, ...props }: IInput) {
   const [hidePassword, setHidePassword] = useState(true);
-  console.log(TypeInput.Password === $type && hidePassword ? TypeInput.Password : TypeInput.Text);
   return (
     <>
       {labelInput && (
