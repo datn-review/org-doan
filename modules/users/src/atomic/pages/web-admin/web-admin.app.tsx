@@ -1,14 +1,16 @@
 import { css } from '@emotion/css';
-import { useGetUserAdminQuery, useLazyGetUserAdminQuery } from '@org/store/src/services/users.api';
-import dayjs from 'dayjs';
-import { UpsertUser } from '../../organisms/up-sert-user';
+import { useCRUDContext, useMessage, useUpdateEffect } from '@org/core';
+import { useTranslation } from '@org/i18n';
+import { clearActiveMenu, setActiveGroup, setActiveSubGroup, useAppDispatch } from '@org/store';
 import {
-  BoxCenter,
+  useDeleteUserAdminMutation,
+  useLazyGetUserAdminQuery,
+} from '@org/store/src/services/users.api';
+import {
   Button,
   IconDeleteAction,
   IconEditAction,
   Input,
-  Pagination,
   Select,
   SelectLimitTable,
   Space,
@@ -16,18 +18,21 @@ import {
   Tag,
   useTable,
 } from '@org/ui';
-import { COLOR, COLOR_RGB, SiteMap, StatusEnum, StatusEnumColor, statusOption } from '@org/utils';
-import React, { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from '@org/i18n';
-import { setActiveGroup, useAppDispatch } from '@org/store';
-import { useWebAdminContext } from './web-admin.context';
+import { SiteMap, StatusEnum, StatusEnumColor, statusOption } from '@org/utils';
+import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 import Upsert from './up-sert/Upsert';
-import { useCRUDContext, useUpdateEffect } from '@org/core';
 
 function WebAdmin() {
-  const tableInstance = useTable({});
+  const tableInstance = useTable({
+    initialSortValue: {
+      sortBy: 'lastName',
+      sortDirection: 'asc',
+    },
+  });
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const { messageSuccess, contextHolder } = useMessage();
 
   const { setIdEdit, setIsUpsert, isFetch, setIsFetch } = useCRUDContext();
 
@@ -38,15 +43,25 @@ function WebAdmin() {
 
   useEffect(() => {
     dispatch(setActiveGroup({ current: SiteMap.Users.menu }));
+    dispatch(setActiveSubGroup({ current: SiteMap.Users.Admin.menu }));
+    return () => {
+      dispatch(clearActiveMenu());
+    };
   }, []);
 
   const [getUser, { data, isLoading }] = useLazyGetUserAdminQuery();
+  const [deleteUser] = useDeleteUserAdminMutation();
+
   const query = {
     page: tableInstance.values.pagination.currentPage,
     limit: tableInstance.limit,
     status: filter.status,
     searchName: filter.name,
+    sortBy: tableInstance.values.sort.sortBy,
+    sortDirection: tableInstance.values.sort.sortDirection,
   };
+  console.log(tableInstance.values.sort);
+
   useEffect(() => {
     getUser(query);
   }, [JSON.stringify(query)]);
@@ -64,9 +79,10 @@ function WebAdmin() {
 
   const columns = [
     {
-      key: 'firstName',
+      key: 'lastName',
       title: t('user.fullname'),
-      dataIndex: 'firstName',
+      dataIndex: 'lastName',
+      sorter: true,
       render: (_: string, record: any) => (
         <>
           {record?.lastName} {record?.firstName}
@@ -78,14 +94,19 @@ function WebAdmin() {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
+      sorter: true,
     },
     {
       title: t('user.createdAt'),
       dataIndex: 'createdAt',
+      sorter: true,
+
       render: (_createdAt: string) => <>{dayjs(_createdAt).format('DD/MM/YYYY')}</>,
     },
     {
       title: t('user.status'),
+      sorter: true,
+
       dataIndex: '',
       key: 'status',
       render: (_: any, record: any) => (
@@ -115,7 +136,16 @@ function WebAdmin() {
           />
           <IconDeleteAction
             onClick={() => {
-              console.log('DELETE');
+              deleteUser(record.id)
+                .then((data) => {
+                  messageSuccess(t('user.delete.success'));
+                })
+                .catch((error) => {
+                  messageSuccess(t('user.delete.error'));
+                })
+                .finally(() => {
+                  setIsFetch(true);
+                });
             }}
           />
         </Space>
@@ -125,6 +155,7 @@ function WebAdmin() {
 
   return (
     <Space>
+      {contextHolder}
       <Space
         className={css`
           padding-bottom: 2rem;
@@ -139,10 +170,10 @@ function WebAdmin() {
             font-weight: 500;
           `}
         >
-          Search Filter
+          {t('search_filter')}
         </Space>
         <Select
-          label={'Status'}
+          label={t('user.status')}
           options={statusOption}
           defaultValue={StatusEnum.active}
           value={filter.status}
@@ -182,7 +213,7 @@ function WebAdmin() {
               name='seach_name'
               onChange={(value) => setFilter((prev) => ({ ...prev, name: String(value) }))}
               value={filter.name}
-              placeholder='Search Name'
+              placeholder={t('search_name')}
               className={css`
                 margin-bottom: 0;
               `}

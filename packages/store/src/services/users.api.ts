@@ -30,9 +30,8 @@ export const UsersAPI = baseAuthSplitApi.injectEndpoints({
       }),
     }),
     deleteUserAdmin: builder.mutation({
-      query: ({ body, id }) => ({
+      query: (id) => ({
         url: `/users/admin/${id}`,
-        body,
         method: 'DELETE',
       }),
     }),

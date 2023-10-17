@@ -5,8 +5,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { menuCategory } from './header-constant';
 import { MenuItem } from './header-type';
 import * as S from './styled';
+import { css } from '@emotion/css/macro';
+import { COLOR, COLOR_RGB } from '@org/utils';
 function HeaderCategory() {
-  const { menu } = useAppSelector((state) => state.activeMenu);
+  const { menu, subMenu: subMenuActive } = useAppSelector((state) => state.activeMenu);
+  console.log('🚀 ~ file: header-category.tsx:10 ~ HeaderCategory ~ subMenuActive:', subMenuActive);
   const navigate = useNavigate();
   const renderButton = ({ id, isSub, icon, name }: any) => {
     return (
@@ -32,8 +35,10 @@ function HeaderCategory() {
             placement='bottomLeft'
             menu={{
               items: subMenu,
+              selectedKeys: [subMenuActive],
               onClick: handleClick,
             }}
+            trigger={['click']}
           >
             {renderButton({
               id,

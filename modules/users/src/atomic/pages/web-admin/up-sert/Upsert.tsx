@@ -1,5 +1,4 @@
-import { useCRUDContext } from '@org/core';
-import { useTranslation } from '@org/i18n';
+import { useCRUDContext, useMessage } from '@org/core';
 import {
   useCreateUserAdminMutation,
   useLazyFindUserAdminQuery,
@@ -8,11 +7,12 @@ import {
 import { Space } from '@org/ui';
 import { useEffect } from 'react';
 import { UpsertUser } from '../../../organisms/up-sert-user';
+import { useTranslation } from '@org/i18n';
 
 function Upsert() {
   const { t } = useTranslation();
-
   const { idEdit, isUpsert, setIsFetch, close, setDataUpsert } = useCRUDContext();
+  const { messageError, messageSuccess, contextHolder } = useMessage();
 
   const [createUser, { isLoading: isLoadingCreate }] = useCreateUserAdminMutation();
 
@@ -24,28 +24,41 @@ function Upsert() {
       getUser({ id: idEdit })
         .unwrap()
         .then((data) => {
-          console.log(data);
           setDataUpsert(data);
         });
     }
   }, [idEdit]);
-  const handleSave = (values: any) => {
-    const formData = new FormData();
-    Object.entries(values).forEach(([name, value]: [string, string | any]) => {
-      if (name === 'photo') {
-        formData.append(name, value?.[0].originFileObj);
-      } else {
-        formData.append(name, value);
-      }
-    });
-    createUser(formData).then((res) => {
-      close();
-      setIsFetch(true);
-    });
+  const handleSave = async (formData: any) => {
+    if (idEdit) {
+      updateUser({ body: formData, id: idEdit })
+        .then((res) => {
+          messageSuccess(t('user.edit.success'));
+        })
+        .catch((err) => {
+          messageError(t('user.edit.error'));
+        })
+        .finally(() => {
+          close();
+          setIsFetch(true);
+        });
+    } else {
+      createUser(formData)
+        .then((res) => {
+          messageSuccess(t('user.add.success'));
+        })
+        .catch((err) => {
+          messageSuccess(t('user.add.error'));
+        })
+        .finally(() => {
+          close();
+          setIsFetch(true);
+        });
+    }
   };
 
   return (
     <Space>
+      {contextHolder}
       {isUpsert && (
         <UpsertUser
           onClose={close}

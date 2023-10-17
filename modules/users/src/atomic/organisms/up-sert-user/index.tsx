@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { useCRUDContext } from '@org/core';
+import { useCRUDContext, useMessage } from '@org/core';
 import { i18next, useTranslation } from '@org/i18n';
 import {
   BoxCenter,
@@ -23,27 +23,33 @@ import {
 } from '@org/ui';
 
 import { StatusEnum, getImage, statusOption, statusOptionUpsert } from '@org/utils';
+import { isEmpty } from 'lodash';
 import React, { useEffect, useRef } from 'react';
 import * as yup from 'yup';
 type IPhoto = {
   id: string;
   path: string;
 };
+type Status = {
+  id: string;
+  name: string;
+};
 type IUser = {
   email: string;
-  password: string;
+  password?: string;
   firstName: string;
   lastName: string;
   photo?: any[];
   status?: number;
 };
 
-const schema = yup.object({
-  email: yup.string().required(i18next.t('required.email')),
-  password: yup.string().required(i18next.t('required.password')),
-  lastName: yup.string().required(i18next.t('required.lastName')),
-  firstName: yup.string().required(i18next.t('required.firstName')),
-});
+const schema = (idEdit: number) =>
+  yup.object({
+    email: yup.string().required(i18next.t('required.email')),
+    password: idEdit ? yup.string() : yup.string().required(i18next.t('required.password')),
+    lastName: yup.string().required(i18next.t('required.lastName')),
+    firstName: yup.string().required(i18next.t('required.firstName')),
+  });
 type TypeName = keyof IUser;
 const dataInit: IUser = {
   email: '',
@@ -59,33 +65,40 @@ export function UpsertUser({ onClose, onSave, open, idEdit, idLoading }: any) {
   const methods = useForm<IUser>({
     defaultValues: dataInit,
 
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema(idEdit)),
   });
-  const { dataUpsert } = useCRUDContext();
+  const { dataUpsert, setIsFetch, close } = useCRUDContext();
   useEffect(() => {
-    Object.entries(dataInit).forEach(([name, value]) => {
-      const recordName = name as TypeName;
+    if (!isEmpty(dataUpsert)) {
+      Object.entries(dataInit).forEach(([name, value]) => {
+        const recordName = name as TypeName;
 
-      const recordData = (dataUpsert as IUser)?.[name as TypeName];
-      if (name === 'photo') {
-        const photoArray = [
-          {
-            uid: (recordData as unknown as IPhoto)?.id || '',
-            status: 'done',
-            url: getImage((recordData as unknown as IPhoto)?.path),
-          },
-        ];
-        methods.setValue(recordName, photoArray);
-        return;
-      }
-      if (name == 'status') {
-        return;
-      }
+        const recordData = (dataUpsert as IUser)?.[name as TypeName];
+        if (name === 'photo') {
+          const photoArray = recordData
+            ? [
+                {
+                  uid: (recordData as unknown as IPhoto)?.id || '',
+                  status: 'done',
+                  url: getImage((recordData as unknown as IPhoto)?.path),
+                },
+              ]
+            : [];
+          methods.setValue(recordName, photoArray);
+          return;
+        }
+        if (name == 'status') {
+          methods.setValue(recordName, (recordData as unknown as Status)?.id);
+          return;
+        }
 
-      methods.setValue(recordName, recordData || '');
-    });
+        methods.setValue(recordName, recordData || '');
+      });
+    }
+
     // methods.setValue('email', formatRef);
   }, [JSON.stringify(dataUpsert)]);
+
   return (
     <Drawer
       title={idEdit ? t('user.edit.title') : t('user.add.title')}
@@ -107,8 +120,21 @@ export function UpsertUser({ onClose, onSave, open, idEdit, idLoading }: any) {
             $type={TYPE_BUTTON.Primary}
             $size={SIZE.ExtraSmall}
             onClick={methods.handleSubmit((value) => {
-              onSave(value);
-              console.log(value);
+              const formData = new FormData();
+              Object.entries(value).forEach(([name, record]: [string, string | any]) => {
+                if (!record) return;
+
+                if (name === 'photo') {
+                  if (record?.[0]?.originFileObj) {
+                    formData.append(name, record?.[0]?.originFileObj);
+                  }
+                  return;
+                }
+
+                formData.append(name, record);
+              });
+
+              onSave(formData);
             })}
           >
             {t('button.save')}
@@ -132,12 +158,12 @@ export function UpsertUser({ onClose, onSave, open, idEdit, idLoading }: any) {
           />
           <InputForm
             name='password'
-            label={t('user.password')}
+            label={idEdit ? t('user.new_password') : t('user.password')}
             $type={TypeInput.Password}
           />
           <SelectForm
             name='status'
-            label={'Status'}
+            label={t('user.status')}
             options={statusOptionUpsert}
             defaultValue={StatusEnum.active}
             className={css`

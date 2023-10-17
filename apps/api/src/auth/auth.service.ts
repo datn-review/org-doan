@@ -111,7 +111,7 @@ export class AuthService {
       if (socialEmail && !userByEmail) {
         user.email = socialEmail;
       }
-      await this.usersService.update(user.id, user);
+      // await this.usersService.update(user.id, user);
     } else if (userByEmail) {
       user = userByEmail;
     } else {
@@ -313,7 +313,7 @@ export class AuthService {
       }
     }
 
-    await this.usersService.update(user.id, userDto);
+    // await this.usersService.update(user.id, userDto);
 
     return this.usersService.findOne({
       id: user.id,

@@ -4,9 +4,23 @@ import { Space } from '../space';
 import { css } from '@emotion/css';
 import { Select } from '../select';
 import { extend } from 'dayjs';
+import { SortOrder } from 'antd/es/table/interface';
+import { findIndex } from 'lodash';
+import { IDirection, ISortParams } from './hooks/useSortTable';
 
+interface IValues {
+  pagination: { currentPage: number };
+  sort: ISortParams;
+}
+interface TableIntance {
+  values: IValues;
+  limit: number;
+  onChangePage: any;
+  onSort: any;
+}
 interface ITable {
-  tableInstance: any;
+  tableInstance: TableIntance;
+  [k: string]: any;
 }
 
 export function Table({
@@ -17,7 +31,7 @@ export function Table({
   data,
   loading = false,
   ...props
-}: ITable & any) {
+}: ITable) {
   const {
     values: {
       pagination: { currentPage },
@@ -38,32 +52,35 @@ export function Table({
     if (!columns) return;
 
     const newColumns = [...columns];
-    // if (sortDirection && sortBy) {
-    //   const columnIndex = findIndex(columns, { dataIndex: sortBy });
-    //   const convertOrder: { asc: SortOrder; desc: SortOrder } = {
-    //     asc: 'ascend',
-    //     desc: 'descend',
-    //   };
+    if (sortDirection && sortBy) {
+      const columnIndex = findIndex(columns, { dataIndex: sortBy });
+      const convertOrder: { asc: SortOrder; desc: SortOrder } = {
+        asc: 'ascend',
+        desc: 'descend',
+      };
 
-    //   newColumns.forEach((col, index) => {
-    //     if (columnIndex > -1 && columnIndex == index) {
-    //       col.sortOrder = convertOrder[sortDirection];
-    //       col.defaultSortOrder = convertOrder[sortDirection];
-    //     } else {
-    //       delete col['sortOrder'];
-    //       delete col['defaultSortOrder'];
-    //     }
-    //   });
-    // }
+      newColumns.forEach((col, index) => {
+        if (columnIndex > -1 && columnIndex == index) {
+          col.sortOrder = convertOrder[sortDirection];
+          col.defaultSortOrder = convertOrder[sortDirection];
+        } else {
+          delete col['sortOrder'];
+          delete col['defaultSortOrder'];
+        }
+      });
+    }
     return newColumns;
   }, [columns, sortBy, sortDirection]);
+  console.log('🚀 ~ file: index.tsx:74 ~ convertColumns ~ convertColumns:', convertColumns);
   return (
     <Spin spinning={loading}>
       <TableBase
         onChange={handleChange}
-        columns={columns}
+        columns={convertColumns}
         pagination={false}
         dataSource={data}
+        showSorterTooltip={false}
+        sortDirections={['ascend', 'descend', 'ascend']}
         {...props}
       />
       <Space

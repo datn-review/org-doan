@@ -7,7 +7,6 @@ import { Role } from '../../roles/entities/role.entity';
 import { IsEmail, IsOptional, MinLength, Validate } from 'class-validator';
 import { Status } from 'src/statuses/entities/status.entity';
 import { IsNotExist } from 'src/utils/validators/is-not-exists.validator';
-import { FileEntity } from 'src/files/entities/file.entity';
 import { IsExist } from 'src/utils/validators/is-exists.validator';
 import { lowerCaseTransformer } from 'src/utils/transformers/lower-case.transformer';
 
@@ -15,9 +14,9 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty({ example: 'test1@example.com' })
   @Transform(lowerCaseTransformer)
   @IsOptional()
-  @Validate(IsNotExist, ['User'], {
-    message: 'emailAlreadyExists',
-  })
+  // @Validate(IsNotExist, ['User'], {
+  //   message: 'emailAlreadyExists',
+  // })
   @IsEmail()
   email?: string | null;
 
@@ -38,21 +37,24 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   lastName?: string | null;
 
-  @ApiProperty({ type: () => FileEntity })
+  @ApiProperty({
+    type: 'string',
+    format: 'binary',
+  })
   @IsOptional()
   // @Validate(IsExist, ['FileEntity', 'id'], {
   //   message: 'imageNotExists',
   // })
   photo?: null | Express.Multer.File;
 
-  @ApiProperty({ type: Role })
+  @ApiProperty({ type: String })
   @IsOptional()
   @Validate(IsExist, ['Role', 'id'], {
     message: 'roleNotExists',
   })
-  role?: Role | null;
+  role?: Role | null | any;
 
-  @ApiProperty({ type: Status })
+  @ApiProperty({ type: String })
   @IsOptional()
   @Validate(IsExist, ['Status', 'id'], {
     message: 'statusNotExists',
