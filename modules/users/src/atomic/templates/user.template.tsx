@@ -11,7 +11,6 @@ export function UserTemplate({ children }: PropsWithChildren) {
         border-radius: 0.5rem;
       `}
     >
-      {' '}
       {children}
     </Space>
   );

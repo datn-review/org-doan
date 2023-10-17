@@ -1,53 +1,60 @@
-import { css } from '@emotion/css';
-import { useGetUserAdminQuery } from '@org/store/src/services/users.api';
-import dayjs from 'dayjs';
-import { UpsertUser } from '../../../organisms/up-sert-user';
-import {
-  BoxCenter,
-  Button,
-  IconDeleteAction,
-  IconEditAction,
-  Input,
-  Pagination,
-  Select,
-  SelectLimitTable,
-  Space,
-  Table,
-  Tag,
-  useTable,
-} from '@org/ui';
-import { COLOR, COLOR_RGB, SiteMap, StatusEnum, StatusEnumColor, statusOption } from '@org/utils';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useCRUDContext } from '@org/core';
 import { useTranslation } from '@org/i18n';
-import { setActiveGroup, useAppDispatch } from '@org/store';
-import { useWebAdminContext } from '../web-admin.context';
+import {
+  useCreateUserAdminMutation,
+  useLazyFindUserAdminQuery,
+  useUpdateUserAdminMutation,
+} from '@org/store';
+import { Space } from '@org/ui';
+import { useEffect } from 'react';
+import { UpsertUser } from '../../../organisms/up-sert-user';
 
 function Upsert() {
   const { t } = useTranslation();
 
-  const { setIdEdit, setIsUpsert, idEdit, isUpsert } = useWebAdminContext();
+  const { idEdit, isUpsert, setIsFetch, close, setDataUpsert } = useCRUDContext();
 
-  // const { data, isLoading } = useGetUserAdminQuery({
-  //   page: tableInstance.values.pagination.currentPage,
-  //   limit: tableInstance.limit,
-  //   status: filter.status,
-  //   searchName: filter.name,
-  // });
+  const [createUser, { isLoading: isLoadingCreate }] = useCreateUserAdminMutation();
+
+  const [getUser, { isLoading: isLoadingGet }] = useLazyFindUserAdminQuery();
+  const [updateUser, { isLoading: isLoadingUpdate }] = useUpdateUserAdminMutation();
+
+  useEffect(() => {
+    if (idEdit) {
+      getUser({ id: idEdit })
+        .unwrap()
+        .then((data) => {
+          console.log(data);
+          setDataUpsert(data);
+        });
+    }
+  }, [idEdit]);
+  const handleSave = (values: any) => {
+    const formData = new FormData();
+    Object.entries(values).forEach(([name, value]: [string, string | any]) => {
+      if (name === 'photo') {
+        formData.append(name, value?.[0].originFileObj);
+      } else {
+        formData.append(name, value);
+      }
+    });
+    createUser(formData).then((res) => {
+      close();
+      setIsFetch(true);
+    });
+  };
 
   return (
     <Space>
-      <UpsertUser
-        onClose={() => {
-          setIsUpsert(false);
-          setIdEdit(0);
-        }}
-        onSave={(values: any) => {
-          setIsUpsert(false);
-          setIdEdit(0);
-        }}
-        idEdit={idEdit}
-        open={isUpsert}
-      />
+      {isUpsert && (
+        <UpsertUser
+          onClose={close}
+          onSave={handleSave}
+          idEdit={idEdit}
+          open={isUpsert}
+          idLoading={isLoadingCreate || isLoadingGet || isLoadingUpdate}
+        />
+      )}
     </Space>
   );
 }

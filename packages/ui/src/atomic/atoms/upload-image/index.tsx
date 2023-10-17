@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Modal, Upload } from 'antd';
 import type { RcFile, UploadProps } from 'antd/es/upload';
-import type { UploadFile, UploadListType } from 'antd/es/upload/interface';
+import type { UploadFile, UploadListType, UploadFileStatus } from 'antd/es/upload/interface';
 import { Show } from '../show';
 import { withForm } from './../../../form/connectForm';
 
@@ -35,6 +35,13 @@ export const UploadImage: React.FC<IUploadImage> = ({
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   //   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const valueCovert = useMemo(() => {
+    const dataMap: UploadFile[] = value?.map((item) => ({
+      ...item,
+      status: 'done',
+    }));
+    return dataMap;
+  }, [value]);
 
   const handleCancel = () => setPreviewOpen(false);
 
@@ -50,7 +57,6 @@ export const UploadImage: React.FC<IUploadImage> = ({
 
   const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
     onChange && onChange(newFileList);
-    //   setFileList(newFileList);
   };
 
   const uploadButton = (
@@ -62,9 +68,10 @@ export const UploadImage: React.FC<IUploadImage> = ({
   return (
     <>
       <Upload
-        action='https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188'
+        action={''}
+        customRequest={() => {}}
         listType={listType}
-        fileList={value}
+        fileList={valueCovert}
         onPreview={handlePreview}
         onChange={handleChange}
         name={name}

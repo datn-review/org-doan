@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { useGetUserAdminQuery } from '@org/store/src/services/users.api';
+import { useGetUserAdminQuery, useLazyGetUserAdminQuery } from '@org/store/src/services/users.api';
 import dayjs from 'dayjs';
 import { UpsertUser } from '../../organisms/up-sert-user';
 import {
@@ -22,13 +22,14 @@ import { useTranslation } from '@org/i18n';
 import { setActiveGroup, useAppDispatch } from '@org/store';
 import { useWebAdminContext } from './web-admin.context';
 import Upsert from './up-sert/Upsert';
+import { useCRUDContext, useUpdateEffect } from '@org/core';
 
 function WebAdmin() {
   const tableInstance = useTable({});
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const { setIdEdit, setIsUpsert } = useWebAdminContext();
+  const { setIdEdit, setIsUpsert, isFetch, setIsFetch } = useCRUDContext();
 
   const [filter, setFilter] = useState({
     status: StatusEnum.all,
@@ -37,13 +38,30 @@ function WebAdmin() {
 
   useEffect(() => {
     dispatch(setActiveGroup({ current: SiteMap.Users.menu }));
-  });
-  const { data, isLoading } = useGetUserAdminQuery({
+  }, []);
+
+  const [getUser, { data, isLoading }] = useLazyGetUserAdminQuery();
+  const query = {
     page: tableInstance.values.pagination.currentPage,
     limit: tableInstance.limit,
     status: filter.status,
     searchName: filter.name,
-  });
+  };
+  useEffect(() => {
+    getUser(query);
+  }, [JSON.stringify(query)]);
+
+  useUpdateEffect(() => {
+    if (isFetch) {
+      getUser({
+        ...query,
+        page: 1,
+      });
+      tableInstance.reset();
+      setIsFetch(false);
+    }
+  }, [isFetch]);
+
   const columns = [
     {
       key: 'firstName',
