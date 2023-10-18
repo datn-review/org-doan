@@ -29,21 +29,21 @@ export const itemsLanguge: MenuProps['items'] = [
 
 export const menuCategory: MenuItem[] = [
   {
-    name: 'Home',
+    name: <Translation>{(t) => t('home')}</Translation>,
     path: SiteMap.Home.path,
     id: SiteMap.Home.menu,
     icon: <IconHome />,
     subMenu: [],
   },
   {
-    name: 'Dashboards',
+    name: <Translation>{(t) => t('dashboards')}</Translation>,
     path: SiteMap.Dashboard.path,
     id: SiteMap.Dashboard.menu,
     icon: <IconDashBoard />,
     subMenu: [],
   },
   {
-    name: 'Users',
+    name: <Translation>{(t) => t('users')}</Translation>,
     path: '',
     id: SiteMap.Users.menu,
     icon: <IconUser />,
@@ -52,42 +52,76 @@ export const menuCategory: MenuItem[] = [
         label: <Translation>{(t) => t('manage.admin')}</Translation>,
         path: SiteMap.Users.Admin.path,
         id: SiteMap.Users.Admin.menu,
+        key: SiteMap.Users.Admin.menu,
         icon: <></>,
       },
       {
         label: <Translation>{(t) => t('manage.staff')}</Translation>,
         path: SiteMap.Users.Staff.path,
         id: SiteMap.Users.Staff.menu,
+        key: SiteMap.Users.Staff.menu,
         icon: <></>,
       },
       {
         label: <Translation>{(t) => t('manage.center.admin')}</Translation>,
         path: SiteMap.Users.CenterAdmin.path,
         id: SiteMap.Users.CenterAdmin.menu,
+        key: SiteMap.Users.CenterAdmin.menu,
+
         icon: <></>,
       },
       {
         label: <Translation>{(t) => t('manage.center.tutor')}</Translation>,
         path: SiteMap.Users.CenterTutor.path,
         id: SiteMap.Users.CenterTutor.menu,
+        key: SiteMap.Users.CenterTutor.menu,
+
         icon: <></>,
       },
       {
         label: <Translation>{(t) => t('manage.personal.tutor')}</Translation>,
         path: SiteMap.Users.PesonalTutor.path,
         id: SiteMap.Users.PesonalTutor.menu,
+        key: SiteMap.Users.PesonalTutor.menu,
+
         icon: <></>,
       },
       {
         label: <Translation>{(t) => t('manage.parent')}</Translation>,
         path: SiteMap.Users.Parent.path,
         id: SiteMap.Users.Parent.menu,
+        key: SiteMap.Users.Parent.menu,
+
         icon: <></>,
       },
       {
         label: <Translation>{(t) => t('manage.student')}</Translation>,
         path: SiteMap.Users.Student.path,
         id: SiteMap.Users.Student.menu,
+        key: SiteMap.Users.Student.menu,
+
+        icon: <></>,
+      },
+    ],
+  },
+  {
+    name: <Translation>{(t) => t('settings')}</Translation>,
+    path: '',
+    id: SiteMap.Users.menu,
+    icon: <IconUser />,
+    subMenu: [
+      {
+        label: <Translation>{(t) => t('settings.grade_level')}</Translation>,
+        path: SiteMap.Settings.GradeLevel.path,
+        id: SiteMap.Settings.GradeLevel.menu,
+        key: SiteMap.Settings.GradeLevel.menu,
+        icon: <></>,
+      },
+      {
+        label: <Translation>{(t) => t('settings.subject')}</Translation>,
+        path: SiteMap.Settings.Subject.path,
+        id: SiteMap.Settings.Subject.menu,
+        key: SiteMap.Settings.Subject.menu,
         icon: <></>,
       },
     ],

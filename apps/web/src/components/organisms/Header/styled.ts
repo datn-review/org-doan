@@ -1,5 +1,5 @@
 import styled from '@emotion/styled/macro';
-import { COLOR, ZIndex } from '@org/utils';
+import { COLOR, COLOR_RGB, ZIndex } from '@org/utils';
 
 export const Header = styled.div`
   position: relative;
@@ -11,4 +11,16 @@ export const HeaderUser = styled.div`
   height: 6.5rem;
 `;
 
-export const HeaderCategory = styled.div``;
+export const HeaderCategory = styled.div`
+  .ant-dropdown-menu {
+    .ant-dropdown-menu-item-selected {
+      background-color: rgba(${COLOR_RGB.Primary}, 0.1) !important;
+      span {
+        color: ${COLOR.Primary} !important;
+      }
+    }
+    .ant-dropdown-menu-title-content {
+      font-weight: 500;
+    }
+  }
+`;

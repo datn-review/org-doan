@@ -71,7 +71,7 @@ export class User extends EntityHelper {
   @ManyToOne(() => FileEntity, {
     eager: true,
   })
-  photo?: FileEntity | null;
+  photo?: FileEntity | null | string;
 
   @ManyToOne(() => Role, {
     eager: true,

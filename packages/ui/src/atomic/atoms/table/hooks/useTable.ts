@@ -16,6 +16,7 @@ export function useTable({ initialSortValue, initialLimit = 10 }: TableHookAPI) 
 
   const onChangeLimit = (value: number) => {
     setLimit(value);
+    onChangePage(1);
   };
 
   const pagination = { currentPage };

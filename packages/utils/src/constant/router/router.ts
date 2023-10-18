@@ -75,4 +75,17 @@ export const SiteMap = {
       ],
     },
   },
+  Settings: {
+    menu: 'settings',
+    GradeLevel: {
+      path: 'settings/grade-level',
+      menu: 'settings/grade-level',
+      roles: [RolesEnum.WEB_ADMIN],
+    },
+    Subject: {
+      path: 'settings/subject',
+      menu: 'settings/subject',
+      roles: [RolesEnum.WEB_ADMIN],
+    },
+  },
 };

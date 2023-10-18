@@ -1,0 +1,15 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { IsExist } from 'src/utils/validators/is-exists.validator';
+import { IsNotExist } from 'src/utils/validators/is-not-exists.validator';
+import { <%= nameUpCap  %> } from './entities/<%= name  %>.entity';
+import { <%= nameUpCap  %>Controller } from './<%= name  %>.controller';
+import { <%= nameUpCap  %>Service } from './<%= name  %>.service';
+
+@Module({
+  imports: [TypeOrmModule.forFeature([<%= nameUpCap  %>])],
+  controllers: [<%= nameUpCap  %>Controller],
+  providers: [IsExist, IsNotExist, <%= nameUpCap  %>Service],
+  exports: [<%= nameUpCap  %>Service],
+})
+export class <%= nameUpCap  %>Module {}

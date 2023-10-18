@@ -16,14 +16,27 @@
     "fullname": "Full Name",
     "action": "Action",
     "add" :{
-      "title": "Add New User"
+      "title": "Add New User",
+      "success": "User Added Successfully!",
+      "error": "User Added Error!"
     },
-    "edit" :{
-      "title": "Edit User"
+    "edit" : {
+      "title": "Edit User",
+      "success": "User Updated Successfully!",
+      "error": "User Updated Error!"
+
     },
     "delete" :{
-      "title": "Detete User"
-    }
+      "title": "Detete User",
+      "success": "User Deleted Successfully!",
+      "error": "User Deleted Error!"
+
+    },
+    "firstName" : "First Name",
+    "lastName" : "Last Name",
+    "new_password":"New Password",
+    "photo":"Avatar"
+
   
   },
   "button" : {
@@ -31,7 +44,21 @@
     "save": "Save",
     "exit": "Exit",
     "oke": "Oke"
-  }
+  },
+  "search_name":"Search Name",
+  "search_filter":"Search Filter",
 
-  
+  "manage":{
+    "admin": "Manage Admin",
+    "staff": "Manage staff",
+    "center.admin": "Center Admin",
+    "center.tutor": "Center Tutor",
+    "personal.tutor": "Personal Tutor",
+    "parent": "Manage Parent",
+    "student": "Manage Student"
+  }
+  ,
+  "home":"Home",
+  "users":"Users",
+  "dashboards":"Dashboards"
 }

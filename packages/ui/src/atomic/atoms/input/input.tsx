@@ -20,7 +20,6 @@ export type IInput = HTMLAttributes<HTMLInputElement> & {
 
 export function Input({ onChange, value, labelInput, className, $type, ...props }: IInput) {
   const [hidePassword, setHidePassword] = useState(true);
-  console.log(TypeInput.Password === $type && hidePassword ? TypeInput.Password : TypeInput.Text);
   return (
     <>
       {labelInput && (
@@ -50,6 +49,10 @@ export function Input({ onChange, value, labelInput, className, $type, ...props 
               border-radius: 0.5rem;
               outline: none;
               font-size: 1.5rem;
+              padding-right: ${TypeInput.Password === $type ? '3rem' : 'auto'};
+              &::placeholder {
+                font-size: 1.4rem;
+              }
             `,
             className,
           )}

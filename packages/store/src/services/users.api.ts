@@ -16,6 +16,12 @@ export const UsersAPI = baseAuthSplitApi.injectEndpoints({
         method: 'POST',
       }),
     }),
+    findUserAdmin: builder.query({
+      query: ({ id }) => ({
+        url: `/users/admin/${id}`,
+        method: 'GET',
+      }),
+    }),
     updateUserAdmin: builder.mutation({
       query: ({ body, id }) => ({
         url: `/users/admin/${id}`,
@@ -24,9 +30,8 @@ export const UsersAPI = baseAuthSplitApi.injectEndpoints({
       }),
     }),
     deleteUserAdmin: builder.mutation({
-      query: ({ body, id }) => ({
+      query: (id) => ({
         url: `/users/admin/${id}`,
-        body,
         method: 'DELETE',
       }),
     }),
@@ -35,7 +40,9 @@ export const UsersAPI = baseAuthSplitApi.injectEndpoints({
 
 export const {
   useGetUserAdminQuery,
+  useLazyGetUserAdminQuery,
   useUpdateUserAdminMutation,
   useCreateUserAdminMutation,
   useDeleteUserAdminMutation,
+  useLazyFindUserAdminQuery,
 } = UsersAPI;

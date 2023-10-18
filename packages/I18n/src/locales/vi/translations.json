@@ -18,19 +18,47 @@
     "fullname": "Họ Và Tên",
     "action": "Thao Tác",
     "add" :{
-      "title": "Thêm Người Dùng"
+      "title": "Thêm Người Dùng",
+      "success": "Thêm Người Dùng Thành Công!",
+      "error": "Thêm Người Dùng Lỗi!"
+
     },
     "edit" :{
-      "title": "Chỉnh Sửa Người Dùng"
+      "title": "Chỉnh Sửa Người Dùng",
+         "success": "Cập Nhật Người Dùng Thành Công!",
+      "error": "Cập Nhật Người Dùng Lỗi!"
     },
     "delete" :{
-      "title": "Xóa Người Dùng"
-    }
+      "title": "Xóa Người Dùng",
+      "success": "Xóa Người Dùng Thành Công!",
+      "error": "Xóa Người Dùng Lỗi!"
+    },
+    "firstName" : "Tên",
+    "lastName" : "Họ",
+    "new_password":"Mật Khẩu Mới",
+    "photo":"Ảnh đại diện",
+    "email":"Địa Chỉ Email"
   },
   "button" : {
     "cancel": "Thoát",
     "save": "Lưu",
     "exit": "Thoát",
     "oke": "Oke"
-  }
+  },
+  "search_name":" Họ và Tên",
+  "search_filter":"Tìm Kiếm Lọc",
+
+  "manage":{
+    "admin": "Quản Trị Viên",
+    "staff": "Nhân Viên",
+    "center.admin": "QTV Trung Tâm",
+    "center.tutor": "Gia Sư Trung Tâm",
+    "personal.tutor": "Gia Sư Cá Nhân",
+    "parent": "Phụ Huynh",
+    "student": "Học Sinh"
+  },
+
+  "home":"Trang Chủ",
+  "users":"Người Dùng",
+  "dashboards":"Tổng Quan"
 }
