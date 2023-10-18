@@ -42,7 +42,6 @@ export class UsersService {
     sortBy,
     sortDirection,
   }: UserICustomer): Promise<{ data: User[]; totals: number }> {
-    console.log('🚀 ~ file: users.service.ts:41 ~ UsersService ~ searchName:', searchName);
     const data: User[] = await this.usersRepository.find({
       skip: (page - 1) * limit,
       take: limit,

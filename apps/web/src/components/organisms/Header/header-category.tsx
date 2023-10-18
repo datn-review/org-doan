@@ -9,7 +9,7 @@ import { css } from '@emotion/css/macro';
 import { COLOR, COLOR_RGB } from '@org/utils';
 function HeaderCategory() {
   const { menu, subMenu: subMenuActive } = useAppSelector((state) => state.activeMenu);
-  console.log('🚀 ~ file: header-category.tsx:10 ~ HeaderCategory ~ subMenuActive:', subMenuActive);
+
   const navigate = useNavigate();
   const renderButton = ({ id, isSub, icon, name }: any) => {
     return (
