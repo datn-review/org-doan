@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
   UseGuards,
@@ -16,27 +16,28 @@ import {
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UsersService } from '../users.service';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/roles/roles.decorator';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/roles/roles.guard';
-import { User } from './entities/user.entity';
-import { InfinityPaginationResultType } from '../utils/types/infinity-pagination-result.type';
-import { NullableType } from '../utils/types/nullable.type';
+import { User } from '../entities/user.entity';
+import { InfinityPaginationResultType } from '../../utils/types/infinity-pagination-result.type';
+import { NullableType } from '../../utils/types/nullable.type';
 import { FileInterceptor } from '@nestjs/platform-express';
 @ApiBearerAuth()
-@ApiTags('Users')
+@ApiTags('User Tutor')
 @Roles(RoleEnum.WEB_ADMIN)
+@Roles(RoleEnum.WEB_STAFF)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
-  path: 'users/admin',
+  path: 'users/tutor',
   version: '1',
 })
-export class UsersAdminController {
+export class UsersTutorController {
   constructor(private readonly usersService: UsersService) {}
 
   @SerializeOptions({
@@ -50,7 +51,6 @@ export class UsersAdminController {
     @UploadedFile() photo: Express.Multer.File,
     @Body() createProfileDto: CreateUserDto,
   ): Promise<User> {
-    console.log('🚀 ~ file: users.admin.controller.ts:53 ~ UsersAdminController ~ photo:', photo);
     return this.usersService.create({
       ...createProfileDto,
       photo: photo,
@@ -70,6 +70,8 @@ export class UsersAdminController {
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
     @Query('status', new DefaultValuePipe(10), ParseIntPipe) status: number,
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
+    @Query('sortBy', new DefaultValuePipe(10)) sortBy: string,
+    @Query('sortDirection', new DefaultValuePipe(10)) sortDirection: string,
   ): Promise<InfinityPaginationResultType<User>> {
     if (limit > 50) {
       limit = 50;
@@ -78,8 +80,10 @@ export class UsersAdminController {
     return await this.usersService.findManyWithPagination({
       page,
       limit,
+      sortBy,
+      sortDirection,
       status,
-      role: RoleEnum.WEB_ADMIN,
+      role: RoleEnum.PESONAL_TUTOR,
       searchName,
     });
   }
@@ -96,10 +100,16 @@ export class UsersAdminController {
   @SerializeOptions({
     groups: ['admin'],
   })
-  @Patch(':id')
+  @Put(':id')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('photo'))
   @HttpCode(HttpStatus.OK)
-  update(@Param('id') id: number, @Body() updateProfileDto: UpdateUserDto): Promise<User> {
-    return this.usersService.update(id, updateProfileDto);
+  update(
+    @Param('id') id: number,
+    @Body() updateProfileDto: UpdateUserDto,
+    @UploadedFile() photo: Express.Multer.File,
+  ): Promise<User> {
+    return this.usersService.update(id, { ...updateProfileDto, photo: photo });
   }
 
   @Delete(':id')

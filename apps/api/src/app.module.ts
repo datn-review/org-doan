@@ -32,6 +32,8 @@ import { HomeModule } from './home/home.module';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
 
+import { GradeLevelModule } from './modules/grade-level/grade-level.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -88,6 +90,7 @@ import { AllConfigType } from './config/config.type';
     MailModule,
     HomeModule,
     FilesModuleDrive,
+    GradeLevelModule,
   ],
 })
 export class AppModule {}

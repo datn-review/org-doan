@@ -2,16 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
-import { DeepPartial, Like, Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { NullableType } from '../utils/types/nullable.type';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { FilesService } from './../files-drive/files.service';
+import { UpdateUserDto } from './dto/update-user.dto';
 interface IUser {
   role: RoleEnum;
   status?: number;
   searchName?: string;
+  sortDirection?: string;
+  sortBy?: string;
 }
 
 type UserICustomer = IUser & IPaginationOptions;
@@ -36,6 +39,8 @@ export class UsersService {
     searchName,
     status,
     role,
+    sortBy,
+    sortDirection,
   }: UserICustomer): Promise<{ data: User[]; totals: number }> {
     const data: User[] = await this.usersRepository.find({
       skip: (page - 1) * limit,
@@ -44,10 +49,15 @@ export class UsersService {
         role: true,
         status: true,
       },
+      ...(sortBy && {
+        order: {
+          [sortBy]: sortDirection?.toUpperCase(),
+        },
+      }),
 
       where: {
-        firstName: Like(`%${searchName}%`),
         lastName: Like(`%${searchName}%`),
+        // lastName: Like(`%${searchName}%`),
 
         role: {
           id: role,
@@ -90,7 +100,17 @@ export class UsersService {
     });
   }
 
-  update(id: number, payload: DeepPartial<User>): Promise<User> {
+  async update(id: number, payload: UpdateUserDto): Promise<User> {
+    if (payload?.photo) {
+      const photo = await this.filesService.uploadFile(payload?.photo);
+      return this.usersRepository.save(
+        this.usersRepository.create({
+          id,
+          ...payload,
+          photo: photo.id,
+        }),
+      );
+    }
     return this.usersRepository.save(
       this.usersRepository.create({
         id,

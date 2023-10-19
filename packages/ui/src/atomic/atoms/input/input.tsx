@@ -49,6 +49,10 @@ export function Input({ onChange, value, labelInput, className, $type, ...props 
               border-radius: 0.5rem;
               outline: none;
               font-size: 1.5rem;
+              padding-right: ${TypeInput.Password === $type ? '3rem' : 'auto'};
+              &::placeholder {
+                font-size: 1.4rem;
+              }
             `,
             className,
           )}

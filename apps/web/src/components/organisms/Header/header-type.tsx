@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 export type MenuItem = {
-  name: string;
+  name: string | ReactNode;
   path: string;
   icon: ReactNode;
   id: string;
