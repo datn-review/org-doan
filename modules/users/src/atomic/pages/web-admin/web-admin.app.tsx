@@ -8,6 +8,7 @@ import {
 } from '@org/store/src/services/users.api';
 import {
   Button,
+  H2,
   IconDeleteAction,
   IconEditAction,
   Input,
@@ -163,7 +164,8 @@ function WebAdmin() {
           margin-bottom: 3rem;
         `}
       >
-        <Space
+        <H2>{t('manage.admin')}</H2>
+        {/* <Space
           className={css`
             font-size: 1.8rem;
             margin: 0 0 1.5rem;
@@ -171,7 +173,7 @@ function WebAdmin() {
           `}
         >
           {t('search_filter')}
-        </Space>
+        </Space> */}
         <Select
           label={t('user.status')}
           options={statusOption}

@@ -4,6 +4,7 @@ import { HomePage } from '@org/home';
 import { ConfirmEmailPage, LoginPage, RegisterPage } from '@org/auth';
 import { SiteMap } from '@org/utils';
 import { WebAdminPage } from '@org/users';
+import { GradeLevelPage } from '@org/settings';
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ export const router = createBrowserRouter([
       {
         path: SiteMap.Users.Admin.path,
         element: <WebAdminPage />,
+      },
+      {
+        path: SiteMap.Settings.GradeLevel.path,
+        element: <GradeLevelPage />,
       },
     ],
   },

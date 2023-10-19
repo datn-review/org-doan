@@ -105,13 +105,13 @@ export const menuCategory: MenuItem[] = [
     ],
   },
   {
-    name: <Translation>{(t) => t('settings')}</Translation>,
+    name: <Translation>{(t) => t('settings.name')}</Translation>,
     path: '',
-    id: SiteMap.Users.menu,
+    id: SiteMap.Settings.menu,
     icon: <IconUser />,
     subMenu: [
       {
-        label: <Translation>{(t) => t('settings.grade_level')}</Translation>,
+        label: <Translation>{(t) => t('settings.grade.level')}</Translation>,
         path: SiteMap.Settings.GradeLevel.path,
         id: SiteMap.Settings.GradeLevel.menu,
         key: SiteMap.Settings.GradeLevel.menu,

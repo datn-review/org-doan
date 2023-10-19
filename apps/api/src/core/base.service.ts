@@ -33,8 +33,9 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
     const queryBuilder: SelectQueryBuilder<T> = this.repository.createQueryBuilder('entity');
 
     let direction: 'ASC' | 'DESC' | undefined;
-    if (sortDirection && (sortDirection === 'ASC' || sortDirection === 'DESC')) {
-      direction = sortDirection;
+    const sortDirectionUp = sortDirection.toUpperCase();
+    if (sortDirectionUp && (sortDirectionUp === 'ASC' || sortDirectionUp === 'DESC')) {
+      direction = sortDirectionUp;
     }
     const query = queryBuilder.where(`entity.${fieldSearch} LIKE :searchName`, {
       searchName: `%${searchName}%`,
@@ -43,7 +44,7 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
       query.andWhere(`entity.status = :status`, { status });
     }
     const data = await query
-      .orderBy(sortBy, direction)
+      .orderBy(`entity.${sortBy}`, direction)
       .skip((page - 1) * limit)
       .take(limit)
       .getMany();
@@ -55,15 +56,20 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
   countAll({
     fieldSearch,
     searchName,
+    status,
   }: {
     fieldSearch: string;
     [k: string]: any;
   }): Promise<number> {
     const queryBuilder: SelectQueryBuilder<T> = this.repository.createQueryBuilder('entity');
 
-    return queryBuilder
-      .where(`entity.${fieldSearch} LIKE :searchName`, { searchName: `%${searchName}%` })
-      .getCount();
+    const query = queryBuilder.where(`entity.${fieldSearch} LIKE :searchName`, {
+      searchName: `%${searchName}%`,
+    });
+    if (status) {
+      query.andWhere(`entity.status = :status`, { status });
+    }
+    return query.getCount();
   }
 
   findOne(fields: EntityCondition<T>): Promise<NullableType<T>> {

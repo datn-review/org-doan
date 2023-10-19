@@ -1,6 +1,6 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { activeMenu, auth, user } from './slices';
-import { AuthAPI, UsersAPI } from './services';
+import { AuthAPI, UsersAPI, GradeLevelAPI } from './services';
 import { baseAuthSplitApi, baseNoAuthSplitApi } from './services/base-auth-query';
 
 const rootReducer = combineReducers({
@@ -12,6 +12,7 @@ const rootReducer = combineReducers({
 
   [AuthAPI.reducerPath]: AuthAPI.reducer,
   [UsersAPI.reducerPath]: UsersAPI.reducer,
+  [GradeLevelAPI.reducerPath]: GradeLevelAPI.reducer,
 });
 
 export const store = configureStore({

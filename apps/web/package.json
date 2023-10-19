@@ -28,7 +28,7 @@
     "@org/auth": "workspace:^",
     "@org/users": "workspace:^",
     "@org/ui": "workspace:^",
-
+    "@org/settings": "workspace:^",
 
     "framer-motion": "^10.12.16",
     "lodash": "^4.17.21",

@@ -3,11 +3,12 @@ import { useCRUDContext, useMessage, useUpdateEffect } from '@org/core';
 import { useTranslation } from '@org/i18n';
 import { clearActiveMenu, setActiveGroup, setActiveSubGroup, useAppDispatch } from '@org/store';
 import {
-  useDeleteUserAdminMutation,
-  useLazyGetUserAdminQuery,
-} from '@org/store/src/services/users.api';
+  useDeleteGradeLevelMutation,
+  useLazyGetGradeLevelQuery,
+} from '@org/store/src/services/grade-level.api';
 import {
   Button,
+  H2,
   IconDeleteAction,
   IconEditAction,
   Input,
@@ -18,15 +19,23 @@ import {
   Tag,
   useTable,
 } from '@org/ui';
-import { SiteMap, StatusEnum, StatusEnumColor, statusOption } from '@org/utils';
+import {
+  COLOR,
+  SiteMap,
+  StatusEnum,
+  StatusEnumColor,
+  StatusShowHide,
+  StatusShowHideColor,
+  statusOption,
+} from '@org/utils';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import Upsert from './up-sert/Upsert';
+import { Upsert } from './up-sert/Upsert';
 
-function WebAdmin() {
+function GradeLevel() {
   const tableInstance = useTable({
     initialSortValue: {
-      sortBy: 'lastName',
+      sortBy: 'name',
       sortDirection: 'asc',
     },
   });
@@ -34,7 +43,7 @@ function WebAdmin() {
   const { t } = useTranslation();
   const { messageSuccess, contextHolder } = useMessage();
 
-  const { setIdEdit, setIsUpsert, isFetch, setIsFetch } = useCRUDContext();
+  const { setIdEdit, setIsUpsert, isFetch, setIsFetch, isUpsert } = useCRUDContext();
 
   const [filter, setFilter] = useState({
     status: StatusEnum.all,
@@ -42,15 +51,15 @@ function WebAdmin() {
   });
 
   useEffect(() => {
-    dispatch(setActiveGroup({ current: SiteMap.Users.menu }));
-    dispatch(setActiveSubGroup({ current: SiteMap.Users.Admin.menu }));
+    dispatch(setActiveGroup({ current: SiteMap.Settings.menu }));
+    dispatch(setActiveSubGroup({ current: SiteMap.Settings.GradeLevel.menu }));
     return () => {
       dispatch(clearActiveMenu());
     };
   }, []);
 
-  const [getUser, { data, isLoading }] = useLazyGetUserAdminQuery();
-  const [deleteUser] = useDeleteUserAdminMutation();
+  const [getUser, { data, isLoading }] = useLazyGetGradeLevelQuery();
+  const [deleteUser] = useDeleteGradeLevelMutation();
 
   const query = {
     page: tableInstance.values.pagination.currentPage,
@@ -60,7 +69,6 @@ function WebAdmin() {
     sortBy: tableInstance.values.sort.sortBy,
     sortDirection: tableInstance.values.sort.sortDirection,
   };
-  console.log(tableInstance.values.sort);
 
   useEffect(() => {
     getUser(query);
@@ -79,26 +87,15 @@ function WebAdmin() {
 
   const columns = [
     {
-      key: 'lastName',
-      title: t('user.fullname'),
-      dataIndex: 'lastName',
+      key: 'name ',
+      title: t('name'),
+      dataIndex: 'name',
       sorter: true,
-      render: (_: string, record: any) => (
-        <>
-          {record?.lastName} {record?.firstName}
-        </>
-      ),
     },
 
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-      sorter: true,
-    },
-    {
       title: t('user.createdAt'),
-      dataIndex: 'createdAt',
+      dataIndex: 'updatedAt',
       sorter: true,
 
       render: (_createdAt: string) => <>{dayjs(_createdAt).format('DD/MM/YYYY')}</>,
@@ -107,11 +104,11 @@ function WebAdmin() {
       title: t('user.status'),
       sorter: true,
 
-      dataIndex: '',
+      dataIndex: 'status',
       key: 'status',
       render: (_: any, record: any) => (
-        <Tag color={StatusEnumColor[record?.status?.name as keyof typeof StatusEnumColor]}>
-          {t(record?.status?.name)}
+        <Tag color={StatusShowHideColor[record?.status as keyof typeof StatusShowHideColor]}>
+          {t(StatusShowHide[record?.status as keyof typeof StatusShowHide])}
         </Tag>
       ),
     },
@@ -163,15 +160,8 @@ function WebAdmin() {
           margin-bottom: 3rem;
         `}
       >
-        <Space
-          className={css`
-            font-size: 1.8rem;
-            margin: 0 0 1.5rem;
-            font-weight: 500;
-          `}
-        >
-          {t('search_filter')}
-        </Space>
+        <H2>{t('settings.grade.level')}</H2>
+
         <Select
           label={t('user.status')}
           options={statusOption}
@@ -213,14 +203,14 @@ function WebAdmin() {
               name='seach_name'
               onChange={(value) => setFilter((prev) => ({ ...prev, name: String(value) }))}
               value={filter.name}
-              placeholder={t('search_name')}
+              placeholder={t('search.name')}
               className={css`
                 margin-bottom: 0;
               `}
             />
           </Space>
 
-          <Button onClick={() => setIsUpsert(true)}>{t('user.add.title')}</Button>
+          <Button onClick={() => setIsUpsert(true)}>{t('add')}</Button>
         </Space>
       </Space>
       <Table
@@ -230,9 +220,9 @@ function WebAdmin() {
         data={data?.data}
         loading={isLoading}
       />
-      <Upsert />
+      {isUpsert && <Upsert />}
     </Space>
   );
 }
 
-export default WebAdmin;
+export default GradeLevel;

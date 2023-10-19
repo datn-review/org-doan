@@ -1,30 +1,26 @@
 import { css } from '@emotion/css';
-import { useCRUDContext, useMessage } from '@org/core';
+import { useCRUDContext } from '@org/core';
 import { i18next, useTranslation } from '@org/i18n';
 import {
   BoxCenter,
   Button,
-  CheckBoxForm,
   Drawer,
   FormProvider,
   InputForm,
   SIZE,
-  Select,
   SelectForm,
-  Space,
+  Spin,
   TYPE_BUTTON,
   TypeInput,
+  UnloadImageForm,
   VARIANT,
   useForm,
   yupResolver,
-  UploadImage,
-  UnloadImageForm,
-  Spin,
 } from '@org/ui';
 
-import { StatusEnum, getImage, statusOption, statusOptionUpsert } from '@org/utils';
+import { StatusEnum, getImage, statusOptionUpsert } from '@org/utils';
 import { isEmpty } from 'lodash';
-import React, { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import * as yup from 'yup';
 type IPhoto = {
   id: string;
