@@ -26,6 +26,7 @@ import { GradeLevel } from './entities/grade-level.entity';
 import { CreateDto } from './dto/create.dto';
 import { UpdateDto } from './dto/update.dto';
 import { GradeLevelService } from './grade-level.service';
+import { StatusEnum } from 'src/statuses/statuses.enum';
 @ApiBearerAuth()
 @ApiTags('Grade Level')
 @Roles(RoleEnum.WEB_ADMIN)
@@ -70,6 +71,12 @@ export class GradeLevelController {
       searchName,
       fieldSearch: 'name',
     });
+  }
+
+  @Get('/active')
+  @HttpCode(HttpStatus.OK)
+  getActive(): Promise<GradeLevel[]> {
+    return this.gradeLevelService.findManyActive(StatusEnum['active']);
   }
 
   @Get('/:id')

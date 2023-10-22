@@ -17,6 +17,15 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
   async create(createDto: any): Promise<T[]> {
     return this.repository.save(this.repository.create(createDto));
   }
+  async findManyActive(status = 1): Promise<T[]> {
+    const queryBuilder: SelectQueryBuilder<T> = this.repository.createQueryBuilder('entity');
+
+    const query = queryBuilder;
+    if (status) {
+      query.where(`entity.status = :status`, { status });
+    }
+    return query.getMany();
+  }
 
   async findManyWithPagination({
     limit,
@@ -37,9 +46,22 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
     if (sortDirectionUp && (sortDirectionUp === 'ASC' || sortDirectionUp === 'DESC')) {
       direction = sortDirectionUp;
     }
-    const query = queryBuilder.where(`entity.${fieldSearch} LIKE :searchName`, {
-      searchName: `%${searchName}%`,
-    });
+    const query = queryBuilder;
+
+    if (typeof fieldSearch === 'string') {
+      query.where(`LOWER(entity.${fieldSearch}) LIKE :searchName`, {
+        searchName: `%${searchName.toLowerCase()}%`,
+      });
+    }
+    if (fieldSearch.length == 2) {
+      query.where(
+        `LOWER(entity.${fieldSearch[0]}) LIKE :searchName OR LOWER(entity.${fieldSearch[1]}) LIKE :searchName `,
+        {
+          searchName: `%${searchName.toLowerCase()}%`,
+        },
+      );
+    }
+
     if (status) {
       query.andWhere(`entity.status = :status`, { status });
     }
@@ -62,10 +84,21 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
     [k: string]: any;
   }): Promise<number> {
     const queryBuilder: SelectQueryBuilder<T> = this.repository.createQueryBuilder('entity');
+    const query = queryBuilder;
 
-    const query = queryBuilder.where(`entity.${fieldSearch} LIKE :searchName`, {
-      searchName: `%${searchName}%`,
-    });
+    if (typeof fieldSearch === 'string') {
+      query.where(`LOWER(entity.${fieldSearch}) LIKE :searchName`, {
+        searchName: `%${searchName.toLowerCase()}%`,
+      });
+    }
+    if (fieldSearch.length == 2) {
+      query.where(
+        `LOWER(entity.${fieldSearch[0]}) LIKE :searchName OR LOWER(entity.${fieldSearch[1]}) LIKE :searchName `,
+        {
+          searchName: `%${searchName.toLowerCase()}%`,
+        },
+      );
+    }
     if (status) {
       query.andWhere(`entity.status = :status`, { status });
     }

@@ -21,30 +21,29 @@ import { RoleEnum } from 'src/roles/roles.enum';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { InfinityPaginationResultType } from '../../utils/types/infinity-pagination-result.type';
 import { NullableType } from '../../utils/types/nullable.type';
-import { <%= nameUpCap  %> } from './entities/<%= name  %>.entity';
+import { Subject } from './entities/subject.entity';
 
-import { Create<%= nameUpCap  %>Dto } from './dto/create.dto';
-import { Update<%= nameUpCap  %>Dto } from './dto/update.dto';
-import { <%= nameUpCap  %>Service } from './<%= name  %>.service';
+import { CreateSubjectDto } from './dto/create.dto';
+import { UpdateSubjectDto } from './dto/update.dto';
+import { SubjectService } from './subject.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 
-
 @ApiBearerAuth()
-@ApiTags('<%= nameUpCap  %>')
+@ApiTags('Subject')
 @Roles(RoleEnum.WEB_ADMIN)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
-  path: '<%= name  %>',
+  path: 'subject',
   version: '1',
 })
-export class <%= nameUpCap  %>Controller {
-  constructor(private readonly <%= nameUpCapNotOne  %>Service: <%= nameUpCap  %>Service) {}
+export class SubjectController {
+  constructor(private readonly subjectService: SubjectService) {}
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() create<%= nameUpCap  %>Dto: Create<%= nameUpCap  %>Dto): Promise<<%= nameUpCap  %>[]> {
-    return this.<%= nameUpCapNotOne  %>Service.create({
-      ...create<%= nameUpCap  %>Dto,
+  create(@Body() createDto: CreateSubjectDto): Promise<Subject[]> {
+    return this.subjectService.create({
+      ...createDto,
     });
   }
 
@@ -59,49 +58,49 @@ export class <%= nameUpCap  %>Controller {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number,
-    @Query('sortBy', new DefaultValuePipe('name')) sortBy: string,
+    @Query('sortBy', new DefaultValuePipe('name_VI')) sortBy: string,
     @Query('sortDirection', new DefaultValuePipe('ASC')) sortDirection: string,
     @Query('status', new DefaultValuePipe(0), ParseIntPipe) status: number,
-    @Query('fieldSearch', new DefaultValuePipe('name')) fieldSearch: string | string[],
-    @Query('searchName', new DefaultValuePipe('')) searchName: string ,
-  ): Promise<InfinityPaginationResultType<<%= nameUpCap  %>>> {
+    @Query('searchName', new DefaultValuePipe('')) searchName: string,
+    @Query('fieldSearch', new DefaultValuePipe(['name_VI', 'name_EN']))
+    fieldSearch: string | string[],
+  ): Promise<InfinityPaginationResultType<Subject>> {
     if (limit > 50) {
-      limit = 1000;
+      limit = 50;
     }
 
-    return await this.<%= nameUpCapNotOne  %>Service.findManyWithPagination({
+    return await this.subjectService.findManyWithPagination({
       page,
       limit,
       status,
       sortBy,
       sortDirection,
       searchName,
-      fieldSearch
+      fieldSearch,
     });
   }
-  
+
   @Get('/active')
   @HttpCode(HttpStatus.OK)
-  getActive(): Promise<<%= nameUpCap  %>[]> {
-    return this.<%= nameUpCapNotOne  %>Service.findManyActive(StatusEnum['active']);
+  getActive(): Promise<Subject[]> {
+    return this.subjectService.findManyActive(StatusEnum['active']);
   }
 
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id') id: string): Promise<NullableType<<%= nameUpCap  %>>> {
-    return this.<%= nameUpCapNotOne  %>Service.findOne({ id: +id });
+  findOne(@Param('id') id: string): Promise<NullableType<Subject>> {
+    return this.subjectService.findOne({ id: +id });
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  update(@Param('id') id: number, @Body() update<%= nameUpCap  %>Dto: Update<%= nameUpCap  %>Dto): Promise<<%= nameUpCap  %>[]> {
-    return this.<%= nameUpCapNotOne  %>Service.update(id, update<%= nameUpCap  %>Dto);
+  update(@Param('id') id: number, @Body() updateDto: UpdateSubjectDto): Promise<Subject[]> {
+    return this.subjectService.update(id, updateDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: number): Promise<void> {
-    return this.<%= nameUpCapNotOne  %>Service.softDelete(id);
+    return this.subjectService.softDelete(id);
   }
-  
 }

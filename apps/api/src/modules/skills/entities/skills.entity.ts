@@ -9,14 +9,22 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: '<%= nameDB  %>' })
-export class <%= nameUpCap  %> extends EntityHelper {
+@Entity({ name: 'skills' })
+export class Skills extends EntityHelper {
   @ApiProperty({ example: 'cbcfa8b8-3a25-4adb-a9c6-e325f0d0f3ae' })
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: String, nullable: false })
-  name: string;
+  name_VI: string;
+
+  @Column({ type: String, nullable: false })
+  name_EN: string;
+
+  @Column({ type: String, nullable: true })
+  description_VI: string;
+  @Column({ type: String, nullable: true })
+  description_EN: string;
 
   @Column({ type: Number, default: 1 })
   status: number;

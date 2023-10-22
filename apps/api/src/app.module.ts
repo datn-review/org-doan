@@ -33,6 +33,10 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
 
 import { GradeLevelModule } from './modules/grade-level/grade-level.module';
+import { SubjectModule } from './modules/subject/subject.module';
+import { SkillsModule } from './modules/skills/skills.module';
+import { CertificationsModule } from './modules/certifications/certifications.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -91,6 +95,10 @@ import { GradeLevelModule } from './modules/grade-level/grade-level.module';
     HomeModule,
     FilesModuleDrive,
     GradeLevelModule,
+    SubjectModule,
+    SkillsModule,
+    CertificationsModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}
