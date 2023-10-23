@@ -1,17 +1,20 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { CreateNotificationsDto } from './create.dto';
 import { IsNotEmpty, IsOptional } from 'class-validator';
+import { User } from 'src/users/entities/user.entity';
 
 export class UpdateNotificationsDto extends PartialType(CreateNotificationsDto) {
-  @ApiProperty({ example: '1' })
+  @ApiProperty({ type: String, example: 'hello word' })
   @IsNotEmpty()
   text_EN: string;
 
+  @ApiProperty({ type: String, example: 'hello word' })
   @IsNotEmpty()
   text_VI: string;
 
+  @ApiProperty({ type: User, example: 1 })
   @IsNotEmpty()
-  userId: number;
+  user: User | null;
 
   @ApiProperty({ example: 1 })
   @IsOptional()

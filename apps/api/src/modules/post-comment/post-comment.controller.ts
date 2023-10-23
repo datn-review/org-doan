@@ -21,29 +21,29 @@ import { RoleEnum } from 'src/roles/roles.enum';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { InfinityPaginationResultType } from '../../utils/types/infinity-pagination-result.type';
 import { NullableType } from '../../utils/types/nullable.type';
-import { Notifications } from './entities/notifications.entity';
+import { PostComment } from './entities/post-comment.entity';
 
-import { CreateNotificationsDto } from './dto/create.dto';
-import { UpdateNotificationsDto } from './dto/update.dto';
-import { NotificationsService } from './notifications.service';
+import { CreatePostCommentDto } from './dto/create.dto';
+import { UpdatePostCommentDto } from './dto/update.dto';
+import { PostCommentService } from './post-comment.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 
 @ApiBearerAuth()
-@ApiTags('Notifications')
+@ApiTags('PostComment')
 @Roles(RoleEnum.WEB_ADMIN)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
-  path: 'notifications',
+  path: 'post-comment',
   version: '1',
 })
-export class NotificationsController {
-  constructor(private readonly notificationsService: NotificationsService) {}
+export class PostCommentController {
+  constructor(private readonly postCommentService: PostCommentService) {}
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createNotificationsDto: CreateNotificationsDto): Promise<Notifications[]> {
-    return this.notificationsService.create({
-      ...createNotificationsDto,
+  create(@Body() createPostCommentDto: CreatePostCommentDto): Promise<PostComment[]> {
+    return this.postCommentService.create({
+      ...createPostCommentDto,
     });
   }
 
@@ -58,18 +58,17 @@ export class NotificationsController {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number,
-    @Query('sortBy', new DefaultValuePipe('text_VI')) sortBy: string,
+    @Query('sortBy', new DefaultValuePipe('createdAt')) sortBy: string,
     @Query('sortDirection', new DefaultValuePipe('ASC')) sortDirection: string,
     @Query('status', new DefaultValuePipe(0), ParseIntPipe) status: number,
-    @Query('fieldSearch', new DefaultValuePipe(['text_VI', 'text_EN']))
-    fieldSearch: string | string[],
+    @Query('fieldSearch', new DefaultValuePipe('text')) fieldSearch: string | string[],
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
-  ): Promise<InfinityPaginationResultType<Notifications>> {
+  ): Promise<InfinityPaginationResultType<PostComment>> {
     if (limit > 50) {
       limit = 1000;
     }
 
-    return await this.notificationsService.findManyWithPagination({
+    return await this.postCommentService.findManyWithPagination({
       page,
       limit,
       status,
@@ -77,39 +76,43 @@ export class NotificationsController {
       sortDirection,
       searchName,
       fieldSearch,
-      relations: ['user'],
+      relations: [
+        {
+          field: 'user',
+          entity: 'user',
+        },
+        {
+          field: 'post',
+          entity: 'posts',
+        },
+      ],
     });
   }
 
   @Get('/active')
   @HttpCode(HttpStatus.OK)
-  getActive(): Promise<Notifications[]> {
-    return this.notificationsService.findManyActive(StatusEnum['active']);
+  getActive(): Promise<PostComment[]> {
+    return this.postCommentService.findManyActive(StatusEnum['active']);
   }
 
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id') id: string): Promise<NullableType<Notifications>> {
-    return this.notificationsService.findOne({ id: +id });
+  findOne(@Param('id') id: string): Promise<NullableType<PostComment>> {
+    return this.postCommentService.findOne({ id: +id });
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   update(
     @Param('id') id: number,
-    @Body() updateNotificationsDto: UpdateNotificationsDto,
-  ): Promise<Notifications[]> {
-    return this.notificationsService.update(id, {
-      ...updateNotificationsDto,
-      user: {
-        id: updateNotificationsDto.user,
-      },
-    });
+    @Body() updatePostCommentDto: UpdatePostCommentDto,
+  ): Promise<PostComment[]> {
+    return this.postCommentService.update(id, updatePostCommentDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: number): Promise<void> {
-    return this.notificationsService.softDelete(id);
+    return this.postCommentService.softDelete(id);
   }
 }

@@ -4,6 +4,10 @@ import { BaseEntity, Repository, SelectQueryBuilder } from 'typeorm';
 import { NullableType } from '../utils/types/nullable.type';
 import { IBaseService, IParams } from './i.base.service';
 
+interface IRelations {
+  field: string;
+  entity: string;
+}
 @Injectable()
 export class BaseService<T extends BaseEntity, R extends Repository<T>, TP extends IParams>
   implements IBaseService<TP, T>
@@ -35,7 +39,12 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
     sortDirection,
     fieldSearch,
     status,
-  }: TP & { fieldSearch: any; status: number | undefined }): Promise<{
+    relations,
+  }: TP & {
+    fieldSearch: any;
+    status: number | undefined;
+    relations?: IRelations[] | string[];
+  }): Promise<{
     data: T[];
     totals: number;
   }> {
@@ -47,8 +56,18 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
       direction = sortDirectionUp;
     }
     const query = queryBuilder;
+    if (relations && relations?.length > 0) {
+      relations.forEach((field: string | IRelations) => {
+        if (typeof field === 'string') {
+          queryBuilder.leftJoinAndSelect(`entity.${field}`, field);
+        } else {
+          queryBuilder.leftJoinAndSelect(`entity.${field.field}`, field.entity);
+        }
+      });
+    }
 
-    if (typeof fieldSearch === 'string') {
+    if (typeof fieldSearch === 'string' && fieldSearch !== '') {
+      console.log('🚀 ~ file: base.service.ts:70 ~ fieldSearch:', fieldSearch);
       query.where(`LOWER(entity.${fieldSearch}) LIKE :searchName`, {
         searchName: `%${searchName.toLowerCase()}%`,
       });
@@ -63,7 +82,11 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
     }
 
     if (status) {
-      query.andWhere(`entity.status = :status`, { status });
+      if (fieldSearch == '') {
+        query.where(`entity.status = :status`, { status });
+      } else {
+        query.andWhere(`entity.status = :status`, { status });
+      }
     }
     const data = await query
       .orderBy(`entity.${sortBy}`, direction)
@@ -86,7 +109,7 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
     const queryBuilder: SelectQueryBuilder<T> = this.repository.createQueryBuilder('entity');
     const query = queryBuilder;
 
-    if (typeof fieldSearch === 'string') {
+    if (typeof fieldSearch === 'string' && fieldSearch !== '') {
       query.where(`LOWER(entity.${fieldSearch}) LIKE :searchName`, {
         searchName: `%${searchName.toLowerCase()}%`,
       });
@@ -100,7 +123,11 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
       );
     }
     if (status) {
-      query.andWhere(`entity.status = :status`, { status });
+      if (fieldSearch == '') {
+        query.where(`entity.status = :status`, { status });
+      } else {
+        query.andWhere(`entity.status = :status`, { status });
+      }
     }
     return query.getCount();
   }

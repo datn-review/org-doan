@@ -21,29 +21,29 @@ import { RoleEnum } from 'src/roles/roles.enum';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { InfinityPaginationResultType } from '../../utils/types/infinity-pagination-result.type';
 import { NullableType } from '../../utils/types/nullable.type';
-import { Notifications } from './entities/notifications.entity';
+import { Posts } from './entities/posts.entity';
 
-import { CreateNotificationsDto } from './dto/create.dto';
-import { UpdateNotificationsDto } from './dto/update.dto';
-import { NotificationsService } from './notifications.service';
+import { CreatePostsDto } from './dto/create.dto';
+import { UpdatePostsDto } from './dto/update.dto';
+import { PostsService } from './posts.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 
 @ApiBearerAuth()
-@ApiTags('Notifications')
+@ApiTags('Posts')
 @Roles(RoleEnum.WEB_ADMIN)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
-  path: 'notifications',
+  path: 'posts',
   version: '1',
 })
-export class NotificationsController {
-  constructor(private readonly notificationsService: NotificationsService) {}
+export class PostsController {
+  constructor(private readonly postsService: PostsService) {}
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createNotificationsDto: CreateNotificationsDto): Promise<Notifications[]> {
-    return this.notificationsService.create({
-      ...createNotificationsDto,
+  create(@Body() createPostsDto: CreatePostsDto): Promise<Posts[]> {
+    return this.postsService.create({
+      ...createPostsDto,
     });
   }
 
@@ -58,18 +58,17 @@ export class NotificationsController {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number,
-    @Query('sortBy', new DefaultValuePipe('text_VI')) sortBy: string,
+    @Query('sortBy', new DefaultValuePipe('title')) sortBy: string,
     @Query('sortDirection', new DefaultValuePipe('ASC')) sortDirection: string,
     @Query('status', new DefaultValuePipe(0), ParseIntPipe) status: number,
-    @Query('fieldSearch', new DefaultValuePipe(['text_VI', 'text_EN']))
-    fieldSearch: string | string[],
+    @Query('fieldSearch', new DefaultValuePipe('title')) fieldSearch: string | string[],
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
-  ): Promise<InfinityPaginationResultType<Notifications>> {
+  ): Promise<InfinityPaginationResultType<Posts>> {
     if (limit > 50) {
       limit = 1000;
     }
 
-    return await this.notificationsService.findManyWithPagination({
+    return await this.postsService.findManyWithPagination({
       page,
       limit,
       status,
@@ -83,33 +82,25 @@ export class NotificationsController {
 
   @Get('/active')
   @HttpCode(HttpStatus.OK)
-  getActive(): Promise<Notifications[]> {
-    return this.notificationsService.findManyActive(StatusEnum['active']);
+  getActive(): Promise<Posts[]> {
+    return this.postsService.findManyActive(StatusEnum['active']);
   }
 
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id') id: string): Promise<NullableType<Notifications>> {
-    return this.notificationsService.findOne({ id: +id });
+  findOne(@Param('id') id: string): Promise<NullableType<Posts>> {
+    return this.postsService.findOne({ id: +id });
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  update(
-    @Param('id') id: number,
-    @Body() updateNotificationsDto: UpdateNotificationsDto,
-  ): Promise<Notifications[]> {
-    return this.notificationsService.update(id, {
-      ...updateNotificationsDto,
-      user: {
-        id: updateNotificationsDto.user,
-      },
-    });
+  update(@Param('id') id: number, @Body() updatePostsDto: UpdatePostsDto): Promise<Posts[]> {
+    return this.postsService.update(id, updatePostsDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: number): Promise<void> {
-    return this.notificationsService.softDelete(id);
+    return this.postsService.softDelete(id);
   }
 }

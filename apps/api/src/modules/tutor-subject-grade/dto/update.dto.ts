@@ -1,8 +1,8 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { CreateTutorSubjectGradeDto } from './create.dto';
 import { IsNotEmpty, IsOptional } from 'class-validator';
-import { CreateStudentSubjectDto } from './create.dto';
 
-export class UpdateStudentSubjectDto extends PartialType(CreateStudentSubjectDto) {
+export class UpdateTutorSubjectGradeDto extends PartialType(CreateTutorSubjectGradeDto) {
   @ApiProperty({ type: Number, example: 1 })
   @IsNotEmpty()
   studentId: number;
@@ -10,6 +10,10 @@ export class UpdateStudentSubjectDto extends PartialType(CreateStudentSubjectDto
   @IsNotEmpty()
   @ApiProperty({ type: Number, example: 1 })
   subjectId: number;
+  @IsNotEmpty()
+  @ApiProperty({ type: Number, example: 1 })
+  gradeId: number;
+
   @ApiProperty({ example: 1 })
   @IsOptional()
   status?: number | undefined;

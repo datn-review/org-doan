@@ -37,7 +37,15 @@ import { SubjectModule } from './modules/subject/subject.module';
 import { SkillsModule } from './modules/skills/skills.module';
 import { CertificationsModule } from './modules/certifications/certifications.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
-
+import { TutorSkillsModule } from './modules/tutor-skills/tutor-skills.module';
+import { TutorCertificationModule } from './modules/tutor-certification/tutor-certification.module';
+import { StudentSubjectModule } from './modules/student-subject/student-subject.module';
+import { TutorSubjectGradeModule } from './modules/tutor-subject-grade/tutor-subject-grade.module';
+import { TimeAvailabilityModule } from './modules/time-availability/time-availability.module';
+import { ConversationModule } from './modules/conversation/conversation.module';
+import { ChatMessageModule } from './modules/chat-message/chat-message.module';
+import { PostsModule } from './modules/posts/posts.module';
+import { PostCommentModule } from './modules/post-comment/post-comment.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -81,6 +89,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
         },
       ],
       imports: [ConfigModule],
+
       inject: [ConfigService],
     }),
     UsersModule,
@@ -99,6 +108,15 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     SkillsModule,
     CertificationsModule,
     NotificationsModule,
+    TutorSkillsModule,
+    TutorCertificationModule,
+    StudentSubjectModule,
+    TutorSubjectGradeModule,
+    TimeAvailabilityModule,
+    ConversationModule,
+    ChatMessageModule,
+    PostsModule,
+    PostCommentModule,
   ],
 })
 export class AppModule {}
