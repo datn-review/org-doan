@@ -92,5 +92,10 @@ export const SiteMap = {
       menu: 'settings/certification',
       roles: [RolesEnum.WEB_ADMIN],
     },
+    Skills: {
+      path: 'settings/skills',
+      menu: 'settings/skills',
+      roles: [RolesEnum.WEB_ADMIN],
+    },
   },
 };

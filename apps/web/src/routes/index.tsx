@@ -4,7 +4,7 @@ import { HomePage } from '@org/home';
 import { ConfirmEmailPage, LoginPage, RegisterPage } from '@org/auth';
 import { SiteMap } from '@org/utils';
 import { WebAdminPage } from '@org/users';
-import { CertificationPage, GradeLevelPage, SubjectPage } from '@org/settings';
+import { CertificationPage, GradeLevelPage, SubjectPage, SkillsPage } from '@org/settings';
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +33,10 @@ export const router = createBrowserRouter([
       {
         path: SiteMap.Settings.Subject.path,
         element: <SubjectPage />,
+      },
+      {
+        path: SiteMap.Settings.Skills.path,
+        element: <SkillsPage />,
       },
     ],
   },
