@@ -4,19 +4,19 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 export class CreateSubjectDto {
   @ApiProperty({ type: 'string', example: '1' })
   @IsNotEmpty()
-  name_VI: string;
+  nameVI: string;
 
   @ApiProperty({ type: 'string', example: '1' })
   @IsNotEmpty()
-  name_EN: string;
+  nameEN: string;
 
   @ApiProperty({ type: 'string', example: '1' })
   @IsOptional()
-  description_VI: string;
+  descriptionVI: string;
 
   @ApiProperty({ type: 'string', example: '1' })
   @IsOptional()
-  description_EN: string;
+  descriptionEN: string;
 
   @IsNotEmpty()
   @ApiProperty({ type: Number, example: 1 })

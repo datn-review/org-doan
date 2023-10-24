@@ -19,7 +19,7 @@ export class UpdateTutorSkillsDto extends PartialType(CreateTutorSkillsDto) {
 
   @ApiProperty({ type: String, example: 'hellword' })
   @IsOptional()
-  customerName_EN: string;
+  customernameEN: string;
 
   @ApiProperty({ type: String, example: 'hellword' })
   @IsOptional()

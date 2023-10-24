@@ -61,7 +61,7 @@ export class TutorSkillsController {
     @Query('sortBy', new DefaultValuePipe('createdAt')) sortBy: string,
     @Query('sortDirection', new DefaultValuePipe('ASC')) sortDirection: string,
     @Query('status', new DefaultValuePipe(0), ParseIntPipe) status: number,
-    @Query('fieldSearch', new DefaultValuePipe(['customerName_VN', 'customerName_EN']))
+    @Query('fieldSearch', new DefaultValuePipe(['customerNameVN', 'customerNameEN']))
     fieldSearch: string | string[],
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
   ): Promise<InfinityPaginationResultType<TutorSkills>> {

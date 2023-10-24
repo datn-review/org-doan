@@ -16,15 +16,16 @@ export class Certifications extends EntityHelper {
   id: number;
 
   @Column({ type: String, nullable: false })
-  name_VI: string;
+  nameVI: string;
 
   @Column({ type: String, nullable: false })
-  name_EN: string;
+  nameEN: string;
 
   @Column({ type: String, nullable: true })
-  description_VI: string;
+  descriptionVI: string;
+
   @Column({ type: String, nullable: true })
-  description_EN: string;
+  descriptionEN: string;
 
   @Column({ type: Number, default: 1 })
   status: number;

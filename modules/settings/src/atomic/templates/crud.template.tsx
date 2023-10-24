@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import { Space } from '@org/ui';
 import { PropsWithChildren } from 'react';
 
-export function UserTemplate({ children }: PropsWithChildren) {
+export function CRUDTemplate({ children }: PropsWithChildren) {
   return (
     <Space
       className={css`

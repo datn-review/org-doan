@@ -17,7 +17,7 @@ export class CreateTutorSkillsDto {
   customerName_VN: string;
   @ApiProperty({ type: String, example: 'hellword' })
   @IsOptional()
-  customerName_EN: string;
+  customernameEN: string;
   @ApiProperty({ type: String, example: 'hellword' })
   @IsOptional()
   customerDes_VI: string;

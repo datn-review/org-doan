@@ -12,7 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'tutor_skills' })
+@Entity({ name: 'tutor_skill' })
 export class TutorSkills extends EntityHelper {
   @ApiProperty({ example: 'cbcfa8b8-3a25-4adb-a9c6-e325f0d0f3ae' })
   @PrimaryGeneratedColumn()
@@ -29,15 +29,15 @@ export class TutorSkills extends EntityHelper {
   skills?: Skills | null;
 
   @Column({ type: String, nullable: true })
-  customerName_VN: string;
+  customerNameVN: string;
 
   @Column({ type: String, nullable: true })
-  customerName_EN: string;
+  customerNameEN: string;
 
   @Column({ type: String, nullable: true })
-  customerDes_VI: string;
+  customerDesVI: string;
   @Column({ type: String, nullable: true })
-  customerDes_EN: string;
+  customerDesEN: string;
 
   @Column({ type: Number, default: 1 })
   status: number;

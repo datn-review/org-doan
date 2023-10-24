@@ -9,21 +9,22 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'subject' })
+@Entity({ name: 'subjects' })
 export class Subject extends EntityHelper {
   @ApiProperty({ example: 'cbcfa8b8-3a25-4adb-a9c6-e325f0d0f3ae' })
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: String, nullable: false })
-  name_VI: string;
+  nameVI: string;
   @Column({ type: String, nullable: false })
-  name_EN: string;
+  nameEN: string;
 
   @Column({ type: String, nullable: true })
-  description_VI: string;
+  descriptionVI: string;
+
   @Column({ type: String, nullable: true })
-  description_EN: string;
+  descriptionEN: string;
 
   @Column({ type: Number, default: 1 })
   status: number;

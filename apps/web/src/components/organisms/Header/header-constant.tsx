@@ -124,6 +124,13 @@ export const menuCategory: MenuItem[] = [
         key: SiteMap.Settings.Subject.menu,
         icon: <></>,
       },
+      {
+        label: <Translation>{(t) => t('settings.certification')}</Translation>,
+        path: SiteMap.Settings.Certification.path,
+        id: SiteMap.Settings.Certification.menu,
+        key: SiteMap.Settings.Certification.menu,
+        icon: <></>,
+      },
     ],
   },
 ];

@@ -58,17 +58,17 @@ export class CertificationsController {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number,
-    @Query('sortBy', new DefaultValuePipe('name')) sortBy: string,
+    @Query('sortBy', new DefaultValuePipe('nameVI')) sortBy: string,
     @Query('sortDirection', new DefaultValuePipe('ASC')) sortDirection: string,
     @Query('status', new DefaultValuePipe(0), ParseIntPipe) status: number,
-    @Query('fieldSearch', new DefaultValuePipe(['name_EN', 'name_VI']))
+    @Query('fieldSearch', new DefaultValuePipe(['nameEN', 'nameVI']))
     fieldSearch: string | string[],
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
   ): Promise<InfinityPaginationResultType<Certifications>> {
     if (limit > 50) {
       limit = 1000;
     }
-
+    console.log(sortBy);
     return await this.certificationsService.findManyWithPagination({
       page,
       limit,

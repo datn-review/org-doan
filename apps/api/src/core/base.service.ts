@@ -67,7 +67,6 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
     }
 
     if (typeof fieldSearch === 'string' && fieldSearch !== '') {
-      console.log('🚀 ~ file: base.service.ts:70 ~ fieldSearch:', fieldSearch);
       query.where(`LOWER(entity.${fieldSearch}) LIKE :searchName`, {
         searchName: `%${searchName.toLowerCase()}%`,
       });
