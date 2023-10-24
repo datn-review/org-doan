@@ -15,7 +15,7 @@ import { FilesService } from './file-post.service';
 
 @ApiTags('Files')
 @Controller({
-  path: 'files',
+  path: 'files/post',
   version: '1',
 })
 export class FilesController {
@@ -38,7 +38,7 @@ export class FilesController {
   })
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    return this.filesService.uploadFile(file);
+    return this.filesService.uploadFilePost(file);
   }
 
   @Get(':path')

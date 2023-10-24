@@ -21,7 +21,7 @@ export class FilesService {
     private readonly fileRepository: Repository<FileEntity>,
   ) {}
 
-  async uploadFile(file?: Express.Multer.File | null): Promise<any> {
+  async uploadFilePost(file?: Express.Multer.File | null, postsId = 1): Promise<any> {
     if (!file) {
       throw new HttpException(
         {
@@ -46,6 +46,7 @@ export class FilesService {
     return this.fileRepository.save(
       this.fileRepository.create({
         path: dataUploadDrive?.fileId,
+        post: { id: postsId },
       }),
     );
   }

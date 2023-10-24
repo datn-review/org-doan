@@ -4,15 +4,18 @@ import { Allow } from 'class-validator';
 import { EntityHelper } from 'src/utils/entity-helper';
 import appConfig from '../../config/app.config';
 import { AppConfig } from 'src/config/config.type';
+import { Posts } from 'src/modules/posts/entities/posts.entity';
 
-@Entity({ name: 'file_post' })
+@Entity({ name: 'file_post_db' })
 export class FileEntity extends EntityHelper {
   @ApiProperty({ example: 'cbcfa8b8-3a25-4adb-a9c6-e325f0d0f3ae' })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: Number, nullable: false })
-  idPost: string;
+  @ManyToOne(() => Posts, {
+    eager: true,
+  })
+  post: Posts;
 
   @Allow()
   @Column()

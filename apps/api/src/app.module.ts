@@ -46,6 +46,10 @@ import { ConversationModule } from './modules/conversation/conversation.module';
 import { ChatMessageModule } from './modules/chat-message/chat-message.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { PostCommentModule } from './modules/post-comment/post-comment.module';
+import { CollaborationModule } from './modules/collaboration/collaboration.module';
+import { CollaborationSubjectModule } from './modules/collaboration-subject/collaboration-subject.module';
+import { PaymentModule } from './modules/payment/payment.module';
+import { LessonsModule } from './modules/lessons/lessons.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -117,6 +121,10 @@ import { PostCommentModule } from './modules/post-comment/post-comment.module';
     ChatMessageModule,
     PostsModule,
     PostCommentModule,
+    CollaborationModule,
+    CollaborationSubjectModule,
+    PaymentModule,
+    LessonsModule,
   ],
 })
 export class AppModule {}
