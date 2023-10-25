@@ -87,5 +87,23 @@ export const SiteMap = {
       menu: 'settings/subject',
       roles: [RolesEnum.WEB_ADMIN],
     },
+    Certification: {
+      path: 'settings/certification',
+      menu: 'settings/certification',
+      roles: [RolesEnum.WEB_ADMIN],
+    },
+    Skills: {
+      path: 'settings/skills',
+      menu: 'settings/skills',
+      roles: [RolesEnum.WEB_ADMIN],
+    },
+  },
+  Profile: {
+    Me: {
+      path: '/profile',
+    },
+    path: '/profile/:id',
+    menu: 'profile',
+    roles: [],
   },
 };

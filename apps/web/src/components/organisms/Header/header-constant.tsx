@@ -105,13 +105,13 @@ export const menuCategory: MenuItem[] = [
     ],
   },
   {
-    name: <Translation>{(t) => t('settings')}</Translation>,
+    name: <Translation>{(t) => t('settings.name')}</Translation>,
     path: '',
-    id: SiteMap.Users.menu,
+    id: SiteMap.Settings.menu,
     icon: <IconUser />,
     subMenu: [
       {
-        label: <Translation>{(t) => t('settings.grade_level')}</Translation>,
+        label: <Translation>{(t) => t('settings.grade.level')}</Translation>,
         path: SiteMap.Settings.GradeLevel.path,
         id: SiteMap.Settings.GradeLevel.menu,
         key: SiteMap.Settings.GradeLevel.menu,
@@ -122,6 +122,20 @@ export const menuCategory: MenuItem[] = [
         path: SiteMap.Settings.Subject.path,
         id: SiteMap.Settings.Subject.menu,
         key: SiteMap.Settings.Subject.menu,
+        icon: <></>,
+      },
+      {
+        label: <Translation>{(t) => t('settings.certification')}</Translation>,
+        path: SiteMap.Settings.Certification.path,
+        id: SiteMap.Settings.Certification.menu,
+        key: SiteMap.Settings.Certification.menu,
+        icon: <></>,
+      },
+      {
+        label: <Translation>{(t) => t('settings.skills')}</Translation>,
+        path: SiteMap.Settings.Skills.path,
+        id: SiteMap.Settings.Skills.menu,
+        key: SiteMap.Settings.Skills.menu,
         icon: <></>,
       },
     ],

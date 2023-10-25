@@ -65,7 +65,7 @@ function HeaderCategory() {
     });
 
   return (
-    <S.HeaderCategory className='flex gap-2 px-[1.5rem] py-4'>
+    <S.HeaderCategory className='flex gap-2 px-[10rem]  py-4'>
       {renderMenu(menuCategory)}
     </S.HeaderCategory>
   );

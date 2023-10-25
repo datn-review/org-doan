@@ -20,12 +20,14 @@ import { Roles } from 'src/roles/roles.decorator';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { InfinityPaginationResultType } from '../../utils/types/infinity-pagination-result.type';
-import { NullableType } from '../../utils/types/nullable.type';
+// import { NullableType } from '../../utils/types/nullable.type';
 import { StudentSubject } from './entities/student-subject.entity';
 
-import { CreateDto } from './dto/create.dto';
-import { UpdateDto } from './dto/update.dto';
+import { CreateStudentSubjectDto } from './dto/create.dto';
+import { UpdateStudentSubjectDto } from './dto/update.dto';
 import { StudentSubjectService } from './student-subject.service';
+import { StatusEnum } from 'src/statuses/statuses.enum';
+
 @ApiBearerAuth()
 @ApiTags('StudentSubject')
 @Roles(RoleEnum.WEB_ADMIN)
@@ -39,9 +41,9 @@ export class StudentSubjectController {
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createDto: CreateDto): Promise<StudentSubject[]> {
+  create(@Body() createStudentSubjectDto: CreateStudentSubjectDto): Promise<StudentSubject[]> {
     return this.studentSubjectService.create({
-      ...createDto,
+      ...createStudentSubjectDto,
     });
   }
 
@@ -49,16 +51,21 @@ export class StudentSubjectController {
   @HttpCode(HttpStatus.OK)
   @ApiQuery({ name: 'status', required: false })
   @ApiQuery({ name: 'searchName', required: false })
+  @ApiQuery({ name: 'sortBy', required: false })
+  @ApiQuery({ name: 'sortDirection', required: false })
+  @ApiQuery({ name: 'sortBy', required: false })
+  @ApiQuery({ name: 'fieldSearch', required: false })
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number,
-    @Query('sortBy', new DefaultValuePipe('name')) sortBy: string,
+    @Query('sortBy', new DefaultValuePipe('createdAt')) sortBy: string,
     @Query('sortDirection', new DefaultValuePipe('ASC')) sortDirection: string,
     @Query('status', new DefaultValuePipe(0), ParseIntPipe) status: number,
+    @Query('fieldSearch', new DefaultValuePipe('')) fieldSearch: string | string[],
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
   ): Promise<InfinityPaginationResultType<StudentSubject>> {
     if (limit > 50) {
-      limit = 50;
+      limit = 1000;
     }
 
     return await this.studentSubjectService.findManyWithPagination({
@@ -68,20 +75,33 @@ export class StudentSubjectController {
       sortBy,
       sortDirection,
       searchName,
-      fieldSearch: 'name',
+      fieldSearch,
+      relations: [
+        { field: 'student', entity: 'user' },
+        { field: 'subject', entity: 'subject' },
+      ],
     });
   }
 
-  @Get('/:id')
+  @Get('/active')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id') id: string): Promise<NullableType<StudentSubject>> {
-    return this.studentSubjectService.findOne({ id: +id });
+  getActive(): Promise<StudentSubject[]> {
+    return this.studentSubjectService.findManyActive(StatusEnum['active']);
   }
+
+  // @Get('/:id')
+  // @HttpCode(HttpStatus.OK)
+  // findOne(@Param('id') id: string): Promise<NullableType<StudentSubject>> {
+  //   return this.studentSubjectService.findOne({ id: +id });
+  // }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  update(@Param('id') id: number, @Body() updateDto: UpdateDto): Promise<StudentSubject[]> {
-    return this.studentSubjectService.update(id, updateDto);
+  update(
+    @Param('id') id: number,
+    @Body() updateStudentSubjectDto: UpdateStudentSubjectDto,
+  ): Promise<StudentSubject[]> {
+    return this.studentSubjectService.update(id, updateStudentSubjectDto);
   }
 
   @Delete(':id')

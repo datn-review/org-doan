@@ -18,6 +18,8 @@ export interface IBaseService<TParams extends IParams, T> {
 
   countAll(params: any): Promise<number>;
 
+  findManyActive(status: number): Promise<T[]>;
+
   create(data: any): Promise<T[]>;
 
   update(id: number, payload: any): Promise<T[]>;

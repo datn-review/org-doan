@@ -1,8 +1,8 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { CreateDto } from './create.dto';
+import { Create<%= nameUpCap  %>Dto } from './create.dto';
 import { IsOptional } from 'class-validator';
 
-export class UpdateDto extends PartialType(CreateDto) {
+export class Update<%= nameUpCap  %>Dto extends PartialType(Create<%= nameUpCap  %>Dto) {
   @ApiProperty({ example: '1' })
   @IsOptional()
   name?: string | undefined;

@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EntityHelper } from 'src/utils/entity-helper';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity({ name: 'grade_level' })
 export class GradeLevel extends EntityHelper {
@@ -13,4 +20,12 @@ export class GradeLevel extends EntityHelper {
 
   @Column({ type: Number, default: 1 })
   status: number;
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }
