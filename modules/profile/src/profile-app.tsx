@@ -1,30 +1,34 @@
 import { Authorization } from '@org/auth';
 import { useTranslation } from '@org/i18n';
 import { setActiveGroup, useAppDispatch, useAppSelector } from '@org/store';
-import { Space, Table } from '@org/ui';
-import { RolesEnum, TypeRolesEnum } from '@org/utils';
+import { Button, Col, Row, Space, Table } from '@org/ui';
+import { RolesEnum, SiteMap, TypeRolesEnum } from '@org/utils';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import StepRegister from './atomic/molecules/step-register';
-import TutorClass from './atomic/molecules/tutor-class-incognito';
-import Banner from './atomic/molecules/banner/Banner';
-function HomeApp() {
+import { If, Then } from 'react-if';
+import { useParams } from 'react-router-dom';
+import InfoHeader from './atomic/molecules/info-header';
+function ProfileApp() {
   useTranslation();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
+  const { id } = useParams();
+  console.log('🚀 ~ file: profile-app.tsx:15 ~ ProfileApp ~ id:', id);
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(setActiveGroup({ current: 'home' }));
+    dispatch(setActiveGroup({ current: SiteMap.Profile.menu }));
     return () => {
       dispatch(setActiveGroup({ current: '' }));
     };
   }, []);
   return (
     <>
-      <Space>
-        <Banner />
-        <StepRegister />
-        <TutorClass />
+      <Space className={'profile'}>
+        <If condition={isAuthenticated}>
+          <Then>
+            <InfoHeader />
+          </Then>
+        </If>
         {/* <Authorization
           type={TypeRolesEnum.IF_ANY_GRANTED}
           roles={[RolesEnum.WEB_ADMIN]}
@@ -42,4 +46,4 @@ function HomeApp() {
   );
 }
 
-export default HomeApp;
+export default ProfileApp;

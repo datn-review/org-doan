@@ -18,7 +18,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { itemsLanguge, menuPerson } from './header-constant';
 import { IMenuIcon } from './header-type';
 import { logout, removeUserInfo, useAppDispatch, useAppSelector } from '@org/store';
-import { SiteMap } from '@org/utils';
+import { COLOR, SiteMap } from '@org/utils';
 import { css } from '@emotion/css';
 
 const LinkItem = ({ path, icon, title }: any) => {
@@ -85,13 +85,34 @@ function HeaderUser() {
   };
 
   return (
-    <S.HeaderUser className='flex justify-between items-center px-[1.5rem]'>
+    <S.HeaderUser className='flex justify-between items-center px-[10rem] '>
       <Link to='/'>
-        <img
+        {/* <img
           src='/assets/image/logo.jpg'
           alt='Login'
           className='h-[40px]'
-        />
+        /> */}
+        <Space
+          className={css`
+            font-size: 20px;
+            color: ${COLOR.Primary};
+            font-weight: 700;
+            padding: 8px 0;
+            position: relative;
+            &:after {
+              content: '';
+              width: 70px;
+              height: 6px;
+              border-radius: 12px;
+              background-color: #ff5520;
+              position: absolute;
+              bottom: 0;
+              left: 0;
+            }
+          `}
+        >
+          SmartTutor
+        </Space>
       </Link>
 
       <Space className={'flex gap-7 items-center justify-end '}>
@@ -151,7 +172,7 @@ function HeaderUser() {
               onClick: handlePerson,
             }}
           >
-            <Avatar className='bg-lime-500 text-white cursor-pointer'>T</Avatar>
+            <Avatar className={`bg-purple-500 text-white cursor-pointer`}>T</Avatar>
           </Dropdown>
         </Show>
       </Space>

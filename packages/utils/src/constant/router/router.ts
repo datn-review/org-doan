@@ -98,4 +98,12 @@ export const SiteMap = {
       roles: [RolesEnum.WEB_ADMIN],
     },
   },
+  Profile: {
+    Me: {
+      path: '/profile',
+    },
+    path: '/profile/:id',
+    menu: 'profile',
+    roles: [],
+  },
 };
