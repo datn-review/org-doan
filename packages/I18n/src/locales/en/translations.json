@@ -1,3 +1,4 @@
+
 {
   "title": "Hello",
   "vi-VN":"Vietnamese",
@@ -60,5 +61,10 @@
   ,
   "home":"Home",
   "users":"Users",
-  "dashboards":"Dashboards"
+  "dashboards":"Dashboards",
+
+  "name":"Name",
+  "edit":"Edit",
+  "add":"Add New",
+  "search.name":"Search Name"
 }

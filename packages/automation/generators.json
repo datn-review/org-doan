@@ -9,6 +9,11 @@
       "factory": "./src/generators/module-api/generator",
       "schema": "./src/generators/module-api/schema.json",
       "description": "module-api generator"
+    },
+    "crud-auto": {
+      "factory": "./src/generators/crud-auto/generator",
+      "schema": "./src/generators/crud-auto/schema.json",
+      "description": "crud-auto generator"
     }
   }
 }

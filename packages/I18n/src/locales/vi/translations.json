@@ -60,5 +60,9 @@
 
   "home":"Trang Chủ",
   "users":"Người Dùng",
-  "dashboards":"Tổng Quan"
+  "dashboards":"Tổng Quan",
+  "name":"Tên",
+  "edit":"Chỉnh Sửa",
+  "add":"Thêm Mới",
+  "search.name":"Nhập Tên"
 }

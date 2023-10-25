@@ -1,16 +1,43 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { Subject } from 'src/modules/subject/entities/subject.entity';
+import { User } from 'src/users/entities/user.entity';
 import { EntityHelper } from 'src/utils/entity-helper';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity({ name: 'student_subject' })
 export class StudentSubject extends EntityHelper {
-  @ApiProperty({ example: 'cbcfa8b8-3a25-4adb-a9c6-e325f0d0f3ae' })
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryColumn()
+  studentId: number;
 
-  @Column({ type: String, nullable: false })
-  name: string;
+  @PrimaryColumn()
+  subjectId: number;
+
+  @ManyToOne(() => User, {
+    eager: true,
+  })
+  student: User;
+
+  @ManyToOne(() => Subject, {
+    eager: true,
+  })
+  subject: Subject;
 
   @Column({ type: Number, default: 1 })
   status: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }
