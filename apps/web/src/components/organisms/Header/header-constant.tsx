@@ -14,7 +14,8 @@ import {
 
 import type { IMenuIcon, MenuItem } from '../header/header-type';
 import { Translation } from '@org/i18n';
-import { SiteMap } from '@org/utils';
+import { RolesEnum, SiteMap } from '@org/utils';
+import { ifAnyGranted, ifNotGranted } from '@org/auth';
 
 export const itemsLanguge: MenuProps['items'] = [
   {
@@ -34,6 +35,39 @@ export const menuCategory: MenuItem[] = [
     id: SiteMap.Home.menu,
     icon: <IconHome />,
     subMenu: [],
+    isHide: false,
+  },
+  {
+    name: <Translation>{(t) => t('class.new')}</Translation>,
+    path: SiteMap.ClassNew.path,
+    id: SiteMap.ClassNew.menu,
+    icon: <IconHome />,
+    subMenu: [],
+    // isHide: ifAnyGranted([RolesEnum.WEB_ADMIN]),
+  },
+  {
+    name: <Translation>{(t) => t('tutor')}</Translation>,
+    path: SiteMap.Tutor.path,
+    id: SiteMap.Tutor.menu,
+    icon: <IconHome />,
+    subMenu: [],
+    // isHide: ifAnyGranted([RolesEnum.WEB_ADMIN]),
+  },
+  {
+    name: <Translation>{(t) => t('find.tutor')}</Translation>,
+    path: SiteMap.LookForTutor.path,
+    id: SiteMap.LookForTutor.menu,
+    icon: <IconHome />,
+    subMenu: [],
+    // isHide: ifAnyGranted([RolesEnum.WEB_ADMIN]),
+  },
+  {
+    name: <Translation>{(t) => t('manage.class')}</Translation>,
+    path: SiteMap.MangeClass.path,
+    id: SiteMap.MangeClass.menu,
+    icon: <IconHome />,
+    subMenu: [],
+    // isHide: ifAnyGranted([RolesEnum.WEB_ADMIN]),
   },
   {
     name: <Translation>{(t) => t('dashboards')}</Translation>,
@@ -41,12 +75,14 @@ export const menuCategory: MenuItem[] = [
     id: SiteMap.Dashboard.menu,
     icon: <IconDashBoard />,
     subMenu: [],
+    // isHide: ifNotGranted([RolesEnum.WEB_ADMIN]),
   },
   {
     name: <Translation>{(t) => t('users')}</Translation>,
     path: '',
     id: SiteMap.Users.menu,
     icon: <IconUser />,
+    // isHide: ifNotGranted([RolesEnum.WEB_ADMIN]),
     subMenu: [
       {
         label: <Translation>{(t) => t('manage.admin')}</Translation>,
@@ -109,6 +145,7 @@ export const menuCategory: MenuItem[] = [
     path: '',
     id: SiteMap.Settings.menu,
     icon: <IconUser />,
+    // isHide: ifNotGranted([RolesEnum.WEB_ADMIN]),
     subMenu: [
       {
         label: <Translation>{(t) => t('settings.grade.level')}</Translation>,
@@ -140,7 +177,7 @@ export const menuCategory: MenuItem[] = [
       },
     ],
   },
-];
+].filter((item) => !item.isHide);
 
 export const menuPerson: IMenuIcon[] = [
   {

@@ -14,4 +14,6 @@ export {
   type TagProps,
   Drawer,
   Carousel,
+  Tabs,
+  type TabsProps,
 } from 'antd';

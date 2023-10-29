@@ -33,6 +33,10 @@ export function AntdProvider({ children }: PropsWithChildren) {
             colorPrimary: COLOR.Primary,
             algorithm: true,
           },
+          Tabs: {
+            colorPrimary: COLOR.Primary,
+            algorithm: true,
+          },
         },
       }}
     >

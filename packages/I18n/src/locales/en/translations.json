@@ -66,5 +66,7 @@
   "name":"Name",
   "edit":"Edit",
   "add":"Add New",
-  "search.name":"Search Name"
+  "search.name":"Search Name",
+  "find.tutor": "Look For Tutor",
+  "tutor":"Tutor"
 }

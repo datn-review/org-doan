@@ -14,6 +14,11 @@
       "factory": "./src/generators/crud-auto/generator",
       "schema": "./src/generators/crud-auto/schema.json",
       "description": "crud-auto generator"
+    },
+    "module-web": {
+      "factory": "./src/generators/module-web/generator",
+      "schema": "./src/generators/module-web/schema.json",
+      "description": "module-web generator"
     }
   }
 }

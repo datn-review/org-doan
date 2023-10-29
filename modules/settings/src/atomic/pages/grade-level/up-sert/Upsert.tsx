@@ -33,18 +33,27 @@ type Status = {
   name: string;
 };
 type IUpdate = {
-  name: string;
+  nameEN: string;
+  nameVI: string;
+  descriptionVI?: string;
+  descriptionEN?: string;
   status?: number;
 };
 
 const schema = (idEdit: number) =>
   yup.object({
-    name: yup.string().required(i18next.t('required.name')),
+    nameVI: yup.string().required(i18next.t('required.name')),
+    nameEN: yup.string().required(i18next.t('required.name')),
+    descriptionVI: yup.string(),
+    descriptionEN: yup.string(),
     status: yup.number(),
   });
 type TypeName = keyof IUpdate;
 const dataInit: IUpdate = {
-  name: '',
+  nameVI: '',
+  nameEN: '',
+  descriptionVI: '',
+  descriptionEN: '',
   status: 1,
 };
 
@@ -153,8 +162,20 @@ export function Upsert() {
           <Spin spinning={isLoadingCreate || isLoadingGet || isLoadingUpdate}>
             <FormProvider {...methods}>
               <InputForm
-                name='name'
-                label={t('name')}
+                name='nameVI'
+                label={t('nameVI')}
+              />
+              <InputForm
+                name='descriptionVI'
+                label={t('descriptionVI')}
+              />
+              <InputForm
+                name='nameEN'
+                label={t('nameEN')}
+              />
+              <InputForm
+                name='descriptionEN'
+                label={t('descriptionEN')}
               />
 
               <SelectForm
