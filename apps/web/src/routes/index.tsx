@@ -47,6 +47,10 @@ export const router = createBrowserRouter([
         path: SiteMap.Profile.Me.path,
         element: <ProfilePage />,
       },
+      {
+        path: SiteMap.Profile.Me.path,
+        element: <ProfilePage />,
+      },
     ],
   },
   {

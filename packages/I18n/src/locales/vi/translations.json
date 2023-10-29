@@ -64,5 +64,7 @@
   "name":"Tên",
   "edit":"Chỉnh Sửa",
   "add":"Thêm Mới",
-  "search.name":"Nhập Tên"
+  "search.name":"Nhập Tên",
+  "find.tutor": "Đăng Bài Tìm Gia Sư",
+  "tutor":"Gia Sư"
 }

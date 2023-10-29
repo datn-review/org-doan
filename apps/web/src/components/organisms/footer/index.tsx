@@ -3,7 +3,7 @@ import { BoxCenter, Col, Row, Space } from '@org/ui';
 import { COLOR } from '@org/utils';
 import React from 'react';
 const cssTextSection = css`
-  font-size: 32px;
+  font-size: 30px;
   color: ${COLOR.Primary};
   font-weight: 700;
   padding: 10px 0;
@@ -11,7 +11,7 @@ const cssTextSection = css`
   position: relative;
   &:after {
     content: '';
-    width: 120px;
+    width: 100px;
     height: 6px;
     border-radius: 12px;
     background-color: #ff5520;

@@ -71,7 +71,8 @@ function HeaderUser() {
   const handleLogout = () => {
     dispatch(logout());
     dispatch(removeUserInfo());
-    navigate(SiteMap.Auth.Login.path);
+    // navigate(SiteMap.Auth.Login.path);
+    location.replace(SiteMap.Auth.Login.path);
   };
 
   const handlePerson: MenuProps['onClick'] = (value) => {
