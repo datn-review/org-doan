@@ -5,8 +5,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { menuCategory } from './header-constant';
 import { MenuItem } from './header-type';
 import * as S from './styled';
-import { css } from '@emotion/css/macro';
-import { COLOR, COLOR_RGB } from '@org/utils';
+import { css, cx } from '@emotion/css/macro';
+import { COLOR, COLOR_RGB, mediaTablet } from '@org/utils';
 function HeaderCategory() {
   const { menu, subMenu: subMenuActive } = useAppSelector((state) => state.activeMenu);
 
@@ -65,7 +65,17 @@ function HeaderCategory() {
     });
 
   return (
-    <S.HeaderCategory className='flex gap-2 px-[10rem]  py-4'>
+    <S.HeaderCategory
+      className={cx(
+        'flex gap-2 px-[10rem] py-4',
+        css`
+          ${[mediaTablet]} {
+            padding-left: 5rem;
+            padding-right: 5rem;
+          }
+        `,
+      )}
+    >
       {renderMenu(menuCategory)}
     </S.HeaderCategory>
   );

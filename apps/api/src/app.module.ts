@@ -50,6 +50,9 @@ import { CollaborationModule } from './modules/collaboration/collaboration.modul
 import { CollaborationSubjectModule } from './modules/collaboration-subject/collaboration-subject.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { LessonsModule } from './modules/lessons/lessons.module';
+import { DistrictsModule } from './modules/provinces/districts/districts.module';
+import { ProvinceModule } from './modules/provinces/province/province.module';
+import { WardsModule } from './modules/provinces/wards/wards.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -125,6 +128,9 @@ import { LessonsModule } from './modules/lessons/lessons.module';
     CollaborationSubjectModule,
     PaymentModule,
     LessonsModule,
+    ProvinceModule,
+    DistrictsModule,
+    WardsModule,
   ],
 })
 export class AppModule {}

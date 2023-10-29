@@ -21,13 +21,23 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
   async create(createDto: any): Promise<T[]> {
     return this.repository.save(this.repository.create(createDto));
   }
-  async findManyActive(status = 1): Promise<T[]> {
+  async findManyActive(status = 1, relations?: IRelations[] | string[]): Promise<T[]> {
     const queryBuilder: SelectQueryBuilder<T> = this.repository.createQueryBuilder('entity');
 
     const query = queryBuilder;
+    if (relations && relations?.length > 0) {
+      relations.forEach((field: string | IRelations) => {
+        if (typeof field === 'string') {
+          queryBuilder.leftJoinAndSelect(`entity.${field}`, field);
+        } else {
+          queryBuilder.leftJoinAndSelect(`entity.${field.field}`, field.entity);
+        }
+      });
+    }
     if (status) {
       query.where(`entity.status = :status`, { status });
     }
+
     return query.getMany();
   }
 

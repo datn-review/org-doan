@@ -25,8 +25,12 @@ export function Select({ label, onChange, ...rest }: ISelect) {
       <SelectBase
         className={cx(
           css`
-            min-width: 6em;
+            min-width: 100%;
             min-height: 3.8rem;
+            .ant-select-selector {
+              min-width: 100%;
+              min-height: 3.8rem;
+            }
           `,
           rest.className,
         )}

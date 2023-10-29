@@ -37,6 +37,10 @@ export function AntdProvider({ children }: PropsWithChildren) {
             colorPrimary: COLOR.Primary,
             algorithm: true,
           },
+          DatePicker: {
+            colorPrimary: COLOR.Primary,
+            algorithm: true,
+          },
         },
       }}
     >

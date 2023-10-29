@@ -3,7 +3,7 @@ import { BoxCenter, Col, Row, Space } from '@org/ui';
 import { COLOR } from '@org/utils';
 import React from 'react';
 const cssTextSection = css`
-  font-size: 30px;
+  font-size: 2.6rem;
   color: ${COLOR.Primary};
   font-weight: 700;
   padding: 10px 0;

@@ -9,6 +9,13 @@ export const CertificationAPI = baseAuthSplitApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getCertificationActive: builder.query({
+      query: (params) => ({
+        url: '/certifications/active',
+        params: params,
+        method: 'GET',
+      }),
+    }),
     createCertification: builder.mutation({
       query: (body) => ({
         url: '/certifications',
@@ -45,4 +52,5 @@ export const {
   useCreateCertificationMutation,
   useDeleteCertificationMutation,
   useLazyFindCertificationQuery,
+  useGetCertificationActiveQuery,
 } = CertificationAPI;

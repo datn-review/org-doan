@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
-import { HEADLINES, TEXTS } from "@org/utils";
+import styled from '@emotion/styled';
+import { HEADLINES, TEXTS } from '@org/utils';
 export const Wrapper = styled.div`
   h1,
   .H1 {
@@ -60,5 +60,10 @@ export const Wrapper = styled.div`
     font-size: ${TEXTS.TextBody2.FontSize};
     font-weight: ${TEXTS.TextBody2.FontWeight};
     line-height: ${TEXTS.TextBody2.LineHeight};
+  }
+  .section {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
   }
 `;

@@ -111,19 +111,20 @@ export const SiteMap = {
     menu: 'tutor',
     roles: [],
   },
-  ClassNew: {
-    path: '/class-new',
-    menu: 'class-new',
-    roles: [],
-  },
+
   LookForTutor: {
     path: '/look-for-tutor',
     menu: 'look-for-tutor',
     roles: [],
   },
-  MangeClass: {
-    path: '/manage-class',
+  TutorClass: {
+    path: '/tutor-class',
     menu: 'manage-class',
+    roles: [],
+  },
+  ClassNew: {
+    path: '/class-new',
+    menu: 'class-new',
     roles: [],
   },
 };
