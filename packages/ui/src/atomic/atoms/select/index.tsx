@@ -7,6 +7,7 @@ interface ISelect extends SelectProps {
   label?: string;
   name?: string;
   onChange?: (value: any) => void;
+  [key: string]: any;
 }
 export function Select({ label, onChange, ...rest }: ISelect) {
   return (

@@ -24,14 +24,17 @@ import {
   DatePicker,
   DatePickerForm,
   TYPE_BUTTON,
+  CascaderPanelForm,
+  TimeAvailabilityForm,
 } from '@org/ui';
-import { SiteMap, formatData } from '@org/utils';
-import { useEffect, useMemo } from 'react';
+import { COLOR, SiteMap, formatData } from '@org/utils';
+import { useEffect, useMemo, useState } from 'react';
 import { Else, If, Then } from 'react-if';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AddressForm } from '@org/core';
 import * as yup from 'yup';
 import dayjs from 'dayjs';
+import { Editor } from '@org/editor';
 const schema = yup.object({
   province: yup.number().required(i18next.t('required.field')),
   district: yup.number().required(i18next.t('required.field')),
@@ -47,6 +50,8 @@ const dataInit: any = {
   descriptionEN: '',
   status: 1,
   skill: [],
+  per: 1,
+  timeAvailability: [],
 };
 const dataTime = [
   {
@@ -75,6 +80,21 @@ const dataTime = [
   },
 ];
 
+const day = [
+  {
+    value: 1,
+    label: `${i18next.t('month')}`,
+  },
+  {
+    value: 2,
+    label: `${i18next.t('week')}`,
+  },
+  {
+    value: 3,
+    label: `${i18next.t('day')}`,
+  },
+];
+
 function LookForTutorApp() {
   const methods = useForm<any>({
     defaultValues: dataInit,
@@ -86,6 +106,7 @@ function LookForTutorApp() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
   const { data: dataSkills } = useGetSkillsActiveQuery({});
   const { data: dataCertification } = useGetCertificationActiveQuery({});
 
@@ -123,6 +144,7 @@ function LookForTutorApp() {
                     name='content'
                     label='Mô tả chi tiết *'
                   />
+                  <Editor />
                 </Col>
                 <Col span={8}>
                   <SelectForm
@@ -173,6 +195,36 @@ function LookForTutorApp() {
                     label={t('Certification')}
                     placeholder='Please Select Certification'
                     options={certification}
+                  />
+                </Col>
+
+                <Col span={8}>
+                  <InputForm
+                    name='fee'
+                    label={t('fee')}
+                    placeholder='Ex: 300000'
+                  />
+                </Col>
+                <Col span={8}>
+                  <SelectForm
+                    size='large'
+                    name='per'
+                    label={t('per')}
+                    placeholder='Please select per'
+                    options={day}
+                  />
+                </Col>
+                <Col span={8}>
+                  <InputForm
+                    name='fee-week'
+                    label={t('fee/week')}
+                    placeholder='Ex: 3'
+                  />
+                </Col>
+                <Col span={24}>
+                  <TimeAvailabilityForm
+                    name='timeAvailability'
+                    label={'Time Availability'}
                   />
                 </Col>
               </Row>

@@ -15,3 +15,5 @@ export * from './select';
 export * from './upload-image';
 export * from './logo';
 export * from './date-picker';
+export * from './cascader-panel';
+export * from './time-availability';
