@@ -86,7 +86,7 @@ function HeaderUser() {
   };
 
   return (
-    <S.HeaderUser className='flex justify-between items-center px-[10rem] '>
+    <S.HeaderUser className='flex justify-between items-center section-layout'>
       <Link to='/'>
         {/* <img
           src='/assets/image/logo.jpg'

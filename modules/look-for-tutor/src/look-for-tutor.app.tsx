@@ -5,6 +5,7 @@ import {
   useAppDispatch,
   useAppSelector,
   useGetCertificationActiveQuery,
+  useGetGradeLevelActiveQuery,
   useGetSkillsActiveQuery,
   useGetSubjectActiveQuery,
   useLazyGetSkillsQuery,
@@ -26,6 +27,9 @@ import {
   TYPE_BUTTON,
   CascaderPanelForm,
   TimeAvailabilityForm,
+  TextAreaForm,
+  TextSection,
+  BoxCenter,
 } from '@org/ui';
 import { COLOR, SiteMap, formatData } from '@org/utils';
 import { useEffect, useMemo, useState } from 'react';
@@ -47,8 +51,8 @@ const dataInit: any = {
   province: undefined,
   district: undefined,
   ward: undefined,
-  descriptionEN: '',
-  status: 1,
+  // descriptionEN: '',
+  // status: 1,
   skill: [],
   per: 1,
   timeAvailability: [],
@@ -106,9 +110,11 @@ function LookForTutorApp() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [requestDetail, setRequestDetail] = useState('');
 
   const { data: dataSkills } = useGetSkillsActiveQuery({});
   const { data: dataCertification } = useGetCertificationActiveQuery({});
+  const { data: dataGradeLevel } = useGetGradeLevelActiveQuery({});
 
   const { data: dataSubject } = useGetSubjectActiveQuery({});
   const name = getNameLanguage('nameVI', 'nameEN');
@@ -120,6 +126,10 @@ function LookForTutorApp() {
     return formatData({ data: dataCertification, name });
   }, [name, dataCertification]);
 
+  const gradeLevel = useMemo(() => {
+    return formatData({ data: dataGradeLevel, name });
+  }, [name, dataGradeLevel]);
+
   const subjects = useMemo(() => {
     return formatData({ data: dataSubject, name });
   }, [name, dataSubject]);
@@ -130,23 +140,53 @@ function LookForTutorApp() {
     };
   }, []);
   return (
-    <>
+    <Space className={'section-layout'}>
       <Space className={'look-for-tutor section'}>
         <If condition={isAuthenticated}>
           <Then>
             <FormProvider {...methods}>
               {/* <H2>{t('find.tutor')}</H2> */}
-
-              <H3>Mô tả yêu cầu tìm gia sư</H3>
+              <BoxCenter>
+                <TextSection>Mô tả yêu cầu tìm gia sư</TextSection>
+              </BoxCenter>
               <Row gutter={[10, 10]}>
                 <Col span={24}>
-                  <InputForm
-                    name='content'
-                    label='Mô tả chi tiết *'
+                  <TextAreaForm
+                    name='request_summary'
+                    label={'Tóm Tắt Yêu Cầu'}
                   />
-                  <Editor />
                 </Col>
-                <Col span={8}>
+                <Col span={24}>
+                  <label
+                    className={css`
+                      display: block;
+                      padding-bottom: 0.3rem;
+                      font-size: 1.3rem;
+                    `}
+                  >
+                    Mô tả chi tiết yêu cầu
+                  </label>
+                  <Editor
+                    onChange={(value) => setRequestDetail(value)}
+                    defaultValue={''}
+                  />
+                </Col>
+                <Col
+                  span={24}
+                  lg={6}
+                >
+                  <SelectForm
+                    size='large'
+                    name='grade'
+                    label={t('grade')}
+                    options={gradeLevel}
+                    placeholder='Please Select grade'
+                  />
+                </Col>
+                <Col
+                  span={24}
+                  lg={8}
+                >
                   <SelectForm
                     size='large'
                     mode='multiple'
@@ -156,14 +196,20 @@ function LookForTutorApp() {
                     placeholder='Please Select Subject'
                   />
                 </Col>
-                <Col span={8}>
+                <Col
+                  span={24}
+                  lg={6}
+                >
                   <DatePickerForm
                     name='time_start'
                     label='Time Start'
                     size={'large'}
                   />
                 </Col>
-                <Col span={8}>
+                <Col
+                  span={24}
+                  lg={4}
+                >
                   <SelectForm
                     size='large'
                     name='time_hours'
@@ -175,9 +221,14 @@ function LookForTutorApp() {
               </Row>
 
               <AddressForm methods={methods} />
-              <H3>Yêu Cầu Gia Sư</H3>
+              <BoxCenter>
+                <TextSection>Yêu Cầu Giá Sư</TextSection>
+              </BoxCenter>
               <Row gutter={[10, 0]}>
-                <Col span={12}>
+                <Col
+                  span={24}
+                  lg={12}
+                >
                   <SelectForm
                     size='large'
                     mode='multiple'
@@ -187,7 +238,10 @@ function LookForTutorApp() {
                     placeholder='Please Select Skill'
                   />
                 </Col>
-                <Col span={12}>
+                <Col
+                  span={24}
+                  lg={12}
+                >
                   <SelectForm
                     size='large'
                     mode='multiple'
@@ -198,14 +252,20 @@ function LookForTutorApp() {
                   />
                 </Col>
 
-                <Col span={8}>
+                <Col
+                  span={24}
+                  lg={8}
+                >
                   <InputForm
                     name='fee'
                     label={t('fee')}
                     placeholder='Ex: 300000'
                   />
                 </Col>
-                <Col span={8}>
+                <Col
+                  span={24}
+                  lg={8}
+                >
                   <SelectForm
                     size='large'
                     name='per'
@@ -214,7 +274,10 @@ function LookForTutorApp() {
                     options={day}
                   />
                 </Col>
-                <Col span={8}>
+                <Col
+                  span={24}
+                  lg={8}
+                >
                   <InputForm
                     name='fee-week'
                     label={t('fee/week')}
@@ -237,6 +300,7 @@ function LookForTutorApp() {
                     '🚀 ~ file: look-for-tutor.app.tsx:144 ~ onClick={methods.handleSubmit ~ value:',
                     value,
                   );
+                  console.log(requestDetail);
                 })}
               >
                 {t('button.save')}
@@ -250,7 +314,7 @@ function LookForTutorApp() {
           </Else>
         </If>
       </Space>
-    </>
+    </Space>
   );
 }
 

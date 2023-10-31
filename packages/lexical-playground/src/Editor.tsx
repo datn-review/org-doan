@@ -73,12 +73,22 @@ import YouTubePlugin from './plugins/YouTubePlugin';
 import PlaygroundEditorTheme from './themes/PlaygroundEditorTheme';
 import ContentEditable from './ui/ContentEditable';
 import Placeholder from './ui/Placeholder';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html';
+import useLayoutEffect from './shared/useLayoutEffect';
+import { $getRoot, $insertNodes } from 'lexical';
 
 const skipCollaborationInit =
   // @ts-ignore
   window.parent != null && window.parent.frames.right === window;
 
-export default function Editor(): JSX.Element {
+export default function Editor({
+  onChange,
+  defaultValue = '',
+}: {
+  onChange: (value: string) => void;
+  defaultValue: string;
+}): JSX.Element {
   const { historyState } = useSharedHistoryContext();
   const {
     settings: {
@@ -101,8 +111,7 @@ export default function Editor(): JSX.Element {
     : isRichText
     ? 'Enter some rich text...'
     : 'Enter some plain text...';
-  console.log('🚀 ~ file: Editor.tsx:102 ~ Editor ~ isRichText:', isRichText);
-  const placeholder = <Placeholder>{text}</Placeholder>;
+  const placeholder = <Placeholder>{''}</Placeholder>;
   const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
   const [isSmallWidthViewport, setIsSmallWidthViewport] = useState<boolean>(false);
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
@@ -121,6 +130,38 @@ export default function Editor(): JSX.Element {
     },
     theme: PlaygroundEditorTheme,
   };
+  const [editor] = useLexicalComposerContext();
+  useLayoutEffect(() => {
+    return editor.registerUpdateListener(
+      ({ editorState, dirtyElements, dirtyLeaves, prevEditorState, tags }) => {
+        if ((dirtyElements.size === 0 && dirtyLeaves.size === 0) || tags.has('history-merge')) {
+          return;
+        }
+        editor.update(() => {
+          const htmlString = $generateHtmlFromNodes(editor, null);
+          onChange && onChange(htmlString);
+          // console.log('🚀 ~ file: Editor.tsx:130 ~ returneditor.update ~ htmlString:', htmlString);
+        });
+      },
+    );
+  }, [editor]);
+
+  useEffect(() => {
+    editor.update(() => {
+      // In the browser you can use the native DOMParser API to parse the HTML string.
+      const parser = new DOMParser();
+      const dom = parser.parseFromString(defaultValue, 'text/html');
+
+      // Once you have the DOM instance it's easy to generate LexicalNodes.
+      const nodes = $generateNodesFromDOM(editor, dom);
+
+      // Select the root
+      $getRoot().select();
+
+      // Insert them at a selection.
+      $insertNodes(nodes);
+    });
+  }, [editor, defaultValue]);
 
   useEffect(() => {
     const updateViewPortWidth = () => {

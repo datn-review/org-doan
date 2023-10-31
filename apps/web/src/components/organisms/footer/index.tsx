@@ -31,7 +31,7 @@ export function Footer() {
           background-size: 100%;
           min-height: 465px;
         `,
-        'px-[10rem] py-[2rem]',
+        'section-layout py-[2rem]',
       )}
     >
       {/* <Row>
@@ -75,7 +75,11 @@ export function Footer() {
       ></Space>
 
       <Row gutter={10}>
-        <Col span={12}>
+        <Col
+          span={24}
+          sm={14}
+          md={12}
+        >
           <Space className={cssTextSection}>SmartTutor</Space>
           {/* <img
               src='/assets/image/logo.jpg'
@@ -110,35 +114,52 @@ export function Footer() {
             </b>
           </Space>
         </Col>
-        <Col span={6}>
-          <Space className={cssTextSection}>Tải Ứng Dụng</Space>
-          <Space className={'flex'}>
-            <img
-              src='https://static-xxx.vuihoc.vn/theme/vuihoc/imgs/dowload_appstore.png'
-              className='icon_dowload_app'
-              alt='dowload app vuihoc in Appstore'
-            />
-            <img
-              src='https://static-xxx.vuihoc.vn/theme/vuihoc/imgs/dowload_playstore.png'
-              className='icon_dowload_app'
-              alt='dowload app vuihoc in Playstore'
-            ></img>
-          </Space>
-        </Col>
-        <Col span={6}>
-          <Space className={cssTextSection}>Kết Nối</Space>
-          <Space className={'flex'}>
-            <img
-              src='https://static-xxx.vuihoc.vn/theme/vuihoc/imgs/dowload_appstore.png'
-              className='icon_dowload_app'
-              alt='dowload app vuihoc in Appstore'
-            />
-            <img
-              src='https://static-xxx.vuihoc.vn/theme/vuihoc/imgs/dowload_playstore.png'
-              className='icon_dowload_app'
-              alt='dowload app vuihoc in Playstore'
-            ></img>
-          </Space>
+
+        <Col
+          sm={10}
+          md={12}
+          span={24}
+        >
+          <Row gutter={[0, 20]}>
+            <Col
+              span={12}
+              sm={24}
+              md={12}
+            >
+              <Space className={cssTextSection}>Tải Ứng Dụng</Space>
+              <Space className={'flex'}>
+                <img
+                  src='https://static-xxx.vuihoc.vn/theme/vuihoc/imgs/dowload_appstore.png'
+                  className='icon_dowload_app'
+                  alt='dowload app vuihoc in Appstore'
+                />
+                <img
+                  src='https://static-xxx.vuihoc.vn/theme/vuihoc/imgs/dowload_playstore.png'
+                  className='icon_dowload_app'
+                  alt='dowload app vuihoc in Playstore'
+                ></img>
+              </Space>
+            </Col>
+            <Col
+              span={12}
+              sm={24}
+              md={12}
+            >
+              <Space className={cssTextSection}>Kết Nối</Space>
+              <Space className={'flex'}>
+                <img
+                  src='https://static-xxx.vuihoc.vn/theme/vuihoc/imgs/dowload_appstore.png'
+                  className='icon_dowload_app'
+                  alt='dowload app vuihoc in Appstore'
+                />
+                <img
+                  src='https://static-xxx.vuihoc.vn/theme/vuihoc/imgs/dowload_playstore.png'
+                  className='icon_dowload_app'
+                  alt='dowload app vuihoc in Playstore'
+                ></img>
+              </Space>
+            </Col>
+          </Row>
         </Col>
       </Row>
     </footer>

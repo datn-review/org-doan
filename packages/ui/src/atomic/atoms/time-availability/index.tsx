@@ -82,75 +82,94 @@ export function TimeAvailability({ label, onChange, value, ...rest }: any) {
           {label}
         </label>
       )}
-      <>
-        {timeAvailabilitys.map((day: Option) => {
-          return (
-            <Space
-              className={css`
-                display: flex;
-                /* width: 100%; */
-                /* flex-wrap: wrap; */
-              `}
-            >
-              <Space
-                className={css`
-                  width: 10rem;
-                `}
-              >
-                {day.label}
-              </Space>
+      <Space
+        className={cx(
+          css`
+            overflow: auto;
+            overflow-y: hidden;
+            border: 1px #fff s;
+          `,
+          'scroll-customer',
+        )}
+      >
+        <Space
+          className={css`
+            width: 820px;
+            overflow: auto;
+            overflow-y: hidden;
+          `}
+        >
+          {timeAvailabilitys.map((day: Option) => {
+            return (
               <Space
                 className={css`
                   display: flex;
-                  width: 100%;
-                  flex-wrap: wrap;
+                  /* width: 100%; */
+                  /* flex-wrap: wrap; */
                 `}
               >
-                {day?.children?.map((dayhours) => {
-                  const value = `${day?.value}__${dayhours?.value}` as string;
-                  const isChecked = timeAvailabilityCheck?.includes(value);
-                  const bg = isChecked ? `${COLOR.Primary} !important` : 'efefef';
-                  const color = isChecked ? `${COLOR.White} !important` : '#ccc';
+                <Space
+                  className={css`
+                    width: 11rem;
+                    border: solid 1px #ccc;
+                    padding-left: 1rem;
+                  `}
+                >
+                  {day.label}
+                </Space>
+                <Space
+                  className={css`
+                    display: flex;
+                    width: 100%;
+                    flex-wrap: wrap;
+                  `}
+                >
+                  {day?.children?.map((dayhours) => {
+                    const value = `${day?.value}__${dayhours?.value}` as string;
+                    const isChecked = timeAvailabilityCheck?.includes(value);
+                    const bg = isChecked ? `${COLOR.Primary} !important` : 'efefef';
+                    const color = isChecked ? `${COLOR.White} !important` : '#ccc';
 
-                  return (
-                    <Space
-                      className={css`
-                        text-align: center;
-                        cursor: pointer;
-                        user-select: none;
-                        background-color: ${bg};
-                        width: 30px;
-                        height: 30px;
-                        line-height: 30px;
-                        font-weight: 600;
-                        text-align: center;
-                        color: ${color};
-                        border: solid 1px #ccc;
-                        background: ${bg};
-                        user-select: none;
-                        touch-action: none;
-                        &:hover {
-                          background: ${COLOR.Secondary};
-                          color: white;
-                        }
-                      `}
-                      onMouseDown={() => handleCheck(value)}
-                      // onMouseOver={() => handleCheck(value)}
-                      onMouseOver={(e) => {
-                        if (e.buttons == 1) {
-                          handleCheck(value);
-                        }
-                      }}
-                    >
-                      {dayhours.label}
-                    </Space>
-                  );
-                })}
+                    return (
+                      <Space
+                        className={css`
+                          text-align: center;
+                          cursor: pointer;
+                          user-select: none;
+                          background-color: ${bg};
+                          width: 30px;
+                          height: 30px;
+                          line-height: 30px;
+                          font-weight: 600;
+                          text-align: center;
+                          color: ${color};
+                          border: solid 1px #ccc;
+                          background: ${bg};
+                          user-select: none;
+                          touch-action: none;
+                          &:hover {
+                            background: ${COLOR.Secondary};
+                            color: white;
+                          }
+                        `}
+                        onMouseDown={() => handleCheck(value)}
+                        // onMouseOver={() => handleCheck(value)}
+                        onMouseOver={(e) => {
+                          if (e.buttons == 1) {
+                            handleCheck(value);
+                          }
+                        }}
+                      >
+                        {dayhours.label}
+                      </Space>
+                    );
+                  })}
+                </Space>
               </Space>
-            </Space>
-          );
-        })}
-      </>
+            );
+          })}
+        </Space>
+      </Space>
     </Space>
   );
 }

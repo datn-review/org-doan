@@ -13,10 +13,11 @@ const mq: Record<Media, string> | any = breakpoints
   }))
   .reduce((a, v) => ({ ...a, [v.key]: v.value }), {});
 
-export const mediaPhone: string = mq?.[Media.Phone].value;
-export const mediaMiniTablet: string = mq?.[Media.MiniTablet].value;
-export const mediaTablet: string = mq?.[Media.Tablet].value;
-export const mediaDesktop: string = mq?.[Media.Desktop].value;
+export const mediaPhone: string = mq?.[Media.Phone];
+export const mediaMiniTablet: string = mq?.[Media.MiniTablet];
+export const mediaTablet: string = mq?.[Media.Tablet];
+
+export const mediaDesktop: string = mq?.[Media.Desktop];
 
 // export const mediaPhone = (cssArg: Emotion['css']) => css`
 //   @media only screen and (max-width: 576px) {

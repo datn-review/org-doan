@@ -65,17 +65,7 @@ function HeaderCategory() {
     });
 
   return (
-    <S.HeaderCategory
-      className={cx(
-        'flex gap-2 px-[10rem] py-4',
-        css`
-          ${[mediaTablet]} {
-            padding-left: 5rem;
-            padding-right: 5rem;
-          }
-        `,
-      )}
-    >
+    <S.HeaderCategory className={cx('flex gap-2 section-layout py-4')}>
       {renderMenu(menuCategory)}
     </S.HeaderCategory>
   );

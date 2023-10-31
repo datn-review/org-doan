@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { HEADLINES, TEXTS } from '@org/utils';
+import { HEADLINES, TEXTS, mediaMiniTablet, mediaPhone, mediaTablet } from '@org/utils';
 export const Wrapper = styled.div`
   h1,
   .H1 {
@@ -65,5 +65,48 @@ export const Wrapper = styled.div`
     background-color: white;
     padding: 2rem;
     border-radius: 0.5rem;
+  }
+  .section-layout {
+    padding-left: 10rem;
+    padding-right: 10rem;
+
+    ${mediaTablet} {
+      padding-left: 5rem;
+      padding-right: 5rem;
+    }
+    ${mediaMiniTablet} {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+    ${mediaPhone} {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+  }
+
+  .scroll-customer {
+    padding-bottom: 1rem;
+  }
+  .scroll-customer::-webkit-scrollbar {
+    height: 10px !important;
+    cursor: pointer;
+    padding-top: 10px;
+  }
+
+  /* Track */
+  .scroll-customer::-webkit-scrollbar-track {
+    /* box-shadow: inset 0 0 5px grey; */
+    border-radius: 10px;
+    padding-top: 10px;
+  }
+
+  /* Handle */
+  .scroll-customer::-webkit-scrollbar-thumb {
+    background: rgb(211, 210, 210);
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .scroll-customer::-webkit-scrollbar-thumb:hover {
+    background: #9b9b9b;
   }
 `;

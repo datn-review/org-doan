@@ -1,58 +1,13 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-
-@import 'https://fonts.googleapis.com/css?family=Reenie+Beanie';
-
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background: #eee;
-  padding: 0 20px;
-}
-
-header {
-  max-width: 580px;
-  margin: auto;
-  position: relative;
-  display: flex;
-  justify-content: center;
-}
-
-header a {
-  max-width: 220px;
-  margin: 20px 0 0 0;
-  display: block;
-}
-
-header img {
-  display: block;
-  height: 100%;
-  width: 100%;
-}
-
-header h1 {
-  text-align: left;
-  color: #333;
-  display: inline-block;
-  margin: 20px 0 0 0;
-}
-
 .editor-shell {
-  margin: 20px auto;
+  margin: 0;
   border-radius: 2px;
-  max-width: 1100px;
+  /* max-width: 1100px; */
   color: #000;
   position: relative;
   line-height: 1.7;
   font-weight: 400;
+  border: 1px solid #dfdfdf;
+  border-radius: 8px;
 }
 
 .editor-shell .editor-container {
@@ -1439,6 +1394,30 @@ button.action-button:disabled {
   position: sticky;
   top: 0;
   z-index: 2;
+  border-bottom: 2px solid #dfdfdf;
+  overflow-y: hidden;
+}
+.toolbar::-webkit-scrollbar {
+  height: 8px !important;
+  cursor: pointer;
+}
+
+/* Track */
+.toolbar::-webkit-scrollbar-track {
+  /* box-shadow: inset 0 0 5px grey; */
+  border-radius: 10px;
+}
+
+/* Handle */
+.toolbar::-webkit-scrollbar-thumb {
+  background: rgb(211, 210, 210);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* Handle on hover */
+.toolbar::-webkit-scrollbar-thumb:hover {
+  background: #9b9b9b;
 }
 
 button.toolbar-item {
@@ -1585,24 +1564,12 @@ button.toolbar-item.active i {
 
 .sticky-note.yellow {
   border-top: 1px solid #fdfd86;
-  background: linear-gradient(
-    135deg,
-    #ffff88 81%,
-    #ffff88 82%,
-    #ffff88 82%,
-    #ffffc6 100%
-  );
+  background: linear-gradient(135deg, #ffff88 81%, #ffff88 82%, #ffff88 82%, #ffffc6 100%);
 }
 
 .sticky-note.pink {
   border-top: 1px solid #e7d1e4;
-  background: linear-gradient(
-    135deg,
-    #f7cbe8 81%,
-    #f7cbe8 82%,
-    #f7cbe8 82%,
-    #e7bfe1 100%
-  );
+  background: linear-gradient(135deg, #f7cbe8 81%, #f7cbe8 82%, #f7cbe8 82%, #e7bfe1 100%);
 }
 
 .sticky-note-container.dragging {

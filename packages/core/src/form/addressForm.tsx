@@ -47,14 +47,20 @@ export function AddressForm({ methods }: any) {
 
   return (
     <Row gutter={[10, 0]}>
-      <Col span={24}>
+      <Col
+        span={12}
+        lg={24}
+      >
         <InputForm
           name='address'
           label='Địa Chỉ Chi Tiết*'
         />
       </Col>
 
-      <Col span={8}>
+      <Col
+        span={12}
+        lg={8}
+      >
         <SelectForm
           placeholder='Select Provice'
           label={'Province'}
@@ -63,7 +69,10 @@ export function AddressForm({ methods }: any) {
           size='large'
         />
       </Col>
-      <Col span={8}>
+      <Col
+        span={12}
+        lg={8}
+      >
         <SelectForm
           placeholder='Select District'
           label={'District'}
@@ -72,7 +81,10 @@ export function AddressForm({ methods }: any) {
           size='large'
         />
       </Col>
-      <Col span={8}>
+      <Col
+        span={12}
+        lg={8}
+      >
         <SelectForm
           placeholder='Select Ward'
           label={'Ward'}
