@@ -27,11 +27,12 @@ export class UsersService {
   ) {}
 
   async create(createProfileDto: CreateUserDto): Promise<User> {
-    console.log(createProfileDto?.photo);
+    console.log('LOGG', createProfileDto?.photo);
     let photo = { id: null };
     if (createProfileDto?.photo) {
       photo = await this.filesService.uploadFile(createProfileDto?.photo);
     }
+    console.log('🚀 ~ file: users.service.ts:35 ~ UsersService ~ create ~ photo:', photo);
     return this.usersRepository.save(
       this.usersRepository.create({ ...createProfileDto, photo: photo?.id || null }),
     );

@@ -5,6 +5,9 @@ import { Space, Table } from '@org/ui';
 import { RolesEnum, TypeRolesEnum } from '@org/utils';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import StepRegister from './atomic/molecules/step-register';
+import TutorClass from './atomic/molecules/tutor-class-incognito';
+import Banner from './atomic/molecules/banner/Banner';
 function HomeApp() {
   useTranslation();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
@@ -17,11 +20,12 @@ function HomeApp() {
     };
   }, []);
   return (
-    <div>
-      Home App
-      {/* <Table /> */}
+    <>
       <Space>
-        <Authorization
+        <Banner />
+        <StepRegister />
+        <TutorClass />
+        {/* <Authorization
           type={TypeRolesEnum.IF_ANY_GRANTED}
           roles={[RolesEnum.WEB_ADMIN]}
         >
@@ -32,9 +36,9 @@ function HomeApp() {
           roles={[RolesEnum.WEB_STAFF]}
         >
           WEB_STAFF
-        </Authorization>
+        </Authorization> */}
       </Space>
-    </div>
+    </>
   );
 }
 

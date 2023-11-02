@@ -42,8 +42,8 @@ type IUpdate = {
 
 const schema = (idEdit: number) =>
   yup.object({
-    nameVI: yup.string().required(i18next.t('required.name')),
-    nameEN: yup.string().required(i18next.t('required.name')),
+    nameVI: yup.string().required(i18next.t('required.field')),
+    nameEN: yup.string().required(i18next.t('required.field')),
     descriptionVI: yup.string(),
     descriptionEN: yup.string(),
     status: yup.number(),

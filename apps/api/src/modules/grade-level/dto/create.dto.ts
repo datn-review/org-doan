@@ -1,10 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateDto {
+  @IsNotEmpty()
+  nameVI: string;
+
   @ApiProperty({ type: 'string', example: '1' })
   @IsNotEmpty()
-  name: string;
+  nameEN: string;
+
+  @ApiProperty({ type: 'string', example: '1' })
+  @IsOptional()
+  descriptionVI: string;
+
+  @ApiProperty({ type: 'string', example: '1' })
+  @IsOptional()
+  descriptionEN: string;
 
   @IsNotEmpty()
   @ApiProperty({ type: Number, example: 1 })

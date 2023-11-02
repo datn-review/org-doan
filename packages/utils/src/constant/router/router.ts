@@ -98,4 +98,32 @@ export const SiteMap = {
       roles: [RolesEnum.WEB_ADMIN],
     },
   },
+  Profile: {
+    Me: {
+      path: '/profile',
+    },
+    path: '/profile/:id',
+    menu: 'profile',
+    roles: [],
+  },
+  Tutor: {
+    path: '/tutor',
+    menu: 'tutor',
+    roles: [],
+  },
+  ClassNew: {
+    path: '/class-new',
+    menu: 'class-new',
+    roles: [],
+  },
+  LookForTutor: {
+    path: '/look-for-tutor',
+    menu: 'look-for-tutor',
+    roles: [],
+  },
+  MangeClass: {
+    path: '/manage-class',
+    menu: 'manage-class',
+    roles: [],
+  },
 };

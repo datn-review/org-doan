@@ -35,7 +35,7 @@ import { Upsert } from './up-sert/Upsert';
 function GradeLevel() {
   const tableInstance = useTable({
     initialSortValue: {
-      sortBy: 'name',
+      sortBy: 'nameVI',
       sortDirection: 'asc',
     },
   });
@@ -87,9 +87,15 @@ function GradeLevel() {
 
   const columns = [
     {
-      key: 'name ',
-      title: t('name'),
-      dataIndex: 'name',
+      key: 'nameVI',
+      title: t('nameVI'),
+      dataIndex: 'nameVI',
+      sorter: true,
+    },
+    {
+      key: 'nameEN',
+      title: t('nameEN'),
+      dataIndex: 'nameEN',
       sorter: true,
     },
 

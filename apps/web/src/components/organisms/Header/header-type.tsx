@@ -6,6 +6,7 @@ export type MenuItem = {
   icon: ReactNode;
   id: string;
   subMenu: any[];
+  isHide?: boolean;
 };
 
 export type IMenuIcon = {

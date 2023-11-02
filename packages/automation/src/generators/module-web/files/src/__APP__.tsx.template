@@ -1,0 +1,12 @@
+import React from 'react';
+import { <%= nameUpCap %>Provider } from './<%= name %>.context';
+import <%= nameUpCap %>App from './<%= name %>.app';
+import './<%= name %>.styled.css';
+
+export function <%= nameUpCap %>Page() {
+  return (
+    <<%= nameUpCap %>Provider>
+      <<%= nameUpCap %>App />
+    </<%= nameUpCap %>Provider>
+  );
+}
