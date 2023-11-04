@@ -31,7 +31,13 @@ const showErrorOverlay = (err: Event) => {
 window.addEventListener('error', showErrorOverlay);
 window.addEventListener('unhandledrejection', ({ reason }) => showErrorOverlay(reason));
 
-function AppEditor({ ...props }: { onChange: (value: string) => void; defaultValue: string }) {
+function AppEditor({
+  ...props
+}: {
+  onChange?: (value: string) => void;
+  defaultValue: string;
+  isShow?: boolean;
+}) {
   return <App {...props} />;
 }
 export default AppEditor;

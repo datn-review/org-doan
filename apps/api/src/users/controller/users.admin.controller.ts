@@ -49,7 +49,7 @@ export class UsersAdminController {
   create(
     @UploadedFile() photo: Express.Multer.File,
     @Body() createProfileDto: CreateUserDto,
-  ): Promise<User> {
+  ): Promise<User[]> {
     return this.usersService.create({
       ...createProfileDto,
       photo: photo,
@@ -67,12 +67,12 @@ export class UsersAdminController {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('status', new DefaultValuePipe(10), ParseIntPipe) status: number,
+    @Query('searchName', new DefaultValuePipe('')) searchName: string,
     @Query('sortBy', new DefaultValuePipe(10)) sortBy: string,
     @Query('sortDirection', new DefaultValuePipe(10)) sortDirection: string,
-
-    @Query('status', new DefaultValuePipe(10), ParseIntPipe) status: number,
-
-    @Query('searchName', new DefaultValuePipe('')) searchName: string,
+    @Query('fieldSearch', new DefaultValuePipe(['lastName, firstName']))
+    fieldSearch: string | string[],
   ): Promise<InfinityPaginationResultType<User>> {
     if (limit > 50) {
       limit = 50;
@@ -81,14 +81,19 @@ export class UsersAdminController {
     return await this.usersService.findManyWithPagination({
       page,
       limit,
-      status,
       sortBy,
       sortDirection,
-      role: RoleEnum.WEB_ADMIN,
+      status,
       searchName,
+      fieldSearch,
+      where: [
+        {
+          field: 'role',
+          value: RoleEnum.WEB_ADMIN,
+        },
+      ],
     });
   }
-
   @SerializeOptions({
     groups: ['admin'],
   })
@@ -109,7 +114,7 @@ export class UsersAdminController {
     @Param('id') id: number,
     @Body() updateProfileDto: UpdateUserDto,
     @UploadedFile() photo: Express.Multer.File,
-  ): Promise<User> {
+  ): Promise<User[]> {
     return this.usersService.update(id, { ...updateProfileDto, photo: photo });
   }
 

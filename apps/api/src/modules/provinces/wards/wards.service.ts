@@ -11,7 +11,7 @@ export class WardsService extends BaseService<Wards, Repository<Wards>, IParams>
   constructor(@InjectRepository(Wards) repository: Repository<Wards>) {
     super(repository);
   }
-  async findManyActive(
+  async findManyWardActive(
     status = 1,
     relations?: string[] | string[],
     districtsId?: number,

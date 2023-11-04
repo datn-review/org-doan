@@ -55,4 +55,23 @@ export class CreateUserDto {
   status?: Status;
 
   hash?: string | null;
+
+  @IsOptional()
+  @ApiProperty({ type: Array, example: [1] })
+  gradeLevel?: string;
+
+  @IsOptional()
+  @ApiProperty({ type: Array, example: [1] })
+  skills?: string;
+
+  @IsOptional()
+  @ApiProperty({ type: Array, example: [1] })
+  certification?: string;
+  @IsOptional()
+  @ApiProperty({ type: Array, example: [1] })
+  tutorGradeSubject?: string;
+
+  @IsOptional()
+  @ApiProperty({ type: Array, example: [1] })
+  timeAvailability?: string;
 }

@@ -1,5 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Certifications } from 'src/modules/certifications/entities/certifications.entity';
+import { GradeLevel } from 'src/modules/grade-level/entities/grade-level.entity';
 import { Wards } from 'src/modules/provinces/wards/entities/wards.entity';
+import { Skills } from 'src/modules/skills/entities/skills.entity';
+import { Subject } from 'src/modules/subject/entities/subject.entity';
+
 import { User } from 'src/users/entities/user.entity';
 import { EntityHelper } from 'src/utils/entity-helper';
 import {
@@ -7,10 +12,14 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { PostTimeAvailability } from '../post-time-availability/entities/post-time-availability.entity';
 
 @Entity({ name: 'posts' })
 export class Posts extends EntityHelper {
@@ -64,6 +73,25 @@ export class Posts extends EntityHelper {
   type: number;
   @Column({ type: Number, default: 1 })
   status: number;
+
+  @OneToMany(() => PostTimeAvailability, (postTimeAvailability) => postTimeAvailability.posts)
+  postTimeAvailability: PostTimeAvailability[];
+
+  @ManyToMany(() => Skills)
+  @JoinTable()
+  skills: Skills[];
+
+  @ManyToMany(() => Subject)
+  @JoinTable()
+  subjects: Subject[];
+
+  @ManyToMany(() => GradeLevel)
+  @JoinTable()
+  gradeLevels: GradeLevel[];
+
+  @ManyToMany(() => Certifications)
+  @JoinTable()
+  certifications: Certifications[];
 
   @CreateDateColumn()
   createdAt: Date;

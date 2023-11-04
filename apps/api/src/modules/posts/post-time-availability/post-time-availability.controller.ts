@@ -20,13 +20,12 @@ import { Roles } from 'src/roles/roles.decorator';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { InfinityPaginationResultType } from 'src/utils/types/infinity-pagination-result.type';
-import { NullableType } from 'src/utils/types/nullable.type';
 import { PostTimeAvailability } from './entities/post-time-availability.entity';
 
+import { StatusEnum } from 'src/statuses/statuses.enum';
 import { CreatePostTimeAvailabilityDto } from './dto/create.dto';
 import { UpdatePostTimeAvailabilityDto } from './dto/update.dto';
 import { PostTimeAvailabilityService } from './post-time-availability.service';
-import { StatusEnum } from 'src/statuses/statuses.enum';
 
 @ApiBearerAuth()
 @ApiTags('PostTimeAvailability')
@@ -78,6 +77,7 @@ export class PostTimeAvailabilityController {
       sortDirection,
       searchName,
       fieldSearch,
+      relations: ['post_skills'],
     });
   }
 

@@ -10,6 +10,9 @@ import {
   DistrictAPI,
   WardAPI,
   ProvinceAPI,
+  PostsAPI,
+  UserTutorAPI,
+  UserStudentAPI,
 } from './services';
 import { baseAuthSplitApi, baseNoAuthSplitApi } from './services/base-auth-query';
 
@@ -29,6 +32,9 @@ const rootReducer = combineReducers({
   [ProvinceAPI.reducerPath]: ProvinceAPI.reducer,
   [DistrictAPI.reducerPath]: DistrictAPI.reducer,
   [WardAPI.reducerPath]: WardAPI.reducer,
+  [PostsAPI.reducerPath]: PostsAPI.reducer,
+  [UserTutorAPI.reducerPath]: UserTutorAPI.reducer,
+  [UserStudentAPI.reducerPath]: UserStudentAPI.reducer,
 });
 
 export const store = configureStore({

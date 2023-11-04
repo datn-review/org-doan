@@ -1,23 +1,26 @@
+import * as bcrypt from 'bcryptjs';
+import { Exclude, Expose } from 'class-transformer';
+import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
+import { TutorCertification } from 'src/modules/tutor-certification/entities/tutor-certification.entity';
+import { TutorSkills } from 'src/modules/tutor-skills/entities/tutor-skills.entity';
+import { EntityHelper } from 'src/utils/entity-helper';
 import {
-  Column,
   AfterLoad,
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
   Index,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  BeforeInsert,
-  BeforeUpdate,
 } from 'typeorm';
+import { FileEntity } from '../../files/entities/file.entity';
 import { Role } from '../../roles/entities/role.entity';
 import { Status } from '../../statuses/entities/status.entity';
-import { FileEntity } from '../../files/entities/file.entity';
-import * as bcrypt from 'bcryptjs';
-import { EntityHelper } from 'src/utils/entity-helper';
-import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
-import { Exclude, Expose } from 'class-transformer';
 
 @Entity()
 export class User extends EntityHelper {
@@ -87,6 +90,16 @@ export class User extends EntityHelper {
   @Index()
   @Exclude({ toPlainOnly: true })
   hash: string | null;
+
+  @OneToMany(() => TutorSkills, (tutorSkills) => tutorSkills.tutor, {
+    onDelete: 'CASCADE',
+  })
+  tutorSkills: TutorSkills[];
+
+  @OneToMany(() => TutorCertification, (tutorCertification) => tutorCertification.tutor, {
+    onDelete: 'CASCADE',
+  })
+  tutorCertifications: TutorCertification[];
 
   @CreateDateColumn()
   createdAt: Date;

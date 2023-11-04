@@ -13,6 +13,7 @@ function TextSection({ color = COLOR.Primary, children }: PropsWithChildren<{ co
         padding: 10px 0;
         margin-bottom: 26px;
         position: relative;
+        width: max-content;
 
         &:after {
           content: '';

@@ -29,7 +29,7 @@ import { CertificationsService } from './certifications.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 
 @ApiBearerAuth()
-@ApiTags('Certifications')
+@ApiTags('certifications')
 @Roles(RoleEnum.WEB_ADMIN)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({

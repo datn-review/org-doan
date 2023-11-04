@@ -21,7 +21,7 @@ function ProfileApp() {
   }, []);
   return (
     <>
-      <Space className={'profile'}>
+      <Space className={'profile section-layout'}>
         <If condition={isAuthenticated}>
           <Then>
             <InfoHeader />

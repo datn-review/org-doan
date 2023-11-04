@@ -28,6 +28,28 @@ import { User } from '../entities/user.entity';
 import { InfinityPaginationResultType } from '../../utils/types/infinity-pagination-result.type';
 import { NullableType } from '../../utils/types/nullable.type';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { TutorCertificationService } from 'src/modules/tutor-certification/tutor-certification.service';
+import { FilesService } from 'src/files-drive/files.service';
+import { TutorSubjectGradeService } from 'src/modules/tutor-subject-grade/tutor-subject-grade.service';
+import { TutorSkillsService } from 'src/modules/tutor-skills/tutor-skills.service';
+const relations = [
+  {
+    field: 'tutorCertifications',
+    entity: 'tutor_certification',
+  },
+  {
+    field: 'tutor_certification.certification',
+    entity: 'certification',
+  },
+  {
+    field: 'status',
+    entity: 'status',
+  },
+  {
+    field: 'photo',
+    entity: 'photo',
+  },
+];
 @ApiBearerAuth()
 @ApiTags('User Tutor')
 @Roles(RoleEnum.WEB_ADMIN)
@@ -38,7 +60,15 @@ import { FileInterceptor } from '@nestjs/platform-express';
   version: '1',
 })
 export class UsersTutorController {
-  constructor(private readonly usersService: UsersService) {}
+  postSkillsService: any;
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly tutorCertificationService: TutorCertificationService,
+    private readonly tutorSubjectGradeService: TutorSubjectGradeService,
+    private readonly tutorSkillsService: TutorSkillsService,
+
+    private readonly filesService: FilesService,
+  ) {}
 
   @SerializeOptions({
     groups: ['admin'],
@@ -47,17 +77,76 @@ export class UsersTutorController {
   @HttpCode(HttpStatus.CREATED)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('photo'))
-  create(
+  async create(
     @UploadedFile() photo: Express.Multer.File,
     @Body() createProfileDto: CreateUserDto,
-  ): Promise<User> {
-    return this.usersService.create({
+  ): Promise<User[]> {
+    let photoCheck = { id: null };
+    if (photo) {
+      photoCheck = await this.filesService.uploadFile(photo);
+    }
+    console.log(
+      '🚀 ~ file: users.tutor.controller.ts:87 ~ UsersTutorController ~ photoCheck:',
+      photoCheck,
+    );
+    const user = await this.usersService.create({
       ...createProfileDto,
-      photo: photo,
+      photo: photoCheck.id || null,
       role: {
-        id: RoleEnum.WEB_ADMIN,
+        id: RoleEnum.PESONAL_TUTOR,
       },
     });
+
+    const userId = (user as unknown as User)?.id;
+    const certifications = createProfileDto?.certification?.split(',').map((item) => ({
+      certification: item,
+      tutor: userId,
+    }));
+    const skills = createProfileDto?.skills?.split(',')?.map((item) => ({
+      skillsId: item,
+      tutor: userId,
+    }));
+    const tutorGradeSubject = createProfileDto?.tutorGradeSubject
+      ?.split(',')
+      ?.map((item: string) => {
+        const [grade, subject] = item.split('__');
+        return {
+          grade,
+          subject,
+          tutor: userId,
+        };
+      });
+
+    console.log(
+      '🚀 ~ file: users.tutor.controller.ts:85 ~ UsersTutorController ~ certifications ~ certifications:',
+      certifications,
+    );
+    // const gradeLevel = createPostsDto?.gradeLevel?.map((item) => ({
+    //   gradeLevelId: item,
+    //   postsId,
+    // }));
+
+    // const subject = createPostsDto?.subject?.map((item) => ({
+    //   subjectId: item,
+    //   postsId,
+    // }));
+    // const timeAvailability = createPostsDto.timeAvailability?.map((item) => {
+    //   const [dayofWeek, hour] = item?.split('__');
+
+    //   return { dayofWeekId: Number(dayofWeek), hourId: Number(hour), postsId };
+    // });
+
+    try {
+      // void this.postGradeService.createMany(gradeLevel);
+      if (skills) void this.tutorSkillsService.createMany(skills);
+      // void this.postSubjectService.createMany(subject);
+      if (certifications) void this.tutorCertificationService.createMany(certifications);
+      if (tutorGradeSubject) void this.tutorSubjectGradeService.createMany(tutorGradeSubject);
+    } catch (err) {
+      console.log(err);
+    }
+
+    return user;
   }
 
   @SerializeOptions({
@@ -72,6 +161,8 @@ export class UsersTutorController {
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
     @Query('sortBy', new DefaultValuePipe(10)) sortBy: string,
     @Query('sortDirection', new DefaultValuePipe(10)) sortDirection: string,
+    @Query('fieldSearch', new DefaultValuePipe(['lastName, firstName']))
+    fieldSearch: string | string[],
   ): Promise<InfinityPaginationResultType<User>> {
     if (limit > 50) {
       limit = 50;
@@ -83,8 +174,15 @@ export class UsersTutorController {
       sortBy,
       sortDirection,
       status,
-      role: RoleEnum.PESONAL_TUTOR,
       searchName,
+      fieldSearch,
+      where: [
+        {
+          field: 'role',
+          value: RoleEnum.PESONAL_TUTOR,
+        },
+      ],
+      relations,
     });
   }
 
@@ -94,7 +192,12 @@ export class UsersTutorController {
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string): Promise<NullableType<User>> {
-    return this.usersService.findOne({ id: +id });
+    return this.usersService.findOne(
+      {
+        id: +id,
+      },
+      relations,
+    );
   }
 
   @SerializeOptions({
@@ -104,12 +207,17 @@ export class UsersTutorController {
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('photo'))
   @HttpCode(HttpStatus.OK)
-  update(
+  async update(
     @Param('id') id: number,
     @Body() updateProfileDto: UpdateUserDto,
     @UploadedFile() photo: Express.Multer.File,
-  ): Promise<User> {
-    return this.usersService.update(id, { ...updateProfileDto, photo: photo });
+  ): Promise<User[]> {
+    if (photo) {
+      const photoResult = await this.filesService.uploadFile(photo);
+
+      return this.usersService.update(id, { ...updateProfileDto, photo: photoResult.id });
+    }
+    return this.usersService.update(id, { ...updateProfileDto });
   }
 
   @Delete(':id')

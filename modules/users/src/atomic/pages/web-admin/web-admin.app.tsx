@@ -2,10 +2,7 @@ import { css } from '@emotion/css';
 import { useCRUDContext, useMessage, useUpdateEffect } from '@org/core';
 import { useTranslation } from '@org/i18n';
 import { clearActiveMenu, setActiveGroup, setActiveSubGroup, useAppDispatch } from '@org/store';
-import {
-  useDeleteUserAdminMutation,
-  useLazyGetUserAdminQuery,
-} from '@org/store/src/services/users.api';
+import { useDeleteUserAdminMutation, useLazyGetUserAdminQuery } from '@org/store';
 import {
   Button,
   H2,

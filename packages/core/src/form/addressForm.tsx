@@ -18,14 +18,14 @@ export function AddressForm({ methods }: any) {
   const provinceId = methods?.watch('province');
 
   useEffect(() => {
-    methods?.setValue('district', undefined);
+    methods?.setValue('district', 3);
     getDistricts({
       id: provinceId,
     });
   }, [provinceId]);
 
   useEffect(() => {
-    methods?.setValue('ward', undefined);
+    methods?.setValue('wards', 1);
     getWards({
       id: districtId,
     });
@@ -88,7 +88,7 @@ export function AddressForm({ methods }: any) {
         <SelectForm
           placeholder='Select Ward'
           label={'Ward'}
-          name='ward'
+          name='wards'
           options={wards}
           size='large'
         />

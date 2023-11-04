@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { Wards } from 'src/modules/provinces/wards/entities/wards.entity';
-import { User } from 'src/users/entities/user.entity';
 
 export class CreatePostsDto {
   @IsNotEmpty()
@@ -12,9 +11,9 @@ export class CreatePostsDto {
   @ApiProperty({ type: 'string', example: '1' })
   requestSummaryEN?: string;
 
-  @IsNotEmpty()
-  @ApiProperty({ type: Number, example: 1 })
-  user: User;
+  // @IsNotEmpty()
+  // @ApiProperty({ type: Number, example: 1 })
+  // user: User;
 
   @IsNotEmpty()
   @ApiProperty({ type: 'string', example: '1' })
@@ -58,18 +57,23 @@ export class CreatePostsDto {
   @IsNotEmpty()
   @ApiProperty({ type: Number, example: 1 })
   status: number;
+
   @IsNotEmpty()
   @ApiProperty({ type: Array, example: [1] })
   certification: number[];
-
+  @IsNotEmpty()
   @ApiProperty({ type: Array, example: [1] })
   gradeLevel: number[];
 
+  @IsNotEmpty()
   @ApiProperty({ type: Array, example: [1] })
   skills: number[];
+
+  @IsNotEmpty()
   @ApiProperty({ type: Array, example: [1] })
   subject: number[];
 
+  @IsNotEmpty()
   @ApiProperty({ type: Array, example: [1] })
   timeAvailability: string[];
 }

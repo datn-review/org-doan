@@ -1,9 +1,10 @@
 import { css } from '@emotion/css';
-import { getNameLanguage, i18next, useTranslation } from '@org/i18n';
+import { Translation, getNameLanguage, i18nContant, i18next, useTranslation } from '@org/i18n';
 import {
   setActiveGroup,
   useAppDispatch,
   useAppSelector,
+  useCreatePostsMutation,
   useGetCertificationActiveQuery,
   useGetGradeLevelActiveQuery,
   useGetSkillsActiveQuery,
@@ -31,7 +32,7 @@ import {
   TextSection,
   BoxCenter,
 } from '@org/ui';
-import { COLOR, SiteMap, formatData } from '@org/utils';
+import { COLOR, SiteMap, dataTime, day, formatData } from '@org/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { Else, If, Then } from 'react-if';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -42,62 +43,52 @@ import { Editor } from '@org/editor';
 const schema = yup.object({
   province: yup.number().required(i18next.t('required.field')),
   district: yup.number().required(i18next.t('required.field')),
-  ward: yup.number().required(i18next.t('required.field')),
+  wards: yup.number().required(i18next.t('required.field')),
   // descriptionVI: yup.string(),
   // descriptionEN: yup.string(),
   // status: yup.number(),
 });
+// const dataInit: any = {
+//   province: undefined,
+//   district: undefined,
+//   wards: undefined,
+//   requestSummaryVI: '',
+//   requestDetailVI: '',
+//   address: '',
+//   status: 1,
+//   skill: [],
+//   fee: 0,
+//   perTime: 0,
+//   dayWeek: 0,
+//   type: 1,
+//   timeAvailability: [],
+//   certification: [],
+//   gradeLevel: [],
+//   skills: [],
+//   subject: [],
+// };
 const dataInit: any = {
-  province: undefined,
-  district: undefined,
-  ward: undefined,
-  // descriptionEN: '',
-  // status: 1,
+  province: 2,
+  district: 3,
+  wards: 1,
+  requestSummaryVI: 'Mô tả yêu',
+  requestDetailVI:
+    '<p class="PlaygroundEditorTheme__paragraph" dir="ltr"><b><strong class="PlaygroundEditorTheme__textBold" style="white-space: pre-wrap;">Mô tả yêu</strong></b></p>',
+  address: 'Mô tả yêu',
+  status: 1,
   skill: [],
-  per: 1,
-  timeAvailability: [],
+  fee: '100',
+  perTime: 2,
+  dayWeek: '10',
+  type: 1,
+  timeAvailability: ['3__0', '3__1', '3__2', '4__2', '4__3', '4__4'],
+  certification: [2],
+  gradeLevel: 2,
+  skills: [1, 2],
+  subject: [1, 2],
+  timeStart: dayjs('2023-11-03T12:21:02.324Z'),
+  timeDay: 2,
 };
-const dataTime = [
-  {
-    value: 1,
-    label: `30 ${i18next.t('min')}`,
-  },
-  {
-    value: 2,
-    label: `45 ${i18next.t('min')}`,
-  },
-  {
-    value: 3,
-    label: `60 ${i18next.t('min')}`,
-  },
-  {
-    value: 4,
-    label: `90 ${i18next.t('min')}`,
-  },
-  {
-    value: 5,
-    label: `120 ${i18next.t('min')}`,
-  },
-  {
-    value: 6,
-    label: `2 ${i18next.t('hours')}`,
-  },
-];
-
-const day = [
-  {
-    value: 1,
-    label: `${i18next.t('month')}`,
-  },
-  {
-    value: 2,
-    label: `${i18next.t('week')}`,
-  },
-  {
-    value: 3,
-    label: `${i18next.t('day')}`,
-  },
-];
 
 function LookForTutorApp() {
   const methods = useForm<any>({
@@ -117,6 +108,8 @@ function LookForTutorApp() {
   const { data: dataGradeLevel } = useGetGradeLevelActiveQuery({});
 
   const { data: dataSubject } = useGetSubjectActiveQuery({});
+  const [createPosts] = useCreatePostsMutation();
+
   const name = getNameLanguage('nameVI', 'nameEN');
   const skills = useMemo(() => {
     return formatData({ data: dataSkills, name });
@@ -152,7 +145,7 @@ function LookForTutorApp() {
               <Row gutter={[10, 10]}>
                 <Col span={24}>
                   <TextAreaForm
-                    name='request_summary'
+                    name='requestSummaryVI'
                     label={'Tóm Tắt Yêu Cầu'}
                   />
                 </Col>
@@ -168,7 +161,9 @@ function LookForTutorApp() {
                   </label>
                   <Editor
                     onChange={(value) => setRequestDetail(value)}
-                    defaultValue={''}
+                    defaultValue={
+                      '<p class="PlaygroundEditorTheme__paragraph" dir="ltr"><b><strong class="PlaygroundEditorTheme__textBold" style="white-space: pre-wrap;">Mô tả yêu</strong></b></p>'
+                    }
                   />
                 </Col>
                 <Col
@@ -177,7 +172,7 @@ function LookForTutorApp() {
                 >
                   <SelectForm
                     size='large'
-                    name='grade'
+                    name='gradeLevel'
                     label={t('grade')}
                     options={gradeLevel}
                     placeholder='Please Select grade'
@@ -201,7 +196,7 @@ function LookForTutorApp() {
                   lg={6}
                 >
                   <DatePickerForm
-                    name='time_start'
+                    name='timeStart'
                     label='Time Start'
                     size={'large'}
                   />
@@ -212,7 +207,7 @@ function LookForTutorApp() {
                 >
                   <SelectForm
                     size='large'
-                    name='time_hours'
+                    name='timeDay'
                     label={t('time_hours')}
                     options={dataTime}
                     placeholder='Please Select Hours Per Session'
@@ -222,7 +217,7 @@ function LookForTutorApp() {
 
               <AddressForm methods={methods} />
               <BoxCenter>
-                <TextSection>Yêu Cầu Giá Sư</TextSection>
+                <TextSection>Yêu Cầu Gia Sư</TextSection>
               </BoxCenter>
               <Row gutter={[10, 0]}>
                 <Col
@@ -232,7 +227,7 @@ function LookForTutorApp() {
                   <SelectForm
                     size='large'
                     mode='multiple'
-                    name='skill'
+                    name='skills'
                     label={t('skill')}
                     options={skills}
                     placeholder='Please Select Skill'
@@ -268,8 +263,8 @@ function LookForTutorApp() {
                 >
                   <SelectForm
                     size='large'
-                    name='per'
-                    label={t('per')}
+                    name='perTime'
+                    label={t('perTime')}
                     placeholder='Please select per'
                     options={day}
                   />
@@ -279,8 +274,8 @@ function LookForTutorApp() {
                   lg={8}
                 >
                   <InputForm
-                    name='fee-week'
-                    label={t('fee/week')}
+                    name='dayWeek'
+                    label={t('day/week')}
                     placeholder='Ex: 3'
                   />
                 </Col>
@@ -293,14 +288,14 @@ function LookForTutorApp() {
               </Row>
               <Button
                 $type={TYPE_BUTTON.Primary}
-                onClick={methods.handleSubmit((value) => {
-                  console.log(dayjs(value?.['time_start']).format('YYYY-MM-DD'));
-
-                  console.log(
-                    '🚀 ~ file: look-for-tutor.app.tsx:144 ~ onClick={methods.handleSubmit ~ value:',
-                    value,
-                  );
-                  console.log(requestDetail);
+                onClick={methods.handleSubmit((values) => {
+                  console.log(dayjs(values?.['timeStart']).format('YYYY-MM-DD'));
+                  createPosts({
+                    ...values,
+                    gradeLevel: [values.gradeLevel],
+                    timeStart: dayjs(values?.['timeStart']),
+                    requestDetailVI: requestDetail,
+                  });
                 })}
               >
                 {t('button.save')}

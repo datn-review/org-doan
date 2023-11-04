@@ -13,9 +13,9 @@ export class UpdatePostsDto extends PartialType(CreatePostsDto) {
   @ApiProperty({ type: 'string', example: '1' })
   requestSummaryEN?: string;
 
-  @IsNotEmpty()
-  @ApiProperty({ type: Number, example: 1 })
-  user: User;
+  // @IsNotEmpty()
+  // @ApiProperty({ type: Number, example: 1 })
+  // user: User;
 
   @IsNotEmpty()
   @ApiProperty({ type: 'string', example: '1' })

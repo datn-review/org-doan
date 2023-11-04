@@ -11,7 +11,7 @@ export class DistrictsService extends BaseService<Districts, Repository<District
   constructor(@InjectRepository(Districts) repository: Repository<Districts>) {
     super(repository);
   }
-  async findManyActive(
+  async findManyDistrictActive(
     status = 1,
     relations?: string[] | string[],
     provinceId?: number,

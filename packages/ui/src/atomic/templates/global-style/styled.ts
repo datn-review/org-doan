@@ -1,5 +1,12 @@
 import styled from '@emotion/styled';
-import { HEADLINES, TEXTS, mediaMiniTablet, mediaPhone, mediaTablet } from '@org/utils';
+import {
+  HEADLINES,
+  TEXTS,
+  mediaDesktop,
+  mediaMiniTablet,
+  mediaPhone,
+  mediaTablet,
+} from '@org/utils';
 export const Wrapper = styled.div`
   h1,
   .H1 {
@@ -70,9 +77,14 @@ export const Wrapper = styled.div`
     padding-left: 10rem;
     padding-right: 10rem;
 
+    ${mediaDesktop} {
+      padding-left: 6rem;
+      padding-right: 6rem;
+    }
+
     ${mediaTablet} {
-      padding-left: 5rem;
-      padding-right: 5rem;
+      padding-left: 4rem;
+      padding-right: 4rem;
     }
     ${mediaMiniTablet} {
       padding-left: 2rem;

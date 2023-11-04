@@ -122,7 +122,7 @@ export class AuthService {
         id: StatusEnum.active,
       });
 
-      user = await this.usersService.create({
+      user = (await this.usersService.create({
         email: socialEmail ?? null,
         firstName: socialData.firstName ?? null,
         lastName: socialData.lastName ?? null,
@@ -130,10 +130,10 @@ export class AuthService {
         provider: authProvider,
         role,
         status,
-      });
+      })) as unknown as User;
 
       user = await this.usersService.findOne({
-        id: user.id,
+        id: user?.id,
       });
     }
 

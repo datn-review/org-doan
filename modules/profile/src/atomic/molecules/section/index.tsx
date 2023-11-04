@@ -19,7 +19,7 @@ function Section() {
     {
       key: '1',
       label: 'Thông Tin Cá Nhân',
-      children: 'Content of Tab Pane 1',
+      children: <Information />,
     },
     {
       key: '2',
@@ -55,3 +55,6 @@ function Section() {
 }
 
 export default Section;
+const Information = () => {
+  return <Space>Information</Space>;
+};

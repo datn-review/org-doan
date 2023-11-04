@@ -111,8 +111,9 @@ function prepopulatedRichText() {
 function App({
   ...props
 }: {
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   defaultValue: string;
+  isShow?: boolean;
 }): JSX.Element {
   const {
     settings: { isCollab, emptyEditor, measureTypingPerf },
@@ -120,6 +121,7 @@ function App({
 
   const initialConfig = {
     editorState: isCollab ? null : emptyEditor ? undefined : prepopulatedRichText,
+    editable: !props?.isShow,
     namespace: 'Playground',
     nodes: [...PlaygroundNodes],
     onError: (error: Error) => {
@@ -133,7 +135,7 @@ function App({
       <SharedHistoryContext>
         <TableContext>
           <SharedAutocompleteContext>
-            <div className='editor-shell'>
+            <div className={`editor-shell ${props.isShow ? 'isShow' : ''}`}>
               <Editor {...props} />
             </div>
             {/* <Settings /> */}
@@ -147,8 +149,9 @@ function App({
 export default function PlaygroundApp({
   ...props
 }: {
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   defaultValue: string;
+  isShow?: boolean;
 }): JSX.Element {
   return (
     <SettingsContext>

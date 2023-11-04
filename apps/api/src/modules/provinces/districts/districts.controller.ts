@@ -81,7 +81,7 @@ export class DistrictsController {
   @Get('/active')
   @HttpCode(HttpStatus.OK)
   getActive(@Query('id') id: number): Promise<Districts[]> {
-    return this.districtsService.findManyActive(StatusEnum['active'], ['province'], id);
+    return this.districtsService.findManyDistrictActive(StatusEnum['active'], ['province'], id);
   }
 
   @Get('/:id')

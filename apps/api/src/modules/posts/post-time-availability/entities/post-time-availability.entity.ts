@@ -12,11 +12,13 @@ import { Posts } from '../../entities/posts.entity';
 @Entity({ name: 'post_time_availability' })
 export class PostTimeAvailability extends EntityHelper {
   @PrimaryColumn()
-  postId: number;
+  postsId: number;
+
   @PrimaryColumn()
-  dayofWeek: number;
+  dayofWeekId: number;
+
   @PrimaryColumn()
-  hour: number;
+  hourId: number;
 
   @ManyToOne(() => Posts, {
     eager: true,
@@ -25,7 +27,7 @@ export class PostTimeAvailability extends EntityHelper {
 
   @CreateDateColumn()
   createdAt: Date;
-  z;
+
   @UpdateDateColumn()
   updatedAt: Date;
 

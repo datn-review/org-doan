@@ -126,5 +126,10 @@ export const SiteMap = {
     path: '/class-new',
     menu: 'class-new',
     roles: [],
+    Details: {
+      generate: (id: number | string) => `/class-new/${id}`,
+      path: '/class-new/:id',
+      roles: [],
+    },
   },
 };

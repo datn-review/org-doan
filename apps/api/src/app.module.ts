@@ -39,7 +39,6 @@ import { CertificationsModule } from './modules/certifications/certifications.mo
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { TutorSkillsModule } from './modules/tutor-skills/tutor-skills.module';
 import { TutorCertificationModule } from './modules/tutor-certification/tutor-certification.module';
-import { StudentSubjectModule } from './modules/student-subject/student-subject.module';
 import { TutorSubjectGradeModule } from './modules/tutor-subject-grade/tutor-subject-grade.module';
 import { TimeAvailabilityModule } from './modules/time-availability/time-availability.module';
 import { ConversationModule } from './modules/conversation/conversation.module';
@@ -53,11 +52,7 @@ import { LessonsModule } from './modules/lessons/lessons.module';
 import { DistrictsModule } from './modules/provinces/districts/districts.module';
 import { ProvinceModule } from './modules/provinces/province/province.module';
 import { WardsModule } from './modules/provinces/wards/wards.module';
-import { PostCertificationModule } from './modules/posts/post-certification/post-certification.module';
-import { PostSkillsModule } from './modules/posts/post-skills/post-skills.module';
-import { PostGrade } from './modules/posts/post-grade/entities/post-grade.entity';
 import { PostTimeAvailabilityModule } from './modules/posts/post-time-availability/post-time-availability.module';
-import { PostSubjectModule } from './modules/posts/post-subject/post-subject.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -122,7 +117,6 @@ import { PostSubjectModule } from './modules/posts/post-subject/post-subject.mod
     NotificationsModule,
     TutorSkillsModule,
     TutorCertificationModule,
-    StudentSubjectModule,
     TutorSubjectGradeModule,
     TimeAvailabilityModule,
     ConversationModule,
@@ -136,11 +130,7 @@ import { PostSubjectModule } from './modules/posts/post-subject/post-subject.mod
     ProvinceModule,
     DistrictsModule,
     WardsModule,
-    PostCertificationModule,
-    PostSkillsModule,
-    PostGrade,
     PostTimeAvailabilityModule,
-    PostSubjectModule,
   ],
 })
 export class AppModule {}

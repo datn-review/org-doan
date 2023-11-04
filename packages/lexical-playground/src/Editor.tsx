@@ -85,9 +85,11 @@ const skipCollaborationInit =
 export default function Editor({
   onChange,
   defaultValue = '',
+  isShow = false,
 }: {
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   defaultValue: string;
+  isShow?: boolean;
 }): JSX.Element {
   const { historyState } = useSharedHistoryContext();
   const {
@@ -306,7 +308,7 @@ export default function Editor({
         {shouldUseLexicalContextMenu && <ContextMenuPlugin />}
         <ActionsPlugin isRichText={isRichText} />
       </div>
-      {showTreeView && <TreeViewPlugin />}
+      {/* {showTreeView && <TreeViewPlugin />} */}
     </>
   );
 }

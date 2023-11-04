@@ -17,3 +17,4 @@ export * from './logo';
 export * from './date-picker';
 export * from './cascader-panel';
 export * from './time-availability';
+export * from './layout';

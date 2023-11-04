@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { BaseEntity, Repository, SelectQueryBuilder } from 'typeorm';
 import { NullableType } from '../utils/types/nullable.type';
 import { IBaseService, IParams } from './i.base.service';
 
-interface IRelations {
+export interface IRelations {
   field: string;
   entity: string;
+}
+export interface IWhere {
+  field: string;
+  value: string | number | any;
 }
 @Injectable()
 export class BaseService<T extends BaseEntity, R extends Repository<T>, TP extends IParams>
@@ -21,7 +24,11 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
   async create(createDto: any): Promise<T[]> {
     return this.repository.save(this.repository.create(createDto));
   }
-  async findManyActive(status = 1, relations?: IRelations[] | string[]): Promise<T[]> {
+  async findManyActive(
+    status = 1,
+    relations?: IRelations[] | string[],
+    where?: IWhere[] | undefined,
+  ): Promise<T[]> {
     const queryBuilder: SelectQueryBuilder<T> = this.repository.createQueryBuilder('entity');
 
     const query = queryBuilder;
@@ -30,12 +37,21 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
         if (typeof field === 'string') {
           queryBuilder.leftJoinAndSelect(`entity.${field}`, field);
         } else {
-          queryBuilder.leftJoinAndSelect(`entity.${field.field}`, field.entity);
+          queryBuilder.leftJoinAndSelect(
+            field.field.includes('.') ? field.field : `entity.${field.field}`,
+            field.entity,
+          );
         }
       });
     }
     if (status) {
       query.where(`entity.status = :status`, { status });
+    }
+
+    if (where && where?.length > 0) {
+      where?.forEach(({ field, value }) => {
+        query.andWhere(`entity.${field} = :value`, { value });
+      });
     }
 
     return query.getMany();
@@ -50,10 +66,12 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
     fieldSearch,
     status,
     relations,
+    where,
   }: TP & {
     fieldSearch: any;
     status: number | undefined;
     relations?: IRelations[] | string[];
+    where?: IWhere[];
   }): Promise<{
     data: T[];
     totals: number;
@@ -71,7 +89,10 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
         if (typeof field === 'string') {
           queryBuilder.leftJoinAndSelect(`entity.${field}`, field);
         } else {
-          queryBuilder.leftJoinAndSelect(`entity.${field.field}`, field.entity);
+          queryBuilder.leftJoinAndSelect(
+            field.field.includes('.') ? field.field : `entity.${field.field}`,
+            field.entity,
+          );
         }
       });
     }
@@ -96,6 +117,11 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
       } else {
         query.andWhere(`entity.status = :status`, { status });
       }
+    }
+    if (where && where?.length > 0) {
+      where?.forEach(({ field, value }) => {
+        query.andWhere(`entity.${field} = :value`, { value });
+      });
     }
     const data = await query
       .orderBy(`entity.${sortBy}`, direction)
@@ -141,10 +167,22 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
     return query.getCount();
   }
 
-  findOne(fields: EntityCondition<T>): Promise<NullableType<T>> {
-    return this.repository.findOne({
-      where: fields,
-    });
+  findOne(fields: any, relations?: IRelations[] | string[]): Promise<NullableType<T>> {
+    const queryBuilder: SelectQueryBuilder<T> = this.repository.createQueryBuilder('entity');
+
+    if (relations && relations?.length > 0) {
+      relations.forEach((field: string | IRelations) => {
+        if (typeof field === 'string') {
+          queryBuilder.leftJoinAndSelect(`entity.${field}`, field);
+        } else {
+          queryBuilder.leftJoinAndSelect(
+            field.field.includes('.') ? field.field : `entity.${field.field}`,
+            field.entity,
+          );
+        }
+      });
+    }
+    return queryBuilder.where(`entity.id = :id`, { id: fields?.id }).getOne();
   }
 
   async update(id: number, payload: any): Promise<T[]> {
@@ -158,5 +196,8 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
 
   async softDelete(id: number): Promise<void> {
     await this.repository.softDelete(id);
+  }
+  async createMany(data: any[]): Promise<any> {
+    return this.repository.insert(data);
   }
 }
