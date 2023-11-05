@@ -8,6 +8,7 @@ import { Status } from 'src/statuses/entities/status.entity';
 import { lowerCaseTransformer } from 'src/utils/transformers/lower-case.transformer';
 import { IsExist } from 'src/utils/validators/is-exists.validator';
 import { Role } from '../../roles/entities/role.entity';
+import { Wards } from 'src/modules/provinces/wards/entities/wards.entity';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty({ example: 'test1@example.com' })
@@ -77,4 +78,11 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   @ApiProperty({ type: Array, example: [1] })
   timeAvailability?: string;
+
+  @IsOptional()
+  @ApiProperty({ type: String, example: 'Duong 615 ' })
+  address?: string | null;
+  @IsOptional()
+  @ApiProperty({ type: Number, example: 1 })
+  wards?: Wards | null | number;
 }

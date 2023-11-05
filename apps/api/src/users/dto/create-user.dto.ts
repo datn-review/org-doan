@@ -6,6 +6,7 @@ import { Status } from 'src/statuses/entities/status.entity';
 import { IsNotExist } from 'src/utils/validators/is-not-exists.validator';
 import { IsExist } from 'src/utils/validators/is-exists.validator';
 import { lowerCaseTransformer } from 'src/utils/transformers/lower-case.transformer';
+import { Wards } from 'src/modules/provinces/wards/entities/wards.entity';
 
 export class CreateUserDto {
   @ApiProperty({ type: 'string', example: 'test1@example.com' })
@@ -70,6 +71,13 @@ export class CreateUserDto {
   @IsOptional()
   @ApiProperty({ type: Array, example: [1] })
   tutorGradeSubject?: string;
+
+  @IsOptional()
+  @ApiProperty({ type: String, example: 'Duong 615 ' })
+  address?: string | null;
+  @IsOptional()
+  @ApiProperty({ type: Number, example: 1 })
+  wards?: Wards | null | number;
 
   @IsOptional()
   @ApiProperty({ type: Array, example: [1] })

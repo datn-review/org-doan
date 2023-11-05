@@ -2,7 +2,7 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { activeMenu, auth, user } from './slices';
 import {
   AuthAPI,
-  UsersAPI,
+  UserAPI,
   GradeLevelAPI,
   CertificationAPI,
   SubjectAPI,
@@ -13,6 +13,7 @@ import {
   PostsAPI,
   UserTutorAPI,
   UserStudentAPI,
+  UsersAdminAPI,
 } from './services';
 import { baseAuthSplitApi, baseNoAuthSplitApi } from './services/base-auth-query';
 
@@ -24,7 +25,7 @@ const rootReducer = combineReducers({
   [baseAuthSplitApi.reducerPath]: baseAuthSplitApi.reducer,
 
   [AuthAPI.reducerPath]: AuthAPI.reducer,
-  [UsersAPI.reducerPath]: UsersAPI.reducer,
+  [UserAPI.reducerPath]: UserAPI.reducer,
   [GradeLevelAPI.reducerPath]: GradeLevelAPI.reducer,
   [CertificationAPI.reducerPath]: CertificationAPI.reducer,
   [SubjectAPI.reducerPath]: SubjectAPI.reducer,
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   [PostsAPI.reducerPath]: PostsAPI.reducer,
   [UserTutorAPI.reducerPath]: UserTutorAPI.reducer,
   [UserStudentAPI.reducerPath]: UserStudentAPI.reducer,
+  [UsersAdminAPI.reducerPath]: UsersAdminAPI.reducer,
 });
 
 export const store = configureStore({

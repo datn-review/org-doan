@@ -6,26 +6,44 @@ import {
 } from '@org/store';
 import { Col, InputForm, Row, SelectForm } from '@org/ui';
 import { formatData } from '@org/utils';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 export const statusOptionUpsert = [{ value: 1, label: 1 }];
+
+export interface IWards {
+  id: number;
+  name: string;
+  districts: IDistricts;
+}
+export interface IDistricts {
+  id: number;
+  name: string;
+  province: IProvince;
+}
+export interface IProvince {
+  id: number;
+  name: string;
+}
 
 export function AddressForm({ methods }: any) {
   const { data: provinceData } = useGetProvinceActiveQuery({});
   const [getDistricts, { data: dataDistrict }] = useLazyGetDistrictActiveQuery();
   const [getWards, { data: dataWard }] = useLazyGetWardActiveQuery();
 
+  const isChangeDistrict = useRef<Boolean>(false);
+  const isChangeProvince = useRef<Boolean>(false);
+
   const districtId = methods?.watch('district');
   const provinceId = methods?.watch('province');
 
   useEffect(() => {
-    methods?.setValue('district', 3);
+    isChangeProvince.current && methods?.setValue('district', undefined);
     getDistricts({
       id: provinceId,
     });
   }, [provinceId]);
 
   useEffect(() => {
-    methods?.setValue('wards', 1);
+    isChangeDistrict.current && methods?.setValue('wards', undefined);
     getWards({
       id: districtId,
     });
@@ -67,6 +85,9 @@ export function AddressForm({ methods }: any) {
           name='province'
           options={provinces || []}
           size='large'
+          onChange={() => {
+            isChangeProvince.current = true;
+          }}
         />
       </Col>
       <Col
@@ -79,6 +100,9 @@ export function AddressForm({ methods }: any) {
           name='district'
           options={districts || []}
           size='large'
+          onChange={() => {
+            isChangeDistrict.current = true;
+          }}
         />
       </Col>
       <Col

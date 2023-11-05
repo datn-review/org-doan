@@ -56,10 +56,10 @@ const relations = [
 @Roles(RoleEnum.WEB_ADMIN)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
-  path: 'users/admin',
+  path: 'users/student',
   version: '1',
 })
-export class UsersAdminController {
+export class UsersStudentController {
   postSkillsService: any;
   constructor(
     private readonly usersService: UsersService,
@@ -87,7 +87,7 @@ export class UsersAdminController {
       ...createProfileDto,
       photo: photoCheck.id || null,
       role: {
-        id: RoleEnum.WEB_ADMIN,
+        id: RoleEnum.STUDENT,
       },
     });
 
@@ -109,6 +109,10 @@ export class UsersAdminController {
     @Query('fieldSearch', new DefaultValuePipe(['lastName', 'firstName']))
     fieldSearch: string | string[],
   ): Promise<InfinityPaginationResultType<User>> {
+    console.log(
+      '🚀 ~ file: users.student.controller.ts:112 ~ UsersStudentController ~ searchName:',
+      searchName,
+    );
     if (limit > 50) {
       limit = 50;
     }
@@ -124,7 +128,7 @@ export class UsersAdminController {
       where: [
         {
           field: 'role',
-          value: RoleEnum.WEB_ADMIN,
+          value: RoleEnum.STUDENT,
         },
       ],
       relations,

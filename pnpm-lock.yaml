@@ -990,6 +990,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@org/i18n':
+        specifier: workspace:^
+        version: link:../I18n
       '@org/store':
         specifier: workspace:^
         version: link:../store

@@ -21,6 +21,7 @@ interface IUploadImage {
   value?: UploadFile[];
   labelImage?: string;
   listType?: UploadListType;
+  [k: string]: any;
 }
 
 export const UploadImage: React.FC<IUploadImage> = ({

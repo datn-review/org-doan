@@ -27,17 +27,16 @@ import { CreateDto } from './dto/create.dto';
 import { UpdateDto } from './dto/update.dto';
 import { GradeLevelService } from './grade-level.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
-@ApiBearerAuth()
 @ApiTags('Grade Level')
-@Roles(RoleEnum.WEB_ADMIN)
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'grade-level',
   version: '1',
 })
 export class GradeLevelController {
   constructor(private readonly gradeLevelService: GradeLevelService) {}
-
+  @ApiBearerAuth()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createProfileDto: CreateDto): Promise<GradeLevel[]> {
@@ -45,7 +44,9 @@ export class GradeLevelController {
       ...createProfileDto,
     });
   }
-
+  @ApiBearerAuth()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('/')
   @HttpCode(HttpStatus.OK)
   @ApiQuery({ name: 'status', required: false })
@@ -90,13 +91,17 @@ export class GradeLevelController {
   findOne(@Param('id') id: string): Promise<NullableType<GradeLevel>> {
     return this.gradeLevelService.findOne({ id: +id });
   }
-
+  @ApiBearerAuth()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   update(@Param('id') id: number, @Body() updateProfileDto: UpdateDto): Promise<GradeLevel[]> {
     return this.gradeLevelService.update(id, updateProfileDto);
   }
-
+  @ApiBearerAuth()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: number): Promise<void> {

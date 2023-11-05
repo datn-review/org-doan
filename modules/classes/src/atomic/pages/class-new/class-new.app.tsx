@@ -7,6 +7,8 @@ import {
   EditTwoTone,
   EyeTwoTone,
   Row,
+  Section,
+  SectionLayout,
   Space,
   Tag,
   TextSection,
@@ -39,10 +41,11 @@ function ClassNew() {
       dispatch(setActiveGroup({ current: '' }));
     };
   }, []);
-  console.log('🚀 ~ file: class-new.app.tsx:12 ~ ClassNew ~ datPosts:', dataPosts);
   return (
-    <Space>
-      <TextSection>{t('class.new')}</TextSection>
+    <SectionLayout>
+      <Section>
+        <TextSection>{t('class.new')}</TextSection>
+      </Section>
 
       <Row gutter={8}>
         <Col span={18}>
@@ -139,7 +142,7 @@ function ClassNew() {
           <Row>Right</Row>
         </Col>
       </Row>
-    </Space>
+    </SectionLayout>
   );
 }
 

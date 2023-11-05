@@ -3,7 +3,7 @@ import { DefaultLayout, MainLayout } from '@components/templates';
 import { HomePage } from '@org/home';
 import { ConfirmEmailPage, LoginPage, RegisterPage } from '@org/auth';
 import { SiteMap } from '@org/utils';
-import { UserTutorsPage, WebAdminPage } from '@org/users';
+import { StudentsPage, UserTutorsPage, WebAdminPage } from '@org/users';
 import { CertificationPage, GradeLevelPage, SubjectPage, SkillsPage } from '@org/settings';
 import { ProfilePage } from '@org/profile';
 import { LookForTutorPage } from '@org/look-for-tutor';
@@ -29,6 +29,10 @@ export const router = createBrowserRouter([
       {
         path: SiteMap.Users.PesonalTutor.path,
         element: <UserTutorsPage />,
+      },
+      {
+        path: SiteMap.Users.Student.path,
+        element: <StudentsPage />,
       },
       {
         path: SiteMap.Settings.GradeLevel.path,

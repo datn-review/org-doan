@@ -1,27 +1,10 @@
 import { css } from '@emotion/css';
-import {
-  AddressForm,
-  IDistricts,
-  IWards,
-  SelectCertification,
-  SelectGradeSubject,
-  SelectSkill,
-  certificationImportFormat,
-  gradeSubjectExport,
-  gradeSubjectImportFormat,
-  skillImportFormat,
-  useCRUDContext,
-  useMessage,
-  useUnmount,
-} from '@org/core';
+import { AddressForm, IWards, useCRUDContext, useMessage, useUnmount } from '@org/core';
 import { getNameLanguage, i18next, useTranslation } from '@org/i18n';
 import {
-  useCreateUserTutorMutation,
-  useGetCertificationActiveQuery,
-  useGetGradeLevelActiveQuery,
-  useGetSkillsActiveQuery,
-  useLazyFindUserTutorQuery,
-  useUpdateUserTutorMutation,
+  useCreateUserStudentMutation,
+  useLazyFindUserStudentQuery,
+  useUpdateUserStudentMutation,
 } from '@org/store';
 import {
   BoxCenter,
@@ -33,18 +16,16 @@ import {
   SelectForm,
   Spin,
   TYPE_BUTTON,
-  TimeAvailabilityForm,
   TypeInput,
   UnloadImageForm,
   VARIANT,
-  timeAvailabilityImport,
   useForm,
   yupResolver,
 } from '@org/ui';
 
-import { StatusEnum, formatData, getImage, statusOptionUpsert } from '@org/utils';
+import { StatusEnum, getImage, statusOptionUpsert } from '@org/utils';
 import { isEmpty } from 'lodash';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import * as yup from 'yup';
 
 type Status = {
@@ -58,10 +39,6 @@ type IUpdate = {
   lastName: string;
   photo?: any[];
   status?: number;
-  certification?: number[];
-  skills?: number[];
-  timeAvailability?: string[];
-  tutorGradeSubject?: [];
   address?: string;
   province?: number;
   district?: number;
@@ -87,14 +64,12 @@ const dataInit: IUpdate = {
   lastName: '',
   photo: [],
   status: 1,
-  certification: [],
-  timeAvailability: [],
+
   address: '',
-  tutorGradeSubject: [],
+
   province: undefined,
   district: undefined,
   wards: undefined,
-  skills: [],
 };
 
 export function Upsert() {
@@ -108,11 +83,11 @@ export function Upsert() {
 
   const { messageError, messageSuccess, contextHolder } = useMessage();
 
-  const [createData, { isLoading: isLoadingCreate }] = useCreateUserTutorMutation();
+  const [createData, { isLoading: isLoadingCreate }] = useCreateUserStudentMutation();
 
-  const [getData, { isLoading: isLoadingGet }] = useLazyFindUserTutorQuery();
+  const [getData, { isLoading: isLoadingGet }] = useLazyFindUserStudentQuery();
 
-  const [updateUser, { isLoading: isLoadingUpdate }] = useUpdateUserTutorMutation();
+  const [updateUser, { isLoading: isLoadingUpdate }] = useUpdateUserStudentMutation();
 
   const name = getNameLanguage('nameVI', 'nameEN');
 
@@ -155,6 +130,7 @@ export function Upsert() {
         });
     }
   };
+  console.log('🚀 ~ file: upsert.tsx:135 ~ useEffect ~ dataUpsert:', dataUpsert);
   useEffect(() => {
     if (!isEmpty(dataUpsert)) {
       Object.entries(dataInit).forEach(([name, value]) => {
@@ -181,29 +157,8 @@ export function Upsert() {
         if (name == 'wards') {
           const wards = recordData as unknown as IWards;
           methods.setValue('wards', wards?.id);
-          methods.setValue('district', wards.districts?.id);
-          methods.setValue('province', wards.districts?.province.id);
-          return;
-        }
-        if (name == 'skills') {
-          const skills = dataUpsert?.['tutorSkills'];
-          methods.setValue('skills', skillImportFormat(skills));
-
-          return;
-        }
-        if (name == 'certification') {
-          const certification = dataUpsert?.['tutorCertifications'];
-          methods.setValue('certification', certificationImportFormat(certification));
-          return;
-        }
-        if (name == 'tutorGradeSubject') {
-          const tutorGradeSubject = dataUpsert?.['tutorGradeSubject'];
-          methods.setValue('tutorGradeSubject', gradeSubjectImportFormat(tutorGradeSubject));
-          return;
-        }
-        if (name == 'timeAvailability') {
-          const timeAvailability = dataUpsert?.['tutorTimeAvailability'];
-          methods.setValue('timeAvailability', timeAvailabilityImport(timeAvailability));
+          methods.setValue('district', wards?.districts?.id);
+          methods.setValue('province', wards?.districts?.province.id);
           return;
         }
 
@@ -219,7 +174,7 @@ export function Upsert() {
       <Drawer
         title={idEdit ? t('user.edit.title') : t('user.add.title')}
         placement={'right'}
-        width={'100%'}
+        width={'400px'}
         onClose={close}
         open={isUpsert}
         extra={
@@ -244,10 +199,6 @@ export function Upsert() {
                     if (record?.[0]?.originFileObj) {
                       formData.append(name, record?.[0]?.originFileObj);
                     }
-                    return;
-                  }
-                  if (name === 'tutorGradeSubject') {
-                    formData.append(name, gradeSubjectExport(record));
                     return;
                   }
 
@@ -282,14 +233,6 @@ export function Upsert() {
               $type={TypeInput.Password}
             />
             <AddressForm methods={methods} />
-            <SelectSkill />
-            <SelectCertification />
-
-            <SelectGradeSubject />
-            <TimeAvailabilityForm
-              name='timeAvailability'
-              label={'Time Availability'}
-            />
 
             <SelectForm
               name='status'

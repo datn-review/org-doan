@@ -21,6 +21,9 @@ import {
 import { FileEntity } from '../../files/entities/file.entity';
 import { Role } from '../../roles/entities/role.entity';
 import { Status } from '../../statuses/entities/status.entity';
+import { TutorSubjectGrade } from 'src/modules/tutor-subject-grade/entities/tutor-subject-grade.entity';
+import { TutorTimeAvailability } from '../tutor-time-availability/entities/tutor-time-availability.entity';
+import { Wards } from 'src/modules/provinces/wards/entities/wards.entity';
 
 @Entity()
 export class User extends EntityHelper {
@@ -91,6 +94,13 @@ export class User extends EntityHelper {
   @Exclude({ toPlainOnly: true })
   hash: string | null;
 
+  @Column({ type: String, nullable: true })
+  address?: string;
+  @ManyToOne(() => Wards, {
+    eager: true,
+  })
+  wards?: Wards | null;
+
   @OneToMany(() => TutorSkills, (tutorSkills) => tutorSkills.tutor, {
     onDelete: 'CASCADE',
   })
@@ -100,6 +110,15 @@ export class User extends EntityHelper {
     onDelete: 'CASCADE',
   })
   tutorCertifications: TutorCertification[];
+
+  @OneToMany(() => TutorSubjectGrade, (tutorSubjectGrade) => tutorSubjectGrade.tutor, {
+    onDelete: 'CASCADE',
+  })
+  tutorGradeSubject: TutorSubjectGrade[];
+  @OneToMany(() => TutorTimeAvailability, (tutorTimeAvailability) => tutorTimeAvailability.tutor, {
+    onDelete: 'CASCADE',
+  })
+  tutorTimeAvailability: TutorTimeAvailability[];
 
   @CreateDateColumn()
   createdAt: Date;

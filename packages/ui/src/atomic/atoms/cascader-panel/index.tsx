@@ -10,8 +10,6 @@ interface ICascaderPanel {
   [k: string]: any;
 }
 export function CascaderPanel({ label, onChange, ...rest }: any) {
-  const ref = useRef();
-  console.log('🚀 ~ file: index.tsx:14 ~ CascaderPanel ~ ref:', ref);
   return (
     <Space>
       {label && (
@@ -30,25 +28,14 @@ export function CascaderPanel({ label, onChange, ...rest }: any) {
         className={cx(
           css`
             min-width: 100%;
-            min-height: 3.8rem;
+            /* min-height: 3.8rem; */
             .ant-cascader-menus {
               min-width: 100%;
-            }
-            .ant-cascader-menu:last-child {
-              width: calc(100% - 160px);
-              display: flex;
-              flex-wrap: wrap;
-              .ant-cascader-menu-item {
-                min-width: 65px;
-                height: 65px;
-              }
             }
           `,
           rest.className,
         )}
         onChange={onChange}
-        ref={ref}
-        onMouseDown={() => console.log(';ok')}
         {...rest}
       />
     </Space>

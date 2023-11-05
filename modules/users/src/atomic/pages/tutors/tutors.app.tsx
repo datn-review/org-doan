@@ -165,7 +165,7 @@ function TutorsApp() {
       {contextHolder}
 
       <Section>
-        <H2>{t('personal.tutor')}</H2>
+        <H2>{t('manage.personal.tutor')}</H2>
 
         <Select
           label={t('user.status')}

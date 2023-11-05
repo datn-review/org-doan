@@ -28,17 +28,16 @@ import { UpdateCertificationsDto } from './dto/update.dto';
 import { CertificationsService } from './certifications.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 
-@ApiBearerAuth()
 @ApiTags('certifications')
-@Roles(RoleEnum.WEB_ADMIN)
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'certifications',
   version: '1',
 })
 export class CertificationsController {
   constructor(private readonly certificationsService: CertificationsService) {}
-
+  @ApiBearerAuth()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createCertificationsDto: CreateCertificationsDto): Promise<Certifications[]> {
@@ -46,7 +45,9 @@ export class CertificationsController {
       ...createCertificationsDto,
     });
   }
-
+  @ApiBearerAuth()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('/')
   @HttpCode(HttpStatus.OK)
   @ApiQuery({ name: 'status', required: false })
@@ -91,7 +92,9 @@ export class CertificationsController {
   findOne(@Param('id') id: string): Promise<NullableType<Certifications>> {
     return this.certificationsService.findOne({ id: +id });
   }
-
+  @ApiBearerAuth()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   update(
@@ -100,7 +103,9 @@ export class CertificationsController {
   ): Promise<Certifications[]> {
     return this.certificationsService.update(id, updateCertificationsDto);
   }
-
+  @ApiBearerAuth()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: number): Promise<void> {

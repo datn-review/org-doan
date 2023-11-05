@@ -15,7 +15,7 @@ export type TCRUDContext = {
   setIsFetch: Dispatch<SetStateAction<boolean>>;
   isFetch: boolean;
   close: () => void;
-  dataUpsert: object;
+  dataUpsert: any;
   setDataUpsert: Dispatch<SetStateAction<object>>;
 };
 

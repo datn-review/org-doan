@@ -17,8 +17,6 @@ import {
 
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { Roles } from 'src/roles/roles.decorator';
-import { RoleEnum } from 'src/roles/roles.enum';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { InfinityPaginationResultType } from '../../utils/types/infinity-pagination-result.type';
 import { NullableType } from '../../utils/types/nullable.type';
@@ -30,10 +28,7 @@ import { PostsService } from './posts.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import { PostTimeAvailabilityService } from './post-time-availability/post-time-availability.service';
 
-@ApiBearerAuth()
 @ApiTags('Posts')
-@Roles(RoleEnum.WEB_ADMIN)
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'posts',
   version: '1',
@@ -47,6 +42,8 @@ export class PostsController {
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   async create(@Request() request, @Body() createPostsDto: CreatePostsDto): Promise<Posts[]> {
     const skills = createPostsDto?.skills?.map((item) => ({
       id: item,
@@ -185,13 +182,15 @@ export class PostsController {
       { entity: 'wards', field: 'wards' },
     ]);
   }
-
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   update(@Param('id') id: number, @Body() updatePostsDto: UpdatePostsDto): Promise<Posts[]> {
     return this.postsService.update(id, updatePostsDto);
   }
-
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: number): Promise<void> {

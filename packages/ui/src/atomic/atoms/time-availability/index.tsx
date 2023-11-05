@@ -10,6 +10,10 @@ interface Option {
   children?: Option[];
 }
 
+export const timeAvailabilityImport = (data: any) => {
+  return data?.map((item: any) => `${item?.dayofWeekId}__${item?.hourId}`) || [];
+};
+
 const timeInDay: Option[] = Array.from({ length: 24 }, (value, index) => ({
   value: index,
   label: `${index}`,

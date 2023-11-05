@@ -1,6 +1,6 @@
 import { baseAuthSplitApi, baseNoAuthSplitApi } from './base-auth-query';
 
-export const UsersAPI = baseAuthSplitApi.injectEndpoints({
+export const UsersAdminAPI = baseAuthSplitApi.injectEndpoints({
   endpoints: (builder) => ({
     getUserAdmin: builder.query({
       query: (params) => ({
@@ -45,4 +45,4 @@ export const {
   useCreateUserAdminMutation,
   useDeleteUserAdminMutation,
   useLazyFindUserAdminQuery,
-} = UsersAPI;
+} = UsersAdminAPI;

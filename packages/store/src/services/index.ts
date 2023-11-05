@@ -12,3 +12,4 @@ export * from './wards.api';
 export * from './posts.api';
 export * from './users.tutor.api';
 export * from './users.students.api';
+export * from './users.api';
