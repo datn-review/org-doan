@@ -22,11 +22,12 @@ import { InfinityPaginationResultType } from '../../utils/types/infinity-paginat
 import { NullableType } from '../../utils/types/nullable.type';
 import { Posts } from './entities/posts.entity';
 
+import { StatusEnum } from 'src/statuses/statuses.enum';
 import { CreatePostsDto } from './dto/create.dto';
 import { UpdatePostsDto } from './dto/update.dto';
-import { PostsService } from './posts.service';
-import { StatusEnum } from 'src/statuses/statuses.enum';
 import { PostTimeAvailabilityService } from './post-time-availability/post-time-availability.service';
+import { PostsService } from './posts.service';
+import { Roles } from 'src/roles/roles.decorator';
 
 @ApiTags('Posts')
 @Controller({
@@ -40,8 +41,27 @@ export class PostsController {
     private readonly postTimeAvailabilityService: PostTimeAvailabilityService,
   ) {}
 
+  @ApiBearerAuth()
+  @Roles()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Get('/my')
+  @HttpCode(HttpStatus.OK)
+  async mePost(@Request() request): Promise<NullableType<Posts[] | null>> {
+    const userId = request.user.id;
+
+    return this.postsService.findMany({ userId: Number(userId) }, [
+      { entity: 'skill', field: 'skills' },
+      { entity: 'gradeLevel', field: 'gradeLevels' },
+      { entity: 'certification', field: 'certifications' },
+      { entity: 'subject', field: 'subjects' },
+      { entity: 'post_time_availability', field: 'postTimeAvailability' },
+      { entity: 'wards', field: 'wards' },
+    ]);
+  }
+
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
+  @Roles()
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async create(@Request() request, @Body() createPostsDto: CreatePostsDto): Promise<Posts[]> {
@@ -182,6 +202,7 @@ export class PostsController {
       { entity: 'wards', field: 'wards' },
     ]);
   }
+
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Put(':id')

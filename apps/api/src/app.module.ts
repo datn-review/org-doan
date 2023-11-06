@@ -53,6 +53,7 @@ import { DistrictsModule } from './modules/provinces/districts/districts.module'
 import { ProvinceModule } from './modules/provinces/province/province.module';
 import { WardsModule } from './modules/provinces/wards/wards.module';
 import { PostTimeAvailabilityModule } from './modules/posts/post-time-availability/post-time-availability.module';
+import { RegistrationModule } from './modules/registration/registration.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -131,6 +132,7 @@ import { PostTimeAvailabilityModule } from './modules/posts/post-time-availabili
     DistrictsModule,
     WardsModule,
     PostTimeAvailabilityModule,
+    RegistrationModule,
   ],
 })
 export class AppModule {}

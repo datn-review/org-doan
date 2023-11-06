@@ -14,6 +14,7 @@ import {
   UserTutorAPI,
   UserStudentAPI,
   UsersAdminAPI,
+  RegistrationAPI,
 } from './services';
 import { baseAuthSplitApi, baseNoAuthSplitApi } from './services/base-auth-query';
 
@@ -37,6 +38,7 @@ const rootReducer = combineReducers({
   [UserTutorAPI.reducerPath]: UserTutorAPI.reducer,
   [UserStudentAPI.reducerPath]: UserStudentAPI.reducer,
   [UsersAdminAPI.reducerPath]: UsersAdminAPI.reducer,
+  [RegistrationAPI.reducerPath]: RegistrationAPI.reducer,
 });
 
 export const store = configureStore({

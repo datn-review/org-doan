@@ -16,7 +16,12 @@ import {
 } from '@org/ui';
 import React, { useEffect } from 'react';
 import { getNameLanguage, useTranslation } from '@org/i18n';
-import { setActiveGroup, useAppDispatch, useGetPostsActiveQuery } from '@org/store';
+import {
+  setActiveGroup,
+  useAppDispatch,
+  useCreateRegistrationMutation,
+  useGetPostsActiveQuery,
+} from '@org/store';
 import { COLOR, DataTimeEnum, DayEnum, SiteMap, colorRandom } from '@org/utils';
 import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
@@ -34,6 +39,7 @@ function ClassNew() {
       refetchOnMountOrArgChange: true,
     },
   );
+  const [createRegistration] = useCreateRegistrationMutation();
 
   useEffect(() => {
     dispatch(setActiveGroup({ current: SiteMap.ClassNew.menu }));
@@ -41,6 +47,11 @@ function ClassNew() {
       dispatch(setActiveGroup({ current: '' }));
     };
   }, []);
+  const registerForClass = (postsId: number) => () => {
+    createRegistration({
+      postsId,
+    });
+  };
   return (
     <SectionLayout>
       <Section>
@@ -128,7 +139,7 @@ function ClassNew() {
                         Chi tiết
                       </Button>
                     </Link>
-                    <Button>
+                    <Button onClick={registerForClass(item.id)}>
                       <EditFilled />
                       Đăng Kí Nhận Lớp
                     </Button>
