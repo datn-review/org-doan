@@ -9,6 +9,13 @@ export const GradeLevelAPI = baseAuthSplitApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getGradeLevelActive: builder.query({
+      query: (params) => ({
+        url: '/grade-level/active',
+        params: params,
+        method: 'GET',
+      }),
+    }),
     createGradeLevel: builder.mutation({
       query: (body) => ({
         url: '/grade-level',
@@ -45,4 +52,5 @@ export const {
   useCreateGradeLevelMutation,
   useDeleteGradeLevelMutation,
   useLazyFindGradeLevelQuery,
+  useGetGradeLevelActiveQuery,
 } = GradeLevelAPI;

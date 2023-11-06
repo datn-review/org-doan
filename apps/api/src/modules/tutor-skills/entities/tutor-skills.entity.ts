@@ -17,6 +17,9 @@ export class TutorSkills extends EntityHelper {
   @ApiProperty({ example: 'cbcfa8b8-3a25-4adb-a9c6-e325f0d0f3ae' })
   @PrimaryGeneratedColumn()
   id: number;
+  
+  @Column({ type: Number, nullable: true })
+  skillId?: number | null;
 
   @ManyToOne(() => User, {
     eager: true,
@@ -26,7 +29,7 @@ export class TutorSkills extends EntityHelper {
   @ManyToOne(() => Skills, {
     eager: true,
   })
-  skills?: Skills | null;
+  skill?: Skills | null;
 
   @Column({ type: String, nullable: true })
   customerNameVN: string;

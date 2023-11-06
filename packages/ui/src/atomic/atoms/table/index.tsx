@@ -71,7 +71,6 @@ export function Table({
     }
     return newColumns;
   }, [columns, sortBy, sortDirection]);
-  console.log('🚀 ~ file: index.tsx:74 ~ convertColumns ~ convertColumns:', convertColumns);
   return (
     <Spin spinning={loading}>
       <TableBase

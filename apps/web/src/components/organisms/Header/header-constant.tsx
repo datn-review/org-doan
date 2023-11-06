@@ -63,8 +63,8 @@ export const menuCategory: MenuItem[] = [
   },
   {
     name: <Translation>{(t) => t('manage.class')}</Translation>,
-    path: SiteMap.MangeClass.path,
-    id: SiteMap.MangeClass.menu,
+    path: SiteMap.TutorClass.path,
+    id: SiteMap.TutorClass.menu,
     icon: <IconHome />,
     subMenu: [],
     // isHide: ifAnyGranted([RolesEnum.WEB_ADMIN]),

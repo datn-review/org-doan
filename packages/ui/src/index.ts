@@ -16,4 +16,6 @@ export {
   Carousel,
   Tabs,
   type TabsProps,
+  Card,
 } from 'antd';
+export * from '@ant-design/icons';

@@ -1,23 +1,29 @@
+import * as bcrypt from 'bcryptjs';
+import { Exclude, Expose } from 'class-transformer';
+import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
+import { TutorCertification } from 'src/modules/tutor-certification/entities/tutor-certification.entity';
+import { TutorSkills } from 'src/modules/tutor-skills/entities/tutor-skills.entity';
+import { EntityHelper } from 'src/utils/entity-helper';
 import {
-  Column,
   AfterLoad,
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
   Index,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  BeforeInsert,
-  BeforeUpdate,
 } from 'typeorm';
+import { FileEntity } from '../../files/entities/file.entity';
 import { Role } from '../../roles/entities/role.entity';
 import { Status } from '../../statuses/entities/status.entity';
-import { FileEntity } from '../../files/entities/file.entity';
-import * as bcrypt from 'bcryptjs';
-import { EntityHelper } from 'src/utils/entity-helper';
-import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
-import { Exclude, Expose } from 'class-transformer';
+import { TutorSubjectGrade } from 'src/modules/tutor-subject-grade/entities/tutor-subject-grade.entity';
+import { TutorTimeAvailability } from '../tutor-time-availability/entities/tutor-time-availability.entity';
+import { Wards } from 'src/modules/provinces/wards/entities/wards.entity';
 
 @Entity()
 export class User extends EntityHelper {
@@ -67,8 +73,6 @@ export class User extends EntityHelper {
   @Index()
   @Column({ type: String, nullable: true })
   lastName: string | null;
-  @Column({ type: String, nullable: true })
-  photoId?: string | null;
 
   @ManyToOne(() => FileEntity, {
     eager: true,
@@ -89,6 +93,32 @@ export class User extends EntityHelper {
   @Index()
   @Exclude({ toPlainOnly: true })
   hash: string | null;
+
+  @Column({ type: String, nullable: true })
+  address?: string;
+  @ManyToOne(() => Wards, {
+    eager: true,
+  })
+  wards?: Wards | null;
+
+  @OneToMany(() => TutorSkills, (tutorSkills) => tutorSkills.tutor, {
+    onDelete: 'CASCADE',
+  })
+  tutorSkills: TutorSkills[];
+
+  @OneToMany(() => TutorCertification, (tutorCertification) => tutorCertification.tutor, {
+    onDelete: 'CASCADE',
+  })
+  tutorCertifications: TutorCertification[];
+
+  @OneToMany(() => TutorSubjectGrade, (tutorSubjectGrade) => tutorSubjectGrade.tutor, {
+    onDelete: 'CASCADE',
+  })
+  tutorGradeSubject: TutorSubjectGrade[];
+  @OneToMany(() => TutorTimeAvailability, (tutorTimeAvailability) => tutorTimeAvailability.tutor, {
+    onDelete: 'CASCADE',
+  })
+  tutorTimeAvailability: TutorTimeAvailability[];
 
   @CreateDateColumn()
   createdAt: Date;

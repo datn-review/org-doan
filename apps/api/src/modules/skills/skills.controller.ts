@@ -28,17 +28,16 @@ import { UpdateSkillsDto } from './dto/update.dto';
 import { SkillsService } from './skills.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 
-@ApiBearerAuth()
 @ApiTags('Skills')
-@Roles(RoleEnum.WEB_ADMIN)
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'skills',
   version: '1',
 })
 export class SkillsController {
   constructor(private readonly skillsService: SkillsService) {}
-
+  @ApiBearerAuth()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createSkillsDto: CreateSkillsDto): Promise<Skills[]> {
@@ -46,7 +45,9 @@ export class SkillsController {
       ...createSkillsDto,
     });
   }
-
+  @ApiBearerAuth()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('/')
   @HttpCode(HttpStatus.OK)
   @ApiQuery({ name: 'status', required: false })
@@ -91,13 +92,17 @@ export class SkillsController {
   findOne(@Param('id') id: string): Promise<NullableType<Skills>> {
     return this.skillsService.findOne({ id: +id });
   }
-
+  @ApiBearerAuth()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   update(@Param('id') id: number, @Body() updateSkillsDto: UpdateSkillsDto): Promise<Skills[]> {
     return this.skillsService.update(id, updateSkillsDto);
   }
-
+  @ApiBearerAuth()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: number): Promise<void> {

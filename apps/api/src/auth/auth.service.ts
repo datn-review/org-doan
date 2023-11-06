@@ -19,6 +19,7 @@ import { ForgotService } from 'src/forgot/forgot.service';
 import { MailService } from 'src/mail/mail.service';
 import { NullableType } from '../utils/types/nullable.type';
 import { LoginResponseType } from '../utils/types/auth/login-response.type';
+import { relations } from 'src/users/controller';
 
 @Injectable()
 export class AuthService {
@@ -33,9 +34,13 @@ export class AuthService {
     loginDto: AuthEmailLoginDto,
     onlyAdmin?: boolean,
   ): Promise<LoginResponseType> {
-    const user = await this.usersService.findOne({
-      email: loginDto.email,
-    });
+    const user = await this.usersService.findOne(
+      {
+        email: loginDto.email,
+      },
+      ['role'],
+    );
+
     console.log(onlyAdmin);
 
     if (
@@ -122,7 +127,7 @@ export class AuthService {
         id: StatusEnum.active,
       });
 
-      user = await this.usersService.create({
+      user = (await this.usersService.create({
         email: socialEmail ?? null,
         firstName: socialData.firstName ?? null,
         lastName: socialData.lastName ?? null,
@@ -130,10 +135,10 @@ export class AuthService {
         provider: authProvider,
         role,
         status,
-      });
+      })) as unknown as User;
 
       user = await this.usersService.findOne({
-        id: user.id,
+        id: user?.id,
       });
     }
 
@@ -263,9 +268,12 @@ export class AuthService {
   }
 
   async me(user: User): Promise<NullableType<User>> {
-    return this.usersService.findOne({
-      id: user.id,
-    });
+    return this.usersService.findOne(
+      {
+        id: user.id,
+      },
+      relations,
+    );
   }
 
   async update(user: User, userDto: AuthUpdateDto): Promise<NullableType<User>> {

@@ -7,6 +7,7 @@ interface ISelect extends SelectProps {
   label?: string;
   name?: string;
   onChange?: (value: any) => void;
+  [key: string]: any;
 }
 export function Select({ label, onChange, ...rest }: ISelect) {
   return (
@@ -25,8 +26,12 @@ export function Select({ label, onChange, ...rest }: ISelect) {
       <SelectBase
         className={cx(
           css`
-            min-width: 6em;
+            width: 100%;
             min-height: 3.8rem;
+            .ant-select-selector {
+              width: 100%;
+              min-height: 3.8rem;
+            }
           `,
           rest.className,
         )}

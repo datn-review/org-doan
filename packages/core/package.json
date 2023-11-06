@@ -12,6 +12,8 @@
   "dependencies": {
     "@org/utils": "workspace:^",
     "@org/ui": "workspace:^",
+    "@org/store": "workspace:^",
+    "@org/i18n": "workspace:^",
 
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

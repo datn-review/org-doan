@@ -2,16 +2,14 @@ import { css } from '@emotion/css';
 import { useCRUDContext, useMessage, useUpdateEffect } from '@org/core';
 import { useTranslation } from '@org/i18n';
 import { clearActiveMenu, setActiveGroup, setActiveSubGroup, useAppDispatch } from '@org/store';
-import {
-  useDeleteUserAdminMutation,
-  useLazyGetUserAdminQuery,
-} from '@org/store/src/services/users.api';
+import { useDeleteUserAdminMutation, useLazyGetUserAdminQuery } from '@org/store';
 import {
   Button,
   H2,
   IconDeleteAction,
   IconEditAction,
   Input,
+  Section,
   Select,
   SelectLimitTable,
   Space,
@@ -108,7 +106,7 @@ function WebAdmin() {
       title: t('user.status'),
       sorter: true,
 
-      dataIndex: '',
+      dataIndex: 'status',
       key: 'status',
       render: (_: any, record: any) => (
         <Tag color={StatusEnumColor[record?.status?.name as keyof typeof StatusEnumColor]}>
@@ -155,7 +153,7 @@ function WebAdmin() {
   ];
 
   return (
-    <Space>
+    <Section>
       {contextHolder}
       <Space
         className={css`
@@ -165,15 +163,7 @@ function WebAdmin() {
         `}
       >
         <H2>{t('manage.admin')}</H2>
-        {/* <Space
-          className={css`
-            font-size: 1.8rem;
-            margin: 0 0 1.5rem;
-            font-weight: 500;
-          `}
-        >
-          {t('search_filter')}
-        </Space> */}
+
         <Select
           label={t('user.status')}
           options={statusOption}
@@ -233,7 +223,7 @@ function WebAdmin() {
         loading={isLoading}
       />
       <Upsert />
-    </Space>
+    </Section>
   );
 }
 

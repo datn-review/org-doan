@@ -20,3 +20,10 @@ export const handleExecuteEvent = <T>(isExecute: unknown, fn: T): T | VoidFuncti
 export const getImage = (id: string) => {
   return `https://drive.google.com/uc?export=view&id=${id}`;
 };
+export const formatData = ({ data, name = 'name' }: any) => {
+  if (!data) return [];
+  return data?.map((item: any) => ({
+    value: item?.id,
+    label: item[name],
+  }));
+};

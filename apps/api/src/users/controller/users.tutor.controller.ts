@@ -28,6 +28,67 @@ import { User } from '../entities/user.entity';
 import { InfinityPaginationResultType } from '../../utils/types/infinity-pagination-result.type';
 import { NullableType } from '../../utils/types/nullable.type';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { TutorCertificationService } from 'src/modules/tutor-certification/tutor-certification.service';
+import { FilesService } from 'src/files-drive/files.service';
+import { TutorSubjectGradeService } from 'src/modules/tutor-subject-grade/tutor-subject-grade.service';
+import { TutorSkillsService } from 'src/modules/tutor-skills/tutor-skills.service';
+import { TutorTimeAvailabilityService } from '../tutor-time-availability/tutor-time-availability.service';
+import { differenceBy, differenceWith, isEmpty } from 'lodash';
+export const relations = [
+  {
+    field: 'tutorCertifications',
+    entity: 'tutor_certification',
+  },
+  {
+    field: 'tutor_certification.certification',
+    entity: 'certification',
+  },
+  {
+    field: 'tutorSkills',
+    entity: 'tutor_skill',
+  },
+  {
+    field: 'tutor_skill.skill',
+    entity: 'skill',
+  },
+
+  {
+    field: 'tutorTimeAvailability',
+    entity: 'tutor_time_availability',
+  },
+  {
+    field: 'tutorGradeSubject',
+    entity: 'tutor_subject_grade',
+  },
+  {
+    field: 'tutor_subject_grade.subject',
+    entity: 'subject',
+  },
+  {
+    field: 'tutor_subject_grade.grade',
+    entity: 'gradeLevel',
+  },
+  {
+    field: 'status',
+    entity: 'status',
+  },
+  {
+    field: 'photo',
+    entity: 'photo',
+  },
+  {
+    field: 'wards',
+    entity: 'wards',
+  },
+  {
+    field: 'wards.districts',
+    entity: 'districts',
+  },
+  {
+    field: 'districts.province',
+    entity: 'province',
+  },
+];
 @ApiBearerAuth()
 @ApiTags('User Tutor')
 @Roles(RoleEnum.WEB_ADMIN)
@@ -38,7 +99,16 @@ import { FileInterceptor } from '@nestjs/platform-express';
   version: '1',
 })
 export class UsersTutorController {
-  constructor(private readonly usersService: UsersService) {}
+  postSkillsService: any;
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly tutorCertificationService: TutorCertificationService,
+    private readonly tutorSubjectGradeService: TutorSubjectGradeService,
+    private readonly tutorSkillsService: TutorSkillsService,
+    private readonly tutorTimeAvailabilityService: TutorTimeAvailabilityService,
+
+    private readonly filesService: FilesService,
+  ) {}
 
   @SerializeOptions({
     groups: ['admin'],
@@ -47,17 +117,57 @@ export class UsersTutorController {
   @HttpCode(HttpStatus.CREATED)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('photo'))
-  create(
+  async create(
     @UploadedFile() photo: Express.Multer.File,
     @Body() createProfileDto: CreateUserDto,
-  ): Promise<User> {
-    return this.usersService.create({
+  ): Promise<User[]> {
+    let photoCheck = { id: null };
+    if (photo) {
+      photoCheck = await this.filesService.uploadFile(photo);
+    }
+
+    const user = await this.usersService.create({
       ...createProfileDto,
-      photo: photo,
+      photo: photoCheck.id || null,
       role: {
-        id: RoleEnum.WEB_ADMIN,
+        id: RoleEnum.PESONAL_TUTOR,
       },
     });
+
+    const userId = (user as unknown as User)?.id;
+    const certifications = createProfileDto?.certification?.split(',').map((item) => ({
+      certificationId: Number(item),
+      tutor: userId,
+    }));
+    const skills = createProfileDto?.skills?.split(',')?.map((item) => ({
+      skillId: Number(item),
+      tutor: userId,
+    }));
+    const tutorGradeSubject = createProfileDto?.tutorGradeSubject
+      ?.split(',')
+      ?.map((item: string) => {
+        const [subject, grade] = item.split('__');
+        return {
+          gradeId: Number(grade) || 0,
+          subjectId: Number(subject) || 0,
+          tutorId: Number(userId),
+        };
+      });
+
+    const timeAvailability = createProfileDto?.timeAvailability?.split(',').map((item) => {
+      const [dayofWeek, hour] = item?.split('__');
+      return { dayofWeekId: Number(dayofWeek), hourId: Number(hour), tutorId: userId };
+    });
+    try {
+      if (skills) void this.tutorSkillsService.createMany(skills);
+      if (certifications) void this.tutorCertificationService.createMany(certifications);
+      if (tutorGradeSubject) void this.tutorSubjectGradeService.createMany(tutorGradeSubject);
+      if (timeAvailability) void this.tutorTimeAvailabilityService.createMany(timeAvailability);
+    } catch (err) {
+      console.log(err);
+    }
+
+    return user;
   }
 
   @SerializeOptions({
@@ -72,6 +182,8 @@ export class UsersTutorController {
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
     @Query('sortBy', new DefaultValuePipe(10)) sortBy: string,
     @Query('sortDirection', new DefaultValuePipe(10)) sortDirection: string,
+    @Query('fieldSearch', new DefaultValuePipe(['lastName', 'firstName']))
+    fieldSearch: string | string[],
   ): Promise<InfinityPaginationResultType<User>> {
     if (limit > 50) {
       limit = 50;
@@ -83,8 +195,15 @@ export class UsersTutorController {
       sortBy,
       sortDirection,
       status,
-      role: RoleEnum.PESONAL_TUTOR,
       searchName,
+      fieldSearch,
+      where: [
+        {
+          field: 'role',
+          value: RoleEnum.PESONAL_TUTOR,
+        },
+      ],
+      relations,
     });
   }
 
@@ -94,7 +213,12 @@ export class UsersTutorController {
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string): Promise<NullableType<User>> {
-    return this.usersService.findOne({ id: +id });
+    return this.usersService.findOne(
+      {
+        id: +id,
+      },
+      relations,
+    );
   }
 
   @SerializeOptions({
@@ -104,12 +228,116 @@ export class UsersTutorController {
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('photo'))
   @HttpCode(HttpStatus.OK)
-  update(
+  async update(
     @Param('id') id: number,
     @Body() updateProfileDto: UpdateUserDto,
     @UploadedFile() photo: Express.Multer.File,
-  ): Promise<User> {
-    return this.usersService.update(id, { ...updateProfileDto, photo: photo });
+  ): Promise<User[]> {
+    const certifications = updateProfileDto?.certification?.split(',').map((item) => ({
+      certificationId: Number(item),
+      tutor: id,
+    }));
+    const skills = updateProfileDto?.skills?.split(',')?.map((item) => ({
+      skillId: Number(item),
+      tutor: id,
+    }));
+    const tutorGradeSubject = updateProfileDto?.tutorGradeSubject
+      ?.split(',')
+      ?.map((item: string) => {
+        const [subject, grade] = item.split('__');
+        return {
+          gradeId: Number(grade) || 0,
+          subjectId: Number(subject) || 0,
+          tutorId: id,
+        };
+      });
+
+    const timeAvailability = updateProfileDto?.timeAvailability?.split(',').map((item) => {
+      const [dayofWeek, hour] = item?.split('__');
+      return { dayofWeekId: Number(dayofWeek), hourId: Number(hour), tutorId: id };
+    });
+
+    if (skills) {
+      const tutorSkills = await this.tutorSkillsService.findMany({ tutorId: id });
+      if (tutorSkills) {
+        const newRow = differenceBy(skills, tutorSkills, 'skillId');
+        const deleteRow = differenceBy(tutorSkills, skills, 'skillId')?.map((item) => item?.id);
+        !isEmpty(newRow) && void this.tutorSkillsService.createMany(newRow);
+        !isEmpty(deleteRow) &&
+          deleteRow.forEach((id) => {
+            void this.tutorSkillsService.softDelete(id);
+          });
+      }
+    }
+    if (certifications) {
+      const dataFind = await this.tutorCertificationService.findMany({ tutorId: id });
+
+      if (dataFind) {
+        const newRow = differenceBy(certifications, dataFind, 'certificationId');
+
+        const deleteRow = differenceBy(dataFind, certifications, 'certificationId')?.map(
+          (item) => item?.id,
+        );
+
+        !isEmpty(newRow) && void this.tutorCertificationService.createMany(newRow);
+        !isEmpty(deleteRow) &&
+          deleteRow.forEach((id) => {
+            void this.tutorCertificationService.softDelete(id);
+          });
+      }
+    }
+
+    if (timeAvailability) {
+      const dataFind = await this.tutorTimeAvailabilityService.findMany({ tutorId: id });
+      if (dataFind) {
+        const newRow = differenceWith(timeAvailability, dataFind, (source, compare) => {
+          return source.dayofWeekId === compare.dayofWeekId && source.hourId === compare.hourId;
+        });
+
+        const deleteRow = differenceWith(dataFind, timeAvailability, (source, compare) => {
+          return source.dayofWeekId === compare.dayofWeekId && source.hourId === compare.hourId;
+        })?.map(({ tutorId, dayofWeekId, hourId }) => ({
+          tutorId,
+          dayofWeekId,
+          hourId,
+        }));
+
+        !isEmpty(newRow) && void this.tutorTimeAvailabilityService.createMany(newRow);
+        !isEmpty(deleteRow) &&
+          deleteRow.forEach((id) => {
+            void this.tutorTimeAvailabilityService.delete(id);
+          });
+      }
+    }
+    if (tutorGradeSubject) {
+      const dataFind = await this.tutorSubjectGradeService.findMany({ tutorId: id });
+      if (dataFind) {
+        const newRow = differenceWith(tutorGradeSubject, dataFind, (source, compare) => {
+          return source.subjectId === compare.subjectId && source.gradeId === compare.gradeId;
+        });
+
+        const deleteRow = differenceWith(dataFind, tutorGradeSubject, (source, compare) => {
+          return source.subjectId === compare.subjectId && source.gradeId === compare.gradeId;
+        })?.map(({ tutorId, subjectId, gradeId }) => ({
+          tutorId,
+          subjectId,
+          gradeId,
+        }));
+
+        !isEmpty(newRow) && void this.tutorSubjectGradeService.createMany(newRow);
+        !isEmpty(deleteRow) &&
+          deleteRow.forEach((id) => {
+            void this.tutorSubjectGradeService.delete(id);
+          });
+      }
+    }
+
+    if (photo) {
+      const photoResult = await this.filesService.uploadFile(photo);
+
+      return this.usersService.update(id, { ...updateProfileDto, photo: photoResult.id });
+    }
+    return this.usersService.update(id, { ...updateProfileDto });
   }
 
   @Delete(':id')

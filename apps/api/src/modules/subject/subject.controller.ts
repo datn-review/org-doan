@@ -28,17 +28,16 @@ import { UpdateSubjectDto } from './dto/update.dto';
 import { SubjectService } from './subject.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 
-@ApiBearerAuth()
 @ApiTags('Subject')
-@Roles(RoleEnum.WEB_ADMIN)
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'subject',
   version: '1',
 })
 export class SubjectController {
   constructor(private readonly subjectService: SubjectService) {}
-
+  @ApiBearerAuth()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createDto: CreateSubjectDto): Promise<Subject[]> {
@@ -46,7 +45,9 @@ export class SubjectController {
       ...createDto,
     });
   }
-
+  @ApiBearerAuth()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('/')
   @HttpCode(HttpStatus.OK)
   @ApiQuery({ name: 'status', required: false })
@@ -91,13 +92,17 @@ export class SubjectController {
   findOne(@Param('id') id: string): Promise<NullableType<Subject>> {
     return this.subjectService.findOne({ id: +id });
   }
-
+  @ApiBearerAuth()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   update(@Param('id') id: number, @Body() updateDto: UpdateSubjectDto): Promise<Subject[]> {
     return this.subjectService.update(id, updateDto);
   }
-
+  @ApiBearerAuth()
+  @Roles(RoleEnum.WEB_ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: number): Promise<void> {

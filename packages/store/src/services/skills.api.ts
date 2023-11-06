@@ -9,6 +9,13 @@ export const SkillsAPI = baseAuthSplitApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getSkillsActive: builder.query({
+      query: (params) => ({
+        url: '/skills/active',
+        params: params,
+        method: 'GET',
+      }),
+    }),
     createSkills: builder.mutation({
       query: (body) => ({
         url: '/skills',
@@ -45,4 +52,5 @@ export const {
   useCreateSkillsMutation,
   useDeleteSkillsMutation,
   useLazyFindSkillsQuery,
+  useGetSkillsActiveQuery,
 } = SkillsAPI;

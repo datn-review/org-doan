@@ -80,7 +80,7 @@ export class TutorSubjectGradeController {
       relations: [
         { field: 'tutor', entity: 'user' },
         { field: 'subject', entity: 'subject' },
-        { field: 'grade', entity: 'grade_level' },
+        { field: 'grade', entity: 'gradeLevel' },
       ],
     });
   }

@@ -11,7 +11,7 @@ export const MainLayout = () => {
         className={css`
           background: #f7f6f9;
           min-height: calc(100vh - 6.5rem - 5.8rem - 46.5rem);
-          padding: 1.5rem 10rem;
+          padding: 1.5rem 0;
         `}
       >
         <Outlet />

@@ -9,13 +9,27 @@ import {
   UploadImage,
   useForm,
 } from '@org/ui';
-import { COLOR } from '@org/utils';
-import React from 'react';
+import { COLOR, getImage } from '@org/utils';
+import React, { useEffect } from 'react';
 
-function InfoHeader() {
+function InfoHeader({ data }: any) {
   const methods = useForm<any>({
     defaultValues: { photo: [] },
   });
+  useEffect(() => {
+    if (data?.photo) {
+      const photoArray = [
+        {
+          uid: data?.photo?.id || '',
+          status: 'done',
+          url: getImage(data?.photo?.path),
+        },
+      ];
+
+      methods.setValue('photo', photoArray);
+    }
+  });
+
   return (
     <FormProvider {...methods}>
       <Space>
@@ -60,6 +74,7 @@ function InfoHeader() {
                   name='photo'
                   maxLength={1}
                   listType='picture-card'
+                  disabled={true}
                 />
               </Space>
             </Space>
@@ -70,7 +85,7 @@ function InfoHeader() {
                 margin-bottom: 1rem;
               `}
             >
-              Tam Dep Trai
+              {data?.lastName} {data?.firstName}
             </h4>
             <Space className={'flex justify-between'}>
               <Space className={'flex gap-1'}>

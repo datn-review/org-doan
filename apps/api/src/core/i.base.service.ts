@@ -25,4 +25,6 @@ export interface IBaseService<TParams extends IParams, T> {
   update(id: number, payload: any): Promise<T[]>;
 
   softDelete(id: number): Promise<void>;
+  
+  createMany(data: any[]): Promise<void>;
 }
