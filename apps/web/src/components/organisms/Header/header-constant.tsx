@@ -177,6 +177,29 @@ export const menuCategory: MenuItem[] = [
       },
     ],
   },
+  {
+    name: <Translation>{(t) => t('manage.name')}</Translation>,
+    path: '',
+    id: SiteMap.Manage.menu,
+    icon: <IconUser />,
+    // isHide: ifNotGranted([RolesEnum.WEB_ADMIN]),
+    subMenu: [
+      {
+        label: <Translation>{(t) => t('manage.registration')}</Translation>,
+        path: SiteMap.Manage.Registration.path,
+        id: SiteMap.Manage.Registration.menu,
+        key: SiteMap.Manage.Registration.menu,
+        icon: <></>,
+      },
+      {
+        label: <Translation>{(t) => t('manage.posts.me')}</Translation>,
+        path: SiteMap.Manage.PostsMe.path,
+        id: SiteMap.Manage.PostsMe.menu,
+        key: SiteMap.Manage.PostsMe.menu,
+        icon: <></>,
+      },
+    ],
+  },
 ].filter((item) => !item.isHide);
 
 export const menuPerson: IMenuIcon[] = [

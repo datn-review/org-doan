@@ -8,7 +8,13 @@ import { CertificationPage, GradeLevelPage, SubjectPage, SkillsPage } from '@org
 import { ProfilePage } from '@org/profile';
 import { LookForTutorPage } from '@org/look-for-tutor';
 import { TutorPage } from '@org/tutor';
-import { ClassNewDetailsPage, ClassNewPage, TutorClassPage } from '@org/classes';
+import {
+  ClassNewDetailsPage,
+  ClassNewPage,
+  RegistrationPage,
+  TutorClassPage,
+  PostsPage,
+} from '@org/classes';
 
 export const router = createBrowserRouter([
   {
@@ -78,6 +84,11 @@ export const router = createBrowserRouter([
         path: SiteMap.ClassNew.Details.path,
         element: <ClassNewDetailsPage />,
       },
+      {
+        path: SiteMap.Manage.Registration.path,
+        element: <RegistrationPage />,
+      },
+      { path: SiteMap.Manage.PostsMe.path, element: <PostsPage /> },
     ],
   },
   {

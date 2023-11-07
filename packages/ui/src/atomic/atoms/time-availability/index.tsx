@@ -3,7 +3,7 @@ import { Cascader, CascaderProps } from 'antd';
 import { Space } from '../space';
 import { css, cx } from '@emotion/css';
 import { withForm } from '../../../form/connectForm';
-import { COLOR } from '@org/utils';
+import { COLOR, COLOR_RGB } from '@org/utils';
 interface Option {
   value: string | number;
   label: string;
@@ -117,6 +117,8 @@ export function TimeAvailability({ label, onChange, value, ...rest }: any) {
                     width: 11rem;
                     border: solid 1px #ccc;
                     padding-left: 1rem;
+                    border-radius: 5px;
+                    line-height: 30px;
                   `}
                 >
                   {day.label}
@@ -131,7 +133,7 @@ export function TimeAvailability({ label, onChange, value, ...rest }: any) {
                   {day?.children?.map((dayhours) => {
                     const value = `${day?.value}__${dayhours?.value}` as string;
                     const isChecked = timeAvailabilityCheck?.includes(value);
-                    const bg = isChecked ? `${COLOR.Primary} !important` : 'efefef';
+                    const bg = isChecked ? `rgba(${COLOR_RGB.Primary},1) !important` : 'efefef';
                     const color = isChecked ? `${COLOR.White} !important` : '#ccc';
 
                     return (
@@ -151,6 +153,7 @@ export function TimeAvailability({ label, onChange, value, ...rest }: any) {
                           background: ${bg};
                           user-select: none;
                           touch-action: none;
+                          border-radius: 5px;
                           &:hover {
                             background: ${COLOR.Secondary};
                             color: white;

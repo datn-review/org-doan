@@ -132,4 +132,28 @@ export const SiteMap = {
       roles: [],
     },
   },
+  Manage: {
+    menu: 'Manage',
+    roles: [],
+    Registration: {
+      path: '/registration',
+      menu: 'registration',
+      roles: [],
+      Details: {
+        generate: (id: number | string) => `/registration/${id}`,
+        path: '/registration/:id',
+        roles: [],
+      },
+    },
+    PostsMe: {
+      path: '/posts-me',
+      menu: 'posts-me',
+      roles: [],
+    },
+    RegistrationPost: {
+      path: '/registration-post',
+      menu: 'registration-post',
+      roles: [],
+    },
+  },
 };

@@ -17,5 +17,7 @@ export {
   Tabs,
   type TabsProps,
   Card,
+  Modal as ModalAntd,
 } from 'antd';
+
 export * from '@ant-design/icons';
