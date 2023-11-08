@@ -102,6 +102,7 @@ export const SiteMap = {
     Me: {
       path: '/profile',
     },
+    generate: (id: number | string) => `/profile/${id}`,
     path: '/profile/:id',
     menu: 'profile',
     roles: [],

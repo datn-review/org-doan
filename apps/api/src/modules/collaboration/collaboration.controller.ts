@@ -12,6 +12,7 @@ import {
   Put,
   Query,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 
 import { AuthGuard } from '@nestjs/passport';
@@ -30,7 +31,7 @@ import { StatusEnum } from 'src/statuses/statuses.enum';
 
 @ApiBearerAuth()
 @ApiTags('Collaboration')
-@Roles(RoleEnum.WEB_ADMIN)
+@Roles()
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'collaboration',
@@ -41,9 +42,14 @@ export class CollaborationController {
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createCollaborationDto: CreateCollaborationDto): Promise<Collaboration[]> {
+  create(
+    @Request() request,
+    @Body() createCollaborationDto: CreateCollaborationDto,
+  ): Promise<Collaboration[]> {
+    const studentId = request.user.id || 0;
     return this.collaborationService.create({
       ...createCollaborationDto,
+      student: studentId,
     });
   }
 

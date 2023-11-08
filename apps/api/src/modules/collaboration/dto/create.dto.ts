@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
 
 export class CreateCollaborationDto {
@@ -7,8 +7,14 @@ export class CreateCollaborationDto {
   @IsNotEmpty()
   tutor?: User | null;
   @ApiProperty({ type: Number, example: 1 })
-  @IsNotEmpty()
+  @IsOptional()
   student?: User | null;
+
+  @ApiProperty({ type: String, example: 1 })
+  studentSignature?: string | null;
+
+  @ApiProperty({ type: String, example: 1 })
+  tutorSignature?: string | null;
 
   @ApiProperty({ type: Date, example: 1 })
   @IsNotEmpty()
@@ -18,7 +24,7 @@ export class CreateCollaborationDto {
   endDate: Date;
 
   @ApiProperty({ type: String, example: 'hellword' })
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({ type: Number, example: 1 })
   status: number;
 }

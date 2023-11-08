@@ -26,6 +26,13 @@ export class Collaboration extends EntityHelper {
     eager: true,
   })
   student?: User | null;
+
+  @Column({ type: String, nullable: true })
+  studentSignature?: string | null;
+
+  @Column({ type: String, nullable: true })
+  tutorSignature?: string | null;
+
   @Column({ type: Date })
   startDate: Date;
 
