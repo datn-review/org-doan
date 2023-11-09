@@ -11,23 +11,39 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/roles/roles.decorator';
-import { RoleEnum } from 'src/roles/roles.enum';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { InfinityPaginationResultType } from '../../utils/types/infinity-pagination-result.type';
 import { NullableType } from '../../utils/types/nullable.type';
 import { Collaboration } from './entities/collaboration.entity';
 
+import { StatusEnum } from 'src/statuses/statuses.enum';
+import { RegistrationService } from '../registration/registration.service';
+import { CollaborationService } from './collaboration.service';
 import { CreateCollaborationDto } from './dto/create.dto';
 import { UpdateCollaborationDto } from './dto/update.dto';
-import { CollaborationService } from './collaboration.service';
-import { StatusEnum } from 'src/statuses/statuses.enum';
+import { RoleEnum } from 'src/roles/roles.enum';
+const relations = [
+  { field: 'posts', entity: 'posts' },
+  { field: 'posts.subjects', entity: 'subject' },
+
+  { field: 'posts.gradeLevels', entity: 'grade' },
+  { field: 'posts.user', entity: 'user' },
+  {
+    field: 'tutor',
+    entity: 'tutor',
+  },
+  {
+    field: 'student',
+    entity: 'student',
+  },
+];
 
 @ApiBearerAuth()
 @ApiTags('Collaboration')
@@ -38,18 +54,36 @@ import { StatusEnum } from 'src/statuses/statuses.enum';
   version: '1',
 })
 export class CollaborationController {
-  constructor(private readonly collaborationService: CollaborationService) {}
+  constructor(
+    private readonly collaborationService: CollaborationService,
+    private registrationService: RegistrationService,
+  ) {}
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  create(
+  async create(
     @Request() request,
     @Body() createCollaborationDto: CreateCollaborationDto,
   ): Promise<Collaboration[]> {
-    const studentId = request.user.id || 0;
+    const userId = request.user.id || 0;
+    const role = request?.user?.role?.id || 0;
+
+    let student: any = 0;
+    let tutor: any = 0;
+
+    if (role === RoleEnum.STUDENT) {
+      student = userId;
+      tutor = createCollaborationDto?.user || 0;
+    }
+    if (role === RoleEnum.PESONAL_TUTOR) {
+      tutor = userId;
+      student = createCollaborationDto?.user || 0;
+    }
+
     return this.collaborationService.create({
       ...createCollaborationDto,
-      student: studentId,
+      student,
+      tutor,
     });
   }
 
@@ -82,16 +116,7 @@ export class CollaborationController {
       sortDirection,
       searchName,
       fieldSearch,
-      relations: [
-        {
-          field: 'tutor',
-          entity: 'user',
-        },
-        {
-          field: 'student',
-          entity: 'user',
-        },
-      ],
+      relations,
     });
   }
 
@@ -105,6 +130,18 @@ export class CollaborationController {
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string): Promise<NullableType<Collaboration>> {
     return this.collaborationService.findOne({ id: +id });
+  }
+
+  @Get('/request-list')
+  @HttpCode(HttpStatus.OK)
+  async register(@Request() request): Promise<Collaboration[] | null> {
+    return this.collaborationService.findMany({ userId: request.user.id }, relations);
+  }
+
+  @Get('/post/:id')
+  @HttpCode(HttpStatus.OK)
+  async post(@Param('id') id: string): Promise<Collaboration[] | null> {
+    return this.collaborationService.findMany({ postsId: id }, relations);
   }
 
   @Put(':id')

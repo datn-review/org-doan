@@ -4,6 +4,13 @@ export enum Media {
   Tablet = 992,
   Desktop = 1200,
 }
+export enum MediaEnum {
+  Phone = 'Phone',
+  MiniTablet = 'MiniTablet',
+  Tablet = 'Tablet',
+  Desktop = 'Desktop',
+}
+
 export const breakpoints = [Media.Phone, Media.MiniTablet, Media.Tablet, Media.Desktop];
 
 const mq: Record<Media, string> | any = breakpoints

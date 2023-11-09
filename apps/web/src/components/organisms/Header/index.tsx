@@ -5,7 +5,7 @@ import * as S from './styled';
 
 export const Header = () => {
   return (
-    <S.Header>
+    <S.Header className='section-layout'>
       <HeaderUser />
       <HeaderCategory />
     </S.Header>

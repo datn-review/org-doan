@@ -1,15 +1,20 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { CreateCollaborationDto } from './create.dto';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsOptional } from 'class-validator';
+import { Posts } from 'src/modules/posts/entities/posts.entity';
 import { User } from 'src/users/entities/user.entity';
+import { CreateCollaborationDto } from './create.dto';
 
 export class UpdateCollaborationDto extends PartialType(CreateCollaborationDto) {
   @ApiProperty({ type: Number, example: 1 })
-  @IsNotEmpty()
+  @IsOptional()
   tutor?: User | null;
   @ApiProperty({ type: Number, example: 1 })
   @IsOptional()
   student?: User | null;
+
+  @ApiProperty({ type: Number, example: 1 })
+  @IsOptional()
+  posts?: Posts | null;
 
   @ApiProperty({ type: String, example: 1 })
   studentSignature?: string | null;
@@ -18,10 +23,10 @@ export class UpdateCollaborationDto extends PartialType(CreateCollaborationDto) 
   tutorSignature?: string | null;
 
   @ApiProperty({ type: Date, example: 1 })
-  @IsNotEmpty()
+  @IsOptional()
   startDate: Date;
   @ApiProperty({ type: Date, example: 1 })
-  @IsNotEmpty()
+  @IsOptional()
   endDate: Date;
 
   @ApiProperty({ type: String, example: 'hellword' })

@@ -12,9 +12,11 @@ export const StatusShowHide = {
   [2]: 'inactive',
 };
 export const StatusRegistration = {
-  [1]: 'accepted',
+  [1]: 'pending_tutor_signature',
   [2]: 'rejected',
   [3]: 'pending',
+  [4]: 'pending_pay',
+  [5]: 'collaboration',
 };
 export const StatusRegistrationColor = {
   [1]: 'success',

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Posts } from 'src/modules/posts/entities/posts.entity';
 import { User } from 'src/users/entities/user.entity';
 import { EntityHelper } from 'src/utils/entity-helper';
 import {
@@ -27,16 +28,21 @@ export class Collaboration extends EntityHelper {
   })
   student?: User | null;
 
+  @ManyToOne(() => Posts, {
+    eager: true,
+  })
+  posts?: Posts | null;
+
   @Column({ type: String, nullable: true })
   studentSignature?: string | null;
 
   @Column({ type: String, nullable: true })
   tutorSignature?: string | null;
 
-  @Column({ type: Date })
+  @Column({ type: Date, nullable: true })
   startDate: Date;
 
-  @Column({ type: Date })
+  @Column({ type: Date, nullable: true })
   endDate: Date;
 
   @Column({ type: Number, default: 1 })

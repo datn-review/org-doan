@@ -115,10 +115,6 @@ export class RegistrationController {
   @Get('/post/:id')
   @HttpCode(HttpStatus.OK)
   async post(@Param('id') id: string): Promise<Registration[] | null> {
-    console.log(
-      '🚀 ~ file: registration.controller.ts:117 ~ RegistrationController ~ post ~ id:',
-      id,
-    );
     return this.registrationService.findMany({ postsId: id }, relations);
   }
 

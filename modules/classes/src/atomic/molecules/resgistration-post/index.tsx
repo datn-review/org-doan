@@ -1,7 +1,11 @@
 import { css } from '@emotion/css';
 import { useMessage, useModal } from '@org/core';
 import { i18next, useTranslation } from '@org/i18n';
-import { useAppDispatch, useCreateCollaborationMutation } from '@org/store';
+import {
+  useAppDispatch,
+  useCreateCollaborationMutation,
+  useLazyGetCollaborationByPostQuery,
+} from '@org/store';
 import {
   useDeleteRegistrationMutation,
   useLazyGetRegistrationByPostQuery,
@@ -9,9 +13,12 @@ import {
 } from '@org/store/src/services/registration.api';
 import {
   Button,
+  Dropdown,
+  EllipsisOutlined,
   EyeOutlined,
   FormProvider,
   IconDeleteAction,
+  MenuProps,
   ModalAntd,
   RangePickerForm,
   Space,
@@ -26,6 +33,7 @@ import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
+import { Contants, EnumTypeContact } from '../contacts';
 
 type IUpdate = {
   time?: string;
@@ -51,7 +59,7 @@ export function RegistrationPost({ id, close }: any) {
 
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const [getUser, { data, isLoading }] = useLazyGetRegistrationByPostQuery();
+  const [getUser, { data, isLoading }] = useLazyGetCollaborationByPostQuery();
   const [deleteUser] = useDeleteRegistrationMutation();
   useEffect(() => {
     getUser(id);
@@ -101,40 +109,57 @@ export function RegistrationPost({ id, close }: any) {
     {
       title: t('user.action'),
       dataIndex: '',
+      align: 'center',
       render: (_: any, record: any) => (
-        <Space
+        <Dropdown
           className={css`
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
             cursor: pointer;
+            * {
+              font-size: 14px;
+            }
           `}
+          overlayClassName={css`
+            width: 20rem;
+          `}
+          menu={{
+            items: [
+              {
+                key: '1',
+                label: (
+                  <Link
+                    to={SiteMap.Profile.generate(record?.user?.id || 0)}
+                    className={css`
+                      color: #5c5b68 !important;
+                    `}
+                  >
+                    Xem Chi Tiết Gia Sư
+                  </Link>
+                ),
+              },
+              {
+                key: '2',
+                label: (
+                  <Space onClick={() => setIdContants(record)}>
+                    {record?.status == 1 ? 'Xem Hợp Đồng Chờ Gia Sư Ký' : 'Xác Nhận Hợp Tác'}
+                  </Space>
+                ),
+              },
+            ],
+          }}
+          trigger={['click']}
+          placement='bottomCenter'
+          arrow={{ pointAtCenter: true }}
         >
-          <Link to={SiteMap.Profile.generate(record?.user?.id || 0)}>
-            <EyeOutlined />
-          </Link>
-          <Button onClick={() => setIdContants(record)}>Xác Nhận Giáo Viên Này</Button>
-        </Space>
+          <EllipsisOutlined
+            className={css`
+              transform: scale(1.6);
+            `}
+          />
+        </Dropdown>
       ),
     },
   ];
 
-  const [createCollaboration] = useCreateCollaborationMutation();
-  const submitContact = (value: any) => {
-    console.log('🚀 ~ file: index.tsx:124 ~ submitContact ~ value:', value);
-    const tutor = contants?.user?.id;
-    const startDate = dayjs(value?.time?.[0]);
-    console.log('🚀 ~ file: index.tsx:127 ~ submitContact ~ startDate:', startDate);
-    const endDate = dayjs(value?.time?.[1]);
-    console.log('🚀 ~ file: index.tsx:128 ~ submitContact ~ endDate:', endDate);
-
-    console.log('🚀 ~ file: index.tsx:126 ~ submitContact ~ tutor:', tutor);
-    createCollaboration({
-      tutor: contants?.user.id,
-      startDate,
-      endDate,
-    });
-  };
   return (
     <ModalAntd
       title='Danh Sách Gia Sư Đăng Kí Nhận Dạy'
@@ -150,60 +175,14 @@ export function RegistrationPost({ id, close }: any) {
         data={data}
         loading={isLoading}
       />
-      <ModalAntd
-        title=' Tiến Hành Hoán Tất Hợp đồng '
-        open={!!contants}
-        onCancel={() => setIdContants(null)}
-        width={'90%'}
-        className={css`
-          top: 20px;
-        `}
-        footer={<></>}
-      >
-        Tiến Hành Hoán Tất Hợp đồng Tiến Hành Hoán Tất Hợp đồng Tiến Hành Hoán Tất Hợp đồng Tiến
-        Hành Hoán Tất Hợp đồng Lorem ipsum, dolor sit amet consectetur adipisicing elit. Similique
-        labore cupiditate esse optio quam? Ab sit eos voluptate amet saepe est atque nemo, beatae
-        iste assumenda dolorum fugiat, odit nam! Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Fuga molestiae nobis similique dignissimos, quasi consectetur. Ratione aut nisi ab,
-        est excepturi illum repellat veritatis, tempora illo distinctio, accusantium ut voluptatem!
-        Tiến Hành Hoán Tất Hợp đồng Tiến Hành Hoán Tất Hợp đồng Tiến Hành Hoán Tất Hợp đồng Tiến
-        Hành Hoán Tất Hợp đồng Lorem ipsum, dolor sit amet consectetur adipisicing elit. Similique
-        labore cupiditate esse optio quam? Ab sit eos voluptate amet saepe est atque nemo, beatae
-        iste assumenda dolorum fugiat, odit nam! Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Fuga molestiae nobis similique dignissimos, quasi consectetur. Ratione aut nisi ab,
-        est excepturi illum repellat veritatis, tempora illo distinctio, accusantium ut voluptatem!
-        Tiến Hành Hoán Tất Hợp đồng Tiến Hành Hoán Tất Hợp đồng Tiến Hành Hoán Tất Hợp đồng Tiến
-        Hành Hoán Tất Hợp đồng Lorem ipsum, dolor sit amet consectetur adipisicing elit. Similique
-        labore cupiditate esse optio quam? Ab sit eos voluptate amet saepe est atque nemo, beatae
-        iste assumenda dolorum fugiat, odit nam! Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Fuga molestiae nobis similique dignissimos, quasi consectetur. Ratione aut nisi ab,
-        est excepturi illum repellat veritatis, tempora illo distinctio, accusantium ut voluptatem!
-        Tiến Hành Hoán Tất Hợp đồng Tiến Hành Hoán Tất Hợp đồng Tiến Hành Hoán Tất Hợp đồng Tiến
-        Hành Hoán Tất Hợp đồng Lorem ipsum, dolor sit amet consectetur adipisicing elit. Similique
-        labore cupiditate esse optio quam? Ab sit eos voluptate amet saepe est atque nemo, beatae
-        iste assumenda dolorum fugiat, odit nam! Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Fuga molestiae nobis similique dignissimos, quasi consectetur. Ratione aut nisi ab,
-        est excepturi illum repellat veritatis, tempora illo distinctio, accusantium ut voluptatem!
-        Tiến Hành Hoán Tất Hợp đồng Tiến Hành Hoán Tất Hợp đồng Tiến Hành Hoán Tất Hợp đồng Tiến
-        Hành Hoán Tất Hợp đồng Lorem ipsum, dolor sit amet consectetur adipisicing elit. Similique
-        labore cupiditate esse optio quam? Ab sit eos voluptate amet saepe est atque nemo, beatae
-        iste assumenda dolorum fugiat, odit nam! Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Fuga molestiae nobis similique dignissimos, quasi consectetur. Ratione aut nisi ab,
-        est excepturi illum repellat veritatis, tempora illo distinctio, accusantium ut voluptatem!
-        <FormProvider {...methods}>
-          <RangePickerForm
-            name='time'
-            label='Time'
-          />
-          <Button
-            onClick={methods.handleSubmit((value) => {
-              submitContact(value);
-            })}
-          >
-            Xác Nhận Hoàn Tất Hợp Đồng
-          </Button>
-        </FormProvider>
-      </ModalAntd>
+      <Contants
+        type={EnumTypeContact.StudentSignature}
+        data={contants}
+        close={() => setIdContants(null)}
+        refetch={() => {
+          getUser(id);
+        }}
+      />
     </ModalAntd>
   );
 }

@@ -56,6 +56,7 @@ export class PostsController {
       { entity: 'subject', field: 'subjects' },
       { entity: 'post_time_availability', field: 'postTimeAvailability' },
       { entity: 'wards', field: 'wards' },
+      { entity: 'user', field: 'user' },
     ]);
   }
 
@@ -187,6 +188,7 @@ export class PostsController {
       { entity: 'subject', field: 'subjects' },
       { entity: 'post_time_availability', field: 'postTimeAvailability' },
       { entity: 'wards', field: 'wards' },
+      { entity: 'user', field: 'user' },
     ]);
   }
 
@@ -200,6 +202,7 @@ export class PostsController {
       { entity: 'subject', field: 'subjects' },
       { entity: 'post_time_availability', field: 'postTimeAvailability' },
       { entity: 'wards', field: 'wards' },
+      { entity: 'user', field: 'user' },
     ]);
   }
 
