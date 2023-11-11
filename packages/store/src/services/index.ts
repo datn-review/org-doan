@@ -15,3 +15,4 @@ export * from './users.students.api';
 export * from './users.api';
 export * from './registration.api';
 export * from './collaboration.api';
+export * from './payment.api';

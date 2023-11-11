@@ -1,7 +1,12 @@
 import { css } from '@emotion/css';
 import { useMessage, useModal } from '@org/core';
 import { i18next, useTranslation } from '@org/i18n';
-import { useAppDispatch, useCreateCollaborationMutation } from '@org/store';
+import {
+  useAppDispatch,
+  useCreateCollaborationMutation,
+  usePosterConfirmCollaborationMutation,
+  useRegisterConfirmCollaborationMutation,
+} from '@org/store';
 import {
   useDeleteRegistrationMutation,
   useLazyGetRegistrationByPostQuery,
@@ -38,15 +43,17 @@ const schema = yup.object({});
 const dataInit: IUpdate = {
   time: undefined,
 };
+
 interface IProps {
   data: any;
   type: EnumTypeContact;
   close: () => void;
   refetch: () => void;
 }
+
 export enum EnumTypeContact {
-  StudentSignature,
-  TutorSignature,
+  PostSignature,
+  RegisterSignature,
   View,
 }
 
@@ -60,27 +67,33 @@ export function Contants({ data, type, close, refetch }: IProps) {
   });
 
   const [createCollaboration] = useCreateCollaborationMutation();
-  const submitContact = (value: any) => {
-    const startDate = dayjs(value?.time?.[0]);
-    const endDate = dayjs(value?.time?.[1]);
 
-    if (type === EnumTypeContact.StudentSignature) {
-      createCollaboration({
-        posts: data?.postsId,
-        tutor: data?.user.id,
-        studentSignature: 'studentSignature',
-        startDate,
-        endDate,
+  const [registerConfirmCollaboration] = useRegisterConfirmCollaborationMutation();
+
+  const [posterConfirmCollaboration] = usePosterConfirmCollaborationMutation();
+  const submitContact = (value: any) => {
+    const contractStartDate = dayjs(value?.time?.[0]);
+    const contractEndDate = dayjs(value?.time?.[1]);
+    if (type === EnumTypeContact.PostSignature) {
+      posterConfirmCollaboration({
+        id: data?.id,
+        signature: 'studentSignature',
+        contractTerms: 'Dieu Khoan Hop Dòng',
+        contractStartDate,
+        contractEndDate,
       }).then(() => {
         refetch();
+        close();
       });
-    } else {
-      createCollaboration({
-        posts: data.postsId,
-        tutor: data?.user.id,
-        tutorSignature: 'studentSignature',
+    }
+
+    if (type === EnumTypeContact.RegisterSignature) {
+      registerConfirmCollaboration({
+        id: data?.id,
+        signature: 'tutorSignature',
       }).then(() => {
         refetch();
+        close();
       });
     }
   };
@@ -109,10 +122,21 @@ export function Contants({ data, type, close, refetch }: IProps) {
       quasi consectetur. Ratione aut nisi ab, est excepturi illum repellat veritatis, tempora illo
       distinctio, accusantium ut voluptatem!
       <FormProvider {...methods}>
-        <RangePickerForm
-          name='time'
-          label='Time'
-        />
+        {type === EnumTypeContact.RegisterSignature && (
+          <Space>
+            <Space>StartDate: {dayjs(data?.contractStartDate).format('DD-MM-YYYY')}</Space>
+            <Space>EndDate: {dayjs(data?.contractEndDate).format('DD-MM-YYYY')}</Space>
+
+            <Space>Dieu Khoan: {data?.contractTerms}</Space>
+          </Space>
+        )}
+        {type === EnumTypeContact.PostSignature && (
+          <RangePickerForm
+            name='time'
+            label='Time'
+          />
+        )}
+
         <Button
           onClick={methods.handleSubmit((value) => {
             submitContact(value);

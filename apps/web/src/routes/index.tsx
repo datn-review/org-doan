@@ -14,6 +14,8 @@ import {
   RegistrationPage,
   TutorClassPage,
   PostsPage,
+  ReturnPayPage,
+  ClassesPage,
 } from '@org/classes';
 
 export const router = createBrowserRouter([
@@ -88,6 +90,15 @@ export const router = createBrowserRouter([
         path: SiteMap.Manage.Registration.path,
         element: <RegistrationPage />,
       },
+      {
+        path: SiteMap.Pay.Return.path,
+        element: <ReturnPayPage />,
+      },
+      {
+        path: SiteMap.Manage.Classes.path,
+        element: <ClassesPage />,
+      },
+
       { path: SiteMap.Manage.PostsMe.path, element: <PostsPage /> },
     ],
   },

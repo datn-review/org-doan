@@ -23,6 +23,21 @@ export const CollaborationAPI = baseAuthSplitApi.injectEndpoints({
         method: 'POST',
       }),
     }),
+    posterConfirmCollaboration: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `/collaboration/poster-confirm/${id}`,
+        body,
+        method: 'PUT',
+      }),
+    }),
+    registerConfirmCollaboration: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `/collaboration/register-confirm/${id}`,
+        body,
+        method: 'PUT',
+      }),
+    }),
+
     findCollaboration: builder.query({
       query: ({ id }) => ({
         url: `/collaboration/${id}`,
@@ -31,13 +46,20 @@ export const CollaborationAPI = baseAuthSplitApi.injectEndpoints({
     }),
     getMeCollaboration: builder.query({
       query: () => ({
-        url: `/collaboration/resigter`,
+        url: `/collaboration/request`,
         method: 'GET',
       }),
     }),
     getCollaborationByPost: builder.query({
       query: (id) => ({
         url: `/collaboration/post/${id}`,
+        method: 'GET',
+      }),
+    }),
+
+    getClasses: builder.query({
+      query: (id) => ({
+        url: `/collaboration/classes`,
         method: 'GET',
       }),
     }),
@@ -66,5 +88,9 @@ export const {
   useLazyFindCollaborationQuery,
   useGetCollaborationActiveQuery,
   useGetMeCollaborationQuery,
+  useLazyGetMeCollaborationQuery,
   useLazyGetCollaborationByPostQuery,
+  useRegisterConfirmCollaborationMutation,
+  usePosterConfirmCollaborationMutation,
+  useLazyGetClassesQuery,
 } = CollaborationAPI;

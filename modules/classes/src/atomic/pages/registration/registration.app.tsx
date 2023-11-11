@@ -1,19 +1,18 @@
 import { css } from '@emotion/css';
 import { useCRUDContext, useMessage, useUpdateEffect } from '@org/core';
 import { getNameLanguage, useTranslation } from '@org/i18n';
-import { clearActiveMenu, setActiveGroup, setActiveSubGroup, useAppDispatch } from '@org/store';
 import {
-  useDeleteRegistrationMutation,
-  useLazyGetRegistrationQuery,
-} from '@org/store/src/services/registration.api';
+  clearActiveMenu,
+  setActiveGroup,
+  setActiveSubGroup,
+  useAppDispatch,
+  useDeleteCollaborationMutation,
+  useLazyGetMeCollaborationQuery,
+} from '@org/store';
 import {
-  Button,
   Dropdown,
   EllipsisOutlined,
-  EyeOutlined,
   H2,
-  IconDeleteAction,
-  IconEditAction,
   Input,
   Section,
   SectionLayout,
@@ -25,16 +24,13 @@ import {
   useTable,
 } from '@org/ui';
 import {
-  COLOR,
+  colorRandom,
+  EnumStatusCollap,
   SiteMap,
   StatusEnum,
-  StatusEnumColor,
+  statusOption,
   StatusRegistration,
   StatusRegistrationColor,
-  StatusShowHide,
-  StatusShowHideColor,
-  colorRandom,
-  statusOption,
 } from '@org/utils';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -70,8 +66,9 @@ function Registration() {
     };
   }, []);
 
-  const [getUser, { data, isLoading }] = useLazyGetRegistrationQuery();
-  const [deleteUser] = useDeleteRegistrationMutation();
+  const [getUser, { data, isLoading }] = useLazyGetMeCollaborationQuery();
+  console.log('data', data);
+  const [deleteUser] = useDeleteCollaborationMutation();
 
   const query = {
     page: tableInstance.values.pagination.currentPage,
@@ -96,13 +93,28 @@ function Registration() {
       setIsFetch(false);
     }
   }, [isFetch]);
+  const handleDelete = (record: any) => () => {
+    deleteUser(record.id)
+      .then((data) => {
+        messageSuccess(t('user.delete.success'));
+      })
+      .catch((error) => {
+        messageSuccess(t('user.delete.error'));
+      })
+      .finally(() => {
+        setIsFetch(true);
+      });
+  };
+
+  const confirmContract = (record: any) => () => {
+    setContants(record);
+  };
 
   const columns = [
     {
       title: t('requestSummaryVI'),
       dataIndex: 'updatedAt',
       sorter: true,
-
       render: (_: string, record: any) => <>{record?.posts?.requestSummaryVI}</>,
     },
     {
@@ -134,13 +146,12 @@ function Registration() {
       title: t('user.createdAt'),
       dataIndex: 'updatedAt',
       sorter: true,
-
       render: (_createdAt: string) => <>{dayjs(_createdAt).format('DD/MM/YYYY')}</>,
     },
+
     {
       title: t('user.status'),
       sorter: true,
-
       dataIndex: 'status',
       key: 'status',
       render: (_: any, record: any) => (
@@ -167,6 +178,7 @@ function Registration() {
           <Dropdown
             className={css`
               cursor: pointer;
+
               * {
                 font-size: 14px;
               }
@@ -193,35 +205,27 @@ function Registration() {
                   key: '2',
                   label: (
                     <Space>
-                      <If condition={record?.status === 1}>
+                      <If condition={record?.status === EnumStatusCollap.Pending}>
                         <Then>
-                          <Space onClick={() => setContants(record)}>
-                            Hợp Đồng Đang Chờ Bạn Ký
-                          </Space>
+                          <Space onClick={handleDelete(record)}>Xóa yêu cầu</Space>
                         </Then>
-                        <Else>
-                          <If condition={record.status === 3}>
-                            <Then>
-                              <Space
-                                onClick={() => {
-                                  deleteUser(record.id)
-                                    .then((data) => {
-                                      messageSuccess(t('user.delete.success'));
-                                    })
-                                    .catch((error) => {
-                                      messageSuccess(t('user.delete.error'));
-                                    })
-                                    .finally(() => {
-                                      setIsFetch(true);
-                                    });
-                                }}
-                              >
-                                Xóa yêu cầu
-                              </Space>
-                            </Then>
-                            <Else>Xem Chi tiết Hợp Đồng</Else>
-                          </If>
-                        </Else>
+                      </If>
+                      <If condition={record.status === EnumStatusCollap.Rejected}>
+                        <Then>Yêu Cầu Của Bạn Bị Từ Chối</Then>
+                      </If>
+                      <If condition={record.status === EnumStatusCollap.PendingSignature}>
+                        <Then>
+                          <Space onClick={confirmContract(record)}>Hợp Đồng Chờ Bạn Ký</Space>
+                        </Then>
+                      </If>
+                      <If
+                        condition={
+                          record.status === EnumStatusCollap.PendingPay ||
+                          record.status === EnumStatusCollap.Collaboration ||
+                          record.status === EnumStatusCollap.Completed
+                        }
+                      >
+                        <Then>Xem chi tiet hop dong</Then>
                       </If>
                     </Space>
                   ),
@@ -309,11 +313,15 @@ function Registration() {
           loading={isLoading}
         />
         <Contants
-          type={EnumTypeContact.TutorSignature}
+          type={EnumTypeContact.RegisterSignature}
           data={contants}
           close={() => setContants(null)}
           refetch={() => {
-            // getUser(id);
+            getUser({
+              ...query,
+              page: 1,
+            });
+            tableInstance.reset();
           }}
         />
       </Section>

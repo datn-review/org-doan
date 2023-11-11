@@ -7,27 +7,25 @@ import { CreateCollaborationDto } from './create.dto';
 export class UpdateCollaborationDto extends PartialType(CreateCollaborationDto) {
   @ApiProperty({ type: Number, example: 1 })
   @IsOptional()
-  tutor?: User | null;
-  @ApiProperty({ type: Number, example: 1 })
-  @IsOptional()
-  student?: User | null;
+  user?: User | null;
 
   @ApiProperty({ type: Number, example: 1 })
   @IsOptional()
   posts?: Posts | null;
 
   @ApiProperty({ type: String, example: 1 })
-  studentSignature?: string | null;
+  signature?: string | null;
 
-  @ApiProperty({ type: String, example: 1 })
-  tutorSignature?: string | null;
+  // @ApiProperty({ type: String, example: 1 })
+  // tutorSignature?: string | null;
 
   @ApiProperty({ type: Date, example: 1 })
   @IsOptional()
-  startDate: Date;
+  contractStartDate: Date;
+
   @ApiProperty({ type: Date, example: 1 })
   @IsOptional()
-  endDate: Date;
+  contractEndDate: Date;
 
   @ApiProperty({ type: String, example: 'hellword' })
   @IsOptional()

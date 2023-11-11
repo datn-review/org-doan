@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -17,22 +18,34 @@ export class Payment extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: Number })
+  @ManyToOne(() => User, {
+    eager: true,
+  })
   sender?: User | null;
-  @Column({ type: Number })
+
+  @Column({ type: Number, nullable: true })
   receiver?: User | null;
 
+  @ManyToOne(() => Collaboration, {
+    eager: true,
+  })
   @Column({ type: Number })
   collaboration?: Collaboration | null;
 
   @Column({ type: Number })
   amount?: number;
 
+  @Column({ type: String, nullable: true })
+  payRef?: string;
+
   @Column({ type: Number, default: 1 })
   type: number;
 
-  @Column({ type: Date })
+  @Column({ type: Date, nullable: true })
   paymentDate?: Date | null;
+
+  @Column({ type: Date, nullable: false })
+  deadPaymentDate?: Date | null;
 
   @Column({ type: Number, default: 1 })
   status: number;

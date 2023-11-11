@@ -28,12 +28,13 @@ import {
   useTable,
   yupResolver,
 } from '@org/ui';
-import { SiteMap, StatusRegistration, StatusRegistrationColor } from '@org/utils';
+import { EnumStatusCollap, SiteMap, StatusRegistration, StatusRegistrationColor } from '@org/utils';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { Contants, EnumTypeContact } from '../contacts';
+import { Payment } from '../payment';
 
 type IUpdate = {
   time?: string;
@@ -49,7 +50,7 @@ export function RegistrationPost({ id, close }: any) {
 
   // const { open, close: closeModal } = useModal();
   const [contants, setIdContants] = useState<any>(null);
-
+  const [payment, setPayment] = useState<any>(null);
   const tableInstance = useTable({
     initialSortValue: {
       sortBy: 'createdAt',
@@ -67,10 +68,43 @@ export function RegistrationPost({ id, close }: any) {
 
   const methods = useForm<IUpdate>({
     defaultValues: dataInit,
-
     resolver: yupResolver(schema),
   });
 
+  const getItemsAction = (record: any) => {
+    return [
+      {
+        key: '1',
+        label: (
+          <Link
+            to={SiteMap.Profile.generate(record?.user?.id || 0)}
+            className={css`
+              color: #5c5b68 !important;
+            `}
+          >
+            Xem Chi Tiết Gia Sư
+          </Link>
+        ),
+      },
+      {
+        key: '2',
+        label: (
+          <Space onClick={() => setIdContants(record)}>
+            {record?.status == EnumStatusCollap.Pending ? 'Xác Nhận Hợp Tác' : 'Hợp Đồng'}
+          </Space>
+        ),
+      },
+
+      {
+        ...(record?.status == EnumStatusCollap.PendingPay && {
+          key: '3',
+          label: (
+            <Space onClick={() => setPayment(record?.payment?.[0])}>Tien Hanh Thanh Toan</Space>
+          ),
+        }),
+      },
+    ].filter(Boolean) as any[];
+  };
   const columns = [
     {
       title: t('tutor.name'),
@@ -122,29 +156,7 @@ export function RegistrationPost({ id, close }: any) {
             width: 20rem;
           `}
           menu={{
-            items: [
-              {
-                key: '1',
-                label: (
-                  <Link
-                    to={SiteMap.Profile.generate(record?.user?.id || 0)}
-                    className={css`
-                      color: #5c5b68 !important;
-                    `}
-                  >
-                    Xem Chi Tiết Gia Sư
-                  </Link>
-                ),
-              },
-              {
-                key: '2',
-                label: (
-                  <Space onClick={() => setIdContants(record)}>
-                    {record?.status == 1 ? 'Xem Hợp Đồng Chờ Gia Sư Ký' : 'Xác Nhận Hợp Tác'}
-                  </Space>
-                ),
-              },
-            ],
+            items: getItemsAction(record),
           }}
           trigger={['click']}
           placement='bottomCenter'
@@ -176,11 +188,18 @@ export function RegistrationPost({ id, close }: any) {
         loading={isLoading}
       />
       <Contants
-        type={EnumTypeContact.StudentSignature}
+        type={EnumTypeContact.PostSignature}
         data={contants}
         close={() => setIdContants(null)}
         refetch={() => {
           getUser(id);
+        }}
+      />
+      <Payment
+        data={payment}
+        close={() => setPayment(null)}
+        refetch={() => {
+          // getUser(id);
         }}
       />
     </ModalAntd>

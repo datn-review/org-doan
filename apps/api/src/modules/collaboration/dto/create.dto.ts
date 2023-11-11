@@ -12,21 +12,25 @@ export class CreateCollaborationDto {
   @IsNotEmpty()
   posts?: Posts | null;
 
-  @ApiProperty({ type: String, example: 1 })
-  @IsOptional()
-  studentSignature?: string | null;
+  // @ApiProperty({ type: String, example: 1 })
+  // @IsOptional()
+  // studentSignature?: string | null;
 
   @ApiProperty({ type: String, example: 1 })
   @IsOptional()
-  tutorSignature?: string | null;
+  signature?: string | null;
 
   @ApiProperty({ type: Date, example: 1 })
   @IsOptional()
-  startDate: Date;
+  contractStartDate: Date;
 
   @ApiProperty({ type: Date, example: 1 })
   @IsOptional()
-  endDate: Date;
+  contractEndDate: Date;
+
+  @ApiProperty({ type: String, example: 1 })
+  @IsOptional()
+  contractTerms: string | null;
 
   @ApiProperty({ type: String, example: 'hellword' })
   @IsOptional()

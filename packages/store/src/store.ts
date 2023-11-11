@@ -16,6 +16,7 @@ import {
   UsersAdminAPI,
   RegistrationAPI,
   CollaborationAPI,
+  PaymentAPI,
 } from './services';
 import { baseAuthSplitApi, baseNoAuthSplitApi } from './services/base-auth-query';
 
@@ -41,6 +42,7 @@ const rootReducer = combineReducers({
   [UsersAdminAPI.reducerPath]: UsersAdminAPI.reducer,
   [RegistrationAPI.reducerPath]: RegistrationAPI.reducer,
   [CollaborationAPI.reducerPath]: CollaborationAPI.reducer,
+  [PaymentAPI.reducerPath]: PaymentAPI.reducer,
 });
 
 export const store = configureStore({

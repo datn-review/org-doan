@@ -198,6 +198,13 @@ export const menuCategory: MenuItem[] = [
         key: SiteMap.Manage.PostsMe.menu,
         icon: <></>,
       },
+      {
+        label: <Translation>{(t) => t('manage.classes')}</Translation>,
+        path: SiteMap.Manage.Classes.path,
+        id: SiteMap.Manage.Classes.menu,
+        key: SiteMap.Manage.Classes.menu,
+        icon: <></>,
+      },
     ],
   },
 ].filter((item) => !item.isHide);

@@ -156,5 +156,16 @@ export const SiteMap = {
       menu: 'registration-post',
       roles: [],
     },
+    Classes: {
+      path: '/classes',
+      menu: 'classes',
+      roles: [],
+    },
+  },
+  Pay: {
+    Return: {
+      path: '/returnPayVN',
+      roles: [],
+    },
   },
 };

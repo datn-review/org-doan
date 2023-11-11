@@ -8,9 +8,12 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Payment } from '../../payment/entities/payment.entity';
+import { TutorCertification } from '../../tutor-certification/entities/tutor-certification.entity';
 
 @Entity({ name: 'collaboration' })
 export class Collaboration extends EntityHelper {
@@ -21,17 +24,17 @@ export class Collaboration extends EntityHelper {
   @ManyToOne(() => User, {
     eager: true,
   })
-  tutor?: User | null;
-
-  @ManyToOne(() => User, {
-    eager: true,
-  })
-  student?: User | null;
+  user?: User | null;
 
   @ManyToOne(() => Posts, {
     eager: true,
   })
   posts?: Posts | null;
+
+  @OneToMany(() => Payment, (payment) => payment.collaboration, {
+    onDelete: 'CASCADE',
+  })
+  payment?: Payment[] | null;
 
   @Column({ type: String, nullable: true })
   studentSignature?: string | null;
@@ -40,10 +43,13 @@ export class Collaboration extends EntityHelper {
   tutorSignature?: string | null;
 
   @Column({ type: Date, nullable: true })
-  startDate: Date;
+  contractStartDate: Date;
 
   @Column({ type: Date, nullable: true })
-  endDate: Date;
+  contractEndDate: Date;
+
+  @Column({ type: String, nullable: true })
+  contractTerms: string;
 
   @Column({ type: Number, default: 1 })
   status: number;
