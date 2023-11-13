@@ -1,24 +1,39 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
+import { Posts } from 'src/modules/posts/entities/posts.entity';
 import { User } from 'src/users/entities/user.entity';
 
 export class CreateCollaborationDto {
   @ApiProperty({ type: Number, example: 1 })
-  @IsNotEmpty()
-  tutor?: User | null;
+  @IsOptional()
+  user?: User | null;
+
   @ApiProperty({ type: Number, example: 1 })
   @IsNotEmpty()
-  student?: User | null;
+  posts?: Posts | null;
+
+  // @ApiProperty({ type: String, example: 1 })
+  // @IsOptional()
+  // studentSignature?: string | null;
+
+  @ApiProperty({ type: String, example: 1 })
+  @IsOptional()
+  signature?: string | null;
 
   @ApiProperty({ type: Date, example: 1 })
-  @IsNotEmpty()
-  startDate: Date;
+  @IsOptional()
+  contractStartDate: Date;
+
   @ApiProperty({ type: Date, example: 1 })
-  @IsNotEmpty()
-  endDate: Date;
+  @IsOptional()
+  contractEndDate: Date;
+
+  @ApiProperty({ type: String, example: 1 })
+  @IsOptional()
+  contractTerms: string | null;
 
   @ApiProperty({ type: String, example: 'hellword' })
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({ type: Number, example: 1 })
   status: number;
 }

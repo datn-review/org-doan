@@ -102,6 +102,7 @@ export const SiteMap = {
     Me: {
       path: '/profile',
     },
+    generate: (id: number | string) => `/profile/${id}`,
     path: '/profile/:id',
     menu: 'profile',
     roles: [],
@@ -111,19 +112,60 @@ export const SiteMap = {
     menu: 'tutor',
     roles: [],
   },
-  ClassNew: {
-    path: '/class-new',
-    menu: 'class-new',
-    roles: [],
-  },
+
   LookForTutor: {
     path: '/look-for-tutor',
     menu: 'look-for-tutor',
     roles: [],
   },
-  MangeClass: {
-    path: '/manage-class',
+  TutorClass: {
+    path: '/tutor-class',
     menu: 'manage-class',
     roles: [],
+  },
+  ClassNew: {
+    path: '/class-new',
+    menu: 'class-new',
+    roles: [],
+    Details: {
+      generate: (id: number | string) => `/class-new/${id}`,
+      path: '/class-new/:id',
+      roles: [],
+    },
+  },
+  Manage: {
+    menu: 'Manage',
+    roles: [],
+    Registration: {
+      path: '/registration',
+      menu: 'registration',
+      roles: [],
+      Details: {
+        generate: (id: number | string) => `/registration/${id}`,
+        path: '/registration/:id',
+        roles: [],
+      },
+    },
+    PostsMe: {
+      path: '/posts-me',
+      menu: 'posts-me',
+      roles: [],
+    },
+    RegistrationPost: {
+      path: '/registration-post',
+      menu: 'registration-post',
+      roles: [],
+    },
+    Classes: {
+      path: '/classes',
+      menu: 'classes',
+      roles: [],
+    },
+  },
+  Pay: {
+    Return: {
+      path: '/returnPayVN',
+      roles: [],
+    },
   },
 };

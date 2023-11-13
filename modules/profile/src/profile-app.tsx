@@ -1,6 +1,6 @@
 import { useTranslation } from '@org/i18n';
-import { setActiveGroup, useAppDispatch, useAppSelector } from '@org/store';
-import { Space } from '@org/ui';
+import { setActiveGroup, useAppDispatch, useAppSelector, useGetProfileMeQuery } from '@org/store';
+import { SectionLayout, Space } from '@org/ui';
 import { SiteMap } from '@org/utils';
 import { useEffect } from 'react';
 import { If, Then } from 'react-if';
@@ -19,13 +19,15 @@ function ProfileApp() {
       dispatch(setActiveGroup({ current: '' }));
     };
   }, []);
+  const { data } = useGetProfileMeQuery({});
+  console.log('🚀 ~ file: profile-app.tsx:23 ~ ProfileApp ~ data:', data);
   return (
     <>
-      <Space className={'profile'}>
+      <SectionLayout className={'profile'}>
         <If condition={isAuthenticated}>
           <Then>
-            <InfoHeader />
-            <Section />
+            <InfoHeader data={data} />
+            <Section data={data} />
           </Then>
         </If>
         {/* <Authorization
@@ -40,7 +42,7 @@ function ProfileApp() {
         >
           WEB_STAFF
         </Authorization> */}
-      </Space>
+      </SectionLayout>
     </>
   );
 }

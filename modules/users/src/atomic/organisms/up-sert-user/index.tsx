@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { useCRUDContext, useMessage } from '@org/core';
+import { useCRUDContext, useMessageHook } from '@org/core';
 import { i18next, useTranslation } from '@org/i18n';
 import {
   BoxCenter,

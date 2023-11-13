@@ -3,9 +3,20 @@ import { DefaultLayout, MainLayout } from '@components/templates';
 import { HomePage } from '@org/home';
 import { ConfirmEmailPage, LoginPage, RegisterPage } from '@org/auth';
 import { SiteMap } from '@org/utils';
-import { WebAdminPage } from '@org/users';
+import { StudentsPage, UserTutorsPage, WebAdminPage } from '@org/users';
 import { CertificationPage, GradeLevelPage, SubjectPage, SkillsPage } from '@org/settings';
 import { ProfilePage } from '@org/profile';
+import { LookForTutorPage } from '@org/look-for-tutor';
+import { TutorPage } from '@org/tutor';
+import {
+  ClassNewDetailsPage,
+  ClassNewPage,
+  RegistrationPage,
+  TutorClassPage,
+  PostsPage,
+  ReturnPayPage,
+  ClassesPage,
+} from '@org/classes';
 
 export const router = createBrowserRouter([
   {
@@ -22,6 +33,14 @@ export const router = createBrowserRouter([
       {
         path: SiteMap.Users.Admin.path,
         element: <WebAdminPage />,
+      },
+      {
+        path: SiteMap.Users.PesonalTutor.path,
+        element: <UserTutorsPage />,
+      },
+      {
+        path: SiteMap.Users.Student.path,
+        element: <StudentsPage />,
       },
       {
         path: SiteMap.Settings.GradeLevel.path,
@@ -48,9 +67,39 @@ export const router = createBrowserRouter([
         element: <ProfilePage />,
       },
       {
-        path: SiteMap.Profile.Me.path,
-        element: <ProfilePage />,
+        path: SiteMap.LookForTutor.path,
+        element: <LookForTutorPage />,
       },
+      {
+        path: SiteMap.Tutor.path,
+        element: <TutorPage />,
+      },
+      {
+        path: SiteMap.TutorClass.path,
+        element: <TutorClassPage />,
+      },
+      {
+        path: SiteMap.ClassNew.path,
+        element: <ClassNewPage />,
+      },
+      {
+        path: SiteMap.ClassNew.Details.path,
+        element: <ClassNewDetailsPage />,
+      },
+      {
+        path: SiteMap.Manage.Registration.path,
+        element: <RegistrationPage />,
+      },
+      {
+        path: SiteMap.Pay.Return.path,
+        element: <ReturnPayPage />,
+      },
+      {
+        path: SiteMap.Manage.Classes.path,
+        element: <ClassesPage />,
+      },
+
+      { path: SiteMap.Manage.PostsMe.path, element: <PostsPage /> },
     ],
   },
   {

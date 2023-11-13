@@ -1,48 +1,15 @@
 import { baseAuthSplitApi, baseNoAuthSplitApi } from './base-auth-query';
 
-export const UsersAPI = baseAuthSplitApi.injectEndpoints({
+export const UserAPI = baseAuthSplitApi.injectEndpoints({
   endpoints: (builder) => ({
-    getUserAdmin: builder.query({
+    getProfileMe: builder.query({
       query: (params) => ({
-        url: '/users/admin',
+        url: '/auth/me',
         params: params,
         method: 'GET',
-      }),
-    }),
-    createUserAdmin: builder.mutation({
-      query: (body) => ({
-        url: '/users/admin',
-        body,
-        method: 'POST',
-      }),
-    }),
-    findUserAdmin: builder.query({
-      query: ({ id }) => ({
-        url: `/users/admin/${id}`,
-        method: 'GET',
-      }),
-    }),
-    updateUserAdmin: builder.mutation({
-      query: ({ body, id }) => ({
-        url: `/users/admin/${id}`,
-        body,
-        method: 'PUT',
-      }),
-    }),
-    deleteUserAdmin: builder.mutation({
-      query: (id) => ({
-        url: `/users/admin/${id}`,
-        method: 'DELETE',
       }),
     }),
   }),
 });
 
-export const {
-  useGetUserAdminQuery,
-  useLazyGetUserAdminQuery,
-  useUpdateUserAdminMutation,
-  useCreateUserAdminMutation,
-  useDeleteUserAdminMutation,
-  useLazyFindUserAdminQuery,
-} = UsersAPI;
+export const { useGetProfileMeQuery } = UserAPI;

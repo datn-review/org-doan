@@ -1,14 +1,32 @@
 import { useAppSelector } from '@org/store';
-import { Button, Dropdown, IconArrowDown, SIZE, Space, TYPE_BUTTON, VARIANT } from '@org/ui';
+import {
+  Button,
+  Drawer,
+  Dropdown,
+  IconArrowDown,
+  MenuOutlined,
+  SIZE,
+  Space,
+  TYPE_BUTTON,
+  VARIANT,
+} from '@org/ui';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { menuCategory } from './header-constant';
 import { MenuItem } from './header-type';
 import * as S from './styled';
-import { css } from '@emotion/css/macro';
-import { COLOR, COLOR_RGB } from '@org/utils';
+import { css, cx } from '@emotion/css/macro';
+import { COLOR, COLOR_RGB, MediaEnum, mediaDesktop, mediaTablet } from '@org/utils';
+import { useEffect, useState } from 'react';
+import { useMediaQuery } from '@org/core';
+import { Else, If, Then } from 'react-if';
 function HeaderCategory() {
   const { menu, subMenu: subMenuActive } = useAppSelector((state) => state.activeMenu);
+  const [hideMenu, setHideMenu] = useState(false);
+  const media = useMediaQuery();
+
+  console.log('🚀 ~ file: header-category.tsx:25 ~ HeaderCategory ~ isDesktop:', media);
+  // useEffect();
 
   const navigate = useNavigate();
   const renderButton = ({ id, isSub, icon, name }: any) => {
@@ -26,13 +44,14 @@ function HeaderCategory() {
   };
   const handleClick = (e: any) => {
     navigate(e.item.props.path);
+    setHideMenu(false);
   };
   const renderMenu = (menuCategory: MenuItem[]) =>
     menuCategory.map(({ path, name, icon, id, subMenu }: MenuItem) => {
       if (subMenu.length > 0) {
         return (
           <Dropdown
-            placement='bottomLeft'
+            placement={'bottomLeft'}
             menu={{
               items: subMenu,
               selectedKeys: [subMenuActive],
@@ -53,6 +72,7 @@ function HeaderCategory() {
         <Link
           to={path}
           key={path}
+          onClick={() => setHideMenu(false)}
         >
           {renderButton({
             id,
@@ -65,8 +85,61 @@ function HeaderCategory() {
     });
 
   return (
-    <S.HeaderCategory className='flex gap-2 px-[10rem]  py-4'>
-      {renderMenu(menuCategory)}
+    <S.HeaderCategory
+      className={css`
+        ${mediaDesktop} {
+          position: relative;
+        }
+      `}
+    >
+      <If condition={media === MediaEnum.Desktop}>
+        <Then>
+          <Space className={cx('flex gap-2 py-4')}>{renderMenu(menuCategory)}</Space>
+        </Then>
+        <Else>
+          <Space
+            className={css`
+              padding: 4px 8px;
+              border-radius: 4px;
+              cursor: pointer;
+              display: block;
+              &:hover {
+                background: #e3e3e3;
+              }
+            `}
+            onClick={() => setHideMenu(true)}
+          >
+            <MenuOutlined />
+          </Space>
+          <Drawer
+            open={hideMenu}
+            onClose={() => setHideMenu(false)}
+            placement='left'
+            width={300}
+          >
+            <Space
+              className={cx(
+                'flex gap-2 ',
+                css`
+                  flex-direction: column;
+                  background-color: white;
+                  border-radius: 0.5rem;
+                  button {
+                    width: 100%;
+                    justify-content: flex-start;
+                    div {
+                      flex: 1;
+                      text-align: left;
+                    }
+                  }
+                `,
+              )}
+            >
+              {renderMenu(menuCategory)}
+            </Space>
+          </Drawer>
+        </Else>
+      </If>
     </S.HeaderCategory>
   );
 }

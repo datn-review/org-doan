@@ -4,7 +4,7 @@ import { Modal, Upload } from 'antd';
 import type { RcFile, UploadProps } from 'antd/es/upload';
 import type { UploadFile, UploadListType, UploadFileStatus } from 'antd/es/upload/interface';
 import { Show } from '../show';
-import { withForm } from './../../../form/connectForm';
+import { withForm } from '../../../form';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -21,6 +21,7 @@ interface IUploadImage {
   value?: UploadFile[];
   labelImage?: string;
   listType?: UploadListType;
+  [k: string]: any;
 }
 
 export const UploadImage: React.FC<IUploadImage> = ({
@@ -94,7 +95,7 @@ export const UploadImage: React.FC<IUploadImage> = ({
     </>
   );
 };
-export const UnloadImageForm = withForm(UploadImage);
+export const UnloadImageForm = withForm<IUploadImage>(UploadImage);
 // [
 //   {
 //     uid: '-1',

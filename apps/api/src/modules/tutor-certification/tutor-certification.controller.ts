@@ -81,7 +81,7 @@ export class TutorCertificationController {
       fieldSearch,
       relations: [
         { field: 'tutor', entity: 'user' },
-        { field: 'certification', entity: 'certifications' },
+        { field: 'certification', entity: 'certification' },
       ],
     });
   }

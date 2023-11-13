@@ -23,7 +23,7 @@ interface IProps {
 }
 
 export const withForm = <T extends IProps>(WrappedComponent: React.ComponentType<T>) => {
-  const WithForm = ({ name, onChange, value, label, ...props }: T & IProps) => {
+  const WithForm = ({ name, onChange, value, label, ...props }: T) => {
     return (
       <ConnectForm>
         {({ control, formState: { errors } }) => {
@@ -45,7 +45,7 @@ export const withForm = <T extends IProps>(WrappedComponent: React.ComponentType
                 />
               )}
               <Controller
-                defaultValue={''}
+                // defaultValue={field}
                 name={name}
                 control={control}
                 render={({ field }) => {

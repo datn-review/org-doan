@@ -39,7 +39,6 @@ import { CertificationsModule } from './modules/certifications/certifications.mo
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { TutorSkillsModule } from './modules/tutor-skills/tutor-skills.module';
 import { TutorCertificationModule } from './modules/tutor-certification/tutor-certification.module';
-import { StudentSubjectModule } from './modules/student-subject/student-subject.module';
 import { TutorSubjectGradeModule } from './modules/tutor-subject-grade/tutor-subject-grade.module';
 import { TimeAvailabilityModule } from './modules/time-availability/time-availability.module';
 import { ConversationModule } from './modules/conversation/conversation.module';
@@ -47,9 +46,12 @@ import { ChatMessageModule } from './modules/chat-message/chat-message.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { PostCommentModule } from './modules/post-comment/post-comment.module';
 import { CollaborationModule } from './modules/collaboration/collaboration.module';
-import { CollaborationSubjectModule } from './modules/collaboration-subject/collaboration-subject.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { LessonsModule } from './modules/lessons/lessons.module';
+import { DistrictsModule } from './modules/provinces/districts/districts.module';
+import { ProvinceModule } from './modules/provinces/province/province.module';
+import { WardsModule } from './modules/provinces/wards/wards.module';
+import { PostTimeAvailabilityModule } from './modules/posts/post-time-availability/post-time-availability.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -114,7 +116,6 @@ import { LessonsModule } from './modules/lessons/lessons.module';
     NotificationsModule,
     TutorSkillsModule,
     TutorCertificationModule,
-    StudentSubjectModule,
     TutorSubjectGradeModule,
     TimeAvailabilityModule,
     ConversationModule,
@@ -122,9 +123,12 @@ import { LessonsModule } from './modules/lessons/lessons.module';
     PostsModule,
     PostCommentModule,
     CollaborationModule,
-    CollaborationSubjectModule,
     PaymentModule,
     LessonsModule,
+    ProvinceModule,
+    DistrictsModule,
+    WardsModule,
+    PostTimeAvailabilityModule,
   ],
 })
 export class AppModule {}

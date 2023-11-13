@@ -79,7 +79,7 @@ export class TutorSkillsController {
       fieldSearch,
       relations: [
         { field: 'tutor', entity: 'user' },
-        { field: 'skills', entity: 'skills' },
+        { field: 'skills', entity: 'skill' },
       ],
     });
   }

@@ -15,7 +15,7 @@ import {
 @Entity({ name: 'tutor_subject_grade' })
 export class TutorSubjectGrade extends EntityHelper {
   @PrimaryColumn()
-  studentId: number;
+  tutorId: number;
   @PrimaryColumn()
   subjectId: number;
   @PrimaryColumn()

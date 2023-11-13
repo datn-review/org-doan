@@ -1,6 +1,8 @@
 import { css } from '@emotion/css/macro';
-import { Space, Tabs, TabsProps } from '@org/ui';
-import { COLOR } from '@org/utils';
+import { getNameLanguage } from '@org/i18n';
+import { Space, Tabs, TabsProps, Tag } from '@org/ui';
+import { COLOR, colorRandom } from '@org/utils';
+import dayjs from 'dayjs';
 import React from 'react';
 const contentStyle: React.CSSProperties = {
   height: '500px',
@@ -10,7 +12,8 @@ const contentStyle: React.CSSProperties = {
   background: '#364d79',
 };
 
-function Section() {
+function Section({ data }: any) {
+  console.log('🚀 ~ file: index.tsx:15 ~ Section ~ data:', data);
   const onChange = (key: string) => {
     console.log(key);
   };
@@ -18,14 +21,10 @@ function Section() {
   const items: TabsProps['items'] = [
     {
       key: '1',
-      label: 'Thông Tin Cá Nhân',
-      children: 'Content of Tab Pane 1',
+      label: 'Thông Tin',
+      children: <Information data={data} />,
     },
-    {
-      key: '2',
-      label: 'Kỹ Năng - Chứng Chỉ',
-      children: 'Content of Tab Pane 2',
-    },
+
     {
       key: '3',
       label: 'Các Lớp Đã dạy',
@@ -55,3 +54,162 @@ function Section() {
 }
 
 export default Section;
+const Information = ({ data }: any) => {
+  console.log('🚀 ~ file: index.tsx:60 ~ Information ~ data:', data);
+  return (
+    <Space
+      className={css`
+        padding: 0 1rem;
+      `}
+    >
+      <Space
+        className={css`
+          display: flex;
+          margin-top: 1rem;
+        `}
+      >
+        <h6
+          className={css`
+            min-width: 100px;
+            font-weight: 700 !important;
+          `}
+        >
+          Bio
+        </h6>
+        <h6>
+          Em/Mình tên là Phạm Thanh Tâm, hiện đang là lập trình viên. Em/Mình tốt nghiệp đại học
+          chuyên ngành Chuyên nghành CNTT loại giỏi năm 2021, có chứng chỉ sư phạm quốc tế Tesol và
+          hiện đã giảng dạy tiếng anh được gần 2 năm cho nhiều đối tượng, và cụ thể là tiếng anh
+          giao tiếp cho người mất gốc, tiếng anh thiếu nhi, luyện thi các chứng chỉ quốc tế
+          Starters, Movers, Flyers, Ket.
+        </h6>
+      </Space>
+      <Space
+        className={css`
+          display: flex;
+          margin-top: 1rem;
+        `}
+      >
+        <h6
+          className={css`
+            min-width: 100px;
+            font-weight: 700 !important;
+          `}
+        >
+          Ngày Sinh
+        </h6>
+        <h6>{dayjs('12/05/2001').format('DD-MM-YYYY')}</h6>
+      </Space>
+
+      <Space
+        className={css`
+          display: flex;
+          margin-top: 1rem;
+        `}
+      >
+        <h6
+          className={css`
+            min-width: 100px;
+            font-weight: 700 !important;
+          `}
+        >
+          Học Vấn
+        </h6>
+        <h6>Sư Phạm Kỹ Thuật</h6>
+      </Space>
+      <Space
+        className={css`
+          display: flex;
+          margin-top: 1rem;
+        `}
+      >
+        <h6
+          className={css`
+            min-width: 100px;
+            font-weight: 700 !important;
+          `}
+        >
+          Địa Chỉ
+        </h6>
+        <h6>
+          {data?.address} - {data?.wards?.name} - {data?.wards?.districts?.name} -{' '}
+          {data?.wards?.districts?.province?.name}{' '}
+        </h6>
+      </Space>
+
+      <SkillCertifications data={data} />
+    </Space>
+  );
+};
+const SkillCertifications = ({ data }: any) => {
+  return (
+    <Space>
+      <Space
+        className={css`
+          display: flex;
+          margin-top: 1rem;
+        `}
+      >
+        <h6
+          className={css`
+            min-width: 100px;
+            font-weight: 700 !important;
+          `}
+        >
+          Kỹ Năng
+        </h6>
+        <Space>
+          {data?.tutorSkills?.map((item: any) => (
+            <Tag color={colorRandom()}>
+              {getNameLanguage(item?.skill?.nameVI, item?.skill?.nameEN)}
+            </Tag>
+          ))}
+        </Space>
+      </Space>
+      <Space
+        className={css`
+          display: flex;
+          margin-top: 1rem;
+        `}
+      >
+        <h6
+          className={css`
+            min-width: 100px;
+            font-weight: 700 !important;
+          `}
+        >
+          Chứng Chỉ
+        </h6>
+        <Space>
+          {data?.tutorCertifications?.map((item: any) => (
+            <Tag color={colorRandom()}>
+              {getNameLanguage(item?.certification?.nameVI, item?.certification?.nameEN)}
+            </Tag>
+          ))}
+        </Space>
+      </Space>
+      <Space
+        className={css`
+          display: flex;
+          margin-top: 1rem;
+        `}
+      >
+        <h6
+          className={css`
+            min-width: 100px;
+            font-weight: 700 !important;
+          `}
+        >
+          Dạy Môn
+        </h6>
+        <Space>
+          {data?.tutorGradeSubject?.map((item: any) => (
+            <Tag color={colorRandom()}>
+              {getNameLanguage(item?.subject?.nameVI, item?.subject?.nameEN)}
+            </Tag>
+          ))}
+        </Space>
+      </Space>
+    </Space>
+  );
+};

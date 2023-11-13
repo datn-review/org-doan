@@ -68,5 +68,10 @@
   "add":"Add New",
   "search.name":"Search Name",
   "find.tutor": "Look For Tutor",
-  "tutor":"Tutor"
+  "tutor":"Tutor",
+  "class.new" : "Class New",
+  "manage.name" : "Manage Personal",
+  "manage.registration" : "Manage Registration",
+  "manage.posts.me" : "Manage Posts",
+  "manage.classes" : "Manage Classes"
 }

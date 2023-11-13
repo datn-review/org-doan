@@ -9,6 +9,13 @@ export const SubjectAPI = baseAuthSplitApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getSubjectActive: builder.query({
+      query: (params) => ({
+        url: '/subject/active',
+        params: params,
+        method: 'GET',
+      }),
+    }),
     createSubject: builder.mutation({
       query: (body) => ({
         url: '/subject',
@@ -45,4 +52,5 @@ export const {
   useCreateSubjectMutation,
   useDeleteSubjectMutation,
   useLazyFindSubjectQuery,
+  useGetSubjectActiveQuery,
 } = SubjectAPI;
