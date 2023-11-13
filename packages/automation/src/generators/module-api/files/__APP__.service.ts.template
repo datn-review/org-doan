@@ -1,0 +1,14 @@
+import { Injectable } from '@nestjs/common';
+import { BaseService } from 'src/core/base.service';
+import { IParams } from 'src/core/i.base.service';
+import { Repository } from 'typeorm';
+import { <%= nameUpCap  %> } from './entities/<%= name  %>.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+
+export class <%= nameUpCap  %>Repository {}
+@Injectable()
+export class <%= nameUpCap  %>Service extends BaseService<<%= nameUpCap  %>, Repository<<%= nameUpCap  %>>, IParams> {
+  constructor(@InjectRepository(<%= nameUpCap  %>) repository: Repository<<%= nameUpCap  %>>) {
+    super(repository);
+  }
+}

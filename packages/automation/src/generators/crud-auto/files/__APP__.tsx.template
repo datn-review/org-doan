@@ -1,0 +1,10 @@
+import { <%= nameUpCap %>Provider } from './<%= name %>.context';
+import <%= nameUpCap %>App from './<%= name %>.app';
+import { ComponentInject } from '@org/ui';
+import { CRUDProvider, CRUDTemplate} from '@org/core';
+
+export const <%= nameUpCap %>Page = ComponentInject({
+  template: [CRUDTemplate],
+  providers: [CRUDProvider, <%= nameUpCap %>Provider],
+  bootstrap: <%= nameUpCap %>App,
+});

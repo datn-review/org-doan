@@ -1,4 +1,7 @@
+nohoist:
+  - '**react-native**'
+
 packages:
-  - "packages/*"
-  - "apps/*"
-  - "modules/*"
+  - 'packages/*'
+  - 'apps/*'
+  - 'modules/*'

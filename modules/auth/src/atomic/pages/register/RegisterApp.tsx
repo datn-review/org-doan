@@ -1,6 +1,6 @@
-import { css } from "@emotion/css";
-import { useTranslation } from "@org/i18n";
-import { useAppDispatch, useRegisterUserEmailMutation } from "@org/store";
+import { css } from '@emotion/css';
+import { useTranslation } from '@org/i18n';
+import { useAppDispatch, useRegisterUserEmailMutation } from '@org/store';
 import {
   BoxCenter,
   Button,
@@ -13,10 +13,10 @@ import {
   message,
   useForm,
   yupResolver,
-} from "@org/ui";
-import { SiteMap } from "@org/utils";
-import { Link, useNavigate } from "react-router-dom";
-import * as yup from "yup";
+} from '@org/ui';
+import { SiteMap } from '@org/utils';
+import { Link, useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
 
 interface IRegister {
   email: string;
@@ -27,10 +27,10 @@ interface IRegister {
 }
 
 const schema = yup.object({
-  firstName: yup.string().required("firstName required."),
-  lastName: yup.string().required("lastName required."),
-  email: yup.string().required("Email required."),
-  password: yup.string().required("Password required"),
+  firstName: yup.string().required('firstName required.'),
+  lastName: yup.string().required('lastName required.'),
+  email: yup.string().required('Email required.'),
+  password: yup.string().required('Password required'),
   policy: yup.boolean(),
 });
 
@@ -42,7 +42,8 @@ function RegisterApp() {
 
   const methods = useForm<IRegister>({
     defaultValues: {
-      email: "",
+      email: '',
+      policy: false,
     },
     resolver: yupResolver(schema),
   });
@@ -61,8 +62,8 @@ function RegisterApp() {
         .unwrap()
         .then(() => {
           messageApi.open({
-            type: "success",
-            content: "Vui lòng xác nhận địa chi email của bạn ở hộp thư!",
+            type: 'success',
+            content: 'Vui lòng xác nhận địa chi email của bạn ở hộp thư!',
             duration: 5,
           });
           setTimeout(() => {
@@ -70,7 +71,7 @@ function RegisterApp() {
           }, 5000);
         })
         .catch((err) => {
-          console.log("🚀 ~ file: LoginApp.tsx:89 ~ .then ~ err:", err);
+          console.log('🚀 ~ file: LoginApp.tsx:89 ~ .then ~ err:', err);
         });
     }
   };
@@ -96,11 +97,23 @@ function RegisterApp() {
 
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <InputForm name="firstName" label={"First Name"} />
-            <InputForm name="lastName" label={"Last Name"} />
+            <InputForm
+              name='firstName'
+              label={'First Name'}
+            />
+            <InputForm
+              name='lastName'
+              label={'Last Name'}
+            />
 
-            <InputForm name="email" label={"Email"} />
-            <InputForm name="password" label={"Password"} />
+            <InputForm
+              name='email'
+              label={'Email'}
+            />
+            <InputForm
+              name='password'
+              label={'Password'}
+            />
 
             <Space
               className={css`
@@ -117,18 +130,18 @@ function RegisterApp() {
                       I agree to <TextLink> privacy policy & terms </TextLink>
                     </Link>
                   }
-                  name="policy"
+                  name='policy'
                 />
               </Space>
             </Space>
             <Button
-              type="submit"
+              type='submit'
               className={css`
                 width: 100% !important;
                 margin-bottom: 2rem;
               `}
             >
-              {t("auth.title.register")}
+              {t('auth.title.register')}
             </Button>
           </form>
           <BoxCenter>

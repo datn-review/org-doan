@@ -19,6 +19,7 @@ import { ForgotService } from 'src/forgot/forgot.service';
 import { MailService } from 'src/mail/mail.service';
 import { NullableType } from '../utils/types/nullable.type';
 import { LoginResponseType } from '../utils/types/auth/login-response.type';
+import { relations } from 'src/users/controller';
 
 @Injectable()
 export class AuthService {
@@ -31,18 +32,24 @@ export class AuthService {
 
   async validateLogin(
     loginDto: AuthEmailLoginDto,
-    onlyAdmin: boolean,
+    onlyAdmin?: boolean,
   ): Promise<LoginResponseType> {
-    const user = await this.usersService.findOne({
-      email: loginDto.email,
-    });
+    const user = await this.usersService.findOne(
+      {
+        email: loginDto.email,
+      },
+      ['role'],
+    );
+
+    console.log(onlyAdmin);
 
     if (
-      !user ||
-      (user?.role &&
-        !(onlyAdmin ? [RoleEnum.admin] : [RoleEnum.user]).includes(
-          user.role.id,
-        ))
+      !user
+      // ||
+      // (user?.role &&
+      //   !(onlyAdmin ? [RoleEnum.WEB_ADMIN] : [RoleEnum.user]).includes(
+      //     user.role.id,
+      //   ))
     ) {
       throw new HttpException(
         {
@@ -67,10 +74,7 @@ export class AuthService {
       );
     }
 
-    const isValidPassword = await bcrypt.compare(
-      loginDto.password,
-      user.password,
-    );
+    const isValidPassword = await bcrypt.compare(loginDto.password, user.password);
 
     if (!isValidPassword) {
       throw new HttpException(
@@ -112,18 +116,18 @@ export class AuthService {
       if (socialEmail && !userByEmail) {
         user.email = socialEmail;
       }
-      await this.usersService.update(user.id, user);
+      // await this.usersService.update(user.id, user);
     } else if (userByEmail) {
       user = userByEmail;
     } else {
       const role = plainToClass(Role, {
-        id: RoleEnum.user,
+        id: RoleEnum.STUDENT,
       });
       const status = plainToClass(Status, {
         id: StatusEnum.active,
       });
 
-      user = await this.usersService.create({
+      user = (await this.usersService.create({
         email: socialEmail ?? null,
         firstName: socialData.firstName ?? null,
         lastName: socialData.lastName ?? null,
@@ -131,10 +135,10 @@ export class AuthService {
         provider: authProvider,
         role,
         status,
-      });
+      })) as unknown as User;
 
       user = await this.usersService.findOne({
-        id: user.id,
+        id: user?.id,
       });
     }
 
@@ -162,16 +166,13 @@ export class AuthService {
   }
 
   async register(dto: AuthRegisterLoginDto): Promise<void> {
-    const hash = crypto
-      .createHash('sha256')
-      .update(randomStringGenerator())
-      .digest('hex');
+    const hash = crypto.createHash('sha256').update(randomStringGenerator()).digest('hex');
 
     await this.usersService.create({
       ...dto,
       email: dto.email,
       role: {
-        id: RoleEnum.user,
+        id: RoleEnum.STUDENT,
       } as Role,
       status: {
         id: StatusEnum.inactive,
@@ -226,10 +227,7 @@ export class AuthService {
       );
     }
 
-    const hash = crypto
-      .createHash('sha256')
-      .update(randomStringGenerator())
-      .digest('hex');
+    const hash = crypto.createHash('sha256').update(randomStringGenerator()).digest('hex');
     await this.forgotService.create({
       hash,
       user,
@@ -270,15 +268,15 @@ export class AuthService {
   }
 
   async me(user: User): Promise<NullableType<User>> {
-    return this.usersService.findOne({
-      id: user.id,
-    });
+    return this.usersService.findOne(
+      {
+        id: user.id,
+      },
+      relations,
+    );
   }
 
-  async update(
-    user: User,
-    userDto: AuthUpdateDto,
-  ): Promise<NullableType<User>> {
+  async update(user: User, userDto: AuthUpdateDto): Promise<NullableType<User>> {
     if (userDto.password) {
       if (userDto.oldPassword) {
         const currentUser = await this.usersService.findOne({
@@ -297,10 +295,7 @@ export class AuthService {
           );
         }
 
-        const isValidOldPassword = await bcrypt.compare(
-          userDto.oldPassword,
-          currentUser.password,
-        );
+        const isValidOldPassword = await bcrypt.compare(userDto.oldPassword, currentUser.password);
 
         if (!isValidOldPassword) {
           throw new HttpException(
@@ -326,7 +321,7 @@ export class AuthService {
       }
     }
 
-    await this.usersService.update(user.id, userDto);
+    // await this.usersService.update(user.id, userDto);
 
     return this.usersService.findOne({
       id: user.id,

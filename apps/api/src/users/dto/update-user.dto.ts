@@ -1,23 +1,22 @@
 import { PartialType } from '@nestjs/swagger';
 import { CreateUserDto } from './create-user.dto';
 
-import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from '../../roles/entities/role.entity';
+import { Transform } from 'class-transformer';
 import { IsEmail, IsOptional, MinLength, Validate } from 'class-validator';
 import { Status } from 'src/statuses/entities/status.entity';
-import { IsNotExist } from 'src/utils/validators/is-not-exists.validator';
-import { FileEntity } from 'src/files/entities/file.entity';
-import { IsExist } from 'src/utils/validators/is-exists.validator';
 import { lowerCaseTransformer } from 'src/utils/transformers/lower-case.transformer';
+import { IsExist } from 'src/utils/validators/is-exists.validator';
+import { Role } from '../../roles/entities/role.entity';
+import { Wards } from 'src/modules/provinces/wards/entities/wards.entity';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty({ example: 'test1@example.com' })
   @Transform(lowerCaseTransformer)
   @IsOptional()
-  @Validate(IsNotExist, ['User'], {
-    message: 'emailAlreadyExists',
-  })
+  // @Validate(IsNotExist, ['User'], {
+  //   message: 'emailAlreadyExists',
+  // })
   @IsEmail()
   email?: string | null;
 
@@ -38,21 +37,24 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   lastName?: string | null;
 
-  @ApiProperty({ type: () => FileEntity })
-  @IsOptional()
-  @Validate(IsExist, ['FileEntity', 'id'], {
-    message: 'imageNotExists',
+  @ApiProperty({
+    type: 'string',
+    format: 'binary',
   })
-  photo?: FileEntity | null;
+  @IsOptional()
+  // @Validate(IsExist, ['FileEntity', 'id'], {
+  //   message: 'imageNotExists',
+  // })
+  photo?: null | Express.Multer.File;
 
-  @ApiProperty({ type: Role })
+  @ApiProperty({ type: String })
   @IsOptional()
   @Validate(IsExist, ['Role', 'id'], {
     message: 'roleNotExists',
   })
-  role?: Role | null;
+  role?: Role | null | any;
 
-  @ApiProperty({ type: Status })
+  @ApiProperty({ type: String })
   @IsOptional()
   @Validate(IsExist, ['Status', 'id'], {
     message: 'statusNotExists',
@@ -60,4 +62,27 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   status?: Status;
 
   hash?: string | null;
+
+  @IsOptional()
+  @ApiProperty({ type: Array, example: [1] })
+  certification?: string;
+
+  @IsOptional()
+  @ApiProperty({ type: Array, example: [1] })
+  tutorGradeSubject?: string;
+
+  @IsOptional()
+  @ApiProperty({ type: Array, example: [1] })
+  skills?: string;
+
+  @IsOptional()
+  @ApiProperty({ type: Array, example: [1] })
+  timeAvailability?: string;
+
+  @IsOptional()
+  @ApiProperty({ type: String, example: 'Duong 615 ' })
+  address?: string | null;
+  @IsOptional()
+  @ApiProperty({ type: Number, example: 1 })
+  wards?: Wards | null | number;
 }

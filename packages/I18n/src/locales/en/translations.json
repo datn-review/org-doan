@@ -1,6 +1,77 @@
+
 {
   "title": "Hello",
+  "vi-VN":"Vietnamese",
+  "en-EN":"English",
+
   "auth":{
     "title":{ "login" : "Login"}
+  },
+  "all": "All Status",
+  "inactive": "Inactive",
+  "active": "Active",
+  "pending": "Pending",
+  "user":{
+    "status": "Status",
+    "createdAt": "Created At",
+    "fullname": "Full Name",
+    "action": "Action",
+    "add" :{
+      "title": "Add New User",
+      "success": "User Added Successfully!",
+      "error": "User Added Error!"
+    },
+    "edit" : {
+      "title": "Edit User",
+      "success": "User Updated Successfully!",
+      "error": "User Updated Error!"
+
+    },
+    "delete" :{
+      "title": "Detete User",
+      "success": "User Deleted Successfully!",
+      "error": "User Deleted Error!"
+
+    },
+    "firstName" : "First Name",
+    "lastName" : "Last Name",
+    "new_password":"New Password",
+    "photo":"Avatar"
+
+  
+  },
+  "button" : {
+    "cancel": "Cancel",
+    "save": "Save",
+    "exit": "Exit",
+    "oke": "Oke"
+  },
+  "search_name":"Search Name",
+  "search_filter":"Search Filter",
+
+  "manage":{
+    "admin": "Manage Admin",
+    "staff": "Manage staff",
+    "center.admin": "Center Admin",
+    "center.tutor": "Center Tutor",
+    "personal.tutor": "Personal Tutor",
+    "parent": "Manage Parent",
+    "student": "Manage Student"
   }
+  ,
+  "home":"Home",
+  "users":"Users",
+  "dashboards":"Dashboards",
+
+  "name":"Name",
+  "edit":"Edit",
+  "add":"Add New",
+  "search.name":"Search Name",
+  "find.tutor": "Look For Tutor",
+  "tutor":"Tutor",
+  "class.new" : "Class New",
+  "manage.name" : "Manage Personal",
+  "manage.registration" : "Manage Registration",
+  "manage.posts.me" : "Manage Posts",
+  "manage.classes" : "Manage Classes"
 }

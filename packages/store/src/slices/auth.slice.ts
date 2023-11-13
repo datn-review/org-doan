@@ -1,5 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { RolesEnum } from "@org/utils";
+import { createSlice } from '@reduxjs/toolkit';
+import { RolesEnum } from '@org/utils';
 interface IAuthorizedData {
   isAuthenticated: boolean;
   role: RolesEnum;
@@ -7,41 +7,40 @@ interface IAuthorizedData {
   authorities: RolesEnum[];
 }
 const initialState: IAuthorizedData = {
-  isAuthenticated: !!localStorage.getItem("accessToken"),
+  isAuthenticated: !!localStorage.getItem('accessToken'),
   role:
-    localStorage.getItem("role") != null
-      ? (("" + localStorage.getItem("role")) as RolesEnum)
+    localStorage.getItem('role') != null
+      ? (('' + localStorage.getItem('role')) as RolesEnum)
       : RolesEnum.ANONYMOUS,
-  userId: Number(localStorage.getItem("userId")) || -1,
+  userId: Number(localStorage.getItem('userId')) || -1,
   authorities:
-    localStorage.getItem("authorities") != null
-      ? (("" + localStorage.getItem("authorities")).split(";") as RolesEnum[])
+    localStorage.getItem('authorities') != null
+      ? (('' + localStorage.getItem('authorities')).split(';') as RolesEnum[])
       : [RolesEnum.ANONYMOUS],
 };
 
-const storeUserInfo = (payload: any) => {
-  localStorage.setItem("accessToken", payload.access_token);
-  payload.refresh_token &&
-    localStorage.setItem("refreshToken", payload.refresh_token);
+const storeUserInfoLocalStorage = (payload: any) => {
+  localStorage.setItem('accessToken', payload.access_token);
+  payload.refresh_token && localStorage.setItem('refreshToken', payload.refresh_token);
 
-  localStorage.setItem("userId", payload.userId);
-  localStorage.setItem("role", payload.role);
-  localStorage.setItem("authorities", payload.authorities);
+  localStorage.setItem('userId', payload.userId);
+  localStorage.setItem('role', payload.role);
+  localStorage.setItem('authorities', payload.authorities);
 
-  payload.username && localStorage.setItem("username", payload.username);
+  payload.username && localStorage.setItem('username', payload.username);
 };
-const removeUserInfo = () => {
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
+const removeUserInfoLocalStorage = () => {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
 
-  localStorage.removeItem("userId");
-  localStorage.removeItem("role");
-  localStorage.removeItem("username");
-  localStorage.removeItem("authorities");
+  localStorage.removeItem('userId');
+  localStorage.removeItem('role');
+  localStorage.removeItem('username');
+  localStorage.removeItem('authorities');
 };
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     setLoginUser: (
@@ -55,9 +54,9 @@ const authSlice = createSlice({
           username?: string;
           authorities: RolesEnum[];
         };
-      }
+      },
     ) => {
-      storeUserInfo(action.payload);
+      storeUserInfoLocalStorage(action.payload);
 
       return {
         ...state,
@@ -68,7 +67,7 @@ const authSlice = createSlice({
       };
     },
     logout: (state) => {
-      removeUserInfo();
+      removeUserInfoLocalStorage();
       return {
         ...state,
         usetId: null,

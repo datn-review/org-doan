@@ -1,0 +1,12 @@
+FROM node:17-alpine
+WORKDIR /app
+
+COPY ../../ ./
+RUN npm i -g pnpm@8.7.4 
+RUN pnpm i
+RUN nx run web:build
+
+FROM nginx
+EXPOSE 1111
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/apps/web/dist /usr/share/nginx/html

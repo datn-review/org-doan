@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 
 import { SIZE, TYPE_BUTTON, VARIANT } from "./index";
-import { COLOR } from "@org/utils/src/constant/themes/color";
+import { COLOR, COLOR_RGB } from "@org/utils/src/constant/themes/color";
 
 const Button = styled.button<{
   $type: TYPE_BUTTON;
@@ -18,7 +18,8 @@ const Button = styled.button<{
   outline: none;
   border: 1px solid;
   font-weight: 500;
-
+  gap: 0.8rem;
+  line-height: 3.8rem;
   color: white;
 
   ${({ $type }) =>
@@ -48,6 +49,25 @@ const Button = styled.button<{
             background-color: ${COLOR[$type]}20;
           }
         `;
+      case VARIANT.Circle:
+        return css`
+          border-radius: 2rem;
+        `;
+      case VARIANT.Menu:
+        return css`
+          background: linear-gradient(
+            72.47deg,
+            rgb(${COLOR_RGB.Primary}) 22.16%,
+            rgba(${COLOR_RGB.Primary}, 0.7) 76.47%
+          ) !important;
+          box-shadow: 0 2px 6px rgba(${COLOR_RGB.Primary}, 0.48);
+          font-weight: 500;
+          border: none;
+          & * {
+            color: white !important;
+          }
+        `;
+
       default:
         return css`
           font-weight: 600;
@@ -87,6 +107,12 @@ const Button = styled.button<{
           padding: 0 1.2rem;
           height: 2.2rem;
           font-size: 1.1rem;
+        `;
+      case SIZE.Menu:
+        return css`
+          padding: 0 1.2rem;
+          height: 3.8rem;
+          font-size: 1.5rem;
         `;
 
       default:
