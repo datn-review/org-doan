@@ -1,17 +1,17 @@
 import { ReactNode } from 'react';
 
-export type MenuItem = {
+export interface MenuItem {
   name: string | ReactNode;
   path: string;
   icon: ReactNode;
   id: string;
   subMenu: any[];
   isHide?: boolean;
-};
+}
 
-export type IMenuIcon = {
+export interface IMenuIcon {
   title: string;
   path: string;
   icon: React.ReactNode;
   key: string;
-};
+}
