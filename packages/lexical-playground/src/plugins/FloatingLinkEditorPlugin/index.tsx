@@ -7,9 +7,9 @@
  */
 import './index.css';
 
-import {$isAutoLinkNode, $isLinkNode, TOGGLE_LINK_COMMAND} from '@lexical/link';
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import {$findMatchingParent, mergeRegister} from '@lexical/utils';
+import { $isAutoLinkNode, $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { $findMatchingParent, mergeRegister } from '@lexical/utils';
 import {
   $getSelection,
   $isRangeSelection,
@@ -24,13 +24,12 @@ import {
   RangeSelection,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
-import {Dispatch, useCallback, useEffect, useRef, useState} from 'react';
-import * as React from 'react';
-import {createPortal} from 'react-dom';
+import { Dispatch, useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
-import {getSelectedNode} from '../../utils/getSelectedNode';
-import {setFloatingElemPositionForLinkEditor} from '../../utils/setFloatingElemPositionForLinkEditor';
-import {sanitizeUrl} from '../../utils/url';
+import { getSelectedNode } from '../../utils/getSelectedNode';
+import { setFloatingElemPositionForLinkEditor } from '../../utils/setFloatingElemPositionForLinkEditor';
+import { sanitizeUrl } from '../../utils/url';
 
 function FloatingLinkEditor({
   editor,
@@ -130,7 +129,7 @@ function FloatingLinkEditor({
 
   useEffect(() => {
     return mergeRegister(
-      editor.registerUpdateListener(({editorState}) => {
+      editor.registerUpdateListener(({ editorState }) => {
         editorState.read(() => {
           updateLinkEditor();
         });
@@ -170,9 +169,7 @@ function FloatingLinkEditor({
     }
   }, [isLinkEditMode, isLink]);
 
-  const monitorInputInteraction = (
-    event: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
+  const monitorInputInteraction = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault();
       handleLinkSubmission();
@@ -193,12 +190,15 @@ function FloatingLinkEditor({
   };
 
   return (
-    <div ref={editorRef} className="link-editor">
+    <div
+      ref={editorRef}
+      className='link-editor'
+    >
       {!isLink ? null : isLinkEditMode ? (
         <>
           <input
             ref={inputRef}
-            className="link-input"
+            className='link-input'
             value={editedLinkUrl}
             onChange={(event) => {
               setEditedLinkUrl(event.target.value);
@@ -209,8 +209,8 @@ function FloatingLinkEditor({
           />
           <div>
             <div
-              className="link-cancel"
-              role="button"
+              className='link-cancel'
+              role='button'
               tabIndex={0}
               onMouseDown={(event) => event.preventDefault()}
               onClick={() => {
@@ -219,8 +219,8 @@ function FloatingLinkEditor({
             />
 
             <div
-              className="link-confirm"
-              role="button"
+              className='link-confirm'
+              role='button'
               tabIndex={0}
               onMouseDown={(event) => event.preventDefault()}
               onClick={handleLinkSubmission}
@@ -228,16 +228,17 @@ function FloatingLinkEditor({
           </div>
         </>
       ) : (
-        <div className="link-view">
+        <div className='link-view'>
           <a
             href={sanitizeUrl(linkUrl)}
-            target="_blank"
-            rel="noopener noreferrer">
+            target='_blank'
+            rel='noopener noreferrer'
+          >
             {linkUrl}
           </a>
           <div
-            className="link-edit"
-            role="button"
+            className='link-edit'
+            role='button'
             tabIndex={0}
             onMouseDown={(event) => event.preventDefault()}
             onClick={() => {
@@ -246,8 +247,8 @@ function FloatingLinkEditor({
             }}
           />
           <div
-            className="link-trash"
-            role="button"
+            className='link-trash'
+            role='button'
             tabIndex={0}
             onMouseDown={(event) => event.preventDefault()}
             onClick={() => {
@@ -285,7 +286,7 @@ function useFloatingLinkEditorToolbar(
       }
     }
     return mergeRegister(
-      editor.registerUpdateListener(({editorState}) => {
+      editor.registerUpdateListener(({ editorState }) => {
         editorState.read(() => {
           updateToolbar();
         });
@@ -341,10 +342,5 @@ export default function FloatingLinkEditorPlugin({
   setIsLinkEditMode: Dispatch<boolean>;
 }): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
-  return useFloatingLinkEditorToolbar(
-    editor,
-    anchorElem,
-    isLinkEditMode,
-    setIsLinkEditMode,
-  );
+  return useFloatingLinkEditorToolbar(editor, anchorElem, isLinkEditMode, setIsLinkEditMode);
 }

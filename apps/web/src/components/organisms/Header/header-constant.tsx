@@ -61,14 +61,14 @@ export const menuCategory: MenuItem[] = [
     subMenu: [],
     // isHide: ifAnyGranted([RolesEnum.WEB_ADMIN]),
   },
-  {
-    name: <Translation>{(t) => t('manage.class')}</Translation>,
-    path: SiteMap.TutorClass.path,
-    id: SiteMap.TutorClass.menu,
-    icon: <IconHome />,
-    subMenu: [],
-    // isHide: ifAnyGranted([RolesEnum.WEB_ADMIN]),
-  },
+  // {
+  //   name: <Translation>{(t) => t('manage.class')}</Translation>,
+  //   path: SiteMap.TutorClass.path,
+  //   id: SiteMap.TutorClass.menu,
+  //   icon: <IconHome />,
+  //   subMenu: [],
+  //   // isHide: ifAnyGranted([RolesEnum.WEB_ADMIN]),
+  // },
   {
     name: <Translation>{(t) => t('dashboards')}</Translation>,
     path: SiteMap.Dashboard.path,

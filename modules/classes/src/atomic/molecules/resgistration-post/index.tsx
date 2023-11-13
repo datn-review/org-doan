@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { useMessage, useModal } from '@org/core';
+import { useMessageHook, useModal } from '@org/core';
 import { i18next, useTranslation } from '@org/i18n';
 import {
   useAppDispatch,
@@ -46,7 +46,7 @@ const dataInit: IUpdate = {
 };
 
 export function RegistrationPost({ id, close }: any) {
-  const { messageSuccess, contextHolder } = useMessage();
+  const { messageSuccess, contextHolder } = useMessageHook();
 
   // const { open, close: closeModal } = useModal();
   const [contants, setIdContants] = useState<any>(null);

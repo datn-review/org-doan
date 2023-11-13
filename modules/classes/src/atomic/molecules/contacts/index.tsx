@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { useMessage, useModal } from '@org/core';
+import { useMessageHook, useModal } from '@org/core';
 import { i18next, useTranslation } from '@org/i18n';
 import {
   useAppDispatch,

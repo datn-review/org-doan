@@ -5,15 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import * as React from 'react';
+import React from 'react';
 
 export default function DocsPlugin(): JSX.Element {
   return (
-    <a target="__blank" href="https://lexical.dev/docs/intro">
+    <a
+      target='__blank'
+      href='https://lexical.dev/docs/intro'
+    >
       <button
-        id="docs-button"
-        className="editor-dev-button"
-        title="Lexical Docs"
+        id='docs-button'
+        className='editor-dev-button'
+        title='Lexical Docs'
       />
     </a>
   );

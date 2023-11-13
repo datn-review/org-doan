@@ -19,11 +19,10 @@ import type {
   Spread,
 } from 'lexical';
 
-import {$applyNodeReplacement, createEditor, DecoratorNode} from 'lexical';
-import * as React from 'react';
-import {Suspense} from 'react';
+import { $applyNodeReplacement, createEditor, DecoratorNode } from 'lexical';
+import { lazy, Suspense } from 'react';
 
-const ImageComponent = React.lazy(
+const ImageComponent = lazy(
   // @ts-ignore
   () => import('./ImageComponent'),
 );
@@ -42,9 +41,9 @@ export interface ImagePayload {
 
 function convertImageElement(domNode: Node): null | DOMConversionOutput {
   if (domNode instanceof HTMLImageElement) {
-    const {alt: altText, src, width, height} = domNode;
-    const node = $createImageNode({altText, height, src, width});
-    return {node};
+    const { alt: altText, src, width, height } = domNode;
+    const node = $createImageNode({ altText, height, src, width });
+    return { node };
   }
   return null;
 }
@@ -92,8 +91,7 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
   }
 
   static importJSON(serializedNode: SerializedImageNode): ImageNode {
-    const {altText, height, width, maxWidth, caption, src, showCaption} =
-      serializedNode;
+    const { altText, height, width, maxWidth, caption, src, showCaption } = serializedNode;
     const node = $createImageNode({
       altText,
       height,
@@ -116,7 +114,7 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     element.setAttribute('alt', this.__altText);
     element.setAttribute('width', this.__width.toString());
     element.setAttribute('height', this.__height.toString());
-    return {element};
+    return { element };
   }
 
   static importDOM(): DOMConversionMap | null {
@@ -164,10 +162,7 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     };
   }
 
-  setWidthAndHeight(
-    width: 'inherit' | number,
-    height: 'inherit' | number,
-  ): void {
+  setWidthAndHeight(width: 'inherit' | number, height: 'inherit' | number): void {
     const writable = this.getWritable();
     writable.__width = width;
     writable.__height = height;
@@ -248,8 +243,6 @@ export function $createImageNode({
   );
 }
 
-export function $isImageNode(
-  node: LexicalNode | null | undefined,
-): node is ImageNode {
+export function $isImageNode(node: LexicalNode | null | undefined): node is ImageNode {
   return node instanceof ImageNode;
 }

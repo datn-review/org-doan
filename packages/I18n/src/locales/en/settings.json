@@ -1,6 +1,9 @@
 {
   "settings": {
     "name": "Settings",
-    "grade.level": "Manage Grade Level"
+    "grade.level": "Grade Level",
+    "subject": "Subject",
+    "certification": "Certification",
+    "skills": "Skills"
   }
 }

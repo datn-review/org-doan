@@ -16,12 +16,12 @@ import type {
   Spread,
 } from 'lexical';
 
-import {$setSelection, createEditor, DecoratorNode} from 'lexical';
-import * as React from 'react';
-import {Suspense} from 'react';
-import {createPortal} from 'react-dom';
+import { $setSelection, createEditor, DecoratorNode } from 'lexical';
 
-const StickyComponent = React.lazy(
+import { Suspense, lazy } from 'react';
+import { createPortal } from 'react-dom';
+
+const StickyComponent = lazy(
   // @ts-ignore
   () => import('./StickyComponent'),
 );
@@ -49,13 +49,7 @@ export class StickyNode extends DecoratorNode<JSX.Element> {
   }
 
   static clone(node: StickyNode): StickyNode {
-    return new StickyNode(
-      node.__x,
-      node.__y,
-      node.__color,
-      node.__caption,
-      node.__key,
-    );
+    return new StickyNode(node.__x, node.__y, node.__color, node.__caption, node.__key);
   }
   static importJSON(serializedNode: SerializedStickyNode): StickyNode {
     const stickyNode = new StickyNode(
@@ -139,15 +133,10 @@ export class StickyNode extends DecoratorNode<JSX.Element> {
   }
 }
 
-export function $isStickyNode(
-  node: LexicalNode | null | undefined,
-): node is StickyNode {
+export function $isStickyNode(node: LexicalNode | null | undefined): node is StickyNode {
   return node instanceof StickyNode;
 }
 
-export function $createStickyNode(
-  xOffset: number,
-  yOffset: number,
-): StickyNode {
+export function $createStickyNode(xOffset: number, yOffset: number): StickyNode {
   return new StickyNode(xOffset, yOffset, 'yellow');
 }

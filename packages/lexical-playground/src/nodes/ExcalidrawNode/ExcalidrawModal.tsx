@@ -8,15 +8,10 @@
 
 import './ExcalidrawModal.css';
 
-import {Excalidraw} from '@excalidraw/excalidraw';
-import {
-  AppState,
-  BinaryFiles,
-  ExcalidrawImperativeAPI,
-} from '@excalidraw/excalidraw/types/types';
-import * as React from 'react';
-import {ReactPortal, useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {createPortal} from 'react-dom';
+import { Excalidraw } from '@excalidraw/excalidraw';
+import { AppState, BinaryFiles, ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
+import { ReactPortal, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import Button from '../../ui/Button';
 import Modal from '../../ui/Modal';
@@ -142,17 +137,17 @@ export default function ExcalidrawModal({
       const appState = excaliDrawSceneRef?.current?.getAppState();
       // We only need a subset of the state
       const partialState: Partial<AppState> = {
-        exportBackground: appState.exportBackground,
-        exportScale: appState.exportScale,
-        exportWithDarkMode: appState.theme === 'dark',
-        isBindingEnabled: appState.isBindingEnabled,
-        isLoading: appState.isLoading,
-        name: appState.name,
-        theme: appState.theme,
-        viewBackgroundColor: appState.viewBackgroundColor,
-        viewModeEnabled: appState.viewModeEnabled,
-        zenModeEnabled: appState.zenModeEnabled,
-        zoom: appState.zoom,
+        exportBackground: appState?.exportBackground,
+        exportScale: appState?.exportScale,
+        exportWithDarkMode: appState?.theme === 'dark',
+        isBindingEnabled: appState?.isBindingEnabled,
+        isLoading: appState?.isLoading,
+        name: appState?.name,
+        theme: appState?.theme,
+        viewBackgroundColor: appState?.viewBackgroundColor,
+        viewModeEnabled: appState?.viewModeEnabled,
+        zenModeEnabled: appState?.zenModeEnabled,
+        zoom: appState?.zoom,
       };
       onSave(elements, partialState, files);
     } else {
@@ -174,24 +169,27 @@ export default function ExcalidrawModal({
   function ShowDiscardDialog(): JSX.Element {
     return (
       <Modal
-        title="Discard"
+        title='Discard'
         onClose={() => {
           setDiscardModalOpen(false);
         }}
-        closeOnClickOutside={false}>
+        closeOnClickOutside={false}
+      >
         Are you sure you want to discard the changes?
-        <div className="ExcalidrawModal__discardModal">
+        <div className='ExcalidrawModal__discardModal'>
           <Button
             onClick={() => {
               setDiscardModalOpen(false);
               onClose();
-            }}>
+            }}
+          >
             Discard
           </Button>{' '}
           <Button
             onClick={() => {
               setDiscardModalOpen(false);
-            }}>
+            }}
+          >
             Cancel
           </Button>
         </div>
@@ -215,31 +213,41 @@ export default function ExcalidrawModal({
   // This is a hacky work-around for Excalidraw + Vite.
   // In DEV, Vite pulls this in fine, in prod it doesn't. It seems
   // like a module resolution issue with ESM vs CJS?
-  const _Excalidraw =
-    Excalidraw.$$typeof != null ? Excalidraw : Excalidraw.default;
+  const _Excalidraw = Excalidraw.$$typeof != null ? Excalidraw : Excalidraw;
 
   return createPortal(
-    <div className="ExcalidrawModal__overlay" role="dialog">
+    <div
+      className='ExcalidrawModal__overlay'
+      role='dialog'
+    >
       <div
-        className="ExcalidrawModal__modal"
+        className='ExcalidrawModal__modal'
         ref={excaliDrawModelRef}
-        tabIndex={-1}>
-        <div className="ExcalidrawModal__row">
+        tabIndex={-1}
+      >
+        <div className='ExcalidrawModal__row'>
           {discardModalOpen && <ShowDiscardDialog />}
           <_Excalidraw
             onChange={onChange}
             ref={excaliDrawSceneRef}
             initialData={{
-              appState: initialAppState || {isLoading: false},
+              appState: initialAppState || { isLoading: false },
+              // @ts-ignore
               elements: initialElements,
               files: initialFiles,
             }}
           />
-          <div className="ExcalidrawModal__actions">
-            <button className="action-button" onClick={discard}>
+          <div className='ExcalidrawModal__actions'>
+            <button
+              className='action-button'
+              onClick={discard}
+            >
               Discard
             </button>
-            <button className="action-button" onClick={save}>
+            <button
+              className='action-button'
+              onClick={save}
+            >
               Save
             </button>
           </div>

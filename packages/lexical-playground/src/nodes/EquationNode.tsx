@@ -17,11 +17,10 @@ import type {
 } from 'lexical';
 
 import katex from 'katex';
-import {$applyNodeReplacement, DecoratorNode, DOMExportOutput} from 'lexical';
-import * as React from 'react';
-import {Suspense} from 'react';
+import { $applyNodeReplacement, DecoratorNode, DOMExportOutput } from 'lexical';
+import { Suspense, lazy } from 'react';
 
-const EquationComponent = React.lazy(
+const EquationComponent = lazy(
   // @ts-ignore
   () => import('./EquationComponent'),
 );
@@ -34,16 +33,14 @@ export type SerializedEquationNode = Spread<
   SerializedLexicalNode
 >;
 
-function convertEquationElement(
-  domNode: HTMLElement,
-): null | DOMConversionOutput {
+function convertEquationElement(domNode: HTMLElement): null | DOMConversionOutput {
   let equation = domNode.getAttribute('data-lexical-equation');
   const inline = domNode.getAttribute('data-lexical-inline') === 'true';
   // Decode the equation from base64
   equation = atob(equation || '');
   if (equation) {
     const node = $createEquationNode(equation, inline);
-    return {node};
+    return { node };
   }
 
   return null;
@@ -68,10 +65,7 @@ export class EquationNode extends DecoratorNode<JSX.Element> {
   }
 
   static importJSON(serializedNode: SerializedEquationNode): EquationNode {
-    const node = $createEquationNode(
-      serializedNode.equation,
-      serializedNode.inline,
-    );
+    const node = $createEquationNode(serializedNode.equation, serializedNode.inline);
     return node;
   }
 
@@ -105,7 +99,7 @@ export class EquationNode extends DecoratorNode<JSX.Element> {
       throwOnError: false,
       trust: false,
     });
-    return {element};
+    return { element };
   }
 
   static importDOM(): DOMConversionMap | null {
@@ -162,16 +156,11 @@ export class EquationNode extends DecoratorNode<JSX.Element> {
   }
 }
 
-export function $createEquationNode(
-  equation = '',
-  inline = false,
-): EquationNode {
+export function $createEquationNode(equation = '', inline = false): EquationNode {
   const equationNode = new EquationNode(equation, inline);
   return $applyNodeReplacement(equationNode);
 }
 
-export function $isEquationNode(
-  node: LexicalNode | null | undefined,
-): node is EquationNode {
+export function $isEquationNode(node: LexicalNode | null | undefined): node is EquationNode {
   return node instanceof EquationNode;
 }

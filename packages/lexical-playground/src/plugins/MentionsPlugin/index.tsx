@@ -6,22 +6,20 @@
  *
  */
 
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
   LexicalTypeaheadMenuPlugin,
   MenuOption,
   MenuTextMatch,
   useBasicTypeaheadTriggerMatch,
 } from '@lexical/react/LexicalTypeaheadMenuPlugin';
-import {TextNode} from 'lexical';
-import {useCallback, useEffect, useMemo, useState} from 'react';
-import * as React from 'react';
+import { TextNode } from 'lexical';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import * as ReactDOM from 'react-dom';
 
-import {$createMentionNode} from '../../nodes/MentionNode';
+import { $createMentionNode } from '../../nodes/MentionNode';
 
-const PUNCTUATION =
-  '\\.,\\+\\*\\?\\$\\@\\|#{}\\(\\)\\^\\-\\[\\]\\\\/!%\'"~=<>_:;';
+const PUNCTUATION = '\\.,\\+\\*\\?\\$\\@\\|#{}\\(\\)\\^\\-\\[\\]\\\\/!%\'"~=<>_:;';
 const NAME = '\\b[A-Z][^\\s' + PUNCTUATION + ']';
 
 const DocumentMentionsRegex = {
@@ -530,10 +528,7 @@ function useMentionLookupService(mentionString: string | null) {
   return results;
 }
 
-function checkForAtSignMentions(
-  text: string,
-  minMatchLength: number,
-): MenuTextMatch | null {
+function checkForAtSignMentions(text: string, minMatchLength: number): MenuTextMatch | null {
   let match = AtSignMentionsRegex.exec(text);
 
   if (match === null) {
@@ -594,13 +589,14 @@ function MentionsTypeaheadMenuItem({
       tabIndex={-1}
       className={className}
       ref={option.setRefElement}
-      role="option"
+      role='option'
       aria-selected={isSelected}
       id={'typeahead-item-' + index}
       onMouseEnter={onMouseEnter}
-      onClick={onClick}>
+      onClick={onClick}
+    >
       {option.picture}
-      <span className="text">{option.name}</span>
+      <span className='text'>{option.name}</span>
     </li>
   );
 }
@@ -619,10 +615,7 @@ export default function NewMentionsPlugin(): JSX.Element | null {
   const options = useMemo(
     () =>
       results
-        .map(
-          (result) =>
-            new MentionTypeaheadOption(result, <i className="icon user" />),
-        )
+        .map((result) => new MentionTypeaheadOption(result, <i className='icon user' />))
         .slice(0, SUGGESTION_LIST_LENGTH_LIMIT),
     [results],
   );
@@ -664,11 +657,11 @@ export default function NewMentionsPlugin(): JSX.Element | null {
       options={options}
       menuRenderFn={(
         anchorElementRef,
-        {selectedIndex, selectOptionAndCleanUp, setHighlightedIndex},
+        { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex },
       ) =>
         anchorElementRef.current && results.length
           ? ReactDOM.createPortal(
-              <div className="typeahead-popover mentions-menu">
+              <div className='typeahead-popover mentions-menu'>
                 <ul>
                   {options.map((option, i: number) => (
                     <MentionsTypeaheadMenuItem

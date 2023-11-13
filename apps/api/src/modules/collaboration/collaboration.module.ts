@@ -5,15 +5,10 @@ import { IsNotExist } from 'src/utils/validators/is-not-exists.validator';
 import { Collaboration } from './entities/collaboration.entity';
 import { CollaborationController } from './collaboration.controller';
 import { CollaborationService } from './collaboration.service';
-import { RegistrationModule } from '../registration/registration.module';
 import { PaymentModule } from '../payment/payment.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Collaboration]),
-    RegistrationModule,
-    forwardRef(() => PaymentModule),
-  ],
+  imports: [TypeOrmModule.forFeature([Collaboration]), forwardRef(() => PaymentModule)],
   controllers: [CollaborationController],
   providers: [IsExist, IsNotExist, CollaborationService],
   exports: [CollaborationService],

@@ -45,7 +45,7 @@ const rootReducer = combineReducers({
   [PaymentAPI.reducerPath]: PaymentAPI.reducer,
 });
 
-export const store = configureStore({
+export const store: any = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

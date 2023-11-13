@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { useCRUDContext, useMessage } from '@org/core';
+import { useCRUDContext, useMessageHook } from '@org/core';
 import { i18next, useTranslation } from '@org/i18n';
 import {
   useCreateSkillsMutation,
@@ -66,7 +66,7 @@ export function Upsert() {
     resolver: yupResolver(schema(idEdit)),
   });
 
-  const { messageError, messageSuccess, contextHolder } = useMessage();
+  const { messageError, messageSuccess, contextHolder } = useMessageHook();
 
   const [createData, { isLoading: isLoadingCreate }] = useCreateSkillsMutation();
 

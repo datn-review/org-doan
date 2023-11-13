@@ -27,6 +27,7 @@ export default defineConfig({
       formats: ['es'],
       name: 'ui',
     },
+
     outDir: './lib',
     rollupOptions: {
       // Externalize deps that shouldn't be bundled
@@ -41,7 +42,7 @@ export default defineConfig({
     },
   },
 
-  esbuild: {
-    jsxInject: `import React from 'react'`,
-  },
+  // esbuild: {
+  //   jsxInject: `import React from 'react'`,
+  // },
 });

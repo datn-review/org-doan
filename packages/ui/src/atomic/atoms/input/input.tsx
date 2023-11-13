@@ -16,6 +16,7 @@ export type IInput = HTMLAttributes<HTMLInputElement> & {
   value?: any;
   labelInput?: string;
   $type?: TypeInput;
+  label?: string;
 };
 
 export function Input({ onChange, value, labelInput, className, $type, ...props }: IInput) {
@@ -92,6 +93,7 @@ export type ITextArea = HTMLAttributes<HTMLInputElement> & {
   onChange?: (value: string) => void;
   value?: any;
   labelInput?: string;
+  label: string;
 };
 export function TextArea({ onChange, value, labelInput, className, ...props }: ITextArea) {
   return (

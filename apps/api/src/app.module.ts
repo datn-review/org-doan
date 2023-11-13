@@ -46,14 +46,12 @@ import { ChatMessageModule } from './modules/chat-message/chat-message.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { PostCommentModule } from './modules/post-comment/post-comment.module';
 import { CollaborationModule } from './modules/collaboration/collaboration.module';
-import { CollaborationSubjectModule } from './modules/collaboration-subject/collaboration-subject.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { LessonsModule } from './modules/lessons/lessons.module';
 import { DistrictsModule } from './modules/provinces/districts/districts.module';
 import { ProvinceModule } from './modules/provinces/province/province.module';
 import { WardsModule } from './modules/provinces/wards/wards.module';
 import { PostTimeAvailabilityModule } from './modules/posts/post-time-availability/post-time-availability.module';
-import { RegistrationModule } from './modules/registration/registration.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -125,14 +123,12 @@ import { RegistrationModule } from './modules/registration/registration.module';
     PostsModule,
     PostCommentModule,
     CollaborationModule,
-    CollaborationSubjectModule,
     PaymentModule,
     LessonsModule,
     ProvinceModule,
     DistrictsModule,
     WardsModule,
     PostTimeAvailabilityModule,
-    RegistrationModule,
   ],
 })
 export class AppModule {}

@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { useCRUDContext, useMessage, useUpdateEffect } from '@org/core';
+import { useCRUDContext, useMessageHook, useUpdateEffect } from '@org/core';
 import { useTranslation } from '@org/i18n';
 import { clearActiveMenu, setActiveGroup, setActiveSubGroup, useAppDispatch } from '@org/store';
 import { useDeleteUserTutorMutation, useLazyGetUserTutorQuery } from '@org/store';
@@ -39,7 +39,7 @@ function TutorsApp() {
   });
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const { messageSuccess, contextHolder } = useMessage();
+  const { messageSuccess, contextHolder } = useMessageHook();
 
   const { setIdEdit, setIsUpsert, isFetch, setIsFetch, isUpsert } = useCRUDContext();
   console.log('🚀 ~ file: tutors.app.tsx:45 ~ TutorsApp ~ isUpsert:', isUpsert);

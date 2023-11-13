@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { AddressForm, IWards, useCRUDContext, useMessage, useUnmount } from '@org/core';
+import { AddressForm, IWards, useCRUDContext, useMessageHook, useUnmount } from '@org/core';
 import { getNameLanguage, i18next, useTranslation } from '@org/i18n';
 import {
   useCreateUserStudentMutation,
@@ -81,7 +81,7 @@ export function Upsert() {
     resolver: yupResolver(schema(idEdit)),
   });
 
-  const { messageError, messageSuccess, contextHolder } = useMessage();
+  const { messageError, messageSuccess, contextHolder } = useMessageHook();
 
   const [createData, { isLoading: isLoadingCreate }] = useCreateUserStudentMutation();
 

@@ -18,12 +18,12 @@ import type {
   Spread,
 } from 'lexical';
 
-import {BlockWithAlignableContents} from '@lexical/react/LexicalBlockWithAlignableContents';
+import { BlockWithAlignableContents } from '@lexical/react/LexicalBlockWithAlignableContents';
 import {
   DecoratorBlockNode,
   SerializedDecoratorBlockNode,
 } from '@lexical/react/LexicalDecoratorBlockNode';
-import * as React from 'react';
+import React from 'react';
 
 type YouTubeComponentProps = Readonly<{
   className: Readonly<{
@@ -35,25 +35,21 @@ type YouTubeComponentProps = Readonly<{
   videoID: string;
 }>;
 
-function YouTubeComponent({
-  className,
-  format,
-  nodeKey,
-  videoID,
-}: YouTubeComponentProps) {
+function YouTubeComponent({ className, format, nodeKey, videoID }: YouTubeComponentProps) {
   return (
     <BlockWithAlignableContents
       className={className}
       format={format}
-      nodeKey={nodeKey}>
+      nodeKey={nodeKey}
+    >
       <iframe
-        width="560"
-        height="315"
+        width='560'
+        height='315'
         src={`https://www.youtube-nocookie.com/embed/${videoID}`}
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        frameBorder='0'
+        allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
         allowFullScreen={true}
-        title="YouTube video"
+        title='YouTube video'
       />
     </BlockWithAlignableContents>
   );
@@ -66,13 +62,11 @@ export type SerializedYouTubeNode = Spread<
   SerializedDecoratorBlockNode
 >;
 
-function convertYoutubeElement(
-  domNode: HTMLElement,
-): null | DOMConversionOutput {
+function convertYoutubeElement(domNode: HTMLElement): null | DOMConversionOutput {
   const videoID = domNode.getAttribute('data-lexical-youtube');
   if (videoID) {
     const node = $createYouTubeNode(videoID);
-    return {node};
+    return { node };
   }
   return null;
 }
@@ -113,10 +107,7 @@ export class YouTubeNode extends DecoratorBlockNode {
     element.setAttribute('data-lexical-youtube', this.__id);
     element.setAttribute('width', '560');
     element.setAttribute('height', '315');
-    element.setAttribute(
-      'src',
-      `https://www.youtube-nocookie.com/embed/${this.__id}`,
-    );
+    element.setAttribute('src', `https://www.youtube-nocookie.com/embed/${this.__id}`);
     element.setAttribute('frameborder', '0');
     element.setAttribute(
       'allow',
@@ -124,7 +115,7 @@ export class YouTubeNode extends DecoratorBlockNode {
     );
     element.setAttribute('allowfullscreen', 'true');
     element.setAttribute('title', 'YouTube video');
-    return {element};
+    return { element };
   }
 
   static importDOM(): DOMConversionMap | null {

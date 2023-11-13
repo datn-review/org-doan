@@ -66,5 +66,10 @@
   "add":"Thêm Mới",
   "search.name":"Nhập Tên",
   "find.tutor": "Đăng Bài Tìm Gia Sư",
-  "tutor":"Gia Sư"
+  "tutor":"Gia Sư",
+  "class.new" : "Lớp Mới",
+  "manage.name" : "Quản Lí Cá Nhân",
+  "manage.registration" : "Danh Sách Đăng Ký Yêu Cầu",
+  "manage.posts.me" : "Danh Sách Bài Đăng",
+  "manage.classes" : "Danh Sách Lớp Học"
 }

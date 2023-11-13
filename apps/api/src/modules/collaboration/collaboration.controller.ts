@@ -26,7 +26,6 @@ import { NullableType } from '../../utils/types/nullable.type';
 import { Collaboration } from './entities/collaboration.entity';
 
 import { StatusEnum } from 'src/statuses/statuses.enum';
-import { RegistrationService } from '../registration/registration.service';
 import { CollaborationService } from './collaboration.service';
 import { CreateCollaborationDto } from './dto/create.dto';
 import { UpdateCollaborationDto } from './dto/update.dto';
