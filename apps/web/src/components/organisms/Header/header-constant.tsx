@@ -12,10 +12,9 @@ import {
   MenuProps,
 } from '@org/ui';
 
-import type { IMenuIcon, MenuItem } from '../header/header-type';
+import { IMenuIcon, MenuItem } from '../header/header-type';
 import { Translation } from '@org/i18n';
 import { RolesEnum, SiteMap } from '@org/utils';
-import { ifAnyGranted, ifNotGranted } from '@org/auth';
 
 export const itemsLanguge: MenuProps['items'] = [
   {
