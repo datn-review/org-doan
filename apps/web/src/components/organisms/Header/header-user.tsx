@@ -1,9 +1,26 @@
-import { Avatar, Badge, Dropdown, I18nIcon, MenuProps, NoticationIcon, Space } from '@org/ui';
+import {
+  Avatar,
+  Badge,
+  Button,
+  Dropdown,
+  I18nIcon,
+  MenuProps,
+  NoticationIcon,
+  Show,
+  Space,
+  VARIANT,
+  IconSearch,
+  Table,
+  Logo,
+} from '@org/ui';
 import * as S from './styled';
 import { useTranslation } from '@org/i18n';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { itemsLanguge, menuPerson } from './header-constant';
 import { IMenuIcon } from './header-type';
+import { logout, removeUserInfo, useAppDispatch, useAppSelector } from '@org/store';
+import { COLOR, SiteMap } from '@org/utils';
+import { css } from '@emotion/css';
 
 const LinkItem = ({ path, icon, title }: any) => {
   return (
@@ -44,29 +61,59 @@ const itemsPerson: MenuProps['items'] = menuPerson.map(({ icon, title, path, key
 
 function HeaderUser() {
   const { i18n } = useTranslation();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const changeLangue: MenuProps['onClick'] = (value) => {
     i18n.changeLanguage(value.key);
+    localStorage.setItem('language', value.key);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    dispatch(removeUserInfo());
+    // navigate(SiteMap.Auth.Login.path);
+    location.replace(SiteMap.Auth.Login.path);
+  };
+
+  const handlePerson: MenuProps['onClick'] = (value) => {
+    switch (value.key) {
+      case 'logout':
+        handleLogout();
+        break;
+      default:
+        break;
+    }
   };
 
   return (
-    <S.HeaderUser className='flex justify-between items-center px-[1.5rem]'>
+    <S.HeaderUser className='flex justify-between items-center '>
       <Link to='/'>
-        <img
+        {/* <img
           src='/assets/image/logo.jpg'
           alt='Login'
           className='h-[40px]'
-        />
+        /> */}
+        <Logo />
       </Link>
 
       <Space className={'flex gap-7 items-center justify-end '}>
-        <div>SEARCH</div>
+        <Space
+          className={css`
+            cursor: pointer;
+          `}
+        >
+          <IconSearch />
+        </Space>
 
         <Dropdown
           placement='bottomRight'
           arrow
+          trigger={['click']}
           menu={{
             items: itemsLanguge,
             onClick: changeLangue,
+            selectedKeys: [i18n.language],
           }}
         >
           <Space className='cursor-pointer'>
@@ -77,20 +124,39 @@ function HeaderUser() {
         <Badge
           count={10}
           overflowCount={9}
+          className={css`
+            cursor: pointer;
+          `}
         >
           <NoticationIcon />
         </Badge>
-
-        <Dropdown
-          placement='bottomRight'
-          arrow
-          trigger={['click']}
-          menu={{
-            items: itemsPerson,
-          }}
+        <Show
+          when={isAuthenticated}
+          fallback={
+            <Link to={SiteMap.Auth.Login.path}>
+              <Button
+                $variant={VARIANT.Outlined}
+                className={css`
+                  border-radius: 2rem !important;
+                `}
+              >
+                Sign In
+              </Button>
+            </Link>
+          }
         >
-          <Avatar className='bg-lime-500 text-white cursor-pointer'>T</Avatar>
-        </Dropdown>
+          <Dropdown
+            placement='bottomRight'
+            arrow
+            trigger={['click']}
+            menu={{
+              items: itemsPerson,
+              onClick: handlePerson,
+            }}
+          >
+            <Avatar className={`bg-purple-500 text-white cursor-pointer`}>T</Avatar>
+          </Dropdown>
+        </Show>
       </Space>
     </S.HeaderUser>
   );

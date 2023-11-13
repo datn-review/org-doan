@@ -1,0 +1,24 @@
+{
+  "generators": {
+    "app-folder": {
+      "factory": "./src/generators/app-folder/generator",
+      "schema": "./src/generators/app-folder/schema.json",
+      "description": "app-folder generator"
+    },
+    "module-api": {
+      "factory": "./src/generators/module-api/generator",
+      "schema": "./src/generators/module-api/schema.json",
+      "description": "module-api generator"
+    },
+    "crud-auto": {
+      "factory": "./src/generators/crud-auto/generator",
+      "schema": "./src/generators/crud-auto/schema.json",
+      "description": "crud-auto generator"
+    },
+    "module-web": {
+      "factory": "./src/generators/module-web/generator",
+      "schema": "./src/generators/module-web/schema.json",
+      "description": "module-web generator"
+    }
+  }
+}

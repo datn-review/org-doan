@@ -1,0 +1,30 @@
+import { useTranslation } from '@org/i18n';
+import { setActiveGroup, useAppDispatch, useAppSelector } from '@org/store';
+import { Space } from '@org/ui';
+import { SiteMap } from '@org/utils';
+import { useEffect } from 'react';
+import { If, Then } from 'react-if';
+import { useNavigate, useParams } from 'react-router-dom';
+
+function <%= nameUpCap %>App() {
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(setActiveGroup({ current: SiteMap.<%= nameUpCap %>.menu }));
+    return () => {
+      dispatch(setActiveGroup({ current: '' }));
+    };
+  }, []);
+  return (
+    <>
+      <Space className={'<%= name %>'}>
+        <If condition={isAuthenticated}>
+          <Then><%= name %></Then>
+        </If>
+      </Space>
+    </>
+  );
+}
+
+export default <%= nameUpCap %>App;

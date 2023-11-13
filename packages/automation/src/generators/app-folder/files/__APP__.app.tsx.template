@@ -1,0 +1,10 @@
+import React from 'react';
+
+function <%= nameUpCap %>() {
+  
+  return (
+    <><%= nameUpCap %></>
+  );
+}
+
+export default <%= nameUpCap %>;

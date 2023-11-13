@@ -1,10 +1,13 @@
-import { Col, Row, Space, BoxCenter } from "@org/ui";
-import React, { PropsWithChildren } from "react";
-import { css } from "@emotion/css";
-import bg from "../../assets/images/background.png";
-import { Link } from "react-router-dom";
+import { Col, Row, Space, BoxCenter, Logo } from '@org/ui';
+import React, { PropsWithChildren } from 'react';
+import { css } from '@emotion/css';
+import bg from '../../assets/images/background.png';
+import { Link } from 'react-router-dom';
 
-export function AuthTemplate({ children }: PropsWithChildren) {
+export function AuthTemplate({
+  children,
+  background = bg,
+}: PropsWithChildren & { background?: string }) {
   return (
     <Row
       className={css`
@@ -27,15 +30,18 @@ export function AuthTemplate({ children }: PropsWithChildren) {
           `}
         >
           <img
-            src={bg}
-            alt="BG"
+            src={background}
+            alt='BG'
             className={css`
               height: 57rem;
             `}
           />
         </BoxCenter>
       </Col>
-      <Col span={24} lg={8}>
+      <Col
+        span={24}
+        lg={8}
+      >
         <BoxCenter>
           <Space
             className={css`
@@ -46,12 +52,8 @@ export function AuthTemplate({ children }: PropsWithChildren) {
             `}
           >
             <BoxCenter>
-              <Link to="/">
-                <img
-                  src="/assets/image/logo.jpg"
-                  alt="Login"
-                  className="h-[40px]"
-                />
+              <Link to='/'>
+                <Logo />
               </Link>
             </BoxCenter>
             <>{children}</>

@@ -1,5 +1,5 @@
-import { COLOR } from "@org/utils/src/constant/themes/color";
-import styled from "@emotion/styled";
+import { COLOR } from '@org/utils/src/constant/themes/color';
+import styled from '@emotion/styled';
 
 export const StyleDropdown = styled.div`
   .ant-dropdown-menu-item {
@@ -8,7 +8,16 @@ export const StyleDropdown = styled.div`
     font-size: 1.5rem !important;
     &:hover {
       * {
-        color: ${COLOR.Primary} !important;
+        /* color: ${COLOR.Primary} !important; */
+      }
+    }
+  }
+  .ant-dropdown-menu-item-selected {
+    background-color: ${COLOR.Primary} !important;
+    * {
+      color: white !important;
+      &:hover {
+        color: white !important;
       }
     }
   }

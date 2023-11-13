@@ -1,8 +1,9 @@
 import { Checkbox } from "antd";
 import { withForm } from "../../../form";
+import { ReactNode } from "react";
 
 interface ICheckBox {
-  labelCB?: string;
+  labelCB?: ReactNode;
   disabled?: boolean;
   onChange?: any;
   name: string;

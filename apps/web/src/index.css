@@ -12,11 +12,31 @@ body {
   font-size: 1.6rem; /* default font-size for document */
   line-height: 1.5; /* a nice line-height */
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  /* font-family: 'Public Sans', sans-serif; */
+  font-family: 'Quicksand', sans-serif;
 }
 * {
+  font-family: 'Quicksand', sans-serif;
+  /* color: #5c5b68; */
+}
+div,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+table,
+th,
+td {
   color: #5c5b68;
-  font-family: 'Inter', sans-serif;
+}
+.ant-message-success .anticon * {
+  color: #52c41a;
+}
+.ant-message-error .anticon * {
+  color: red;
 }
 
 #root {

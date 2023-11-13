@@ -1,0 +1,9 @@
+import { <%= nameUpCap  %>Provider } from "./<%= name %>.context";
+import <%= nameUpCap  %>App from "./<%= name %>.app";
+import { ComponentInject } from "@org/ui";
+
+export const <%= nameUpCap  %>Page = ComponentInject({
+  template: [],
+  providers: [<%= nameUpCap %>Provider],
+  bootstrap: <%= nameUpCap  %>App,
+});

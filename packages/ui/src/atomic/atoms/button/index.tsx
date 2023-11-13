@@ -1,28 +1,32 @@
-import { ButtonHTMLAttributes, PropsWithChildren } from "react";
-import * as S from "./styled";
+import React, { ButtonHTMLAttributes, PropsWithChildren } from 'react';
+import * as S from './styled';
 // import { mergeClassName } from "@org/utils";
 export enum VARIANT {
-  Default = "Default",
-  Outlined = "Outlined",
-  Text = "Text",
+  Default = 'Default',
+  Outlined = 'Outlined',
+  Text = 'Text',
+  Circle = 'Circle',
+  Menu = 'Menu',
+
   // Tonal = "Tonal",
   // IconOnly = "IconOnly",
   // Icon = "Icon",
 }
 export enum TYPE_BUTTON {
-  Primary = "Primary",
-  Secondary = "Secondary",
-  Success = "Success",
-  Info = "Info",
-  Warning = "Warning",
-  Error = "Error",
+  Primary = 'Primary',
+  Secondary = 'Secondary',
+  Success = 'Success',
+  Info = 'Info',
+  Warning = 'Warning',
+  Error = 'Error',
 }
 export enum SIZE {
-  ExtraLarge = "ExtraLarge",
-  Large = "Large",
-  Normal = "Normal",
-  Small = "Small",
-  ExtraSmall = "ExtraSmall",
+  ExtraLarge = 'ExtraLarge',
+  Large = 'Large',
+  Normal = 'Normal',
+  Small = 'Small',
+  ExtraSmall = 'ExtraSmall',
+  Menu = 'Menu',
 }
 
 export type IButton = {
