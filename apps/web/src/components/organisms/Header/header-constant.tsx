@@ -12,7 +12,7 @@ import {
   MenuProps,
 } from '@org/ui';
 
-import { IMenuIcon, MenuItem } from '../header/header-type';
+import { IMenuIcon, MenuItem } from './header-type';
 import { Translation } from '@org/i18n';
 import { RolesEnum, SiteMap } from '@org/utils';
 
