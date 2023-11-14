@@ -324,7 +324,7 @@ export class CollaborationController {
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string): Promise<NullableType<Collaboration>> {
-    return this.collaborationService.findOne({ id: +id });
+    return this.collaborationService.findOne({ id: +id }, relations);
   }
 
   @Get('/post/:id')
