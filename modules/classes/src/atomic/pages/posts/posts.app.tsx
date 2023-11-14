@@ -40,7 +40,6 @@ function Posts() {
       refetchOnMountOrArgChange: true,
     },
   );
-  console.log('🚀 ~ file: posts.app.tsx:35 ~ Posts ~ dataPosts:', dataPosts);
   const [createRegistration] = useCreateRegistrationMutation();
 
   useEffect(() => {

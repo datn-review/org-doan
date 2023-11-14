@@ -16,8 +16,7 @@ import {
   SerializedLexicalNode,
   Spread,
 } from 'lexical';
-import * as React from 'react';
-import {Suspense} from 'react';
+import { Suspense, lazy } from 'react';
 
 export type Options = ReadonlyArray<Option>;
 
@@ -27,7 +26,7 @@ export type Option = Readonly<{
   votes: Array<number>;
 }>;
 
-const PollComponent = React.lazy(
+const PollComponent = lazy(
   // @ts-ignore
   () => import('./PollComponent'),
 );
@@ -47,11 +46,7 @@ export function createPollOption(text = ''): Option {
   };
 }
 
-function cloneOption(
-  option: Option,
-  text: string,
-  votes?: Array<number>,
-): Option {
+function cloneOption(option: Option, text: string, votes?: Array<number>): Option {
   return {
     text,
     uid: option.uid,
@@ -72,7 +67,7 @@ function convertPollElement(domNode: HTMLElement): DOMConversionOutput | null {
   const options = domNode.getAttribute('data-lexical-poll-options');
   if (question !== null && options !== null) {
     const node = $createPollNode(question, JSON.parse(options));
-    return {node};
+    return { node };
   }
   return null;
 }
@@ -90,10 +85,7 @@ export class PollNode extends DecoratorNode<JSX.Element> {
   }
 
   static importJSON(serializedNode: SerializedPollNode): PollNode {
-    const node = $createPollNode(
-      serializedNode.question,
-      serializedNode.options,
-    );
+    const node = $createPollNode(serializedNode.question, serializedNode.options);
     serializedNode.options.forEach(node.addOption);
     return node;
   }
@@ -171,11 +163,8 @@ export class PollNode extends DecoratorNode<JSX.Element> {
   exportDOM(): DOMExportOutput {
     const element = document.createElement('span');
     element.setAttribute('data-lexical-poll-question', this.__question);
-    element.setAttribute(
-      'data-lexical-poll-options',
-      JSON.stringify(this.__options),
-    );
-    return {element};
+    element.setAttribute('data-lexical-poll-options', JSON.stringify(this.__options));
+    return { element };
   }
 
   createDOM(): HTMLElement {
@@ -205,8 +194,6 @@ export function $createPollNode(question: string, options: Options): PollNode {
   return new PollNode(question, options);
 }
 
-export function $isPollNode(
-  node: LexicalNode | null | undefined,
-): node is PollNode {
+export function $isPollNode(node: LexicalNode | null | undefined): node is PollNode {
   return node instanceof PollNode;
 }

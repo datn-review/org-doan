@@ -1,18 +1,20 @@
 import { css } from '@emotion/css';
-import { useCRUDContext, useMessage, useUpdateEffect } from '@org/core';
+import { useCRUDContext, useMessageHook, useUpdateEffect } from '@org/core';
 import { getNameLanguage, useTranslation } from '@org/i18n';
-import { clearActiveMenu, setActiveGroup, setActiveSubGroup, useAppDispatch } from '@org/store';
 import {
-  useDeleteRegistrationMutation,
-  useLazyGetRegistrationQuery,
-} from '@org/store/src/services/registration.api';
+  clearActiveMenu,
+  setActiveGroup,
+  setActiveSubGroup,
+  useAppDispatch,
+  useDeleteCollaborationMutation,
+  useLazyGetMeCollaborationQuery,
+} from '@org/store';
 import {
-  Button,
-  EyeOutlined,
+  Dropdown,
+  EllipsisOutlined,
   H2,
-  IconDeleteAction,
-  IconEditAction,
   Input,
+  Section,
   SectionLayout,
   Select,
   SelectLimitTable,
@@ -22,22 +24,23 @@ import {
   useTable,
 } from '@org/ui';
 import {
-  COLOR,
+  colorRandom,
+  EnumStatusCollap,
   SiteMap,
   StatusEnum,
-  StatusEnumColor,
+  statusOption,
   StatusRegistration,
   StatusRegistrationColor,
-  StatusShowHide,
-  StatusShowHideColor,
-  colorRandom,
-  statusOption,
 } from '@org/utils';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
+import { Else, If, Then } from 'react-if';
 import { Link } from 'react-router-dom';
+import { Contants, EnumTypeContact } from '../../molecules';
 
 function Registration() {
+  const [contants, setContants] = useState<any>(null);
+
   const tableInstance = useTable({
     initialSortValue: {
       sortBy: 'createdAt',
@@ -46,7 +49,7 @@ function Registration() {
   });
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const { messageSuccess, contextHolder } = useMessage();
+  const { messageSuccess, contextHolder } = useMessageHook();
 
   const { setIdEdit, setIsUpsert, isFetch, setIsFetch, isUpsert } = useCRUDContext();
 
@@ -63,8 +66,9 @@ function Registration() {
     };
   }, []);
 
-  const [getUser, { data, isLoading }] = useLazyGetRegistrationQuery();
-  const [deleteUser] = useDeleteRegistrationMutation();
+  const [getUser, { data, isLoading }] = useLazyGetMeCollaborationQuery();
+  console.log('data', data);
+  const [deleteUser] = useDeleteCollaborationMutation();
 
   const query = {
     page: tableInstance.values.pagination.currentPage,
@@ -89,13 +93,28 @@ function Registration() {
       setIsFetch(false);
     }
   }, [isFetch]);
+  const handleDelete = (record: any) => () => {
+    deleteUser(record.id)
+      .then((data) => {
+        messageSuccess(t('user.delete.success'));
+      })
+      .catch((error) => {
+        messageSuccess(t('user.delete.error'));
+      })
+      .finally(() => {
+        setIsFetch(true);
+      });
+  };
+
+  const confirmContract = (record: any) => () => {
+    setContants(record);
+  };
 
   const columns = [
     {
       title: t('requestSummaryVI'),
       dataIndex: 'updatedAt',
       sorter: true,
-
       render: (_: string, record: any) => <>{record?.posts?.requestSummaryVI}</>,
     },
     {
@@ -127,13 +146,12 @@ function Registration() {
       title: t('user.createdAt'),
       dataIndex: 'updatedAt',
       sorter: true,
-
       render: (_createdAt: string) => <>{dayjs(_createdAt).format('DD/MM/YYYY')}</>,
     },
+
     {
       title: t('user.status'),
       sorter: true,
-
       dataIndex: 'status',
       key: 'status',
       render: (_: any, record: any) => (
@@ -157,25 +175,73 @@ function Registration() {
             cursor: pointer;
           `}
         >
-          <Link to={SiteMap.ClassNew.Details.generate(record?.posts.id || 0)}>
-            <EyeOutlined />
-          </Link>
-          {record?.status == 3 && (
-            <IconDeleteAction
-              onClick={() => {
-                deleteUser(record.id)
-                  .then((data) => {
-                    messageSuccess(t('user.delete.success'));
-                  })
-                  .catch((error) => {
-                    messageSuccess(t('user.delete.error'));
-                  })
-                  .finally(() => {
-                    setIsFetch(true);
-                  });
-              }}
+          <Dropdown
+            className={css`
+              cursor: pointer;
+
+              * {
+                font-size: 14px;
+              }
+            `}
+            overlayClassName={css`
+              width: 20rem;
+            `}
+            menu={{
+              items: [
+                {
+                  key: '1',
+                  label: (
+                    <Link
+                      to={SiteMap.ClassNew.Details.generate(record?.posts.id || 0)}
+                      className={css`
+                        color: #5c5b68 !important;
+                      `}
+                    >
+                      Xem Chi Tiết Yêu Cầu
+                    </Link>
+                  ),
+                },
+                {
+                  key: '2',
+                  label: (
+                    <Space>
+                      <If condition={record?.status === EnumStatusCollap.Pending}>
+                        <Then>
+                          <Space onClick={handleDelete(record)}>Xóa yêu cầu</Space>
+                        </Then>
+                      </If>
+                      <If condition={record.status === EnumStatusCollap.Rejected}>
+                        <Then>Yêu Cầu Của Bạn Bị Từ Chối</Then>
+                      </If>
+                      <If condition={record.status === EnumStatusCollap.PendingSignature}>
+                        <Then>
+                          <Space onClick={confirmContract(record)}>Hợp Đồng Chờ Bạn Ký</Space>
+                        </Then>
+                      </If>
+                      <If
+                        condition={
+                          record.status === EnumStatusCollap.PendingPay ||
+                          record.status === EnumStatusCollap.Collaboration ||
+                          record.status === EnumStatusCollap.Completed
+                        }
+                      >
+                        <Then>Xem chi tiet hop dong</Then>
+                      </If>
+                    </Space>
+                  ),
+                },
+              ],
+            }}
+            trigger={['click']}
+            placement='bottomCenter'
+            arrow={{ pointAtCenter: true }}
+          >
+            <EllipsisOutlined
+              className={css`
+                transform: scale(1.6);
+              `}
             />
-          )}
+          </Dropdown>
         </Space>
       ),
     },
@@ -184,69 +250,81 @@ function Registration() {
   return (
     <SectionLayout>
       {contextHolder}
-      <Space
-        className={css`
-          padding-bottom: 2rem;
-          border-bottom: 1px solid #bcbcbc71;
-          margin-bottom: 3rem;
-        `}
-      >
+      <Section>
         <H2>{t('registration')}</H2>
-      </Space>
-      <Space
+      </Section>
+      <Section
         className={css`
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 2rem;
+          margin-top: 2rem;
         `}
       >
-        <SelectLimitTable
-          defaultValue={tableInstance.limit}
-          onChange={tableInstance.onChangeLimit}
-        />
-
         <Space
           className={css`
-            gap: 0.5rem;
             display: flex;
+            justify-content: space-between;
             align-items: center;
+            margin-bottom: 2rem;
           `}
         >
-          <Select
-            options={statusOption}
-            defaultValue={StatusEnum.active}
-            value={filter.status}
-            onChange={(value) => setFilter((prev) => ({ ...prev, status: value }))}
-            className={css`
-              min-width: 20rem;
-              min-height: 3.8rem;
-            `}
+          <SelectLimitTable
+            defaultValue={tableInstance.limit}
+            onChange={tableInstance.onChangeLimit}
           />
+
           <Space
             className={css`
-              width: 18rem;
+              gap: 0.5rem;
+              display: flex;
+              align-items: center;
             `}
           >
-            <Input
-              name='seach_name'
-              onChange={(value) => setFilter((prev) => ({ ...prev, name: String(value) }))}
-              value={filter.name}
-              placeholder={t('search.name')}
+            <Select
+              options={statusOption}
+              defaultValue={StatusEnum.active}
+              value={filter.status}
+              onChange={(value) => setFilter((prev) => ({ ...prev, status: value }))}
               className={css`
-                margin-bottom: 0;
+                min-width: 20rem;
+                min-height: 3.8rem;
               `}
             />
+            <Space
+              className={css`
+                width: 18rem;
+              `}
+            >
+              <Input
+                name='seach_name'
+                onChange={(value) => setFilter((prev) => ({ ...prev, name: String(value) }))}
+                value={filter.name}
+                placeholder={t('search.name')}
+                className={css`
+                  margin-bottom: 0;
+                `}
+              />
+            </Space>
           </Space>
         </Space>
-      </Space>
-      <Table
-        tableInstance={tableInstance}
-        totalPage={data?.totals}
-        columns={columns}
-        data={data?.data}
-        loading={isLoading}
-      />
+        <Table
+          tableInstance={tableInstance}
+          totalPage={data?.totals}
+          columns={columns}
+          data={data?.data}
+          loading={isLoading}
+        />
+        <Contants
+          type={EnumTypeContact.RegisterSignature}
+          data={contants}
+          close={() => setContants(null)}
+          refetch={() => {
+            getUser({
+              ...query,
+              page: 1,
+            });
+            tableInstance.reset();
+          }}
+        />
+      </Section>
     </SectionLayout>
   );
 }

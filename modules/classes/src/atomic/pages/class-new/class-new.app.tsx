@@ -19,6 +19,7 @@ import { getNameLanguage, useTranslation } from '@org/i18n';
 import {
   setActiveGroup,
   useAppDispatch,
+  useCreateCollaborationMutation,
   useCreateRegistrationMutation,
   useGetPostsActiveQuery,
 } from '@org/store';
@@ -39,7 +40,7 @@ function ClassNew() {
       refetchOnMountOrArgChange: true,
     },
   );
-  const [createRegistration] = useCreateRegistrationMutation();
+  const [createCollaboration] = useCreateCollaborationMutation();
 
   useEffect(() => {
     dispatch(setActiveGroup({ current: SiteMap.ClassNew.menu }));
@@ -47,9 +48,10 @@ function ClassNew() {
       dispatch(setActiveGroup({ current: '' }));
     };
   }, []);
-  const registerForClass = (postsId: number) => () => {
-    createRegistration({
-      postsId,
+  const registerForClass = (posts: number, user: number) => () => {
+    createCollaboration({
+      posts,
+      user,
     });
   };
   return (
@@ -139,7 +141,7 @@ function ClassNew() {
                         Chi tiết
                       </Button>
                     </Link>
-                    <Button onClick={registerForClass(item.id)}>
+                    <Button onClick={registerForClass(item?.id, item?.user?.id)}>
                       <EditFilled />
                       Đăng Kí Nhận Lớp
                     </Button>

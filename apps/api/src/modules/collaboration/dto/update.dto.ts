@@ -1,25 +1,34 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { CreateCollaborationDto } from './create.dto';
-import { IsNotEmpty } from 'class-validator';
+import { IsOptional } from 'class-validator';
+import { Posts } from 'src/modules/posts/entities/posts.entity';
 import { User } from 'src/users/entities/user.entity';
+import { CreateCollaborationDto } from './create.dto';
 
 export class UpdateCollaborationDto extends PartialType(CreateCollaborationDto) {
   @ApiProperty({ type: Number, example: 1 })
-  @IsNotEmpty()
-  tutor?: User | null;
+  @IsOptional()
+  user?: User | null;
+
   @ApiProperty({ type: Number, example: 1 })
-  @IsNotEmpty()
-  student?: User | null;
+  @IsOptional()
+  posts?: Posts | null;
+
+  @ApiProperty({ type: String, example: 1 })
+  signature?: string | null;
+
+  // @ApiProperty({ type: String, example: 1 })
+  // tutorSignature?: string | null;
 
   @ApiProperty({ type: Date, example: 1 })
-  @IsNotEmpty()
-  startDate: Date;
+  @IsOptional()
+  contractStartDate: Date;
+
   @ApiProperty({ type: Date, example: 1 })
-  @IsNotEmpty()
-  endDate: Date;
+  @IsOptional()
+  contractEndDate: Date;
 
   @ApiProperty({ type: String, example: 'hellword' })
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({ type: Number, example: 1 })
   status: number;
 }

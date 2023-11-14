@@ -1,34 +1,110 @@
 import { css } from '@emotion/css';
-import { useMessage } from '@org/core';
-import { useTranslation } from '@org/i18n';
-import { useAppDispatch } from '@org/store';
+import { useMessageHook, useModal } from '@org/core';
+import { i18next, useTranslation } from '@org/i18n';
+import {
+  useAppDispatch,
+  useCreateCollaborationMutation,
+  useLazyGetCollaborationByPostQuery,
+} from '@org/store';
 import {
   useDeleteRegistrationMutation,
   useLazyGetRegistrationByPostQuery,
   useLazyGetRegistrationQuery,
 } from '@org/store/src/services/registration.api';
-import { EyeOutlined, IconDeleteAction, ModalAntd, Space, Table, Tag, useTable } from '@org/ui';
-import { SiteMap, StatusRegistration, StatusRegistrationColor } from '@org/utils';
+import {
+  Button,
+  Dropdown,
+  EllipsisOutlined,
+  EyeOutlined,
+  FormProvider,
+  IconDeleteAction,
+  MenuProps,
+  ModalAntd,
+  RangePickerForm,
+  Space,
+  Table,
+  Tag,
+  useForm,
+  useTable,
+  yupResolver,
+} from '@org/ui';
+import { EnumStatusCollap, SiteMap, StatusRegistration, StatusRegistrationColor } from '@org/utils';
 import dayjs from 'dayjs';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import * as yup from 'yup';
+import { Contants, EnumTypeContact } from '../contacts';
+import { Payment } from '../payment';
+
+type IUpdate = {
+  time?: string;
+};
+
+const schema = yup.object({});
+const dataInit: IUpdate = {
+  time: undefined,
+};
 
 export function RegistrationPost({ id, close }: any) {
-  const { messageSuccess, contextHolder } = useMessage();
+  const { messageSuccess, contextHolder } = useMessageHook();
 
+  // const { open, close: closeModal } = useModal();
+  const [contants, setIdContants] = useState<any>(null);
+  const [payment, setPayment] = useState<any>(null);
   const tableInstance = useTable({
     initialSortValue: {
       sortBy: 'createdAt',
       sortDirection: 'asc',
     },
   });
+
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const [getUser, { data, isLoading }] = useLazyGetRegistrationByPostQuery();
+  const [getUser, { data, isLoading }] = useLazyGetCollaborationByPostQuery();
   const [deleteUser] = useDeleteRegistrationMutation();
   useEffect(() => {
     getUser(id);
   }, [id]);
+
+  const methods = useForm<IUpdate>({
+    defaultValues: dataInit,
+    resolver: yupResolver(schema),
+  });
+
+  const getItemsAction = (record: any) => {
+    return [
+      {
+        key: '1',
+        label: (
+          <Link
+            to={SiteMap.Profile.generate(record?.user?.id || 0)}
+            className={css`
+              color: #5c5b68 !important;
+            `}
+          >
+            Xem Chi Tiết Gia Sư
+          </Link>
+        ),
+      },
+      {
+        key: '2',
+        label: (
+          <Space onClick={() => setIdContants(record)}>
+            {record?.status == EnumStatusCollap.Pending ? 'Xác Nhận Hợp Tác' : 'Hợp Đồng'}
+          </Space>
+        ),
+      },
+
+      {
+        ...(record?.status == EnumStatusCollap.PendingPay && {
+          key: '3',
+          label: (
+            <Space onClick={() => setPayment(record?.payment?.[0])}>Tien Hanh Thanh Toan</Space>
+          ),
+        }),
+      },
+    ].filter(Boolean) as any[];
+  };
   const columns = [
     {
       title: t('tutor.name'),
@@ -67,36 +143,35 @@ export function RegistrationPost({ id, close }: any) {
     {
       title: t('user.action'),
       dataIndex: '',
+      align: 'center',
       render: (_: any, record: any) => (
-        <Space
+        <Dropdown
           className={css`
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
             cursor: pointer;
+            * {
+              font-size: 14px;
+            }
           `}
+          overlayClassName={css`
+            width: 20rem;
+          `}
+          menu={{
+            items: getItemsAction(record),
+          }}
+          trigger={['click']}
+          placement='bottomCenter'
+          arrow={{ pointAtCenter: true }}
         >
-          <Link to={SiteMap.ClassNew.Details.generate(record?.posts?.id || 0)}>
-            <EyeOutlined />
-          </Link>
-          {record?.status == 3 && (
-            <IconDeleteAction
-              onClick={() => {
-                deleteUser(record.id)
-                  .then((data) => {
-                    messageSuccess(t('user.delete.success'));
-                  })
-                  .catch((error) => {
-                    messageSuccess(t('user.delete.error'));
-                  })
-                  .finally(() => {});
-              }}
-            />
-          )}
-        </Space>
+          <EllipsisOutlined
+            className={css`
+              transform: scale(1.6);
+            `}
+          />
+        </Dropdown>
       ),
     },
   ];
+
   return (
     <ModalAntd
       title='Danh Sách Gia Sư Đăng Kí Nhận Dạy'
@@ -111,6 +186,21 @@ export function RegistrationPost({ id, close }: any) {
         columns={columns}
         data={data}
         loading={isLoading}
+      />
+      <Contants
+        type={EnumTypeContact.PostSignature}
+        data={contants}
+        close={() => setIdContants(null)}
+        refetch={() => {
+          getUser(id);
+        }}
+      />
+      <Payment
+        data={payment}
+        close={() => setPayment(null)}
+        refetch={() => {
+          // getUser(id);
+        }}
       />
     </ModalAntd>
   );

@@ -6,7 +6,7 @@
  *
  */
 
-import * as React from 'react';
+import React from 'react';
 
 import ColorPicker from './ColorPicker';
 import DropDown from './DropDown';
@@ -34,8 +34,12 @@ export default function DropdownColorPicker({
     <DropDown
       {...rest}
       disabled={disabled}
-      stopCloseOnClickSelf={stopCloseOnClickSelf}>
-      <ColorPicker color={color} onChange={onChange} />
+      stopCloseOnClickSelf={stopCloseOnClickSelf}
+    >
+      <ColorPicker
+        color={color}
+        onChange={onChange}
+      />
     </DropDown>
   );
 }

@@ -8,9 +8,9 @@
 
 import './Modal.css';
 
-import * as React from 'react';
-import {ReactNode, useEffect, useRef} from 'react';
-import {createPortal} from 'react-dom';
+import React from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 function PortalImpl({
   onClose,
@@ -67,17 +67,25 @@ function PortalImpl({
   }, [closeOnClickOutside, onClose]);
 
   return (
-    <div className="Modal__overlay" role="dialog">
-      <div className="Modal__modal" tabIndex={-1} ref={modalRef}>
-        <h2 className="Modal__title">{title}</h2>
+    <div
+      className='Modal__overlay'
+      role='dialog'
+    >
+      <div
+        className='Modal__modal'
+        tabIndex={-1}
+        ref={modalRef}
+      >
+        <h2 className='Modal__title'>{title}</h2>
         <button
-          className="Modal__closeButton"
-          aria-label="Close modal"
-          type="button"
-          onClick={onClose}>
+          className='Modal__closeButton'
+          aria-label='Close modal'
+          type='button'
+          onClick={onClose}
+        >
           X
         </button>
-        <div className="Modal__content">{children}</div>
+        <div className='Modal__content'>{children}</div>
       </div>
     </div>
   );
@@ -98,7 +106,8 @@ export default function Modal({
     <PortalImpl
       onClose={onClose}
       title={title}
-      closeOnClickOutside={closeOnClickOutside}>
+      closeOnClickOutside={closeOnClickOutside}
+    >
       {children}
     </PortalImpl>,
     document.body,

@@ -29,8 +29,7 @@ import {
   LexicalCommand,
   LexicalEditor,
 } from 'lexical';
-import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { CAN_USE_DOM } from '../../shared/canUseDOM';
 
 import {

@@ -26,11 +26,10 @@ import type {
   Spread,
 } from 'lexical';
 
-import {$applyNodeReplacement, createEditor, DecoratorNode} from 'lexical';
-import * as React from 'react';
-import {Suspense} from 'react';
+import { $applyNodeReplacement, createEditor, DecoratorNode } from 'lexical';
+import { Suspense, lazy } from 'react';
 
-const InlineImageComponent = React.lazy(() => import('./InlineImageComponent'));
+const InlineImageComponent = lazy(() => import('./InlineImageComponent'));
 
 export type Position = 'left' | 'right' | 'full' | undefined;
 
@@ -53,9 +52,9 @@ export interface UpdateInlineImagePayload {
 
 function convertInlineImageElement(domNode: Node): null | DOMConversionOutput {
   if (domNode instanceof HTMLImageElement) {
-    const {alt: altText, src, width, height} = domNode;
-    const node = $createInlineImageNode({altText, height, src, width});
-    return {node};
+    const { alt: altText, src, width, height } = domNode;
+    const node = $createInlineImageNode({ altText, height, src, width });
+    return { node };
   }
   return null;
 }
@@ -99,11 +98,8 @@ export class InlineImageNode extends DecoratorNode<JSX.Element> {
     );
   }
 
-  static importJSON(
-    serializedNode: SerializedInlineImageNode,
-  ): InlineImageNode {
-    const {altText, height, width, caption, src, showCaption, position} =
-      serializedNode;
+  static importJSON(serializedNode: SerializedInlineImageNode): InlineImageNode {
+    const { altText, height, width, caption, src, showCaption, position } = serializedNode;
     const node = $createInlineImageNode({
       altText,
       height,
@@ -155,7 +151,7 @@ export class InlineImageNode extends DecoratorNode<JSX.Element> {
     element.setAttribute('alt', this.__altText);
     element.setAttribute('width', this.__width.toString());
     element.setAttribute('height', this.__height.toString());
-    return {element};
+    return { element };
   }
 
   exportJSON(): SerializedInlineImageNode {
@@ -185,10 +181,7 @@ export class InlineImageNode extends DecoratorNode<JSX.Element> {
     writable.__altText = altText;
   }
 
-  setWidthAndHeight(
-    width: 'inherit' | number,
-    height: 'inherit' | number,
-  ): void {
+  setWidthAndHeight(width: 'inherit' | number, height: 'inherit' | number): void {
     const writable = this.getWritable();
     writable.__width = width;
     writable.__height = height;
@@ -214,7 +207,7 @@ export class InlineImageNode extends DecoratorNode<JSX.Element> {
 
   update(payload: UpdateInlineImagePayload): void {
     const writable = this.getWritable();
-    const {altText, showCaption, position} = payload;
+    const { altText, showCaption, position } = payload;
     if (altText !== undefined) {
       writable.__altText = altText;
     }
@@ -237,11 +230,7 @@ export class InlineImageNode extends DecoratorNode<JSX.Element> {
     return span;
   }
 
-  updateDOM(
-    prevNode: InlineImageNode,
-    dom: HTMLElement,
-    config: EditorConfig,
-  ): false {
+  updateDOM(prevNode: InlineImageNode, dom: HTMLElement, config: EditorConfig): false {
     const position = this.__position;
     if (position !== prevNode.__position) {
       const className = `${config.theme.inlineImage} position-${position}`;
@@ -281,21 +270,10 @@ export function $createInlineImageNode({
   key,
 }: InlineImagePayload): InlineImageNode {
   return $applyNodeReplacement(
-    new InlineImageNode(
-      src,
-      altText,
-      position,
-      width,
-      height,
-      showCaption,
-      caption,
-      key,
-    ),
+    new InlineImageNode(src, altText, position, width, height, showCaption, caption, key),
   );
 }
 
-export function $isInlineImageNode(
-  node: LexicalNode | null | undefined,
-): node is InlineImageNode {
+export function $isInlineImageNode(node: LexicalNode | null | undefined): node is InlineImageNode {
   return node instanceof InlineImageNode;
 }

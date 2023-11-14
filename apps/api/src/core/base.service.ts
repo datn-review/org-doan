@@ -67,11 +67,13 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
     status,
     relations,
     where,
+    or,
   }: TP & {
     fieldSearch?: any;
     status?: number | undefined;
     relations?: IRelations[] | string[];
     where?: IWhere[];
+    or?: IWhere[][];
   }): Promise<{
     data: T[];
     totals: number;
@@ -101,7 +103,6 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
       query.where(`entity.status = :status`, { status });
     }
     if (where && where?.length > 0) {
-      console.log('🚀 ~ file: base.service.ts:123 ~ where:', where);
       where?.forEach(({ field, value }) => {
         query.andWhere(`entity.${field} = :value`, { value });
       });
@@ -119,13 +120,32 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
         },
       );
     }
+
+    if (or) {
+      or?.forEach((data, key) => {
+        let string = '';
+        let values = {};
+        data?.forEach(({ field, value }, index) => {
+          const fieldString = field?.includes('.') ? field : `entity.${field}`;
+          if (index !== 0) {
+            string += ` OR ${fieldString} = :value_${key}_${index}`;
+          } else {
+            string += `${fieldString} = :value_${key}_${index}`;
+          }
+          values = { ...values, [`value_${key}_${index}`]: value };
+        });
+        console.log(string);
+
+        query.andWhere(`(${string})`, { ...values });
+      });
+    }
     const data = await query
       .orderBy(`entity.${sortBy}`, direction)
       .skip((page - 1) * limit)
       .take(limit)
       .getMany();
 
-    const totals = await this.countAll({ fieldSearch, searchName, status });
+    const totals = await query.getCount();
 
     return { data, totals };
   }

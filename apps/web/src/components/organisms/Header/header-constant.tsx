@@ -12,10 +12,9 @@ import {
   MenuProps,
 } from '@org/ui';
 
-import type { IMenuIcon, MenuItem } from '../header/header-type';
+import { IMenuIcon, MenuItem } from './header-type';
 import { Translation } from '@org/i18n';
 import { RolesEnum, SiteMap } from '@org/utils';
-import { ifAnyGranted, ifNotGranted } from '@org/auth';
 
 export const itemsLanguge: MenuProps['items'] = [
   {
@@ -61,14 +60,14 @@ export const menuCategory: MenuItem[] = [
     subMenu: [],
     // isHide: ifAnyGranted([RolesEnum.WEB_ADMIN]),
   },
-  {
-    name: <Translation>{(t) => t('manage.class')}</Translation>,
-    path: SiteMap.TutorClass.path,
-    id: SiteMap.TutorClass.menu,
-    icon: <IconHome />,
-    subMenu: [],
-    // isHide: ifAnyGranted([RolesEnum.WEB_ADMIN]),
-  },
+  // {
+  //   name: <Translation>{(t) => t('manage.class')}</Translation>,
+  //   path: SiteMap.TutorClass.path,
+  //   id: SiteMap.TutorClass.menu,
+  //   icon: <IconHome />,
+  //   subMenu: [],
+  //   // isHide: ifAnyGranted([RolesEnum.WEB_ADMIN]),
+  // },
   {
     name: <Translation>{(t) => t('dashboards')}</Translation>,
     path: SiteMap.Dashboard.path,
@@ -196,6 +195,13 @@ export const menuCategory: MenuItem[] = [
         path: SiteMap.Manage.PostsMe.path,
         id: SiteMap.Manage.PostsMe.menu,
         key: SiteMap.Manage.PostsMe.menu,
+        icon: <></>,
+      },
+      {
+        label: <Translation>{(t) => t('manage.classes')}</Translation>,
+        path: SiteMap.Manage.Classes.path,
+        id: SiteMap.Manage.Classes.menu,
+        key: SiteMap.Manage.Classes.menu,
         icon: <></>,
       },
     ],

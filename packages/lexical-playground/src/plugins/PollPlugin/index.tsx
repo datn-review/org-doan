@@ -6,8 +6,8 @@
  *
  */
 
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import {$wrapNodeInElement} from '@lexical/utils';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { $wrapNodeInElement } from '@lexical/utils';
 import {
   $createParagraphNode,
   $insertNodes,
@@ -17,21 +17,14 @@ import {
   LexicalCommand,
   LexicalEditor,
 } from 'lexical';
-import {useEffect, useState} from 'react';
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 
-import {
-  $createPollNode,
-  createPollOption,
-  PollNode,
-} from '../../nodes/PollNode';
+import { $createPollNode, createPollOption, PollNode } from '../../nodes/PollNode';
 import Button from '../../ui/Button';
-import {DialogActions} from '../../ui/Dialog';
+import { DialogActions } from '../../ui/Dialog';
 import TextInput from '../../ui/TextInput';
 
-export const INSERT_POLL_COMMAND: LexicalCommand<string> = createCommand(
-  'INSERT_POLL_COMMAND',
-);
+export const INSERT_POLL_COMMAND: LexicalCommand<string> = createCommand('INSERT_POLL_COMMAND');
 
 export function InsertPollDialog({
   activeEditor,
@@ -49,9 +42,16 @@ export function InsertPollDialog({
 
   return (
     <>
-      <TextInput label="Question" onChange={setQuestion} value={question} />
+      <TextInput
+        label='Question'
+        onChange={setQuestion}
+        value={question}
+      />
       <DialogActions>
-        <Button disabled={question.trim() === ''} onClick={onClick}>
+        <Button
+          disabled={question.trim() === ''}
+          onClick={onClick}
+        >
           Confirm
         </Button>
       </DialogActions>
@@ -69,10 +69,7 @@ export default function PollPlugin(): JSX.Element | null {
     return editor.registerCommand<string>(
       INSERT_POLL_COMMAND,
       (payload) => {
-        const pollNode = $createPollNode(payload, [
-          createPollOption(),
-          createPollOption(),
-        ]);
+        const pollNode = $createPollNode(payload, [createPollOption(), createPollOption()]);
         $insertNodes([pollNode]);
         if ($isRootOrShadowRoot(pollNode.getParentOrThrow())) {
           $wrapNodeInElement(pollNode, $createParagraphNode).selectEnd();

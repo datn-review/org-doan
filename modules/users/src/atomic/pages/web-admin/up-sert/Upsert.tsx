@@ -1,4 +1,4 @@
-import { useCRUDContext, useMessage } from '@org/core';
+import { useCRUDContext, useMessageHook } from '@org/core';
 import {
   useCreateUserAdminMutation,
   useLazyFindUserAdminQuery,
@@ -12,7 +12,7 @@ import { useTranslation } from '@org/i18n';
 function Upsert() {
   const { t } = useTranslation();
   const { idEdit, isUpsert, setIsFetch, close, setDataUpsert } = useCRUDContext();
-  const { messageError, messageSuccess, contextHolder } = useMessage();
+  const { messageError, messageSuccess, contextHolder } = useMessageHook();
 
   const [createUser, { isLoading: isLoadingCreate }] = useCreateUserAdminMutation();
 

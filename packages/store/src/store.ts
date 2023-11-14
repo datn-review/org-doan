@@ -15,6 +15,8 @@ import {
   UserStudentAPI,
   UsersAdminAPI,
   RegistrationAPI,
+  CollaborationAPI,
+  PaymentAPI,
 } from './services';
 import { baseAuthSplitApi, baseNoAuthSplitApi } from './services/base-auth-query';
 
@@ -39,9 +41,11 @@ const rootReducer = combineReducers({
   [UserStudentAPI.reducerPath]: UserStudentAPI.reducer,
   [UsersAdminAPI.reducerPath]: UsersAdminAPI.reducer,
   [RegistrationAPI.reducerPath]: RegistrationAPI.reducer,
+  [CollaborationAPI.reducerPath]: CollaborationAPI.reducer,
+  [PaymentAPI.reducerPath]: PaymentAPI.reducer,
 });
 
-export const store = configureStore({
+export const store: any = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

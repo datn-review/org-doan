@@ -11,6 +11,7 @@ import {
   VARIANT,
   IconSearch,
   Table,
+  Logo,
 } from '@org/ui';
 import * as S from './styled';
 import { useTranslation } from '@org/i18n';
@@ -86,34 +87,14 @@ function HeaderUser() {
   };
 
   return (
-    <S.HeaderUser className='flex justify-between items-center section-layout'>
+    <S.HeaderUser className='flex justify-between items-center '>
       <Link to='/'>
         {/* <img
           src='/assets/image/logo.jpg'
           alt='Login'
           className='h-[40px]'
         /> */}
-        <Space
-          className={css`
-            font-size: 20px;
-            color: ${COLOR.Primary};
-            font-weight: 700;
-            padding: 8px 0;
-            position: relative;
-            &:after {
-              content: '';
-              width: 70px;
-              height: 6px;
-              border-radius: 12px;
-              background-color: #ff5520;
-              position: absolute;
-              bottom: 0;
-              left: 0;
-            }
-          `}
-        >
-          SmartTutor
-        </Space>
+        <Logo />
       </Link>
 
       <Space className={'flex gap-7 items-center justify-end '}>

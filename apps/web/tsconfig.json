@@ -15,7 +15,9 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "types": ["node","vite/client"],
     "baseUrl": ".",
+
     "paths": {
       "@components/*": ["src/components/*"],
       "@assets/*": ["src/assets/*"],
@@ -28,6 +30,6 @@
       "@contexts/*": ["src/contexts/*"]
     }
   },
-  "include": ["src", "svg.d.ts", "./.eslintrc.cjs"],
+  "include": ["src", "./svg.d.ts", "./.eslintrc.cjs","./env.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -7,11 +7,10 @@
  */
 import './index.css';
 
-import {$isCodeNode} from '@lexical/code';
-import {$getNearestNodeFromDOMNode, LexicalEditor} from 'lexical';
-import {Options} from 'prettier';
-import * as React from 'react';
-import {useState} from 'react';
+import { $isCodeNode } from '@lexical/code';
+import { $getNearestNodeFromDOMNode, LexicalEditor } from 'lexical';
+import { Options } from 'prettier';
+import { useState } from 'react';
 
 interface Props {
   lang: string;
@@ -34,7 +33,7 @@ async function loadPrettierParserByLang(lang: string) {
 }
 
 async function loadPrettierFormat() {
-  const {format} = await import('prettier/standalone');
+  const { format } = await import('prettier/standalone');
   return format;
 }
 
@@ -62,15 +61,13 @@ export function canBePrettier(lang: string): boolean {
 function getPrettierOptions(lang: string): Options {
   const options = PRETTIER_OPTIONS_BY_LANG[lang];
   if (!options) {
-    throw new Error(
-      `CodeActionMenuPlugin: Prettier does not support this language: ${lang}`,
-    );
+    throw new Error(`CodeActionMenuPlugin: Prettier does not support this language: ${lang}`);
   }
 
   return options;
 }
 
-export function PrettierButton({lang, editor, getCodeDOMNode}: Props) {
+export function PrettierButton({ lang, editor, getCodeDOMNode }: Props) {
   const [syntaxError, setSyntaxError] = useState<string>('');
   const [tipsVisible, setTipsVisible] = useState<boolean>(false);
 
@@ -135,22 +132,17 @@ export function PrettierButton({lang, editor, getCodeDOMNode}: Props) {
   }
 
   return (
-    <div className="prettier-wrapper">
+    <div className='prettier-wrapper'>
       <button
-        className="menu-item"
+        className='menu-item'
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        aria-label="prettier">
-        {syntaxError ? (
-          <i className="format prettier-error" />
-        ) : (
-          <i className="format prettier" />
-        )}
+        aria-label='prettier'
+      >
+        {syntaxError ? <i className='format prettier-error' /> : <i className='format prettier' />}
       </button>
-      {tipsVisible ? (
-        <pre className="code-error-tips">{syntaxError}</pre>
-      ) : null}
+      {tipsVisible ? <pre className='code-error-tips'>{syntaxError}</pre> : null}
     </div>
   );
 }

@@ -102,6 +102,7 @@ export const SiteMap = {
     Me: {
       path: '/profile',
     },
+    generate: (id: number | string) => `/profile/${id}`,
     path: '/profile/:id',
     menu: 'profile',
     roles: [],
@@ -153,6 +154,17 @@ export const SiteMap = {
     RegistrationPost: {
       path: '/registration-post',
       menu: 'registration-post',
+      roles: [],
+    },
+    Classes: {
+      path: '/classes',
+      menu: 'classes',
+      roles: [],
+    },
+  },
+  Pay: {
+    Return: {
+      path: '/returnPayVN',
       roles: [],
     },
   },

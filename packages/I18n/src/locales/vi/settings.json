@@ -1,6 +1,9 @@
 {
   "settings": {
     "name": "Cài Đặt",
-    "grade.level": "Quản Lý Lớp"
+    "grade.level": "Lớp",
+    "subject": "Môn Học",
+    "certification": "Chứng Chỉ",
+    "skills": "Kỹ Năng"
   }
 }

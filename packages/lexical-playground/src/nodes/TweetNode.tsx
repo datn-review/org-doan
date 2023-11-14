@@ -18,13 +18,12 @@ import type {
   Spread,
 } from 'lexical';
 
-import {BlockWithAlignableContents} from '@lexical/react/LexicalBlockWithAlignableContents';
+import { BlockWithAlignableContents } from '@lexical/react/LexicalBlockWithAlignableContents';
 import {
   DecoratorBlockNode,
   SerializedDecoratorBlockNode,
 } from '@lexical/react/LexicalDecoratorBlockNode';
-import * as React from 'react';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const WIDGET_SCRIPT_URL = 'https://platform.twitter.com/widgets.js';
 
@@ -41,13 +40,11 @@ type TweetComponentProps = Readonly<{
   tweetID: string;
 }>;
 
-function convertTweetElement(
-  domNode: HTMLDivElement,
-): DOMConversionOutput | null {
+function convertTweetElement(domNode: HTMLDivElement): DOMConversionOutput | null {
   const id = domNode.getAttribute('data-lexical-tweet-id');
   if (id) {
     const node = $createTweetNode(id);
-    return {node};
+    return { node };
   }
   return null;
 }
@@ -113,10 +110,11 @@ function TweetComponent({
     <BlockWithAlignableContents
       className={className}
       format={format}
-      nodeKey={nodeKey}>
+      nodeKey={nodeKey}
+    >
       {isTweetLoading ? loadingComponent : null}
       <div
-        style={{display: 'inline-block', width: '550px'}}
+        style={{ display: 'inline-block', width: '550px' }}
         ref={containerRef}
       />
     </BlockWithAlignableContents>
@@ -175,7 +173,7 @@ export class TweetNode extends DecoratorBlockNode {
     element.setAttribute('data-lexical-tweet-id', this.__id);
     const text = document.createTextNode(this.getTextContent());
     element.append(text);
-    return {element};
+    return { element };
   }
 
   constructor(id: string, format?: ElementFormatType, key?: NodeKey) {
@@ -204,7 +202,7 @@ export class TweetNode extends DecoratorBlockNode {
       <TweetComponent
         className={className}
         format={this.__format}
-        loadingComponent="Loading..."
+        loadingComponent='Loading...'
         nodeKey={this.getKey()}
         tweetID={this.__id}
       />
@@ -216,8 +214,6 @@ export function $createTweetNode(tweetID: string): TweetNode {
   return new TweetNode(tweetID);
 }
 
-export function $isTweetNode(
-  node: TweetNode | LexicalNode | null | undefined,
-): node is TweetNode {
+export function $isTweetNode(node: TweetNode | LexicalNode | null | undefined): node is TweetNode {
   return node instanceof TweetNode;
 }

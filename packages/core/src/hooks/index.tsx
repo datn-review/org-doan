@@ -8,3 +8,4 @@ export { default as useUnmount } from './useUnmount';
 export { default as useUpdateEffect } from './useUpdateEffect';
 
 export { default as useIsFirstRender } from './useIsFirstRender';
+export { default as useMediaQuery } from './useMediaQuery';

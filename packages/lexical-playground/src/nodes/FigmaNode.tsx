@@ -15,12 +15,12 @@ import type {
   Spread,
 } from 'lexical';
 
-import {BlockWithAlignableContents} from '@lexical/react/LexicalBlockWithAlignableContents';
+import { BlockWithAlignableContents } from '@lexical/react/LexicalBlockWithAlignableContents';
 import {
   DecoratorBlockNode,
   SerializedDecoratorBlockNode,
 } from '@lexical/react/LexicalDecoratorBlockNode';
-import * as React from 'react';
+import React from 'react';
 
 type FigmaComponentProps = Readonly<{
   className: Readonly<{
@@ -32,20 +32,16 @@ type FigmaComponentProps = Readonly<{
   documentID: string;
 }>;
 
-function FigmaComponent({
-  className,
-  format,
-  nodeKey,
-  documentID,
-}: FigmaComponentProps) {
+function FigmaComponent({ className, format, nodeKey, documentID }: FigmaComponentProps) {
   return (
     <BlockWithAlignableContents
       className={className}
       format={format}
-      nodeKey={nodeKey}>
+      nodeKey={nodeKey}
+    >
       <iframe
-        width="560"
-        height="315"
+        width='560'
+        height='315'
         src={`https://www.figma.com/embed?embed_host=lexical&url=\
         https://www.figma.com/file/${documentID}`}
         allowFullScreen={true}
@@ -128,8 +124,6 @@ export function $createFigmaNode(documentID: string): FigmaNode {
   return new FigmaNode(documentID);
 }
 
-export function $isFigmaNode(
-  node: FigmaNode | LexicalNode | null | undefined,
-): node is FigmaNode {
+export function $isFigmaNode(node: FigmaNode | LexicalNode | null | undefined): node is FigmaNode {
   return node instanceof FigmaNode;
 }

@@ -6,23 +6,20 @@
  *
  */
 
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import {COMMAND_PRIORITY_NORMAL, PASTE_COMMAND} from 'lexical';
-import * as React from 'react';
-import {useEffect, useState} from 'react';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { COMMAND_PRIORITY_NORMAL, PASTE_COMMAND } from 'lexical';
+import React, { useEffect, useState } from 'react';
 
 export default function PasteLogPlugin(): JSX.Element {
   const [editor] = useLexicalComposerContext();
   const [isActive, setIsActive] = useState(false);
-  const [lastClipboardData, setLastClipboardData] = useState<string | null>(
-    null,
-  );
+  const [lastClipboardData, setLastClipboardData] = useState<string | null>(null);
   useEffect(() => {
     if (isActive) {
       return editor.registerCommand(
         PASTE_COMMAND,
         (e: ClipboardEvent) => {
-          const {clipboardData} = e;
+          const { clipboardData } = e;
           const allData: string[] = [];
           if (clipboardData && clipboardData.types) {
             clipboardData.types.forEach((type) => {
@@ -39,16 +36,14 @@ export default function PasteLogPlugin(): JSX.Element {
   return (
     <>
       <button
-        id="paste-log-button"
+        id='paste-log-button'
         className={`editor-dev-button ${isActive ? 'active' : ''}`}
         onClick={() => {
           setIsActive(!isActive);
         }}
         title={isActive ? 'Disable paste log' : 'Enable paste log'}
       />
-      {isActive && lastClipboardData !== null ? (
-        <pre>{lastClipboardData}</pre>
-      ) : null}
+      {isActive && lastClipboardData !== null ? <pre>{lastClipboardData}</pre> : null}
     </>
   );
 }

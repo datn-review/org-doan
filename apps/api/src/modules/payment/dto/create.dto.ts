@@ -8,7 +8,7 @@ export class CreatePaymentDto {
   sender: User;
 
   @ApiProperty({ type: Number, example: 1 })
-  @IsNotEmpty()
+  @IsOptional()
   receiver: User;
 
   @IsNotEmpty()
@@ -23,8 +23,13 @@ export class CreatePaymentDto {
   @ApiProperty({ type: Number, example: 1 })
   type: number;
 
+  @IsOptional()
   @ApiProperty({ type: Date, example: 1 })
   paymentDate?: Date;
+
+  @IsOptional()
+  @ApiProperty({ type: Date, example: 1 })
+  deadPaymentDate?: Date;
 
   @ApiProperty({ type: Number, example: 1 })
   status: number;

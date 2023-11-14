@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Posts } from 'src/modules/posts/entities/posts.entity';
 import { User } from 'src/users/entities/user.entity';
 import { EntityHelper } from 'src/utils/entity-helper';
 import {
@@ -7,9 +8,12 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Payment } from '../../payment/entities/payment.entity';
+import { TutorCertification } from '../../tutor-certification/entities/tutor-certification.entity';
 
 @Entity({ name: 'collaboration' })
 export class Collaboration extends EntityHelper {
@@ -20,17 +24,32 @@ export class Collaboration extends EntityHelper {
   @ManyToOne(() => User, {
     eager: true,
   })
-  tutor?: User | null;
+  user?: User | null;
 
-  @ManyToOne(() => User, {
+  @ManyToOne(() => Posts, {
     eager: true,
   })
-  student?: User | null;
-  @Column({ type: Date })
-  startDate: Date;
+  posts?: Posts | null;
 
-  @Column({ type: Date })
-  endDate: Date;
+  @OneToMany(() => Payment, (payment) => payment.collaboration, {
+    onDelete: 'CASCADE',
+  })
+  payment?: Payment[] | null;
+
+  @Column({ type: String, nullable: true })
+  studentSignature?: string | null;
+
+  @Column({ type: String, nullable: true })
+  tutorSignature?: string | null;
+
+  @Column({ type: Date, nullable: true })
+  contractStartDate: Date;
+
+  @Column({ type: Date, nullable: true })
+  contractEndDate: Date;
+
+  @Column({ type: String, nullable: true })
+  contractTerms: string;
 
   @Column({ type: Number, default: 1 })
   status: number;
