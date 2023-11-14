@@ -16,6 +16,7 @@ import {
   PostsPage,
   ReturnPayPage,
   ClassesPage,
+  ClassesDetailsPage,
 } from '@org/classes';
 
 export const router = createBrowserRouter([
@@ -97,6 +98,10 @@ export const router = createBrowserRouter([
       {
         path: SiteMap.Manage.Classes.path,
         element: <ClassesPage />,
+      },
+      {
+        path: SiteMap.Manage.Classes.Details.path,
+        element: <ClassesDetailsPage />,
       },
 
       { path: SiteMap.Manage.PostsMe.path, element: <PostsPage /> },

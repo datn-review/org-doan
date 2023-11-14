@@ -160,6 +160,11 @@ export const SiteMap = {
       path: '/classes',
       menu: 'classes',
       roles: [],
+      Details: {
+        generate: (id: number | string) => `/classes/${id}`,
+        path: '/classes/:id',
+        menu: 'classes',
+      },
     },
   },
   Pay: {
