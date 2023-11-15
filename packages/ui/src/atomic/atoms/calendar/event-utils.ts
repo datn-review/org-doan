@@ -2,12 +2,13 @@ import { EventInput } from '@fullcalendar/core';
 
 let eventGuid = 0;
 let todayStr = new Date().toISOString().replace(/T.*$/, ''); // YYYY-MM-DD of today
-
+console.log(todayStr);
 export const INITIAL_EVENTS: EventInput[] = [
   {
     id: createEventId(),
     title: 'All-day event',
     start: todayStr,
+    backgroundColor: 'red',
   },
   {
     id: createEventId(),

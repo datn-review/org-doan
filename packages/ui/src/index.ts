@@ -18,6 +18,8 @@ export {
   type TabsProps,
   Card,
   Modal as ModalAntd,
+  TimePicker,
+  ColorPicker,
 } from 'antd';
 
 export * from '@ant-design/icons';

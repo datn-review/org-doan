@@ -26,12 +26,21 @@ export const Wrapper = styled.div`
 
   .demo-app-main {
     flex-grow: 1;
-    padding: 3em;
+    padding: 2rem 0;
   }
 
   .fc {
     /* the calendar root */
     max-width: 1100px;
     margin: 0 auto;
+  }
+  .fc-daygrid-event-harness {
+    i {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      width: 160px;
+      //height: 1.2em;
+      white-space: nowrap;
+    }
   }
 `;
