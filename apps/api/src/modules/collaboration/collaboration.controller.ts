@@ -48,6 +48,14 @@ const relations = [
     field: 'payment',
     entity: 'payment',
   },
+  {
+    field: 'lessons',
+    entity: 'lesson',
+  },
+  {
+    field: 'schedules',
+    entity: 'schedule',
+  },
 ];
 const relationsPay = [
   { field: 'posts', entity: 'posts' },

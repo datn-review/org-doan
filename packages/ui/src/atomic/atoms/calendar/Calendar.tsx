@@ -15,15 +15,22 @@ import { Wrapper } from './styled';
 
 import esLocale from '@fullcalendar/core/locales/es';
 import viLocate from '@fullcalendar/core/locales/vi';
-
+import { Space } from '../space';
+import { css } from '@emotion/css';
+import { COLOR } from '@org/utils';
+import { Popover } from 'antd';
 interface DemoAppState {
   weekendsVisible: boolean;
   currentEvents: EventApi[];
 }
 
-export const Calendar = ({ initData }: any) => {
+export const Calendar = ({
+  initData,
+  renderEventContent,
+  handleEventClick,
+  moreLinkContent,
+}: any) => {
   const [currentEvents, setCurrentEvents] = useState<EventApi[]>([]);
-  console.log(currentEvents);
 
   const handleDateSelect = (selectInfo: DateSelectArg) => {
     let title = prompt('Please enter a new title for your event');
@@ -44,11 +51,12 @@ export const Calendar = ({ initData }: any) => {
     }
   };
 
-  const handleEventClick = (clickInfo: EventClickArg) => {
-    if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-      clickInfo.event.remove();
-    }
-  };
+  // const handleEventClick = (clickInfo: EventClickArg) => {
+  //   handleEventClick()
+  //   // if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
+  //   //   clickInfo.event.remove();
+  //   // }
+  // };
 
   const handleEvents = (events: EventApi[]) => {
     setCurrentEvents(events);
@@ -78,9 +86,17 @@ export const Calendar = ({ initData }: any) => {
             dayMaxEvents={true}
             // weekends={this.state.weekendsVisible}
             events={initData}
-            initialEvents={initData} // alternatively, use the `events` setting to fetch from a feed
+            // initialEvents={initData} // alternatively, use the `events` setting to fetch from a feed
             select={handleDateSelect}
             eventContent={renderEventContent} // custom render function
+            // moreLinkContent={moreLinkContent}
+            moreLinkClassNames={css`
+              border: 1px solid ${COLOR.Secondary};
+              &:hover {
+                background-color: ${COLOR.Secondary};
+                color: ${COLOR.Primary};
+              }
+            `}
             eventClick={handleEventClick}
             eventsSet={handleEvents} // called after events are initialized/added/changed/removed
             /*/you can update a remote database when these fire:*/
@@ -92,21 +108,23 @@ export const Calendar = ({ initData }: any) => {
               console.dir(data.event);
             }}
             eventRemove={function () {}}
+            eventMouseEnter={function (data) {
+              // console.dir(data.event);
+            }}
+            dayCellClassNames={css`
+              //height: 200px;
+            `}
+            eventMinHeight={200}
+            // height={900}
+            // dayCellContent={(data) => {
+            //   // console.dir(data);
+            // }}
           />
         </div>
       </div>
     </Wrapper>
   );
 };
-
-function renderEventContent(eventContent: EventContentArg) {
-  return (
-    <>
-      <b>{eventContent.timeText}</b>
-      <i>{eventContent.event.title}</i>
-    </>
-  );
-}
 
 function renderSidebarEvent(event: EventApi) {
   return (

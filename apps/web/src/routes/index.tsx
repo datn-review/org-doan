@@ -18,6 +18,7 @@ import {
   ClassesPage,
   ClassesDetailsPage,
 } from '@org/classes';
+import { AssignmentPage, ExercisePage, QuestionPage } from '@org/assessment';
 
 export const router = createBrowserRouter([
   {
@@ -105,6 +106,12 @@ export const router = createBrowserRouter([
       },
 
       { path: SiteMap.Manage.PostsMe.path, element: <PostsPage /> },
+
+      { path: SiteMap.Assessment.Exercise.path, element: <ExercisePage /> },
+      { path: SiteMap.Assessment.Questions.path, element: <QuestionPage /> },
+      { path: SiteMap.Assessment.Assignment.path, element: <AssignmentPage /> },
+
+      // { path: SiteMap.Assessment.Exercise.path, element: <Ques /> },
     ],
   },
   {

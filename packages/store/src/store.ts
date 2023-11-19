@@ -17,6 +17,7 @@ import {
   RegistrationAPI,
   CollaborationAPI,
   PaymentAPI,
+  LessonAPI,
 } from './services';
 import { baseAuthSplitApi, baseNoAuthSplitApi } from './services/base-auth-query';
 
@@ -43,6 +44,7 @@ const rootReducer = combineReducers({
   [RegistrationAPI.reducerPath]: RegistrationAPI.reducer,
   [CollaborationAPI.reducerPath]: CollaborationAPI.reducer,
   [PaymentAPI.reducerPath]: PaymentAPI.reducer,
+  [LessonAPI.reducerPath]: LessonAPI.reducer,
 });
 
 export const store: any = configureStore({

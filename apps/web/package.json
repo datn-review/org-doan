@@ -33,6 +33,8 @@
     "@org/look-for-tutor": "workspace:^",
     "@org/tutor": "workspace:^",
     "@org/classes": "workspace:^",
+    "@org/assessment": "workspace:^",
+
 
     "framer-motion": "^10.12.16",
     "lodash": "^4.17.21",

@@ -173,4 +173,24 @@ export const SiteMap = {
       roles: [],
     },
   },
+  Assessment: {
+    path: '/',
+    roles: [],
+    menu: 'assessments',
+    Exercise: {
+      path: '/exercise',
+      roles: [],
+      menu: 'assessments/exercise',
+    },
+    Questions: {
+      path: '/questions',
+      roles: [],
+      menu: 'assessments/questions',
+    },
+    Assignment: {
+      path: '/assignment',
+      roles: [],
+      menu: 'assessments/assignment',
+    },
+  },
 };

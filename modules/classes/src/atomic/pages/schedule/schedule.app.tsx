@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Calendar,
@@ -18,7 +18,12 @@ import { getNameLanguage, useTranslation } from '@org/i18n';
 import { COLOR } from '@org/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { createEventId } from '@org/ui/src/atomic/atoms/calendar/event-utils';
-
+import { useCreateLessonDefaultMutation } from '@org/store';
+import { isEmpty } from 'lodash';
+import { Popover } from '@org/ui';
+import { timePickerCss } from './schedule.styled';
+import { Event } from './container/Event';
+import { If, Then } from 'react-if';
 interface ClassTime {
   day?: number;
   start?: string;
@@ -55,53 +60,22 @@ const options = [
     value: 0,
   },
 ];
-const generateWeeklySchedule = (
-  startDate: string,
-  endDate: string,
-  classTimes?: ClassTime[],
-  title?: string,
-) => {
-  if (!classTimes) return null;
-  let currentDate = moment(startDate);
 
-  const lastDate = moment(endDate);
-
-  const schedule: any[] = [];
-  while (currentDate.isSame(lastDate) || currentDate.isBefore(lastDate)) {
-    const dayOfWeek = currentDate.day();
-
-    classTimes?.forEach(({ start, day, end }) => {
-      if (day === dayOfWeek) {
-        schedule.push({
-          id: Math.floor(Math.random() * 200000),
-          start: currentDate.format('YYYY-MM-DD') + ' ' + start,
-          end: currentDate.format('YYYY-MM-DD') + ' ' + end,
-          title,
-          backgroundColor: 'red',
-          borderColor: 'pink',
-          textColor: 'yellow',
-        });
-      }
-    });
-    currentDate = currentDate.add(1, 'days');
-  }
-
-  return schedule;
-};
 type ClassRecord = Record<number, any>;
 
-function Schedule({ data }: any) {
+function Schedule({ data, refetch }: any) {
   console.log(data);
   const { t } = useTranslation();
-  // const input
-  const startDate = '2023-11-01';
-  const endDate = '2024-01-01';
-  const id = createEventId();
+  const [createLesson] = useCreateLessonDefaultMutation();
   const [classArray, setClassArray] = useState<ClassRecord>({
     [uuidv4()]: { day: undefined, time: '' },
   });
-  const [classTimes, setClassTimes] = useState<ClassTime[]>();
   const [title, setTitle] = useState<string>('');
+  const [color, setColor] = useState<any>('#fff');
+  const [bgColor, setBgColor] = useState<any>(COLOR.Primary);
+  const [eventId, setEventId] = useState<any>(null);
+
+  const format = 'HH:mm';
   useEffect(() => {
     let subjectString = '';
     if (data) {
@@ -112,24 +86,47 @@ function Schedule({ data }: any) {
           subjectString = subjectString + ' - ' + getNameLanguage(subject?.nameVI, subject?.nameEN);
         }
       });
-      setTitle(subjectString + ' - ' + data.user?.lastName + ' ' + data.user?.firstName);
+      setTitle(`[#CLASS${data?.id}] ${subjectString}`);
+      setBgColor(data?.bgColor || COLOR.Primary);
+      setColor(data?.textColor || 'white');
+
+      let schedules: ClassRecord = {};
+      data?.schedules?.forEach((schedule: any) => {
+        const id = uuidv4();
+        // @ts-ignore
+        schedules[id] = {
+          day: schedule?.dayOfWeek,
+          time: [dayjs(schedule?.timeStart, format), dayjs(schedule?.timeEnd, format)],
+        };
+      });
+
+      if (!isEmpty(schedules)) {
+        setClassArray({ ...schedules });
+      }
     }
   }, [data]);
 
-  // const classTimes: ClassTime[] = [
-  //   { day: 1, start: '07:00', end: '09:00' },
-  //   { day: 3, start: '10:00', end: '12:00' },
-  // ];
-  const format = 'HH:mm';
-  const weeklySchedule = generateWeeklySchedule(
-    dayjs(data?.contractStartDate).format('YYYY-MM-DD'),
-    dayjs(data?.contractEndDate).format('YYYY-MM-DD'),
-    classTimes,
-    title,
-  );
-  console.log(dayjs(data?.contractStartDate));
+  const weeklySchedule = useMemo(() => {
+    if (isEmpty(data?.lessons || title)) {
+      return [];
+    }
+    return data?.lessons?.map(({ lessonStart, lessonEnd, id }: any) => ({
+      id: id,
+      start: dayjs(lessonStart).format('YYYY-MM-DD HH:mm'),
+      end: dayjs(lessonEnd).format('YYYY-MM-DD HH:mm'),
+      title,
+      backgroundColor: data?.bgColor || COLOR.Primary,
+      borderColor: data?.bgColor || COLOR.Primary,
+      textColor: data?.textColor || 'white',
+      extendedProps: {
+        content: 'content',
+        start: dayjs(lessonStart).format('HH:mm'),
+        end: dayjs(lessonEnd).format('HH:mm'),
+        id,
+      },
+    }));
+  }, [data, title]);
 
-  console.log(weeklySchedule);
   const handleSave = () => {
     const dataCovert: ClassTime[] = Object.entries(classArray).map(([id, values]: any) => {
       return {
@@ -138,12 +135,89 @@ function Schedule({ data }: any) {
         end: values?.time?.[1]?.format(format),
       };
     });
-    setClassTimes([...dataCovert]);
+    createLesson({
+      collaboratorId: data?.id,
+      startDate: dayjs(data?.contractStartDate).format('YYYY-MM-DD'),
+      endDate: dayjs(data?.contractEndDate).format('YYYY-MM-DD'),
+      classTimes: dataCovert,
+      title,
+      textColor: color,
+      bgColor,
+    }).then(() => refetch());
+
+    // setClassTimes([...dataCovert]);
+  };
+
+  function renderEventContent(eventContent: any) {
+    return (
+      <Popover
+        placement='top'
+        title={eventContent.event.title}
+        zIndex={99999}
+        content={
+          <Space>
+            {'time'} : {eventContent.event?.extendedProps?.start} -{' '}
+            {eventContent.event?.extendedProps?.end}
+            <Space
+              className={css`
+                display: flex;
+                justify-content: flex-end;
+                margin-top: 1rem;
+              `}
+            >
+              <Button
+                $size={SIZE.Small}
+                onClick={() => setEventId(eventContent?.event?.extendedProps?.id)}
+              >
+                Details
+              </Button>
+            </Space>
+          </Space>
+        }
+      >
+        <Space
+          className={css`
+            display: block;
+            word-break: break-word;
+            width: 100%;
+            white-space: initial;
+            padding: 0 4px;
+            background-color: ${eventContent.backgroundColor};
+            color: ${eventContent.textColor};
+          `}
+        >
+          {/*<b>{eventContent.timeText}</b>*/}
+          {eventContent.event.title}
+        </Space>
+      </Popover>
+    );
+  }
+
+  const renderMoreLinkContent = () => {
+    return <></>;
+  };
+  const handleEventClick = (eventContent: any) => {
+    console.log(eventContent);
+    setEventId(eventContent?.event?.extendedProps?.id);
   };
 
   return (
     <Space className={css``}>
-      <H2>{t('create.schedule')}</H2>
+      <Space
+        className={css`
+          display: flex;
+          justify-content: space-between;
+        `}
+      >
+        <H2>{t('create.schedule')}</H2>
+
+        <Button
+          onClick={handleSave}
+          $size={SIZE.ExtraSmall}
+        >
+          {t('save.schedule')}{' '}
+        </Button>
+      </Space>
       <Space
         className={css`
           display: flex;
@@ -158,7 +232,6 @@ function Schedule({ data }: any) {
         >
           <Space>Time Start - Time End</Space>
           <RangePicker
-            onChange={(value) => console.log(value)}
             disabled={true}
             // @ts-ignore
             value={[dayjs(data?.contractStartDate), dayjs(data?.contractEndDate)]}
@@ -169,34 +242,30 @@ function Schedule({ data }: any) {
             `}
           />
         </Space>
-        <Space>
-          <Space>Title</Space>
 
-          <Input
-            name={'title'}
-            value={title}
-            onChange={(value) => {
-              // @ts-ignore
-              setTitle(value);
-            }}
-            className={css`
-              height: 32px;
-              width: 40rem;
-            `}
+        <Space>
+          <Space>Text Color </Space>
+          <ColorPicker
+            onChange={(color) => setColor(color.toHexString())}
+            value={color}
+            showText={(color) => <span>({color.toHexString()})</span>}
+            defaultFormat={'hex'}
+          />
+        </Space>
+        <Space>
+          <Space>BackGround Color </Space>
+          <ColorPicker
+            onChange={(color) => setBgColor(color.toHexString())}
+            value={bgColor}
+            className={css``}
+            defaultFormat={'hex'}
+            showText={(color) => <span>({color.toHexString()})</span>}
           />
         </Space>
       </Space>
-      <Space
-        className={css`
-          display: flex;
-          gap: 1rem;
-        `}
-      >
-        <ColorPicker showText={(color) => <span>Text Color ({color.toHexString()})</span>} />
-        <ColorPicker showText={(color) => <span>BackGround Color ({color.toHexString()})</span>} />
-      </Space>
 
       {Object.entries(classArray)?.map(([id, values]: any, index: number) => {
+        // @ts-ignore
         return (
           <Space
             className={css`
@@ -245,7 +314,9 @@ function Schedule({ data }: any) {
                   height: 32px;
                   margin-top: 1px;
                 `}
+                dropdownClassName={timePickerCss}
                 value={values?.time}
+                getPopupContainer={(trigger: HTMLElement) => trigger.parentElement || document.body}
               />
             </Space>
             {index !== 0 && (
@@ -260,7 +331,6 @@ function Schedule({ data }: any) {
                   onClick={() => {
                     setClassArray((prev) => {
                       delete prev[id];
-                      console.log(prev);
                       return { ...prev };
                     });
                   }}
@@ -289,22 +359,27 @@ function Schedule({ data }: any) {
           + Add
         </Button>
       </Space>
-      <Button
-        onClick={handleSave}
-        className={css`
-          margin-top: 1rem;
-        `}
-      >
-        {t('save.schedule')}{' '}
-      </Button>
 
       <Space
         className={css`
           flex: 1;
         `}
       >
-        <Calendar initData={weeklySchedule} />
+        <Calendar
+          initData={weeklySchedule}
+          renderEventContent={renderEventContent}
+          handleEventClick={handleEventClick}
+          moreLinkContent={renderMoreLinkContent}
+        />
       </Space>
+      <If condition={!!eventId}>
+        <Then>
+          <Event
+            id={eventId}
+            close={() => setEventId(null)}
+          />
+        </Then>
+      </If>
     </Space>
   );
 }

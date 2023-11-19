@@ -17,6 +17,7 @@ export type IInput = HTMLAttributes<HTMLInputElement> & {
   labelInput?: string;
   $type?: TypeInput;
   label?: string;
+  [k: string]: any;
 };
 
 export function Input({ onChange, value, labelInput, className, $type, ...props }: IInput) {
@@ -57,8 +58,8 @@ export function Input({ onChange, value, labelInput, className, $type, ...props 
             `,
             className,
           )}
-          type={TypeInput.Password === $type && hidePassword ? TypeInput.Password : TypeInput.Text}
           {...props}
+          type={TypeInput.Password === $type && hidePassword ? TypeInput.Password : TypeInput.Text}
           onChange={(e: FormEvent<HTMLInputElement>) => {
             onChange && onChange(e.currentTarget.value);
           }}

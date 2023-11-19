@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -16,23 +17,23 @@ export class Lessons extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ManyToOne(() => Collaboration, {
+    eager: true,
+  })
   @Column({ type: Number })
   collaboration?: Collaboration | null;
 
-  @Column({ type: String, nullable: false })
+  @Column({ type: String, nullable: true })
   location: string;
 
-  @Column({ type: String, nullable: false })
-  content_VI: string;
-
-  @Column({ type: String, nullable: false })
-  content_EN: string;
+  @Column({ type: String, nullable: true })
+  content: string;
 
   @Column({ type: Date, nullable: false })
-  lessonDate?: Date | null;
+  lessonStart?: Date | null;
 
   @Column({ type: Date, nullable: false })
-  lessonTime?: Date | null;
+  lessonEnd?: Date | null;
 
   @Column({ type: Number, default: 1 })
   status: number;

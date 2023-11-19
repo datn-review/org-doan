@@ -27,17 +27,76 @@ import { CreateLessonsDto } from './dto/create.dto';
 import { UpdateLessonsDto } from './dto/update.dto';
 import { LessonsService } from './lessons.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
+import * as moment from 'dayjs';
+import dayjs from 'dayjs';
+import { CollaborationService } from '../collaboration/collaboration.service';
+import { Column } from 'typeorm';
+import { ScheduleService } from '../schedule/schedule.service';
+import { Schedule } from '../schedule/entities/schedule.entity';
+interface ClassTime {
+  day?: number;
+  start?: string;
+  end?: string;
+}
+const generateWeeklySchedule = ({
+  startDate,
+  endDate,
+  classTimes,
+  title,
+  color,
+  bgColor,
+  collaboratorId,
+}: {
+  startDate: string;
+  endDate: string;
+  classTimes?: ClassTime[];
+  title?: string;
+  color: string;
+  bgColor: string;
+  collaboratorId: string;
+}) => {
+  if (!classTimes) return null;
+  let currentDate = moment(startDate);
 
-@ApiBearerAuth()
+  const lastDate = moment(endDate);
+
+  const schedule: any[] = [];
+  while (currentDate.isSame(lastDate) || currentDate.isBefore(lastDate)) {
+    const dayOfWeek = currentDate.day();
+
+    classTimes?.forEach(({ start, day, end }) => {
+      if (day === dayOfWeek) {
+        schedule.push({
+          // id: Math.floor(Math.random() * 200000),
+          collaboration: collaboratorId,
+          lessonStart: currentDate.format('YYYY-MM-DD') + ' ' + start,
+          lessonEnd: currentDate.format('YYYY-MM-DD') + ' ' + end,
+          // backgroundColor: bgColor,
+          // borderColor: bgColor,
+          // textColor: color,
+        });
+      }
+    });
+    currentDate = currentDate.add(1, 'days');
+  }
+
+  return schedule;
+};
 @ApiTags('Lessons')
-@Roles(RoleEnum.WEB_ADMIN)
+@ApiBearerAuth()
+@Roles()
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'lessons',
   version: '1',
 })
 export class LessonsController {
-  constructor(private readonly lessonsService: LessonsService) {}
+  constructor(
+    private readonly lessonsService: LessonsService,
+
+    private collaborator: CollaborationService,
+    private schedule: ScheduleService,
+  ) {}
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
@@ -45,6 +104,37 @@ export class LessonsController {
     return this.lessonsService.create({
       ...createLessonsDto,
     });
+  }
+  @ApiBearerAuth()
+  @Roles(RoleEnum.PESONAL_TUTOR)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Post('/default')
+  @HttpCode(HttpStatus.CREATED)
+  createDefault(@Body() createLessonsDto: any): Promise<Lessons[]> | null {
+    console.log('createLessonsDto', createLessonsDto);
+
+    const weeklySchedule: Lessons[] | null = generateWeeklySchedule({
+      ...createLessonsDto,
+    });
+    this.collaborator
+      .update(createLessonsDto?.collaboratorId, {
+        bgColor: createLessonsDto?.bgColor,
+        textColor: createLessonsDto?.textColor,
+      })
+      .then();
+
+    if (createLessonsDto?.classTimes) {
+      const classTimes: Schedule[] = createLessonsDto?.classTimes?.map(({ start, day, end }) => ({
+        collaboration: createLessonsDto?.collaboratorId,
+        dayOfWeek: day,
+        timeStart: start,
+        timeEnd: end,
+      }));
+      this.schedule.createMany(classTimes).then();
+    }
+    if (!weeklySchedule) return null;
+
+    return this.lessonsService.createMany(weeklySchedule);
   }
 
   @Get('/')

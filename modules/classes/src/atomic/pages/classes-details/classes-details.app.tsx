@@ -34,6 +34,10 @@ function ClassesDetails() {
   useEffect(() => {
     getData(id);
   }, [id]);
+
+  const refetch = () => {
+    getData(id);
+  };
   const onChange = (key: string) => {
     console.log(key);
   };
@@ -47,7 +51,12 @@ function ClassesDetails() {
     {
       key: '2',
       label: 'Lịch Học',
-      children: <ScheduleApp data={data} />,
+      children: (
+        <ScheduleApp
+          data={data}
+          refetch={refetch}
+        />
+      ),
     },
     {
       key: '3',

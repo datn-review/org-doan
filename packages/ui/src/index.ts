@@ -20,6 +20,7 @@ export {
   Modal as ModalAntd,
   TimePicker,
   ColorPicker,
+  Popover,
 } from 'antd';
 
 export * from '@ant-design/icons';

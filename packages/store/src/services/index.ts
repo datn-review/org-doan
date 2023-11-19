@@ -16,3 +16,8 @@ export * from './users.api';
 export * from './registration.api';
 export * from './collaboration.api';
 export * from './payment.api';
+export * from './lesson.api';
+export * from './assessment.api';
+export * from './exercise.api';
+export * from './question.api';
+export * from './assignment.api';

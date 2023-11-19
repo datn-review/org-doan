@@ -40,7 +40,6 @@ export function AntdProvider({ children }: PropsWithChildren) {
           DatePicker: {
             colorPrimary: COLOR.Primary,
             algorithm: true,
-            addonBg: COLOR.Primary,
           },
           Cascader: {
             colorPrimary: COLOR.Primary,

@@ -14,6 +14,8 @@ import {
 } from 'typeorm';
 import { Payment } from '../../payment/entities/payment.entity';
 import { TutorCertification } from '../../tutor-certification/entities/tutor-certification.entity';
+import { Lessons } from '../../lessons/entities/lessons.entity';
+import { Schedule } from '../../schedule/entities/schedule.entity';
 
 @Entity({ name: 'collaboration' })
 export class Collaboration extends EntityHelper {
@@ -36,6 +38,16 @@ export class Collaboration extends EntityHelper {
   })
   payment?: Payment[] | null;
 
+  @OneToMany(() => Lessons, (payment) => payment.collaboration, {
+    onDelete: 'CASCADE',
+  })
+  lessons?: Lessons[] | null;
+
+  @OneToMany(() => Schedule, (schedule) => schedule.collaboration, {
+    onDelete: 'CASCADE',
+  })
+  schedules?: Schedule[] | null;
+
   @Column({ type: String, nullable: true })
   studentSignature?: string | null;
 
@@ -50,6 +62,15 @@ export class Collaboration extends EntityHelper {
 
   @Column({ type: String, nullable: true })
   contractTerms: string;
+
+  @Column({ type: String, nullable: true })
+  nameClass: string;
+
+  @Column({ type: String, nullable: true })
+  bgColor: string;
+
+  @Column({ type: String, nullable: true })
+  textColor: string;
 
   @Column({ type: Number, default: 1 })
   status: number;

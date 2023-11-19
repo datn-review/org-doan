@@ -206,6 +206,37 @@ export const menuCategory: MenuItem[] = [
       },
     ],
   },
+
+  {
+    name: <Translation>{(t) => t('assessment.name')}</Translation>,
+    path: '',
+    id: SiteMap.Manage.menu,
+    icon: <IconUser />,
+    // isHide: ifNotGranted([RolesEnum.WEB_ADMIN]),
+    subMenu: [
+      {
+        label: <Translation>{(t) => t('assessment.exercise')}</Translation>,
+        path: SiteMap.Assessment.Exercise.path,
+        id: SiteMap.Assessment.Exercise.menu,
+        key: SiteMap.Assessment.Exercise.menu,
+        icon: <></>,
+      },
+      {
+        label: <Translation>{(t) => t('assessment.questions')}</Translation>,
+        path: SiteMap.Assessment.Questions.path,
+        id: SiteMap.Assessment.Questions.menu,
+        key: SiteMap.Assessment.Questions.menu,
+        icon: <></>,
+      },
+      {
+        label: <Translation>{(t) => t('assessment.assignment')}</Translation>,
+        path: SiteMap.Assessment.Assignment.path,
+        id: SiteMap.Assessment.Assignment.menu,
+        key: SiteMap.Assessment.Assignment.menu,
+        icon: <></>,
+      },
+    ],
+  },
 ].filter((item) => !item.isHide);
 
 export const menuPerson: IMenuIcon[] = [
