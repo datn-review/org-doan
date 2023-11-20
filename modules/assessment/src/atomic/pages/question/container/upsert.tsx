@@ -1,6 +1,6 @@
 import { css } from '@emotion/css';
 import { useCRUDContext, useMessageHook } from '@org/core';
-import { i18next, useTranslation } from '@org/i18n';
+import { i18next, Translation, useTranslation } from '@org/i18n';
 import {
   useCreateQuestionMutation,
   useLazyFindQuestionQuery,
@@ -21,12 +21,34 @@ import {
   VARIANT,
   useForm,
   yupResolver,
+  TextArea,
+  TextAreaForm,
+  Space,
+  Input,
+  CheckBox,
 } from '@org/ui';
 
 import { StatusEnum, getImage, statusOptionUpsert } from '@org/utils';
 import { isEmpty } from 'lodash';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import * as yup from 'yup';
+import { v4 as uuidv4 } from 'uuid';
+
+enum TypeQuestionEnum {
+  CheckBox = 0,
+  Radio = 1,
+}
+
+const typeQuestions = [
+  {
+    value: TypeQuestionEnum.CheckBox,
+    label: <Translation>{(t) => t('assessment.type.checkbox')}</Translation>,
+  },
+  {
+    value: TypeQuestionEnum.Radio,
+    label: <Translation>{(t) => t('assessment.type.radio')}</Translation>,
+  },
+];
 
 type Status = {
   id: string;
@@ -47,9 +69,15 @@ const dataInit: IUpdate = {
   name: '',
   status: 1,
 };
+type OptionRecord = Record<number, any>;
 
 export function Upsert() {
   const { idEdit, isUpsert, setIsFetch, close, setDataUpsert, dataUpsert } = useCRUDContext();
+
+  const [options, setOptions] = useState<OptionRecord>({
+    [uuidv4()]: { content: '', isCorrect: false },
+  });
+
   const { t } = useTranslation();
   const methods = useForm<IUpdate>({
     defaultValues: dataInit,
@@ -123,9 +151,9 @@ export function Upsert() {
       {contextHolder}
       {isUpsert && (
         <Drawer
-          title={idEdit ? t('user.edit.title') : t('user.add.title')}
+          title={idEdit ? t('edit.title') : t('add.title')}
           placement={'right'}
-          width={500}
+          width={'100%'}
           onClose={close}
           open={isUpsert}
           extra={
@@ -152,9 +180,88 @@ export function Upsert() {
         >
           <Spin spinning={isLoadingCreate || isLoadingGet || isLoadingUpdate}>
             <FormProvider {...methods}>
-              <InputForm
-                name='name'
-                label={t('name')}
+              <TextAreaForm
+                name='content'
+                label={t('question')}
+              />
+
+              {Object.entries(options).map(([key, item]: any, index) => (
+                <Space
+                  className={css`
+                    display: flex;
+                    gap: 1rem;
+                  `}
+                >
+                  <Input
+                    name='content'
+                    label={t('question')}
+                    value={item.content}
+                    onChange={(value) =>
+                      setOptions((prevState) => ({
+                        ...prevState,
+                        [key]: {
+                          ...prevState[key],
+                          content: value,
+                        },
+                      }))
+                    }
+                  />
+                  <CheckBox
+                    name={`is-correct-${key}`}
+                    value={item.isCorrect}
+                    onChange={(e: any) => {
+                      console.log(e);
+                      return setOptions((prevState) => ({
+                        ...prevState,
+                        [key]: {
+                          ...prevState[key],
+                          isCorrect: e.target.checked,
+                        },
+                      }));
+                    }}
+                  />
+                  <Button
+                    onClick={() =>
+                      setOptions((prev) => {
+                        delete prev[key];
+                        return { ...prev };
+                      })
+                    }
+                  >
+                    {t('remove')}
+                  </Button>
+                </Space>
+              ))}
+              <Space
+                className={css`
+                  display: flex;
+                  justify-content: flex-end;
+                `}
+              >
+                <Button
+                  onClick={() =>
+                    setOptions((prevState) => ({
+                      ...prevState,
+                      [uuidv4()]: {
+                        content: '',
+                        isCorrect: false,
+                      },
+                    }))
+                  }
+                >
+                  {t('add')}
+                </Button>
+              </Space>
+
+              <SelectForm
+                name='type'
+                label={t('assessment.type')}
+                options={typeQuestions}
+                defaultValue={1}
+                className={css`
+                  min-width: 20rem;
+                  min-height: 3.8rem;
+                `}
               />
 
               <SelectForm

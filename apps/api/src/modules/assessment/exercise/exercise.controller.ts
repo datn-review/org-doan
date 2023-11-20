@@ -30,7 +30,7 @@ import { StatusEnum } from 'src/statuses/statuses.enum';
 
 @ApiBearerAuth()
 @ApiTags('Exercise')
-@Roles(RoleEnum.WEB_ADMIN)
+@Roles()
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'exercise',

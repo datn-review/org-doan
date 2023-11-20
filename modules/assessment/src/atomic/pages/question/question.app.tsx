@@ -1,6 +1,6 @@
 import { css } from '@emotion/css';
 import { useCRUDContext, useMessageHook, useUpdateEffect } from '@org/core';
-import { useTranslation } from '@org/i18n';
+import { getNameLanguage, useTranslation } from '@org/i18n';
 import { clearActiveMenu, setActiveGroup, setActiveSubGroup, useAppDispatch } from '@org/store';
 import { useDeleteQuestionMutation, useLazyGetQuestionQuery } from '@org/store';
 import {
@@ -9,6 +9,7 @@ import {
   IconDeleteAction,
   IconEditAction,
   Input,
+  Section,
   Select,
   SelectLimitTable,
   Space,
@@ -32,7 +33,7 @@ import { Upsert } from './container/upsert';
 function QuestionApp() {
   const tableInstance = useTable({
     initialSortValue: {
-      sortBy: 'name',
+      sortBy: 'content',
       sortDirection: 'asc',
     },
   });
@@ -84,10 +85,30 @@ function QuestionApp() {
 
   const columns = [
     {
-      key: 'name ',
+      key: 'content ',
       title: t('name'),
-      dataIndex: 'name',
+      dataIndex: 'content',
       sorter: true,
+    },
+
+    {
+      key: 'gradeLevel',
+      title: t('gradeLevel'),
+      dataIndex: 'gradeLevel',
+      sorter: true,
+      render: (_createdAt: string, record: any) => (
+        <Tag>{getNameLanguage(record?.gradeLevel.nameVI, record?.gradeLevel.nameEN)}</Tag>
+      ),
+    },
+
+    {
+      key: 'subject',
+      title: t('subject'),
+      dataIndex: 'subject',
+      sorter: true,
+      render: (_createdAt: string, record: any) => (
+        <Tag>{getNameLanguage(record?.subject.nameVI, record?.subject.nameEN)}</Tag>
+      ),
     },
 
     {
@@ -148,7 +169,7 @@ function QuestionApp() {
   ];
 
   return (
-    <Space>
+    <Section>
       {contextHolder}
       <Space
         className={css`
@@ -219,7 +240,7 @@ function QuestionApp() {
       />
 
       {isUpsert && <Upsert />}
-    </Space>
+    </Section>
   );
 }
 

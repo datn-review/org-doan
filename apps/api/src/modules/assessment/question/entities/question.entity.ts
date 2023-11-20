@@ -36,7 +36,7 @@ export class Question extends EntityHelper {
   @ManyToOne(() => Subject, {
     eager: true,
   })
-  subject: Question | null;
+  subject: Subject | null;
 
   @Column({ type: Number, default: 1 })
   type: number;

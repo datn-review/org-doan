@@ -28,9 +28,23 @@ import { UpdateQuestionDto } from './dto/update.dto';
 import { QuestionService } from './question.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 
+const relations = [
+  {
+    field: 'options',
+    entity: 'option',
+  },
+  {
+    field: 'gradeLevel',
+    entity: 'gradeLevel',
+  },
+  {
+    field: 'subject',
+    entity: 'subject',
+  },
+];
 @ApiBearerAuth()
 @ApiTags('Question')
-@Roles(RoleEnum.WEB_ADMIN)
+@Roles()
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'question',
@@ -58,10 +72,10 @@ export class QuestionController {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number,
-    @Query('sortBy', new DefaultValuePipe('name')) sortBy: string,
+    @Query('sortBy', new DefaultValuePipe('content')) sortBy: string,
     @Query('sortDirection', new DefaultValuePipe('ASC')) sortDirection: string,
     @Query('status', new DefaultValuePipe(0), ParseIntPipe) status: number,
-    @Query('fieldSearch', new DefaultValuePipe('name')) fieldSearch: string | string[],
+    @Query('fieldSearch', new DefaultValuePipe('content')) fieldSearch: string | string[],
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
   ): Promise<InfinityPaginationResultType<Question>> {
     if (limit > 50) {
@@ -76,6 +90,7 @@ export class QuestionController {
       sortDirection,
       searchName,
       fieldSearch,
+      relations,
     });
   }
 
@@ -88,7 +103,7 @@ export class QuestionController {
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string): Promise<NullableType<Question>> {
-    return this.questionService.findOne({ id: +id });
+    return this.questionService.findOne({ id: +id }, relations);
   }
 
   @Put(':id')
