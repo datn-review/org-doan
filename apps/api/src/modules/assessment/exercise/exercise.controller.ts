@@ -28,6 +28,20 @@ import { UpdateExerciseDto } from './dto/update.dto';
 import { ExerciseService } from './exercise.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 
+const relations = [
+  {
+    field: 'questions',
+    entity: 'question',
+  },
+  {
+    field: 'gradeLevel',
+    entity: 'gradeLevel',
+  },
+  {
+    field: 'subject',
+    entity: 'subject',
+  },
+];
 @ApiBearerAuth()
 @ApiTags('Exercise')
 @Roles()
@@ -41,9 +55,13 @@ export class ExerciseController {
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createExerciseDto: CreateExerciseDto): Promise<Exercise[]> {
+  create(@Body() createExerciseDto: any): Promise<Exercise[]> {
+    const questions = createExerciseDto?.questions?.map((item) => ({
+      id: item,
+    }));
     return this.exerciseService.create({
       ...createExerciseDto,
+      questions,
     });
   }
 
@@ -76,6 +94,7 @@ export class ExerciseController {
       sortDirection,
       searchName,
       fieldSearch,
+      relations,
     });
   }
 

@@ -20,6 +20,7 @@ export class Option extends EntityHelper {
 
   @ManyToOne(() => Question, {
     eager: true,
+    onDelete: 'CASCADE',
   })
   question: Question | null;
 

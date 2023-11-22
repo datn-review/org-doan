@@ -21,6 +21,8 @@ export {
   TimePicker,
   ColorPicker,
   Popover,
+  Table as TableAntd,
+  Radio,
 } from 'antd';
 
 export * from '@ant-design/icons';

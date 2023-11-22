@@ -14,6 +14,7 @@ import {
 import { Subject } from '../../../subject/entities/subject.entity';
 import { Question } from '../../question/entities/question.entity';
 import { User } from '../../../../users/entities/user.entity';
+import { GradeLevel } from 'src/modules/grade-level/entities/grade-level.entity';
 
 @Entity({ name: 'exercise' })
 export class Exercise extends EntityHelper {
@@ -32,6 +33,16 @@ export class Exercise extends EntityHelper {
     eager: true,
   })
   author: User | null;
+
+  @ManyToOne(() => GradeLevel, {
+    eager: true,
+  })
+  gradeLevel: GradeLevel | null;
+
+  @ManyToOne(() => Subject, {
+    eager: true,
+  })
+  subject: Subject | null;
 
   @Column({ type: Number, default: 1 })
   status: number;

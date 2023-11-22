@@ -103,8 +103,8 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
       query.where(`entity.status = :status`, { status });
     }
     if (where && where?.length > 0) {
-      where?.forEach(({ field, value }) => {
-        query.andWhere(`entity.${field} = :value`, { value });
+      where?.forEach(({ field, value }, index) => {
+        query.andWhere(`entity.${field} = :value_${field}`, { [`value_${field}`]: value });
       });
     }
     if (typeof fieldSearch === 'string' && fieldSearch !== '') {
@@ -134,7 +134,6 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
           }
           values = { ...values, [`value_${key}_${index}`]: value };
         });
-        console.log(string);
 
         query.andWhere(`(${string})`, { ...values });
       });

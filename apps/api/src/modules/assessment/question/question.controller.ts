@@ -27,6 +27,7 @@ import { CreateQuestionDto } from './dto/create.dto';
 import { UpdateQuestionDto } from './dto/update.dto';
 import { QuestionService } from './question.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
+import { OptionService } from '../option/option.service';
 
 const relations = [
   {
@@ -51,14 +52,36 @@ const relations = [
   version: '1',
 })
 export class QuestionController {
-  constructor(private readonly questionService: QuestionService) {}
+  constructor(
+    private readonly questionService: QuestionService,
+
+    private readonly optionService: OptionService,
+  ) {}
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createQuestionDto: CreateQuestionDto): Promise<Question[]> {
-    return this.questionService.create({
-      ...createQuestionDto,
+  async create(@Body() createQuestionDto: any): Promise<Question[]> {
+    console.log(createQuestionDto);
+
+    const question = await this.questionService.create({
+      content: createQuestionDto.content,
+      type: createQuestionDto.type,
+      status: createQuestionDto.status,
+      level: createQuestionDto.status,
+      score: createQuestionDto.score,
+      gradeLevel: createQuestionDto.gradeLevel,
+      subject: createQuestionDto.subject,
     });
+    const questionId = (question as unknown as Question)?.id;
+
+    if (createQuestionDto.options && questionId) {
+      const options = createQuestionDto.options?.map((option) => ({
+        ...option,
+        question: questionId,
+      }));
+      void this.optionService.createMany(options);
+    }
+    return question;
   }
 
   @Get('/')
@@ -69,18 +92,23 @@ export class QuestionController {
   @ApiQuery({ name: 'sortDirection', required: false })
   @ApiQuery({ name: 'sortBy', required: false })
   @ApiQuery({ name: 'fieldSearch', required: false })
+  @ApiQuery({ name: 'gradeLevel', required: false })
+  @ApiQuery({ name: 'subject', required: false })
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number,
     @Query('sortBy', new DefaultValuePipe('content')) sortBy: string,
     @Query('sortDirection', new DefaultValuePipe('ASC')) sortDirection: string,
-    @Query('status', new DefaultValuePipe(0), ParseIntPipe) status: number,
+    @Query('status', new DefaultValuePipe(1), ParseIntPipe) status: number,
     @Query('fieldSearch', new DefaultValuePipe('content')) fieldSearch: string | string[],
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
+    @Query('gradeLevel', new DefaultValuePipe('')) gradeLevel: number,
+    @Query('subject', new DefaultValuePipe('')) subject: number,
   ): Promise<InfinityPaginationResultType<Question>> {
     if (limit > 50) {
       limit = 1000;
     }
+    console.log(subject);
 
     return await this.questionService.findManyWithPagination({
       page,
@@ -91,6 +119,10 @@ export class QuestionController {
       searchName,
       fieldSearch,
       relations,
+      where: [
+        { field: 'subjectId', value: subject },
+        { field: 'gradeLevelId', value: gradeLevel },
+      ],
     });
   }
 
@@ -118,6 +150,6 @@ export class QuestionController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: number): Promise<void> {
-    return this.questionService.softDelete(id);
+    return this.questionService.delete(id);
   }
 }

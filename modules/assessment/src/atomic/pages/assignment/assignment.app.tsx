@@ -9,6 +9,7 @@ import {
   IconDeleteAction,
   IconEditAction,
   Input,
+  Section,
   Select,
   SelectLimitTable,
   Space,
@@ -148,7 +149,7 @@ function AssignmentApp() {
   ];
 
   return (
-    <Space>
+    <Section>
       {contextHolder}
       <Space
         className={css`
@@ -219,7 +220,7 @@ function AssignmentApp() {
       />
 
       {isUpsert && <Upsert />}
-    </Space>
+    </Section>
   );
 }
 

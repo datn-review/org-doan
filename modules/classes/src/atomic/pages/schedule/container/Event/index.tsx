@@ -7,6 +7,8 @@ import { useTranslation } from '@org/i18n';
 import { Editor } from '@org/editor';
 import dayjs from 'dayjs';
 import { css } from '@emotion/css';
+import { SiteMap } from '@org/utils';
+import { Link } from 'react-router-dom';
 
 type Props = {
   close: () => void;
@@ -135,7 +137,9 @@ export const LessonAssigenment = ({ data }: any) => {
           justify-content: flex-end;
         `}
       >
-        <Button $size={SIZE.ExtraSmall}>{t('assigment.create')}</Button>
+        <Link to={SiteMap.Assessment.Assignment.Create.generate(data.id)}>
+          <Button $size={SIZE.ExtraSmall}>{t('assigment.create')}</Button>
+        </Link>
       </Space>
       {/*<Table*/}
       {/*  tableInstance={tableInstance}*/}

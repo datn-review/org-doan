@@ -1,5 +1,12 @@
 import { css } from '@emotion/css';
-import { useCRUDContext, useMessageHook } from '@org/core';
+import {
+  SelectGrade,
+  SelectGradeSubject,
+  SelectSkill,
+  SelectSubject,
+  useCRUDContext,
+  useMessageHook,
+} from '@org/core';
 import { i18next, Translation, useTranslation } from '@org/i18n';
 import {
   useCreateQuestionMutation,
@@ -39,6 +46,12 @@ enum TypeQuestionEnum {
   Radio = 1,
 }
 
+enum LevelEnum {
+  Low = 1,
+  Medium = 2,
+  Pro = 3,
+}
+
 const typeQuestions = [
   {
     value: TypeQuestionEnum.CheckBox,
@@ -49,25 +62,43 @@ const typeQuestions = [
     label: <Translation>{(t) => t('assessment.type.radio')}</Translation>,
   },
 ];
+const levelQuestions = [
+  {
+    value: LevelEnum.Low,
+    label: <Translation>{(t) => t('assessment.type.low')}</Translation>,
+  },
+  {
+    value: LevelEnum.Medium,
+    label: <Translation>{(t) => t('assessment.type.medium')}</Translation>,
+  },
+  {
+    value: LevelEnum.Pro,
+    label: <Translation>{(t) => t('assessment.type.pro')}</Translation>,
+  },
+];
 
 type Status = {
   id: string;
   name: string;
 };
 type IUpdate = {
-  name: string;
+  content: string;
   status?: number;
+  type?: TypeQuestionEnum;
+  level?: LevelEnum;
 };
 
 const schema = (idEdit: number) =>
   yup.object({
-    name: yup.string().required(i18next.t('required.name')),
+    content: yup.string().required(i18next.t('required.name')),
     status: yup.number(),
   });
 type TypeName = keyof IUpdate;
 const dataInit: IUpdate = {
-  name: '',
+  content: '',
   status: 1,
+  type: TypeQuestionEnum.Radio,
+  level: LevelEnum.Low,
 };
 type OptionRecord = Record<number, any>;
 
@@ -81,7 +112,6 @@ export function Upsert() {
   const { t } = useTranslation();
   const methods = useForm<IUpdate>({
     defaultValues: dataInit,
-
     resolver: yupResolver(schema(idEdit)),
   });
 
@@ -103,8 +133,11 @@ export function Upsert() {
     }
   }, [idEdit]);
   const handleSave = async (formData: any) => {
+    console.log(formData);
+    const option = Object.entries(options).map(([_, value]) => value);
+    const body = { ...formData, options: option };
     if (idEdit) {
-      updateUser({ body: formData, id: idEdit })
+      updateUser({ body: body, id: idEdit })
         .then(() => {
           messageSuccess(t('user.edit.success'));
         })
@@ -116,7 +149,7 @@ export function Upsert() {
           setIsFetch(true);
         });
     } else {
-      createData(formData)
+      createData(body)
         .then(() => {
           messageSuccess(t('user.add.success'));
         })
@@ -184,7 +217,8 @@ export function Upsert() {
                 name='content'
                 label={t('question')}
               />
-
+              <SelectGrade />
+              <SelectSubject />
               {Object.entries(options).map(([key, item]: any, index) => (
                 <Space
                   className={css`
@@ -219,6 +253,11 @@ export function Upsert() {
                         },
                       }));
                     }}
+                    className={css`
+                      .ant-checkbox-input {
+                        left: 0 !important;
+                      }
+                    `}
                   />
                   <Button
                     onClick={() =>
@@ -257,7 +296,16 @@ export function Upsert() {
                 name='type'
                 label={t('assessment.type')}
                 options={typeQuestions}
-                defaultValue={1}
+                className={css`
+                  min-width: 20rem;
+                  min-height: 3.8rem;
+                `}
+              />
+
+              <SelectForm
+                name='level'
+                label={t('assessment.level')}
+                options={levelQuestions}
                 className={css`
                   min-width: 20rem;
                   min-height: 3.8rem;

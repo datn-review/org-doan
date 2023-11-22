@@ -1,6 +1,6 @@
-import { Checkbox } from "antd";
-import { withForm } from "../../../form";
-import { ReactNode } from "react";
+import { Checkbox } from 'antd';
+import { withForm } from '../../../form';
+import { ReactNode } from 'react';
 
 interface ICheckBox {
   labelCB?: ReactNode;
@@ -8,11 +8,17 @@ interface ICheckBox {
   onChange?: any;
   name: string;
   value?: boolean;
+  [k: string]: any;
 }
 
-export function CheckBox({ labelCB, disabled, onChange, value }: ICheckBox) {
+export function CheckBox({ labelCB, disabled, onChange, value, ...props }: ICheckBox) {
   return (
-    <Checkbox checked={value} disabled={disabled} onChange={onChange}>
+    <Checkbox
+      checked={value}
+      disabled={disabled}
+      onChange={onChange}
+      {...props}
+    >
       {labelCB}
     </Checkbox>
   );

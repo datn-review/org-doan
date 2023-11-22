@@ -97,7 +97,7 @@ function QuestionApp() {
       dataIndex: 'gradeLevel',
       sorter: true,
       render: (_createdAt: string, record: any) => (
-        <Tag>{getNameLanguage(record?.gradeLevel.nameVI, record?.gradeLevel.nameEN)}</Tag>
+        <Tag>{getNameLanguage(record?.gradeLevel?.nameVI, record?.gradeLevel?.nameEN)}</Tag>
       ),
     },
 
@@ -107,7 +107,7 @@ function QuestionApp() {
       dataIndex: 'subject',
       sorter: true,
       render: (_createdAt: string, record: any) => (
-        <Tag>{getNameLanguage(record?.subject.nameVI, record?.subject.nameEN)}</Tag>
+        <Tag>{getNameLanguage(record?.subject?.nameVI, record?.subject?.nameEN)}</Tag>
       ),
     },
 

@@ -191,6 +191,10 @@ export const SiteMap = {
       path: '/assignment',
       roles: [],
       menu: 'assessments/assignment',
+      Create: {
+        path: '/assignment/create/:lessonId',
+        generate: (id: number | string) => `/assignment/create/${id}`,
+      },
     },
   },
 };

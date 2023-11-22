@@ -20,6 +20,12 @@ export class Question extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ type: Number, nullable: false })
+  gradeLevelId: Number;
+
+  @Column({ type: Number, nullable: false })
+  subjectId: Number;
+
   @Column({ type: String, nullable: false })
   content: string;
 

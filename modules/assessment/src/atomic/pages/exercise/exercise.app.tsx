@@ -1,6 +1,6 @@
 import { css } from '@emotion/css';
-import { useCRUDContext, useMessageHook, useUpdateEffect } from '@org/core';
-import { useTranslation } from '@org/i18n';
+import { SelectGrade, useCRUDContext, useMessageHook, useUpdateEffect } from '@org/core';
+import { getNameLanguage, useTranslation } from '@org/i18n';
 import { clearActiveMenu, setActiveGroup, setActiveSubGroup, useAppDispatch } from '@org/store';
 import { useDeleteExerciseMutation, useLazyGetExerciseQuery } from '@org/store';
 import {
@@ -9,6 +9,7 @@ import {
   IconDeleteAction,
   IconEditAction,
   Input,
+  Section,
   Select,
   SelectLimitTable,
   Space,
@@ -24,6 +25,7 @@ import {
   StatusShowHide,
   StatusShowHideColor,
   statusOption,
+  colorRandom,
 } from '@org/utils';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -91,6 +93,31 @@ function ExerciseApp() {
     },
 
     {
+      title: t('user.grade'),
+      sorter: true,
+
+      dataIndex: 'grade',
+      key: 'grade',
+      render: (_: any, record: any) => (
+        <Tag color={colorRandom()}>
+          {getNameLanguage(record?.gradeLevel?.nameVI, record?.gradeLevel?.nameEN)}
+        </Tag>
+      ),
+    },
+    {
+      title: t('user.subject'),
+      sorter: true,
+
+      dataIndex: 'subject',
+      key: 'grade',
+      render: (_: any, record: any) => (
+        <Tag color={colorRandom()}>
+          {getNameLanguage(record?.subject?.nameVI, record?.subject?.nameEN)}
+        </Tag>
+      ),
+    },
+
+    {
       title: t('user.createdAt'),
       dataIndex: 'updatedAt',
       sorter: true,
@@ -148,7 +175,7 @@ function ExerciseApp() {
   ];
 
   return (
-    <Space>
+    <Section>
       {contextHolder}
       <Space
         className={css`
@@ -159,17 +186,25 @@ function ExerciseApp() {
       >
         <H2>{t('settings.exercise')}</H2>
 
-        <Select
-          label={t('user.status')}
-          options={statusOption}
-          defaultValue={StatusEnum.active}
-          value={filter.status}
-          onChange={(value) => setFilter((prev) => ({ ...prev, status: value }))}
+        <Space
           className={css`
-            min-width: 20rem;
-            min-height: 3.8rem;
+            display: flex;
+            justify-content: flex-start;
           `}
-        />
+        >
+          {/*<SelectGrade />*/}
+          <Select
+            label={t('user.status')}
+            options={statusOption}
+            defaultValue={StatusEnum.active}
+            value={filter.status}
+            onChange={(value) => setFilter((prev) => ({ ...prev, status: value }))}
+            className={css`
+              min-width: 20rem;
+              min-height: 3.8rem;
+            `}
+          />
+        </Space>
       </Space>
       <Space
         className={css`
@@ -219,7 +254,7 @@ function ExerciseApp() {
       />
 
       {isUpsert && <Upsert />}
-    </Space>
+    </Section>
   );
 }
 

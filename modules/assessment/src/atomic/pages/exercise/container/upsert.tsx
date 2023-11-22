@@ -1,9 +1,10 @@
 import { css } from '@emotion/css';
-import { useCRUDContext, useMessageHook } from '@org/core';
+import { SelectGrade, SelectSubject, useCRUDContext, useMessageHook } from '@org/core';
 import { i18next, useTranslation } from '@org/i18n';
 import {
   useCreateExerciseMutation,
   useLazyFindExerciseQuery,
+  useLazyGetQuestionQuery,
   useUpdateExerciseMutation,
 } from '@org/store';
 import {
@@ -21,11 +22,18 @@ import {
   VARIANT,
   useForm,
   yupResolver,
+  TextAreaForm,
+  Row,
+  Col,
+  TableAntd,
+  Space,
+  Popover,
+  Radio,
 } from '@org/ui';
 
 import { StatusEnum, getImage, statusOptionUpsert } from '@org/utils';
 import { isEmpty } from 'lodash';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import * as yup from 'yup';
 
 type Status = {
@@ -35,6 +43,8 @@ type Status = {
 type IUpdate = {
   name: string;
   status?: number;
+  gradeLevel?: number;
+  subject?: number;
 };
 
 const schema = (idEdit: number) =>
@@ -46,6 +56,8 @@ type TypeName = keyof IUpdate;
 const dataInit: IUpdate = {
   name: '',
   status: 1,
+  gradeLevel: undefined,
+  subject: undefined,
 };
 
 export function Upsert() {
@@ -62,6 +74,8 @@ export function Upsert() {
   const [createData, { isLoading: isLoadingCreate }] = useCreateExerciseMutation();
 
   const [getData, { isLoading: isLoadingGet }] = useLazyFindExerciseQuery();
+  const [getQuestion, { isLoading: isLoadingQuestion, data: dataQuestions }] =
+    useLazyGetQuestionQuery();
 
   const [updateUser, { isLoading: isLoadingUpdate }] = useUpdateExerciseMutation();
 
@@ -75,8 +89,9 @@ export function Upsert() {
     }
   }, [idEdit]);
   const handleSave = async (formData: any) => {
+    const body = { ...formData, questions: selectedRowKeys };
     if (idEdit) {
-      updateUser({ body: formData, id: idEdit })
+      updateUser({ body, id: idEdit })
         .then(() => {
           messageSuccess(t('user.edit.success'));
         })
@@ -88,7 +103,7 @@ export function Upsert() {
           setIsFetch(true);
         });
     } else {
-      createData(formData)
+      createData(body)
         .then(() => {
           messageSuccess(t('user.add.success'));
         })
@@ -118,14 +133,77 @@ export function Upsert() {
     }
   }, [JSON.stringify(dataUpsert)]);
 
+  const gradeLevel = methods?.watch('gradeLevel');
+  const subject = methods?.watch('subject');
+  console.log('gradeLevel', gradeLevel);
+  console.log('subject', subject);
+  useEffect(() => {
+    if (subject && gradeLevel)
+      getQuestion({
+        subject,
+        gradeLevel,
+      });
+  }, [gradeLevel, subject]);
+
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    console.log('selectedRowKeys changed: ', newSelectedRowKeys);
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  const dataQuestion = useMemo(() => {
+    return dataQuestions?.data.map((question: any) => ({ ...question, key: question.id })) || [];
+  }, [dataQuestions]);
+
+  const columns: any = [
+    {
+      title: 'Question',
+      dataIndex: 'content',
+    },
+    {
+      title: 'Options',
+      dataIndex: 'age',
+      align: 'center',
+      render: (_: any, record: any) => (
+        <Popover
+          content={
+            <Space>
+              {/*{record?.type ===1 ?*/}
+
+              {/*    <Radio.Group name="radiogroup" defaultValue={1}>*/}
+              {/*      <Radio value={1}>A</Radio>*/}
+              {/*      <Radio value={2}>B</Radio>*/}
+              {/*      <Radio value={3}>C</Radio>*/}
+              {/*      <Radio value={4}>D</Radio>*/}
+              {/*    </Radio.Group> :*/}
+              {/*}*/}
+              {record?.options?.map((option: any) => (
+                <Space>
+                  {t('question.option')}
+                  {'.  '}
+                  {option.content}
+                </Space>
+              ))}
+            </Space>
+          }
+        >
+          <Space>Details</Space>
+        </Popover>
+      ),
+    },
+  ];
+
   return (
     <>
       {contextHolder}
       {isUpsert && (
         <Drawer
-          title={idEdit ? t('user.edit.title') : t('user.add.title')}
+          title={idEdit ? t('exercise.edit') : t('exercise.create')}
           placement={'right'}
-          width={500}
+          width={'100%'}
           onClose={close}
           open={isUpsert}
           extra={
@@ -152,21 +230,35 @@ export function Upsert() {
         >
           <Spin spinning={isLoadingCreate || isLoadingGet || isLoadingUpdate}>
             <FormProvider {...methods}>
-              <InputForm
+              <TextAreaForm
                 name='name'
-                label={t('name')}
+                label={t('exercise.title')}
+              />
+              <Row gutter={[10, 10]}>
+                <Col span={12}>
+                  <SelectGrade />
+                </Col>
+                <Col span={12}>
+                  <SelectSubject />
+                </Col>
+              </Row>
+
+              <TableAntd
+                rowSelection={rowSelection}
+                columns={columns}
+                dataSource={dataQuestion || []}
               />
 
-              <SelectForm
-                name='status'
-                label={t('user.status')}
-                options={statusOptionUpsert}
-                defaultValue={StatusEnum.active}
-                className={css`
-                  min-width: 20rem;
-                  min-height: 3.8rem;
-                `}
-              />
+              {/*<SelectForm*/}
+              {/*  name='status'*/}
+              {/*  label={t('user.status')}*/}
+              {/*  options={statusOptionUpsert}*/}
+              {/*  defaultValue={StatusEnum.active}*/}
+              {/*  className={css`*/}
+              {/*    min-width: 20rem;*/}
+              {/*    min-height: 3.8rem;*/}
+              {/*  `}*/}
+              {/*/>*/}
             </FormProvider>
           </Spin>
         </Drawer>
