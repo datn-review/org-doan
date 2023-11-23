@@ -29,6 +29,7 @@ import {
   Space,
   Popover,
   Radio,
+  EditableCell,
 } from '@org/ui';
 
 import { StatusEnum, getImage, statusOptionUpsert } from '@org/utils';
@@ -62,6 +63,7 @@ const dataInit: IUpdate = {
 
 export function Upsert() {
   const { idEdit, isUpsert, setIsFetch, close, setDataUpsert, dataUpsert } = useCRUDContext();
+  const [dataSource, setDataSource] = useState<any[]>([]);
   const { t } = useTranslation();
   const methods = useForm<IUpdate>({
     defaultValues: dataInit,
@@ -135,8 +137,7 @@ export function Upsert() {
 
   const gradeLevel = methods?.watch('gradeLevel');
   const subject = methods?.watch('subject');
-  console.log('gradeLevel', gradeLevel);
-  console.log('subject', subject);
+
   useEffect(() => {
     if (subject && gradeLevel)
       getQuestion({
@@ -158,11 +159,47 @@ export function Upsert() {
     return dataQuestions?.data.map((question: any) => ({ ...question, key: question.id })) || [];
   }, [dataQuestions]);
 
+  useEffect(() => {
+    if (dataQuestions) {
+      const dataNew =
+        dataQuestions?.data.map((question: any) => ({ ...question, key: question.id })) || [];
+
+      setDataSource([...dataNew]);
+    }
+  }, [dataQuestions]);
+
+  const handleSaveCell = (row: any) => {
+    const newData = [...dataSource];
+    const index = newData.findIndex((item) => row.key === item.key);
+    const item = newData[index];
+    newData.splice(index, 1, {
+      ...item,
+      ...row,
+    });
+    setDataSource(newData);
+  };
+
   const columns: any = [
     {
       title: 'Question',
       dataIndex: 'content',
     },
+    {
+      title: t('user.score'),
+      sorter: true,
+
+      dataIndex: 'score',
+      key: 'score',
+      editable: true,
+      onCell: (record: any) => ({
+        record,
+        editable: true,
+        dataIndex: 'score',
+        title: t('assessment.score'),
+        handleSave: handleSaveCell,
+      }),
+    },
+
     {
       title: 'Options',
       dataIndex: 'age',
@@ -195,6 +232,11 @@ export function Upsert() {
       ),
     },
   ];
+  const components = {
+    body: {
+      cell: EditableCell,
+    },
+  };
 
   return (
     <>
@@ -244,9 +286,11 @@ export function Upsert() {
               </Row>
 
               <TableAntd
+                components={components}
                 rowSelection={rowSelection}
                 columns={columns}
-                dataSource={dataQuestion || []}
+                dataSource={dataSource || []}
+                bordered
               />
 
               {/*<SelectForm*/}

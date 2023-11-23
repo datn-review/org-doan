@@ -7,9 +7,12 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Payment } from '../../payment/entities/payment.entity';
+import { Assignment } from 'src/modules/assessment/assignment/entities/assignment.entity';
 
 @Entity({ name: 'lesson' })
 export class Lessons extends EntityHelper {
@@ -22,6 +25,11 @@ export class Lessons extends EntityHelper {
   })
   @Column({ type: Number })
   collaboration?: Collaboration | null;
+
+  @OneToMany(() => Assignment, (payment) => payment.lesson, {
+    onDelete: 'CASCADE',
+  })
+  assignments?: Assignment[] | null;
 
   @Column({ type: String, nullable: true })
   location: string;

@@ -54,6 +54,7 @@ import { WardsModule } from './modules/provinces/wards/wards.module';
 import { PostTimeAvailabilityModule } from './modules/posts/post-time-availability/post-time-availability.module';
 import { ExerciseModule } from './modules/assessment/exercise/exercise.module';
 import { QuestionModule } from './modules/assessment/question/question.module';
+import { AssignmentModule } from './modules/assessment/assignment/assignment.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -133,6 +134,7 @@ import { QuestionModule } from './modules/assessment/question/question.module';
     PostTimeAvailabilityModule,
     ExerciseModule,
     QuestionModule,
+    AssignmentModule,
   ],
 })
 export class AppModule {}

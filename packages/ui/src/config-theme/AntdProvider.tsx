@@ -1,6 +1,7 @@
 import { COLOR } from '@org/utils';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, Space } from 'antd';
 import React, { PropsWithChildren } from 'react';
+import { css } from '@emotion/css';
 
 export function AntdProvider({ children }: PropsWithChildren) {
   return (

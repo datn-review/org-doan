@@ -33,7 +33,7 @@ import { Upsert } from './container/upsert';
 function AssignmentApp() {
   const tableInstance = useTable({
     initialSortValue: {
-      sortBy: 'name',
+      sortBy: 'title',
       sortDirection: 'asc',
     },
   });
@@ -85,9 +85,9 @@ function AssignmentApp() {
 
   const columns = [
     {
-      key: 'name ',
-      title: t('name'),
-      dataIndex: 'name',
+      key: 'title ',
+      title: t('title'),
+      dataIndex: 'title',
       sorter: true,
     },
 

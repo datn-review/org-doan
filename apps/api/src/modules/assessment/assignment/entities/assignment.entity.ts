@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { GradeLevel } from '../../../grade-level/entities/grade-level.entity';
 import { Lessons } from '../../../lessons/entities/lessons.entity';
+import { Exercise } from '../../exercise/entities/exercise.entity';
 
 @Entity({ name: 'assignment' })
 export class Assignment extends EntityHelper {
@@ -19,16 +20,29 @@ export class Assignment extends EntityHelper {
   id: number;
 
   @Column({ type: String, nullable: false })
-  name: string;
+  title: string;
 
   @ManyToOne(() => Lessons, {
     eager: true,
   })
-  @Column({ type: String, nullable: false })
-  lesson: string;
+  lesson: Lessons | null;
+
+  @ManyToOne(() => Exercise, {
+    eager: true,
+  })
+  exercise: Exercise | null;
+
+  @Column({ type: String, nullable: true })
+  score?: string | null;
 
   @Column({ type: Number, default: 1 })
   status: number;
+
+  @CreateDateColumn()
+  startTime: Date;
+
+  @CreateDateColumn()
+  endTime: Date;
 
   @CreateDateColumn()
   createdAt: Date;

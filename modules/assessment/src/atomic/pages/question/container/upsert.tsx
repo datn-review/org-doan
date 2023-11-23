@@ -271,6 +271,7 @@ export function Upsert() {
                   </Button>
                 </Space>
               ))}
+
               <Space
                 className={css`
                   display: flex;
@@ -291,6 +292,15 @@ export function Upsert() {
                   {t('add')}
                 </Button>
               </Space>
+
+              <InputForm
+                name='score'
+                label={t('assessment.score')}
+                className={css`
+                  min-width: 20rem;
+                  min-height: 3.8rem;
+                `}
+              />
 
               <SelectForm
                 name='type'

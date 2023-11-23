@@ -28,6 +28,7 @@ import { UpdateQuestionDto } from './dto/update.dto';
 import { QuestionService } from './question.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import { OptionService } from '../option/option.service';
+import { IWhere } from 'src/core/base.service';
 
 const relations = [
   {
@@ -102,13 +103,19 @@ export class QuestionController {
     @Query('status', new DefaultValuePipe(1), ParseIntPipe) status: number,
     @Query('fieldSearch', new DefaultValuePipe('content')) fieldSearch: string | string[],
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
-    @Query('gradeLevel', new DefaultValuePipe('')) gradeLevel: number,
-    @Query('subject', new DefaultValuePipe('')) subject: number,
+    @Query('gradeLevel', new DefaultValuePipe(0)) gradeLevel: number,
+    @Query('subject', new DefaultValuePipe(0)) subject: number,
   ): Promise<InfinityPaginationResultType<Question>> {
     if (limit > 50) {
       limit = 1000;
     }
-    console.log(subject);
+    let where: IWhere[] = [];
+    if (subject) {
+      where = [...where, { field: 'subject', value: subject }];
+    }
+    if (gradeLevel) {
+      where = [...where, { field: 'gradeLevelId', value: gradeLevel }];
+    }
 
     return await this.questionService.findManyWithPagination({
       page,
@@ -119,10 +126,7 @@ export class QuestionController {
       searchName,
       fieldSearch,
       relations,
-      where: [
-        { field: 'subjectId', value: subject },
-        { field: 'gradeLevelId', value: gradeLevel },
-      ],
+      where,
     });
   }
 

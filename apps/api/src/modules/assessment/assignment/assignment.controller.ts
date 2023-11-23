@@ -27,21 +27,26 @@ import { CreateAssignmentDto } from './dto/create.dto';
 import { UpdateAssignmentDto } from './dto/update.dto';
 import { AssignmentService } from './assignment.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
+import { SubmissionQuestion } from '../submission-question/entities/submission-question.entity';
+import { SubmissionQuestionService } from '../submission-question/submission-question.service';
 
 @ApiBearerAuth()
 @ApiTags('Assignment')
-@Roles(RoleEnum.WEB_ADMIN)
+@Roles(RoleEnum.WEB_ADMIN, RoleEnum.PESONAL_TUTOR)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'assignment',
   version: '1',
 })
 export class AssignmentController {
-  constructor(private readonly assignmentService: AssignmentService) {}
+  constructor(
+    private readonly assignmentService: AssignmentService,
+    private readonly submissionQuestionService: SubmissionQuestionService,
+  ) {}
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createAssignmentDto: CreateAssignmentDto): Promise<Assignment[]> {
+  create(@Body() createAssignmentDto: any): Promise<Assignment[]> {
     return this.assignmentService.create({
       ...createAssignmentDto,
     });
@@ -58,10 +63,10 @@ export class AssignmentController {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number,
-    @Query('sortBy', new DefaultValuePipe('name')) sortBy: string,
+    @Query('sortBy', new DefaultValuePipe('title')) sortBy: string,
     @Query('sortDirection', new DefaultValuePipe('ASC')) sortDirection: string,
     @Query('status', new DefaultValuePipe(0), ParseIntPipe) status: number,
-    @Query('fieldSearch', new DefaultValuePipe('name')) fieldSearch: string | string[],
+    @Query('fieldSearch', new DefaultValuePipe('title')) fieldSearch: string | string[],
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
   ): Promise<InfinityPaginationResultType<Assignment>> {
     if (limit > 50) {
@@ -89,6 +94,14 @@ export class AssignmentController {
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string): Promise<NullableType<Assignment>> {
     return this.assignmentService.findOne({ id: +id });
+  }
+
+  @Put('/submission/:id')
+  @HttpCode(HttpStatus.OK)
+  submission(@Param('id') id: number, @Body() createAssignmentDto: any): Promise<Assignment[]> {
+    return this.assignmentService.create({
+      ...createAssignmentDto,
+    });
   }
 
   @Put(':id')

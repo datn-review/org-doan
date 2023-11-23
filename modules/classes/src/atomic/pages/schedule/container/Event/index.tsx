@@ -1,13 +1,26 @@
 // @flow
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { Button, Col, ModalAntd, Row, SIZE, Space, Tabs, TabsProps } from '@org/ui';
+import {
+  Button,
+  Col,
+  IconDeleteAction,
+  IconEditAction,
+  ModalAntd,
+  Row,
+  SIZE,
+  Space,
+  TableAntd,
+  Tabs,
+  TabsProps,
+  Tag,
+} from '@org/ui';
 import { useLazyFindLessonQuery, useUpdateLessonMutation } from '@org/store';
 import { useTranslation } from '@org/i18n';
 import { Editor } from '@org/editor';
 import dayjs from 'dayjs';
 import { css } from '@emotion/css';
-import { SiteMap } from '@org/utils';
+import { SiteMap, StatusShowHide, StatusShowHideColor } from '@org/utils';
 import { Link } from 'react-router-dom';
 
 type Props = {
@@ -128,6 +141,53 @@ export const LessonInfo = ({ data }: any) => {
 
 export const LessonAssigenment = ({ data }: any) => {
   const { t } = useTranslation();
+  const columns = [
+    {
+      key: 'title ',
+      title: t('title'),
+      dataIndex: 'title',
+      sorter: true,
+    },
+
+    {
+      title: t('user.createdAt'),
+      dataIndex: 'updatedAt',
+      sorter: true,
+
+      render: (_createdAt: string) => <>{dayjs(_createdAt).format('DD/MM/YYYY')}</>,
+    },
+    {
+      title: t('user.status'),
+      sorter: true,
+
+      dataIndex: 'status',
+      key: 'status',
+      render: (_: any, record: any) => (
+        <Tag color={StatusShowHideColor[record?.status as keyof typeof StatusShowHideColor]}>
+          {t(StatusShowHide[record?.status as keyof typeof StatusShowHide])}
+        </Tag>
+      ),
+    },
+
+    {
+      title: t('user.action'),
+      dataIndex: '',
+      render: (_: any, record: any) => (
+        <Space
+          className={css`
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+          `}
+        >
+          <Link to={SiteMap.Assessment.Assignment.Do.generate(record.id)}>
+            <Button>{t('view')}</Button>
+          </Link>
+        </Space>
+      ),
+    },
+  ];
 
   return (
     <Space>
@@ -141,13 +201,10 @@ export const LessonAssigenment = ({ data }: any) => {
           <Button $size={SIZE.ExtraSmall}>{t('assigment.create')}</Button>
         </Link>
       </Space>
-      {/*<Table*/}
-      {/*  tableInstance={tableInstance}*/}
-      {/*  totalPage={data?.totals}*/}
-      {/*  columns={columns}*/}
-      {/*  data={data}*/}
-      {/*  loading={isLoading}*/}
-      {/*/>*/}
+      <TableAntd
+        columns={columns}
+        dataSource={data?.assignments || []}
+      />
     </Space>
   );
 };

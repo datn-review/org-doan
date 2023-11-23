@@ -125,3 +125,4 @@ export const SelectLimitTable = ({
 };
 
 export { useTable } from './hooks/useTable';
+export { EditableCell } from './edit-row';

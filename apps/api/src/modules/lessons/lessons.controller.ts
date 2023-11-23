@@ -38,6 +38,16 @@ interface ClassTime {
   start?: string;
   end?: string;
 }
+const relation = [
+  {
+    field: 'assignments',
+    entity: 'assignment',
+  },
+  {
+    field: 'assignment.exercise',
+    entity: 'exercise',
+  },
+];
 const generateWeeklySchedule = ({
   startDate,
   endDate,
@@ -179,7 +189,7 @@ export class LessonsController {
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string): Promise<NullableType<Lessons>> {
-    return this.lessonsService.findOne({ id: +id });
+    return this.lessonsService.findOne({ id: +id }, relation);
   }
 
   @Put(':id')
