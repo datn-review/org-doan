@@ -1,41 +1,27 @@
-import { css } from '@emotion/css';
-import { SelectGrade, SelectSubject, useCRUDContext, useMessageHook } from '@org/core';
+import { useCRUDContext, useMessageHook } from '@org/core';
 import { i18next, useTranslation } from '@org/i18n';
 import {
-  useCreateAssignmentMutation,
-  useGetExerciseActiveQuery,
   useLazyFindAssignmentQuery,
-  useLazyGetExerciseQuery,
+  useSubmissionMutation,
   useUpdateAssignmentMutation,
 } from '@org/store';
 import {
-  BoxCenter,
   Button,
-  Drawer,
-  FormProvider,
-  InputForm,
-  SIZE,
-  SelectForm,
+  CheckboxGroup,
+  Radio,
+  Section,
+  Space,
   Spin,
-  TYPE_BUTTON,
-  TypeInput,
-  UnloadImageForm,
-  VARIANT,
+  TextSection,
   useForm,
   yupResolver,
-  Section,
-  TextSection,
-  Space,
-  DatePickerForm,
-  RangePickerForm,
 } from '@org/ui';
-
-import { StatusEnum, getImage, statusOptionUpsert, COLOR } from '@org/utils';
-import { isEmpty } from 'lodash';
-import { useEffect, useMemo } from 'react';
+import { isArray, isEmpty } from 'lodash';
+import { useEffect, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import dayjs from 'dayjs';
 import { useParams } from 'react-router-dom';
+import { css } from '@emotion/css';
 
 type Status = {
   id: string;
@@ -61,7 +47,7 @@ const dataInit: IUpdate = {
   subject: undefined,
 };
 
-export function CreateAssignment() {
+export function DoAssignment() {
   const { idEdit, isUpsert, setIsFetch, close, setDataUpsert, dataUpsert } = useCRUDContext();
   const { t } = useTranslation();
   const methods = useForm<IUpdate>({
@@ -69,58 +55,50 @@ export function CreateAssignment() {
 
     resolver: yupResolver(schema(idEdit)),
   });
-  const { lessonId } = useParams();
-  console.log(lessonId);
+  const { assignmentId } = useParams();
+  const [answer, setAnswer] = useState<Record<number, any>>({});
   const { messageError, messageSuccess, contextHolder } = useMessageHook();
 
-  const [createData, { isLoading: isLoadingCreate }] = useCreateAssignmentMutation();
-
-  const [getData, { isLoading: isLoadingGet }] = useLazyFindAssignmentQuery();
-
   const [updateUser, { isLoading: isLoadingUpdate }] = useUpdateAssignmentMutation();
+  const [submission, { isLoading: isLoadingSubmission }] = useSubmissionMutation();
 
-  const [getExercise, { data: dataGetExercise, isLoading: isLoadingGetExercise }] =
-    useLazyGetExerciseQuery();
+  const [getAssignment, { data: dataAssignment, isLoading: isLoadingAssignment }] =
+    useLazyFindAssignmentQuery();
 
-  const gradeLevel = methods?.watch('gradeLevel');
-  const subject = methods?.watch('subject');
-  console.log(dataGetExercise);
-  const exerciseData = useMemo(() => {
-    return (
-      dataGetExercise?.data?.map((item: any) => ({
-        label: (
-          <Space
-            className={css`
-              display: flex;
-              align-items: center;
-              gap: 2rem;
-            `}
-          >
-            {item.name}
-          </Space>
-        ),
-        value: item.id,
-      })) || []
-    );
-  }, [dataGetExercise]);
-
-  useEffect(() => {
-    if (subject && gradeLevel)
-      getExercise({
-        subject,
-        gradeLevel,
+  const handleSubmit = () => {
+    // assessment: id,
+    //     question: answer.questionId,
+    //     answer: answer.answer,
+    const answers = Object.entries(answer)?.map(([key, value]: any) => ({
+      questionId: key,
+      answer: isArray(value) ? value?.join(',') : `${value}`,
+    }));
+    console.log(answers);
+    submission({
+      id: dataAssignment.id,
+      body: { answers },
+    })
+      .then(() => {
+        messageSuccess(t('assignment.submit.success'));
+      })
+      .catch(() => {
+        messageError(t('assignment.submit.error'));
       });
-  }, [gradeLevel, subject]);
+  };
 
   useEffect(() => {
-    if (idEdit) {
-      getData({ id: idEdit })
-        .unwrap()
-        .then((data: any) => {
-          setDataUpsert(data);
-        });
-    }
-  }, [idEdit]);
+    getAssignment({ id: assignmentId });
+  }, [assignmentId]);
+
+  // useEffect(() => {
+  //   if (idEdit) {
+  //     getData({ id: idEdit })
+  //       .unwrap()
+  //       .then((data: any) => {
+  //         setDataUpsert(data);
+  //       });
+  //   }
+  // }, [idEdit]);
   const handleSave = async (formData: any) => {
     // if (idEdit) {
     //   updateUser({ body: formData, id: idEdit })
@@ -140,7 +118,7 @@ export function CreateAssignment() {
 
     const body = {
       title: formData.title,
-      lesson: Number(lessonId),
+      // lesson: Number(lessonId),
 
       exercise: formData.exercise,
       startTime,
@@ -148,19 +126,6 @@ export function CreateAssignment() {
     };
 
     console.log(body);
-
-    createData(formData)
-      .then(() => {
-        messageSuccess(t('create.assignment.success'));
-      })
-      .catch((err) => {
-        messageSuccess(t('create.assignment.erroe'));
-      })
-      .finally(() => {
-        close();
-        setIsFetch(true);
-      });
-    // }
   };
   useEffect(() => {
     if (!isEmpty(dataUpsert)) {
@@ -185,67 +150,89 @@ export function CreateAssignment() {
 
   return (
     <Section>
-      <TextSection>{t('assignment.create')}</TextSection>
       {contextHolder}
 
-      <Spin spinning={isLoadingCreate || isLoadingGet || isLoadingUpdate}>
-        <FormProvider {...methods}>
-          <InputForm
-            name='title'
-            label={t('name')}
-          />
-          <SelectGrade />
-          <SelectSubject />
-          <Space
-            className={css`
-              display: flex;
-              align-items: center;
-              gap: 2rem;
-            `}
-          >
-            <SelectForm
-              name='exercise'
-              label={t('assignment.exercise')}
-              options={exerciseData}
+      <Spin spinning={isLoadingAssignment}>
+        <Space
+          className={css`
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          `}
+        >
+          <TextSection left>
+            {t('exercise.name')}: {dataAssignment?.exercise?.name}
+          </TextSection>
+          <Button onClick={handleSubmit}>{t('submit')}</Button>
+        </Space>
+
+        {dataAssignment?.exercise?.questions?.map((question: any, index: number) => {
+          return (
+            <Space
               className={css`
-                min-width: 50rem;
-                min-height: 3.8rem;
+                font-size: 1.6rem;
+                font-weight: 500;
+                padding-bottom: 2rem;
+                //padding-bottom: 0.5rem;
+                .ant-checkbox-group,
+                .ant-radio-group {
+                  display: block;
+                }
+                .ant-checkbox-group-item,
+                .ant-radio-wrapper {
+                  display: flex;
+                  padding: 0.5rem 1.4rem;
+                }
               `}
-              showSearch
-            />
-            <Button>{t('details')}</Button>
-          </Space>
-
-          <RangePickerForm
-            name='time'
-            label={'assignment.time.startEnd'}
-            disabledDate={disabledDate}
-            format='YYYY-MM-DD HH:mm'
-            showTime
-            className={css``}
-          />
-
-          <SelectForm
-            name='status'
-            label={t('user.status')}
-            options={statusOptionUpsert}
-            defaultValue={StatusEnum.active}
-            className={css`
-              min-width: 20rem;
-              min-height: 3.8rem;
-            `}
-          />
-          <Button
-            $type={TYPE_BUTTON.Primary}
-            $size={SIZE.ExtraSmall}
-            onClick={methods.handleSubmit((value) => {
-              handleSave(value);
-            })}
-          >
-            {t('assignment.create')}
-          </Button>
-        </FormProvider>
+            >
+              <Space>
+                {index + 1}. {question.content} ({question.score} {t('point')})
+                <Space>
+                  <Question
+                    question={question}
+                    value={answer?.[question.id] || undefined}
+                    onChange={(value: any) => {
+                      setAnswer((prev) => ({
+                        ...prev,
+                        [question.id]: value,
+                      }));
+                    }}
+                  />
+                </Space>
+              </Space>
+            </Space>
+          );
+        })}
       </Spin>
     </Section>
   );
 }
+
+export const Question = ({ question, onChange, value }: any) => {
+  const options = useMemo(() => {
+    return question.options?.map((option: any, index: number) => ({
+      label: (
+        <Space>
+          {String.fromCharCode(index + 97)}. {option.content}{' '}
+        </Space>
+      ),
+      value: option.id,
+    }));
+  }, [question]);
+  if (question.type === 0)
+    return (
+      <Radio.Group
+        options={options}
+        onChange={(e) => onChange(e.target.value)}
+        value={value}
+      />
+    );
+
+  return (
+    <CheckboxGroup
+      options={options}
+      value={value}
+      onChange={onChange}
+    />
+  );
+};

@@ -21,3 +21,5 @@ export * from './assessment.api';
 export * from './exercise.api';
 export * from './question.api';
 export * from './assignment.api';
+export * from './chat.api';
+export * from './room.api';

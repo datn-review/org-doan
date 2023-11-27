@@ -149,7 +149,7 @@ export function CreateAssignment() {
 
     console.log(body);
 
-    createData(formData)
+    createData(body)
       .then(() => {
         messageSuccess(t('create.assignment.success'));
       })
@@ -180,7 +180,7 @@ export function CreateAssignment() {
   }, [JSON.stringify(dataUpsert)]);
   const disabledDate = (current: any) => {
     // Can not select days before today and today
-    return current && current < dayjs().endOf('day');
+    return current && current < dayjs().endOf('millisecond');
   };
 
   return (

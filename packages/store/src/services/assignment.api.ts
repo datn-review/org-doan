@@ -23,12 +23,28 @@ export const AssignmentAPI = baseAuthSplitApi.injectEndpoints({
         method: 'POST',
       }),
     }),
+
+    submission: builder.mutation({
+      query: ({ id, body }) => ({
+        url: `/assignment/submission/${id}`,
+        body,
+        method: 'POST',
+      }),
+    }),
     findAssignment: builder.query({
       query: ({ id }) => ({
         url: `/assignment/${id}`,
         method: 'GET',
       }),
     }),
+
+    reviewAssignment: builder.query({
+      query: ({ id }) => ({
+        url: `/assignment/review/${id}`,
+        method: 'GET',
+      }),
+    }),
+
     updateAssignment: builder.mutation({
       query: ({ body, id }) => ({
         url: `/assignment/${id}`,
@@ -53,4 +69,6 @@ export const {
   useDeleteAssignmentMutation,
   useLazyFindAssignmentQuery,
   useGetAssignmentActiveQuery,
+  useSubmissionMutation,
+  useLazyReviewAssignmentQuery,
 } = AssignmentAPI;

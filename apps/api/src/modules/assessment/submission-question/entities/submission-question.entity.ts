@@ -32,8 +32,11 @@ export class SubmissionQuestion extends EntityHelper {
   })
   question: Question;
 
-  @Column({ type: Number, nullable: false })
-  answer: Number;
+  @Column({ type: String, nullable: false })
+  answer: String;
+
+  @Column({ type: Boolean, nullable: true })
+  isCorrect: Boolean;
 
   @Column({ type: Number, default: 1 })
   status: number;

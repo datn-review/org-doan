@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { BaseEntity, Repository, SelectQueryBuilder } from 'typeorm';
 import { NullableType } from '../utils/types/nullable.type';
 import { IBaseService, IParams } from './i.base.service';
+import { isArray } from 'lodash';
 
 export interface IRelations {
   field: string;
@@ -112,7 +113,7 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
         searchName: `%${searchName.toLowerCase()}%`,
       });
     }
-    if (fieldSearch.length == 2) {
+    if (isArray(fieldSearch) && fieldSearch?.length == 2) {
       query.andWhere(
         `(LOWER(entity.${fieldSearch[0]}) LIKE :searchName OR LOWER(entity.${fieldSearch[1]}) LIKE :searchName)`,
         {
@@ -148,6 +149,84 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
 
     return { data, totals };
   }
+
+  async findManyNoPagination({
+    searchName,
+    fieldSearch,
+    status,
+    relations,
+    where,
+    or,
+  }: {
+    searchName: string;
+    fieldSearch?: any;
+    status?: number | undefined;
+    relations?: IRelations[] | string[];
+    where?: IWhere[];
+    or?: IWhere[][];
+  }): Promise<{
+    data: T[];
+  }> {
+    const queryBuilder: SelectQueryBuilder<T> = this.repository.createQueryBuilder('entity');
+
+    const query = queryBuilder;
+    if (relations && relations?.length > 0) {
+      relations.forEach((field: string | IRelations) => {
+        if (typeof field === 'string') {
+          queryBuilder.leftJoinAndSelect(`entity.${field}`, field);
+        } else {
+          queryBuilder.leftJoinAndSelect(
+            field.field.includes('.') ? field.field : `entity.${field.field}`,
+            field.entity,
+          );
+        }
+      });
+    }
+
+    if (status) {
+      query.where(`entity.status = :status`, { status });
+    }
+    if (where && where?.length > 0) {
+      where?.forEach(({ field, value }, index) => {
+        query.andWhere(`entity.${field} = :value_${field}`, { [`value_${field}`]: value });
+      });
+    }
+    if (typeof fieldSearch === 'string' && fieldSearch !== '') {
+      query.andWhere(`LOWER(entity.${fieldSearch}) LIKE :searchName`, {
+        searchName: `%${searchName.toLowerCase()}%`,
+      });
+    }
+    if (isArray(fieldSearch) && fieldSearch?.length == 2) {
+      query.andWhere(
+        `(LOWER(entity.${fieldSearch[0]}) LIKE :searchName OR LOWER(entity.${fieldSearch[1]}) LIKE :searchName)`,
+        {
+          searchName: `%${searchName.toLowerCase()}%`,
+        },
+      );
+    }
+
+    if (or) {
+      or?.forEach((data, key) => {
+        let string = '';
+        let values = {};
+        data?.forEach(({ field, value }, index) => {
+          const fieldString = field?.includes('.') ? field : `entity.${field}`;
+          if (index !== 0) {
+            string += ` OR ${fieldString} = :value_${key}_${index}`;
+          } else {
+            string += `${fieldString} = :value_${key}_${index}`;
+          }
+          values = { ...values, [`value_${key}_${index}`]: value };
+        });
+
+        query.andWhere(`(${string})`, { ...values });
+      });
+    }
+    const data = await query.getMany();
+
+    return { data };
+  }
+
   countAll({
     fieldSearch,
     searchName,

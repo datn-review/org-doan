@@ -11,6 +11,7 @@ import {
   Post,
   Put,
   Query,
+  SerializeOptions,
   UseGuards,
 } from '@nestjs/common';
 
@@ -29,6 +30,21 @@ import { AssignmentService } from './assignment.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import { SubmissionQuestion } from '../submission-question/entities/submission-question.entity';
 import { SubmissionQuestionService } from '../submission-question/submission-question.service';
+
+const relations = [
+  {
+    field: 'exercise',
+    entity: 'exercise',
+  },
+  {
+    field: 'exercise.questions',
+    entity: 'question',
+  },
+  {
+    field: 'question.options',
+    entity: 'option',
+  },
+];
 
 @ApiBearerAuth()
 @ApiTags('Assignment')
@@ -81,6 +97,7 @@ export class AssignmentController {
       sortDirection,
       searchName,
       fieldSearch,
+      relations,
     });
   }
 
@@ -93,15 +110,84 @@ export class AssignmentController {
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string): Promise<NullableType<Assignment>> {
-    return this.assignmentService.findOne({ id: +id });
+    return this.assignmentService.findOne({ id: +id }, relations);
   }
 
-  @Put('/submission/:id')
+  @SerializeOptions({
+    groups: ['tutor'],
+  })
+  @Get('/review/:id')
   @HttpCode(HttpStatus.OK)
-  submission(@Param('id') id: number, @Body() createAssignmentDto: any): Promise<Assignment[]> {
-    return this.assignmentService.create({
-      ...createAssignmentDto,
+  async findReview(@Param('id') id: string): Promise<NullableType<Assignment>> {
+    const assignment = await this.assignmentService.findOne({ id: +id }, [
+      ...relations,
+      {
+        field: 'submissionQuestions',
+        entity: 'submissionQuestion',
+      },
+    ]);
+
+    assignment?.exercise?.questions?.forEach((question) => {
+      const submission = assignment?.submissionQuestions?.find(
+        (submission) => question.id === submission.questionId,
+      );
+      question['isCorrect'] = submission?.isCorrect || false;
+      question['answer'] = submission?.answer;
     });
+    if (assignment instanceof Assignment) {
+      delete assignment['submissionQuestions'];
+    }
+
+    console.log(assignment);
+
+    return assignment;
+  }
+
+  @Post('/submission/:id')
+  @HttpCode(HttpStatus.OK)
+  async submission(
+    @Param('id') id: number,
+    @Body() payload: any,
+  ): Promise<SubmissionQuestion[] | null> {
+    const assignment = await this.assignmentService.findOne({ id: +id }, relations);
+    let score = 0;
+    const dataSubmission =
+      payload?.answers?.map((answer: any) => ({
+        assignmentId: Number(id),
+        questionId: Number(answer.questionId),
+        answer: answer.answer,
+        isCorrect: false,
+      })) || [];
+
+    dataSubmission?.forEach((answer) => {
+      const question = assignment?.exercise?.questions.find(
+        (question) => question?.id === answer?.questionId,
+      );
+      if (question?.type === 0) {
+        const correct = question?.options?.find((option) => option.isCorrect);
+        if (correct?.id === Number(answer?.answer)) {
+          score = score + question.score;
+          answer['isCorrect'] = true;
+        } else {
+          answer['isCorrect'] = false;
+        }
+      }
+      if (question?.type === 1) {
+        const answers = answer?.answer?.split(',');
+        const corrects = question?.options?.filter((option) => option.isCorrect);
+        const isCorrect = corrects?.every((option) => answers?.includes(String(option.id)));
+        if (isCorrect) {
+          score = score + question.score;
+        }
+        answer['isCorrect'] = isCorrect;
+      }
+    });
+
+    const submissionQuestion = await this.submissionQuestionService.createMany(dataSubmission);
+
+    void this.assignmentService.update(id, { status: 2, score: score });
+
+    return submissionQuestion;
   }
 
   @Put(':id')

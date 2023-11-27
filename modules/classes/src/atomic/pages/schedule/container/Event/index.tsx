@@ -1,26 +1,13 @@
 // @flow
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import {
-  Button,
-  Col,
-  IconDeleteAction,
-  IconEditAction,
-  ModalAntd,
-  Row,
-  SIZE,
-  Space,
-  TableAntd,
-  Tabs,
-  TabsProps,
-  Tag,
-} from '@org/ui';
+import { Button, Col, ModalAntd, Row, SIZE, Space, TableAntd, Tabs, TabsProps, Tag } from '@org/ui';
 import { useLazyFindLessonQuery, useUpdateLessonMutation } from '@org/store';
 import { useTranslation } from '@org/i18n';
 import { Editor } from '@org/editor';
 import dayjs from 'dayjs';
 import { css } from '@emotion/css';
-import { SiteMap, StatusShowHide, StatusShowHideColor } from '@org/utils';
+import { SiteMap } from '@org/utils';
 import { Link } from 'react-router-dom';
 
 type Props = {
@@ -141,21 +128,56 @@ export const LessonInfo = ({ data }: any) => {
 
 export const LessonAssigenment = ({ data }: any) => {
   const { t } = useTranslation();
+
+  const getStatus = (record: any) => {
+    switch (record?.status) {
+      case 2:
+        return t('success');
+      case 1:
+        if (dayjs(record.endTime).isBefore(dayjs())) {
+          return t('expired');
+        } else {
+          return t('active');
+        }
+    }
+  };
+  const getStatusColor = (record: any) => {
+    switch (record?.status) {
+      case 2:
+        return 'success';
+      case 1:
+        if (dayjs(record.endTime).isBefore(dayjs())) {
+          return 'error';
+        } else {
+          return 'success';
+        }
+    }
+  };
   const columns = [
     {
       key: 'title ',
-      title: t('title'),
+      title: t('assignment.title'),
       dataIndex: 'title',
       sorter: true,
     },
 
     {
-      title: t('user.createdAt'),
-      dataIndex: 'updatedAt',
+      key: 'startTime',
+      title: t('time.start'),
+      dataIndex: 'startTime',
       sorter: true,
 
-      render: (_createdAt: string) => <>{dayjs(_createdAt).format('DD/MM/YYYY')}</>,
+      render: (startTime: string) => <>{dayjs(startTime).format('DD/MM/YYYY HH:mm')}</>,
     },
+    {
+      key: 'endTime',
+      title: t('time.end'),
+      dataIndex: 'endTime',
+      sorter: true,
+
+      render: (endTime: string) => <>{dayjs(endTime).format('DD/MM/YYYY HH:mm')}</>,
+    },
+
     {
       title: t('user.status'),
       sorter: true,
@@ -163,9 +185,7 @@ export const LessonAssigenment = ({ data }: any) => {
       dataIndex: 'status',
       key: 'status',
       render: (_: any, record: any) => (
-        <Tag color={StatusShowHideColor[record?.status as keyof typeof StatusShowHideColor]}>
-          {t(StatusShowHide[record?.status as keyof typeof StatusShowHide])}
-        </Tag>
+        <Tag color={getStatusColor(record)}>{getStatus(record)}</Tag>
       ),
     },
 
@@ -181,9 +201,17 @@ export const LessonAssigenment = ({ data }: any) => {
             cursor: pointer;
           `}
         >
-          <Link to={SiteMap.Assessment.Assignment.Do.generate(record.id)}>
-            <Button>{t('view')}</Button>
-          </Link>
+          {record?.status === 2 ? (
+            <Link to={SiteMap.Assessment.Assignment.Review.generate(record.id)}>
+              <Button $size={SIZE.ExtraSmall}>{t('result')}</Button>
+            </Link>
+          ) : dayjs(record.endTime).isBefore(dayjs()) ? (
+            <Button $size={SIZE.ExtraSmall}>{t('expired')}</Button>
+          ) : (
+            <Link to={SiteMap.Assessment.Assignment.Do.generate(record.id)}>
+              <Button $size={SIZE.ExtraSmall}>{t('do')}</Button>
+            </Link>
+          )}
         </Space>
       ),
     },

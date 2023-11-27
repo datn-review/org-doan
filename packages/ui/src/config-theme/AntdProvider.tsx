@@ -2,7 +2,7 @@ import { COLOR } from '@org/utils';
 import { ConfigProvider, Space } from 'antd';
 import React, { PropsWithChildren } from 'react';
 import { css } from '@emotion/css';
-
+import './antd-styled.scss';
 export function AntdProvider({ children }: PropsWithChildren) {
   return (
     <ConfigProvider
@@ -47,6 +47,10 @@ export function AntdProvider({ children }: PropsWithChildren) {
             algorithm: true,
           },
           ColorPicker: {
+            colorPrimary: COLOR.Primary,
+            algorithm: true,
+          },
+          Radio: {
             colorPrimary: COLOR.Primary,
             algorithm: true,
           },

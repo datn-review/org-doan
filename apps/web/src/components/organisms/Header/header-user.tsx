@@ -18,7 +18,13 @@ import { useTranslation } from '@org/i18n';
 import { Link, useNavigate } from 'react-router-dom';
 import { itemsLanguge, menuPerson } from './header-constant';
 import { IMenuIcon } from './header-type';
-import { logout, removeUserInfo, useAppDispatch, useAppSelector } from '@org/store';
+import {
+  logout,
+  removeUserInfo,
+  useAppDispatch,
+  useAppSelector,
+  useGetProfileMeQuery,
+} from '@org/store';
 import { COLOR, SiteMap } from '@org/utils';
 import { css } from '@emotion/css';
 
@@ -62,6 +68,14 @@ const itemsPerson: MenuProps['items'] = menuPerson.map(({ icon, title, path, key
 function HeaderUser() {
   const { i18n } = useTranslation();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
+
+  const { data } = useGetProfileMeQuery(
+    {},
+    {
+      skip: !isAuthenticated,
+      refetchOnMountOrArgChange: true,
+    },
+  );
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const changeLangue: MenuProps['onClick'] = (value) => {

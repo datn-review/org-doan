@@ -6,12 +6,16 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { GradeLevel } from '../../../grade-level/entities/grade-level.entity';
 import { Lessons } from '../../../lessons/entities/lessons.entity';
 import { Exercise } from '../../exercise/entities/exercise.entity';
+import { Option } from '../../option/entities/option.entity';
+import { SubmissionQuestion } from '../../submission-question/entities/submission-question.entity';
+import { Expose } from 'class-transformer';
 
 @Entity({ name: 'assignment' })
 export class Assignment extends EntityHelper {
@@ -31,6 +35,12 @@ export class Assignment extends EntityHelper {
     eager: true,
   })
   exercise: Exercise | null;
+
+  @Expose({ groups: ['tutor', 'admin'] })
+  @OneToMany(() => SubmissionQuestion, (submissionQuestion) => submissionQuestion.assignment, {
+    onDelete: 'CASCADE',
+  })
+  submissionQuestions?: SubmissionQuestion[] | null;
 
   @Column({ type: String, nullable: true })
   score?: string | null;

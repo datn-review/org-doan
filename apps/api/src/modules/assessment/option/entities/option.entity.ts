@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { User } from '../../../../users/entities/user.entity';
 import { Question } from '../../question/entities/question.entity';
+import { Expose } from 'class-transformer';
 
 @Entity({ name: 'option' })
 export class Option extends EntityHelper {
@@ -27,8 +28,9 @@ export class Option extends EntityHelper {
   @Column({ type: String, default: 1 })
   content: string;
 
+  @Expose({ groups: ['tutor', 'admin'] })
   @Column({ type: Boolean, default: false })
-  isCorrect: string;
+  isCorrect: Boolean;
 
   @CreateDateColumn()
   createdAt: Date;

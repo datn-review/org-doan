@@ -1,3 +1,6 @@
+import { Checkbox, Divider } from 'antd';
+export const CheckboxGroup = Checkbox.Group;
+
 export * from './atomic/atoms';
 export * from './atomic/templates';
 export * from './form';

@@ -206,6 +206,13 @@ export const menuCategory: MenuItem[] = [
       },
     ],
   },
+  {
+    name: <Translation>{(t) => t('chat.name')}</Translation>,
+    id: SiteMap.Manage.menu,
+    icon: <IconUser />,
+    path: SiteMap.Chat.path,
+    subMenu: [],
+  },
 
   {
     name: <Translation>{(t) => t('assessment.name')}</Translation>,

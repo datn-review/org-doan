@@ -199,6 +199,14 @@ export const SiteMap = {
         path: '/assignment/do/:assignmentId',
         generate: (id: number | string) => `/assignment/do/${id}`,
       },
+      Review: {
+        path: '/assignment/review/:assignmentId',
+        generate: (id: number | string) => `/assignment/review/${id}`,
+      },
     },
+  },
+  Chat: {
+    path: '/chat',
+    menu: 'chat',
   },
 };

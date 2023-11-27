@@ -55,6 +55,9 @@ import { PostTimeAvailabilityModule } from './modules/posts/post-time-availabili
 import { ExerciseModule } from './modules/assessment/exercise/exercise.module';
 import { QuestionModule } from './modules/assessment/question/question.module';
 import { AssignmentModule } from './modules/assessment/assignment/assignment.module';
+import { ChatBotModule } from './modules/chat/chat-bot/chat-bot.module';
+import { ChatModule } from './modules/chat/chat-message/chat.module';
+import { RoomModule } from './modules/chat/room/room.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -135,6 +138,9 @@ import { AssignmentModule } from './modules/assessment/assignment/assignment.mod
     ExerciseModule,
     QuestionModule,
     AssignmentModule,
+    ChatBotModule,
+    ChatModule,
+    RoomModule,
   ],
 })
 export class AppModule {}
