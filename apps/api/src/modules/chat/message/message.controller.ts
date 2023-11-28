@@ -28,6 +28,12 @@ import { UpdateMessageDto } from './dto/update.dto';
 import { MessageService } from './message.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 
+const relations = [
+  {
+    field: 'owner',
+    entity: 'user',
+  },
+];
 @ApiBearerAuth()
 @ApiTags('Message')
 @Roles()
@@ -81,8 +87,14 @@ export class MessageController {
 
   @Get('/list')
   @HttpCode(HttpStatus.OK)
-  getMessages(@Body() room: any) {
-    return this.messageService.getMessages(room);
+  getMessages(@Query() room: any) {
+    console.log(room);
+    return this.messageService.findMany(
+      {
+        room: Number(room?.roomId),
+      },
+      relations,
+    );
   }
 
   @Get('/active')

@@ -15,6 +15,7 @@ import {
 import { IMenuIcon, MenuItem } from './header-type';
 import { Translation } from '@org/i18n';
 import { RolesEnum, SiteMap } from '@org/utils';
+import { ifAnyGranted } from '@org/auth';
 
 export const itemsLanguge: MenuProps['items'] = [
   {
@@ -34,7 +35,7 @@ export const menuCategory: MenuItem[] = [
     id: SiteMap.Home.menu,
     icon: <IconHome />,
     subMenu: [],
-    isHide: false,
+    isShow: ifAnyGranted(SiteMap.Home.roles),
   },
   {
     name: <Translation>{(t) => t('class.new')}</Translation>,
@@ -42,7 +43,7 @@ export const menuCategory: MenuItem[] = [
     id: SiteMap.ClassNew.menu,
     icon: <IconHome />,
     subMenu: [],
-    // isHide: ifAnyGranted([RolesEnum.WEB_ADMIN]),
+    isShow: ifAnyGranted(SiteMap.ClassNew.roles),
   },
   {
     name: <Translation>{(t) => t('tutor')}</Translation>,
@@ -50,7 +51,7 @@ export const menuCategory: MenuItem[] = [
     id: SiteMap.Tutor.menu,
     icon: <IconHome />,
     subMenu: [],
-    // isHide: ifAnyGranted([RolesEnum.WEB_ADMIN]),
+    isShow: ifAnyGranted(SiteMap.Tutor.roles),
   },
   {
     name: <Translation>{(t) => t('find.tutor')}</Translation>,
@@ -58,7 +59,7 @@ export const menuCategory: MenuItem[] = [
     id: SiteMap.LookForTutor.menu,
     icon: <IconHome />,
     subMenu: [],
-    // isHide: ifAnyGranted([RolesEnum.WEB_ADMIN]),
+    isShow: ifAnyGranted(SiteMap.LookForTutor.roles),
   },
   // {
   //   name: <Translation>{(t) => t('manage.class')}</Translation>,
@@ -66,7 +67,7 @@ export const menuCategory: MenuItem[] = [
   //   id: SiteMap.TutorClass.menu,
   //   icon: <IconHome />,
   //   subMenu: [],
-  //   // isHide: ifAnyGranted([RolesEnum.WEB_ADMIN]),
+  //   // isShow: ifAnyGranted([RolesEnum.WEB_ADMIN]),
   // },
   {
     name: <Translation>{(t) => t('dashboards')}</Translation>,
@@ -74,14 +75,14 @@ export const menuCategory: MenuItem[] = [
     id: SiteMap.Dashboard.menu,
     icon: <IconDashBoard />,
     subMenu: [],
-    // isHide: ifNotGranted([RolesEnum.WEB_ADMIN]),
+    isShow: ifAnyGranted(SiteMap.Dashboard.roles),
   },
   {
     name: <Translation>{(t) => t('users')}</Translation>,
     path: '',
     id: SiteMap.Users.menu,
     icon: <IconUser />,
-    // isHide: ifNotGranted([RolesEnum.WEB_ADMIN]),
+    isShow: ifAnyGranted(SiteMap.Users.roles),
     subMenu: [
       {
         label: <Translation>{(t) => t('manage.admin')}</Translation>,
@@ -144,7 +145,7 @@ export const menuCategory: MenuItem[] = [
     path: '',
     id: SiteMap.Settings.menu,
     icon: <IconUser />,
-    // isHide: ifNotGranted([RolesEnum.WEB_ADMIN]),
+    isShow: ifAnyGranted(SiteMap.Settings.roles),
     subMenu: [
       {
         label: <Translation>{(t) => t('settings.grade.level')}</Translation>,
@@ -181,7 +182,7 @@ export const menuCategory: MenuItem[] = [
     path: '',
     id: SiteMap.Manage.menu,
     icon: <IconUser />,
-    // isHide: ifNotGranted([RolesEnum.WEB_ADMIN]),
+    isShow: ifAnyGranted(SiteMap.Manage.roles),
     subMenu: [
       {
         label: <Translation>{(t) => t('manage.registration')}</Translation>,
@@ -219,7 +220,7 @@ export const menuCategory: MenuItem[] = [
     path: '',
     id: SiteMap.Manage.menu,
     icon: <IconUser />,
-    // isHide: ifNotGranted([RolesEnum.WEB_ADMIN]),
+    // isShow: ifNotGranted([RolesEnum.WEB_ADMIN]),
     subMenu: [
       {
         label: <Translation>{(t) => t('assessment.exercise')}</Translation>,
@@ -244,7 +245,7 @@ export const menuCategory: MenuItem[] = [
       },
     ],
   },
-].filter((item) => !item.isHide);
+].filter((item) => item.isShow);
 
 export const menuPerson: IMenuIcon[] = [
   {

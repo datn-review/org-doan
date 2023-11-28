@@ -192,7 +192,7 @@ function Registration() {
                   key: '1',
                   label: (
                     <Link
-                      to={SiteMap.ClassNew.Details.generate(record?.posts.id || 0)}
+                      to={SiteMap.ClassNew.Details.generate(record?.posts?.id || 0)}
                       className={css`
                         color: #5c5b68 !important;
                       `}

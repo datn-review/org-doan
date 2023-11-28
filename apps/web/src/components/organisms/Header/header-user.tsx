@@ -24,9 +24,11 @@ import {
   useAppDispatch,
   useAppSelector,
   useGetProfileMeQuery,
+  setUserInfo,
 } from '@org/store';
 import { COLOR, SiteMap } from '@org/utils';
 import { css } from '@emotion/css';
+import { useEffect } from 'react';
 
 const LinkItem = ({ path, icon, title }: any) => {
   return (
@@ -68,6 +70,11 @@ const itemsPerson: MenuProps['items'] = menuPerson.map(({ icon, title, path, key
 function HeaderUser() {
   const { i18n } = useTranslation();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.user);
+
+  console.log(user);
+
+  const dispatch = useAppDispatch();
 
   const { data } = useGetProfileMeQuery(
     {},
@@ -76,8 +83,14 @@ function HeaderUser() {
       refetchOnMountOrArgChange: true,
     },
   );
+  useEffect(() => {
+    console.log(data);
+    if (data) {
+      dispatch(setUserInfo(data));
+    }
+  }, [data]);
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+
   const changeLangue: MenuProps['onClick'] = (value) => {
     i18n.changeLanguage(value.key);
     localStorage.setItem('language', value.key);

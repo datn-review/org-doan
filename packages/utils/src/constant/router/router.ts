@@ -1,9 +1,10 @@
-import { RolesEnum } from '../roles/roles';
+import { RolesEnum } from '../roles';
 
 export const SiteMap = {
   Home: {
     path: '/',
     menu: 'home',
+    roles: [],
   },
   Auth: {
     Login: {
@@ -24,6 +25,7 @@ export const SiteMap = {
   },
   Users: {
     menu: 'users',
+    roles: [RolesEnum.WEB_ADMIN, RolesEnum.WEB_STAFF],
     Admin: {
       path: 'users/admin',
       menu: 'users/admin',
@@ -77,6 +79,7 @@ export const SiteMap = {
   },
   Settings: {
     menu: 'settings',
+    roles: [RolesEnum.WEB_ADMIN],
     GradeLevel: {
       path: 'settings/grade-level',
       menu: 'settings/grade-level',
@@ -121,7 +124,7 @@ export const SiteMap = {
   TutorClass: {
     path: '/tutor-class',
     menu: 'manage-class',
-    roles: [],
+    roles: [RolesEnum.PESONAL_TUTOR, RolesEnum.STUDENT],
   },
   ClassNew: {
     path: '/class-new',
@@ -135,7 +138,7 @@ export const SiteMap = {
   },
   Manage: {
     menu: 'Manage',
-    roles: [],
+    roles: [RolesEnum.PESONAL_TUTOR, RolesEnum.STUDENT],
     Registration: {
       path: '/registration',
       menu: 'registration',
@@ -175,7 +178,7 @@ export const SiteMap = {
   },
   Assessment: {
     path: '/',
-    roles: [],
+    roles: [RolesEnum.PESONAL_TUTOR, RolesEnum.STUDENT],
     menu: 'assessments',
     Exercise: {
       path: '/exercise',
