@@ -73,5 +73,26 @@
   "manage.name" : "Manage Personal",
   "manage.registration" : "Manage Registration",
   "manage.posts.me" : "Manage Posts",
-  "manage.classes" : "Manage Classes"
+  "manage.classes" : "Manage Classes",
+
+
+  "classNew": {
+    "fee": "Fee",
+    "dayWeek":"School week",
+    "day": "Day",
+    "address" : "Address",
+    "timeStart": "Time Start",
+    "timeEnd": "Time End",
+    "grade": "Grade",
+    "subject": "Subject",
+    "skill": "Skill",
+    "certification": "Certification",
+    "register": "Register",
+    "tutorNeedKnow": "Tutor Need Know"
+  },
+  "details": "Details",
+
+  "week": "Week",
+  "min": "Min",
+  "filter": "Filter"
 }

@@ -22,7 +22,7 @@ export function SelectSubject() {
 
   return (
     <SelectForm
-      size='large'
+      size='middle'
       name='subject'
       label={t('subject')}
       placeholder={t('select.please')}

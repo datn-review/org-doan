@@ -20,8 +20,8 @@ export const Chat = () => {
         aria-label='Open chat with support'
         role='button'
         className={css`
-          height: 6rem;
-          width: 6rem;
+          height: 5rem;
+          width: 5rem;
           background-color: ${COLOR.Primary};
           display: flex;
           justify-content: center;

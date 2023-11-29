@@ -71,5 +71,28 @@
   "manage.name" : "Quản Lí Cá Nhân",
   "manage.registration" : "Danh Sách Đăng Ký Yêu Cầu",
   "manage.posts.me" : "Danh Sách Bài Đăng",
-  "manage.classes" : "Danh Sách Lớp Học"
+  "manage.classes" : "Danh Sách Lớp Học",
+  "filter": "Lọc",
+
+
+  "classNew": {
+    "fee": "Phí",
+    "dayWeek":"Tuần học",
+    "day": "buổi",
+    "address" : "Địa Điểm Dạy",
+    "timeStart": "Thời Gian Bắt Đầu",
+    "timeEnd": "Thời Gian Kết Thúc",
+    "grade": "Lớp",
+    "subject": "Môn Học",
+    "skill": "Kỹ Năng",
+    "certification": "Chứng Chỉ",
+    "register": "Đăng Kí Nhận Lớp",
+
+
+    "tutorNeedKnow": "Gia sư cần biết"
+  },
+  "details": "Chi Tiết",
+
+  "week": "Tuần",
+  "min": "Phút"
 }

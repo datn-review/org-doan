@@ -74,7 +74,8 @@ export const Wrapper = styled.div`
     padding: 2rem;
     border-radius: 0.5rem;
     max-width: 144rem;
-    margin: 0 auto;
+    box-shadow: 0 2px 6px rgba(47, 43, 61, 0.14), 0 0 transparent, 0 0 transparent;
+    //margin: 0 auto;
   }
   .section-layout {
     padding-left: 2rem;

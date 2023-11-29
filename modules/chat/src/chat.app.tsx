@@ -218,7 +218,7 @@ function ChatApp() {
           title={t('chat.create')}
           open={toggle}
           onCancel={close}
-          width={'90%'}
+          width={'50%'}
           className={css`
             top: 20px;
           `}

@@ -18,7 +18,7 @@ export function SelectGrade() {
 
   return (
     <SelectForm
-      size='large'
+      size='middle'
       name='gradeLevel'
       label={t('grade')}
       placeholder={t('select.please')}
