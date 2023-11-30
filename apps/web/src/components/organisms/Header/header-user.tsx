@@ -72,8 +72,6 @@ function HeaderUser() {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { user } = useAppSelector((state) => state.user);
 
-  console.log(user);
-
   const dispatch = useAppDispatch();
 
   const { data } = useGetProfileMeQuery(
@@ -84,7 +82,6 @@ function HeaderUser() {
     },
   );
   useEffect(() => {
-    console.log(data);
     if (data) {
       dispatch(setUserInfo(data));
     }

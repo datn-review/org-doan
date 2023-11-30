@@ -13,3 +13,13 @@ export function BoxCenter({ children, className, ...rest }: IProps) {
     </div>
   );
 }
+export function BoxBetween({ children, className, ...rest }: IProps) {
+  return (
+    <div
+      className={`flex justify-between items-center gap-2 ${className}`}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+}

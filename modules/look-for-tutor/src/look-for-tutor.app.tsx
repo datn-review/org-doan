@@ -140,13 +140,13 @@ function LookForTutorApp() {
             <FormProvider {...methods}>
               {/* <H2>{t('find.tutor')}</H2> */}
               <BoxCenter>
-                <TextSection>Mô tả yêu cầu tìm gia sư</TextSection>
+                <TextSection>{t('description.request.tutor')}</TextSection>
               </BoxCenter>
               <Row gutter={[10, 10]}>
                 <Col span={24}>
                   <TextAreaForm
                     name='requestSummaryVI'
-                    label={'Tóm Tắt Yêu Cầu'}
+                    label={t('summary')}
                   />
                 </Col>
                 <Col span={24}>
@@ -157,7 +157,7 @@ function LookForTutorApp() {
                       font-size: 1.3rem;
                     `}
                   >
-                    Mô tả chi tiết yêu cầu
+                    {t('summaryDetails')}
                   </label>
                   <Editor
                     onChange={(value) => setRequestDetail(value)}
@@ -175,7 +175,7 @@ function LookForTutorApp() {
                     name='gradeLevel'
                     label={t('grade')}
                     options={gradeLevel}
-                    placeholder='Please Select grade'
+                    placeholder={t('please.select')}
                   />
                 </Col>
                 <Col
@@ -188,7 +188,7 @@ function LookForTutorApp() {
                     name='subject'
                     label={t('subject')}
                     options={subjects}
-                    placeholder='Please Select Subject'
+                    placeholder={t('please.select')}
                   />
                 </Col>
                 <Col
@@ -197,7 +197,7 @@ function LookForTutorApp() {
                 >
                   <DatePickerForm
                     name='timeStart'
-                    label='Time Start'
+                    label={t('timeStart')}
                     size={'large'}
                   />
                 </Col>
@@ -210,14 +210,15 @@ function LookForTutorApp() {
                     name='timeDay'
                     label={t('time_hours')}
                     options={dataTime}
-                    placeholder='Please Select Hours Per Session'
+                    placeholder={t('please.select')}
+                    // placeholder='Please Select Hours Per Session'
                   />
                 </Col>
               </Row>
 
               <AddressForm methods={methods} />
               <BoxCenter>
-                <TextSection>Yêu Cầu Gia Sư</TextSection>
+                <TextSection>{t('request.tutor')}</TextSection>
               </BoxCenter>
               <Row gutter={[10, 0]}>
                 <Col
@@ -230,7 +231,7 @@ function LookForTutorApp() {
                     name='skills'
                     label={t('skill')}
                     options={skills}
-                    placeholder='Please Select Skill'
+                    placeholder={t('please.select')}
                   />
                 </Col>
                 <Col
@@ -241,8 +242,8 @@ function LookForTutorApp() {
                     size='large'
                     mode='multiple'
                     name='certification'
-                    label={t('Certification')}
-                    placeholder='Please Select Certification'
+                    label={t('certification')}
+                    placeholder={t('please.select')}
                     options={certification}
                   />
                 </Col>
@@ -282,7 +283,7 @@ function LookForTutorApp() {
                 <Col span={24}>
                   <TimeAvailabilityForm
                     name='timeAvailability'
-                    label={'Time Availability'}
+                    label={t('timeAvailability')}
                   />
                 </Col>
               </Row>
@@ -304,7 +305,7 @@ function LookForTutorApp() {
           </Then>
           <Else>
             <Link to={SiteMap.Auth.Login.path}>
-              <Button>Login</Button>
+              <Button>{t('login')}</Button>
             </Link>
           </Else>
         </If>
