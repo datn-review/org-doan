@@ -6,9 +6,11 @@ import {
 } from '@reduxjs/toolkit/query';
 import { createApi } from '@reduxjs/toolkit/query/react';
 const URL_API =
-  import.meta.env.NODE_ENV === 'production'
+    process.env.NODE_ENV === 'production'
     ? import.meta.env.VITE_APP_API_AUTH_URL_PRO
     : import.meta.env.VITE_APP_API_AUTH_URL_DEV;
+console.log("process",process.env.NODE_ENV);
+console.log('import',import.meta.env.NODE_ENV);
 console.log(URL_API);
 export const baseNoAuthQuery = fetchBaseQuery({
   baseUrl: URL_API,
