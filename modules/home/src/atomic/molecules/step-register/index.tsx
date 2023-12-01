@@ -50,58 +50,61 @@ const steps = [
 function StepRegister() {
   return (
     <Space>
-      <BoxCenter>
-        <TextSection color={COLOR.Black}>
-          THAM GIA SMARTTUTOR.COM DỄ DÀNG CHỈ VỚI 4 BƯỚC
-        </TextSection>
-      </BoxCenter>
-      <Space
-        className={css`
-          /* border-top-left-radius: 1rem;
+      <Space className={'section-layout'}>
+        <BoxCenter>
+          <TextSection color={COLOR.Black}>
+            THAM GIA SMARTTUTOR.COM DỄ DÀNG CHỈ VỚI 4 BƯỚC
+          </TextSection>
+        </BoxCenter>
+        <Space
+          className={css`
+            /* border-top-left-radius: 1rem;
           border-top-right-radius: 1rem; */
-          border-radius: 1rem;
-          display: flex;
-          overflow: hidden;
-        `}
-      >
-        {steps.map(({ bg, number, text, isLast }) => (
-          <Space
-            className={css`
-              flex: 1;
-            `}
-          >
+            border-radius: 1rem;
+            display: flex;
+            overflow: hidden;
+          `}
+        >
+          {steps.map(({ bg, number, text, isLast }) => (
             <Space
-              className={cx(
-                cssStep,
-                css`
-                  background-color: ${bg};
-                  &:after {
-                    background-color: ${bg};
-                  }
-                `,
-              )}
-            >
-              Bước {number}
-            </Space>
-            <BoxCenter
               className={css`
-                margin-top: 1.4rem;
-                background-color: ${COLOR.White};
-                padding: 3rem 0;
-                font-weight: 600;
-                font-size: 2rem;
-                border-right: ${isLast ? 'none' : `0.2rem solid rgba(${COLOR_RGB.Secondary}, 0.1)`};
+                flex: 1;
               `}
             >
-              {text}
-            </BoxCenter>
-          </Space>
-        ))}
+              <Space
+                className={cx(
+                  cssStep,
+                  css`
+                    background-color: ${bg};
+                    &:after {
+                      background-color: ${bg};
+                    }
+                  `,
+                )}
+              >
+                Bước {number}
+              </Space>
+              <BoxCenter
+                className={css`
+                  margin-top: 1.4rem;
+                  background-color: ${COLOR.White};
+                  padding: 3rem 0;
+                  font-weight: 600;
+                  font-size: 2rem;
+                  border-right: ${isLast
+                    ? 'none'
+                    : `0.2rem solid rgba(${COLOR_RGB.Secondary}, 0.1)`};
+                `}
+              >
+                {text}
+              </BoxCenter>
+            </Space>
+          ))}
+        </Space>
       </Space>
-
       <Row
         className={css`
-          margin: 3rem -10rem;
+          margin: 3rem 0;
           background: ${COLOR.Primary};
           padding: 5rem 5rem;
           & * {

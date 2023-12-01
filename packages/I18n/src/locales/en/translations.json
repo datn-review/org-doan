@@ -73,5 +73,58 @@
   "manage.name" : "Manage Personal",
   "manage.registration" : "Manage Registration",
   "manage.posts.me" : "Manage Posts",
-  "manage.classes" : "Manage Classes"
+  "manage.classes" : "Manage Classes",
+
+
+  "classNew": {
+    "fee": "Fee",
+    "dayWeek":"School week",
+    "day": "Day",
+    "address" : "Address",
+    "timeStart": "Time Start",
+    "timeEnd": "Time End",
+    "grade": "Grade",
+    "subject": "Subject",
+    "skill": "Skill",
+    "certification": "Certification",
+    "register": "Register",
+    "tutorNeedKnow": "Tutor Need Know",
+    "student": "Student"
+  },
+  "details": "Details",
+  "description.request.tutor": "Description Request Tutor",
+  "request.tutor": "Request S Tutor",
+  "timeAvailability": "Time Availability",
+
+  "week": "Week",
+  "min": "Min",
+  "filter": "Filter",
+
+
+  "Monday": "Monday",
+  "Tuesday": "Tuesday",
+  "Wednesday": "Wednesday",
+  "Thursday": "Thursday",
+  "Friday": "Friday",
+  "Saturday": "Saturday",
+  "Sunday": "Sunday",
+  "skill": "Skill",
+  "certification": "Certification",
+
+
+  "summary" : "Summary Request",
+  "summaryDetails" : "Details Request",
+  "grade": "Grade",
+  "subject": "Subject",
+  "timeStart": "Time Start",
+  "time_hours": "Time Hours",
+  "fee": "Fee",
+  "perTime": "Per Time",
+  "day/week": "Day/Week",
+  "please.select" : "Please Select Here",
+
+  "address": "Address",
+  "Province": "Province",
+  "District": "District",
+  "Ward": "Ward"
 }

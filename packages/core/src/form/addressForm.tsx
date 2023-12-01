@@ -7,6 +7,7 @@ import {
 import { Col, InputForm, Row, SelectForm } from '@org/ui';
 import { formatData } from '@org/utils';
 import React, { useEffect, useMemo, useRef } from 'react';
+import { useTranslation } from '@org/i18n';
 export const statusOptionUpsert = [{ value: 1, label: 1 }];
 
 export interface IWards {
@@ -25,6 +26,8 @@ export interface IProvince {
 }
 
 export function AddressForm({ methods }: any) {
+  const { t } = useTranslation();
+
   const { data: provinceData } = useGetProvinceActiveQuery({});
   const [getDistricts, { data: dataDistrict }] = useLazyGetDistrictActiveQuery();
   const [getWards, { data: dataWard }] = useLazyGetWardActiveQuery();
@@ -71,7 +74,7 @@ export function AddressForm({ methods }: any) {
       >
         <InputForm
           name='address'
-          label='Địa Chỉ Chi Tiết*'
+          label={t('address')}
         />
       </Col>
 
@@ -81,7 +84,7 @@ export function AddressForm({ methods }: any) {
       >
         <SelectForm
           placeholder='Select Provice'
-          label={'Province'}
+          label={t('Province')}
           name='province'
           options={provinces || []}
           size='large'
@@ -96,7 +99,7 @@ export function AddressForm({ methods }: any) {
       >
         <SelectForm
           placeholder='Select District'
-          label={'District'}
+          label={t('District')}
           name='district'
           options={districts || []}
           size='large'
@@ -111,7 +114,7 @@ export function AddressForm({ methods }: any) {
       >
         <SelectForm
           placeholder='Select Ward'
-          label={'Ward'}
+          label={t('Ward')}
           name='wards'
           options={wards}
           size='large'

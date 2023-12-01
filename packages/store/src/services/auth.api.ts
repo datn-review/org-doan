@@ -1,4 +1,5 @@
 import { baseNoAuthSplitApi } from './base-auth-query';
+import { socketService } from './chat.service';
 
 export const AuthAPI = baseNoAuthSplitApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -8,6 +9,10 @@ export const AuthAPI = baseNoAuthSplitApi.injectEndpoints({
         body,
         method: 'POST',
       }),
+      async onQueryStarted(arg, { queryFulfilled }) {
+        const token = (await queryFulfilled).data.token;
+        socketService.connectWithAuthToken(token);
+      },
     }),
     registerUserEmail: builder.mutation({
       query: (body) => ({

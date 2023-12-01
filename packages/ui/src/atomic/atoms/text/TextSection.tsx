@@ -3,7 +3,11 @@ import { COLOR } from '@org/utils';
 import React, { PropsWithChildren } from 'react';
 import { Space } from '../space';
 
-function TextSection({ color = COLOR.Primary, children }: PropsWithChildren<{ color?: string }>) {
+function TextSection({
+  color = COLOR.Primary,
+  children,
+  left = false,
+}: PropsWithChildren<{ color?: string; left?: boolean }>) {
   return (
     <Space
       className={css`
@@ -24,8 +28,8 @@ function TextSection({ color = COLOR.Primary, children }: PropsWithChildren<{ co
           position: absolute;
 
           bottom: 0;
-          left: 50%;
-          transform: translateX(-50%);
+          left: ${left ? '0' : '50%'};
+          transform: translateX(${left ? '0' : '-50%'});
         }
       `}
     >

@@ -19,7 +19,7 @@ export function SelectSkill() {
 
   return (
     <SelectForm
-      size='large'
+      size='middle'
       mode='multiple'
       name='skills'
       label={t('skill')}

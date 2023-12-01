@@ -18,6 +18,15 @@ import {
   ClassesPage,
   ClassesDetailsPage,
 } from '@org/classes';
+import {
+  AssignmentPage,
+  CreateAssignmentPage,
+  DoAssignmentPage,
+  ExercisePage,
+  QuestionPage,
+  ReviewAssignmentPage,
+} from '@org/assessment';
+import { ChatPage } from '@org/chat';
 
 export const router = createBrowserRouter([
   {
@@ -105,6 +114,21 @@ export const router = createBrowserRouter([
       },
 
       { path: SiteMap.Manage.PostsMe.path, element: <PostsPage /> },
+
+      { path: SiteMap.Assessment.Exercise.path, element: <ExercisePage /> },
+      { path: SiteMap.Assessment.Questions.path, element: <QuestionPage /> },
+      { path: SiteMap.Assessment.Assignment.path, element: <AssignmentPage /> },
+
+      { path: SiteMap.Assessment.Assignment.Create.path, element: <CreateAssignmentPage /> },
+      { path: SiteMap.Assessment.Assignment.Do.path, element: <DoAssignmentPage /> },
+
+      { path: SiteMap.Assessment.Assignment.Review.path, element: <ReviewAssignmentPage /> },
+      {
+        path: SiteMap.Chat.path,
+        element: <ChatPage />,
+      },
+
+      // { path: SiteMap.Assessment.Exercise.path, element: <Ques /> },
     ],
   },
   {

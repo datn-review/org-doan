@@ -17,16 +17,13 @@ import { MenuItem } from './header-type';
 import * as S from './styled';
 import { css, cx } from '@emotion/css/macro';
 import { COLOR, COLOR_RGB, MediaEnum, mediaDesktop, mediaTablet } from '@org/utils';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMediaQuery } from '@org/core';
 import { Else, If, Then } from 'react-if';
 function HeaderCategory() {
   const { menu, subMenu: subMenuActive } = useAppSelector((state) => state.activeMenu);
   const [hideMenu, setHideMenu] = useState(false);
   const media = useMediaQuery();
-
-  console.log('🚀 ~ file: header-category.tsx:25 ~ HeaderCategory ~ isDesktop:', media);
-  // useEffect();
 
   const navigate = useNavigate();
   const renderButton = ({ id, isSub, icon, name }: any) => {
@@ -84,6 +81,10 @@ function HeaderCategory() {
       );
     });
 
+  const category = useMemo(() => {
+    return menuCategory();
+  }, [localStorage.getItem('authorities')]);
+
   return (
     <S.HeaderCategory
       className={css`
@@ -94,7 +95,7 @@ function HeaderCategory() {
     >
       <If condition={media === MediaEnum.Desktop}>
         <Then>
-          <Space className={cx('flex gap-2 py-4')}>{renderMenu(menuCategory)}</Space>
+          <Space className={cx('flex gap-2 py-4')}>{renderMenu(category)}</Space>
         </Then>
         <Else>
           <Space
@@ -135,7 +136,7 @@ function HeaderCategory() {
                 `,
               )}
             >
-              {renderMenu(menuCategory)}
+              {renderMenu(category)}
             </Space>
           </Drawer>
         </Else>

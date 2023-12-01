@@ -331,4 +331,7 @@ export class AuthService {
   async softDelete(user: User): Promise<void> {
     await this.usersService.softDelete(user.id);
   }
+  async verifyToken(token = ''): Promise<any> {
+    return await this.jwtService.verify(token);
+  }
 }

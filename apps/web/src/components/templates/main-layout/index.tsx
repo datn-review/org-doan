@@ -1,8 +1,11 @@
+import { Link, Outlet } from 'react-router-dom';
+import { ChatIcon, Space, Badge } from '@org/ui';
 import { Outlet } from 'react-router-dom';
 import { Header } from '@components/organisms/header-layout';
 import { Space } from '@org/ui';
 import { css } from '@emotion/css';
 import { Footer } from '@components/organisms/footer';
+import { SiteMap } from '@org/utils';
 export const MainLayout = () => {
   return (
     <>
@@ -17,6 +20,23 @@ export const MainLayout = () => {
         <Outlet />
       </Space>
       <Footer />
+
+      <Space
+        className={css`
+          position: fixed;
+          bottom: 2rem;
+          right: 2rem;
+        `}
+      >
+        <Link to={SiteMap.Chat.path}>
+          <Badge
+            count={10}
+            overflowCount={9}
+          >
+            <ChatIcon />
+          </Badge>
+        </Link>
+      </Space>
     </>
   );
 };

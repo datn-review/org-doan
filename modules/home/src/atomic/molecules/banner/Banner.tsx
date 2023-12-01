@@ -13,7 +13,8 @@ function Banner() {
   return (
     <Space
       className={css`
-        margin: -1.5rem -10rem 4rem;
+        //margin: -1.5rem -10rem 4rem;
+        margin-bottom: 4rem;
       `}
     >
       <Carousel autoplay>

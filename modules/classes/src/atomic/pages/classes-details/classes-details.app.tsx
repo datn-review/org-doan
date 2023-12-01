@@ -16,6 +16,7 @@ import dayjs from 'dayjs';
 import React, { useEffect, useTransition } from 'react';
 import { useLazyFindCollaborationQuery } from '@org/store';
 import { useParams } from 'react-router-dom';
+import ScheduleApp from '../schedule/schedule.app';
 const contentStyle: React.CSSProperties = {
   height: '500px',
   color: '#fff',
@@ -33,6 +34,10 @@ function ClassesDetails() {
   useEffect(() => {
     getData(id);
   }, [id]);
+
+  const refetch = () => {
+    getData(id);
+  };
   const onChange = (key: string) => {
     console.log(key);
   };
@@ -46,7 +51,12 @@ function ClassesDetails() {
     {
       key: '2',
       label: 'Lịch Học',
-      children: 'Content of Tab Pane 3',
+      children: (
+        <ScheduleApp
+          data={data}
+          refetch={refetch}
+        />
+      ),
     },
     {
       key: '3',

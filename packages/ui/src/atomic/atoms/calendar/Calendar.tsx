@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   EventApi,
   DateSelectArg,
@@ -15,92 +15,24 @@ import { Wrapper } from './styled';
 
 import esLocale from '@fullcalendar/core/locales/es';
 import viLocate from '@fullcalendar/core/locales/vi';
-
+import { Space } from '../space';
+import { css } from '@emotion/css';
+import { COLOR } from '@org/utils';
+import { Popover } from 'antd';
 interface DemoAppState {
   weekendsVisible: boolean;
   currentEvents: EventApi[];
 }
 
-export class Calendar extends React.Component<{}, DemoAppState> {
-  state: DemoAppState = {
-    weekendsVisible: true,
-    currentEvents: [],
-  };
+export const Calendar = ({
+  initData,
+  renderEventContent,
+  handleEventClick,
+  moreLinkContent,
+}: any) => {
+  const [currentEvents, setCurrentEvents] = useState<EventApi[]>([]);
 
-  render() {
-    return (
-      <Wrapper>
-        <div className='demo-app'>
-          {this.renderSidebar()}
-          <div className='demo-app-main'>
-            <FullCalendar
-              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-              headerToolbar={{
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay',
-              }}
-              locales={[esLocale, viLocate]}
-              locale={viLocate}
-              initialView='dayGridMonth'
-              editable={true}
-              selectable={true}
-              selectMirror={true}
-              dayMaxEvents={true}
-              weekends={this.state.weekendsVisible}
-              initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
-              select={this.handleDateSelect}
-              eventContent={renderEventContent} // custom render function
-              eventClick={this.handleEventClick}
-              eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
-              /* you can update a remote database when these fire:
-                        eventAdd={function(){}}
-                        eventChange={function(){}}
-                        eventRemove={function(){}}
-                        */
-            />
-          </div>
-        </div>
-      </Wrapper>
-    );
-  }
-
-  renderSidebar() {
-    return (
-      <div className='demo-app-sidebar'>
-        {/*<div className='demo-app-sidebar-section'>*/}
-        {/*  <h2>Instructions</h2>*/}
-        {/*  <ul>*/}
-        {/*    <li>Select dates and you will be prompted to create a new event</li>*/}
-        {/*    <li>Drag, drop, and resize events</li>*/}
-        {/*    <li>Click an event to delete it</li>*/}
-        {/*  </ul>*/}
-        {/*</div>*/}
-        {/*<div className='demo-app-sidebar-section'>*/}
-        {/*  <label>*/}
-        {/*    <input*/}
-        {/*      type='checkbox'*/}
-        {/*      checked={this.state.weekendsVisible}*/}
-        {/*      onChange={this.handleWeekendsToggle}*/}
-        {/*    ></input>*/}
-        {/*    toggle weekends*/}
-        {/*  </label>*/}
-        {/*</div>*/}
-        <div className='demo-app-sidebar-section'>
-          <h2>All Events ({this.state.currentEvents.length})</h2>
-          <ul>{this.state.currentEvents.map(renderSidebarEvent)}</ul>
-        </div>
-      </div>
-    );
-  }
-
-  handleWeekendsToggle = () => {
-    this.setState({
-      weekendsVisible: !this.state.weekendsVisible,
-    });
-  };
-
-  handleDateSelect = (selectInfo: DateSelectArg) => {
+  const handleDateSelect = (selectInfo: DateSelectArg) => {
     let title = prompt('Please enter a new title for your event');
     let calendarApi = selectInfo.view.calendar;
     console.log(selectInfo);
@@ -113,32 +45,86 @@ export class Calendar extends React.Component<{}, DemoAppState> {
         start: selectInfo.startStr,
         end: selectInfo.endStr,
         allDay: selectInfo.allDay,
+
         // display: 'background',
       });
     }
   };
 
-  handleEventClick = (clickInfo: EventClickArg) => {
-    if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-      clickInfo.event.remove();
-    }
+  // const handleEventClick = (clickInfo: EventClickArg) => {
+  //   handleEventClick()
+  //   // if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
+  //   //   clickInfo.event.remove();
+  //   // }
+  // };
+
+  const handleEvents = (events: EventApi[]) => {
+    setCurrentEvents(events);
+    // this.setState({
+    //   currentEvents: events,
+    // });
   };
 
-  handleEvents = (events: EventApi[]) => {
-    this.setState({
-      currentEvents: events,
-    });
-  };
-}
-
-function renderEventContent(eventContent: EventContentArg) {
   return (
-    <>
-      <b>{eventContent.timeText}</b>
-      <i>{eventContent.event.title}</i>
-    </>
+    <Wrapper>
+      <div className='demo-app'>
+        {/*{this.renderSidebar()}*/}
+        <div className='demo-app-main'>
+          <FullCalendar
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            headerToolbar={{
+              left: 'prev,next today',
+              center: 'title',
+              right: 'dayGridMonth,timeGridWeek,timeGridDay',
+            }}
+            locales={[esLocale, viLocate]}
+            locale={viLocate}
+            initialView='dayGridMonth'
+            editable={true}
+            selectable={true}
+            selectMirror={true}
+            dayMaxEvents={true}
+            // weekends={this.state.weekendsVisible}
+            events={initData}
+            // initialEvents={initData} // alternatively, use the `events` setting to fetch from a feed
+            select={handleDateSelect}
+            eventContent={renderEventContent} // custom render function
+            // moreLinkContent={moreLinkContent}
+            moreLinkClassNames={css`
+              border: 1px solid ${COLOR.Secondary};
+              &:hover {
+                background-color: ${COLOR.Secondary};
+                color: ${COLOR.Primary};
+              }
+            `}
+            eventClick={handleEventClick}
+            eventsSet={handleEvents} // called after events are initialized/added/changed/removed
+            /*/you can update a remote database when these fire:*/
+            eventAdd={function (data) {
+              console.dir(data.event);
+            }}
+            // titleFormat={'dddd, MMMM D, YYYY'}
+            eventChange={function (data) {
+              console.dir(data.event);
+            }}
+            eventRemove={function () {}}
+            eventMouseEnter={function (data) {
+              // console.dir(data.event);
+            }}
+            dayCellClassNames={css`
+              //height: 200px;
+            `}
+            eventMinHeight={200}
+            // height={900}
+            // dayCellContent={(data) => {
+            //   // console.dir(data);
+            // }}
+          />
+        </div>
+      </div>
+    </Wrapper>
   );
-}
+};
 
 function renderSidebarEvent(event: EventApi) {
   return (

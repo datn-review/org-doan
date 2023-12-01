@@ -71,5 +71,62 @@
   "manage.name" : "Quản Lí Cá Nhân",
   "manage.registration" : "Danh Sách Đăng Ký Yêu Cầu",
   "manage.posts.me" : "Danh Sách Bài Đăng",
-  "manage.classes" : "Danh Sách Lớp Học"
+  "manage.classes" : "Danh Sách Lớp Học",
+  "filter": "Lọc",
+
+
+  "classNew": {
+    "fee": "Phí",
+    "dayWeek":"Tuần học",
+    "day": "buổi",
+    "address" : "Địa Điểm Dạy",
+    "timeStart": "Thời Gian Bắt Đầu",
+    "timeEnd": "Thời Gian Kết Thúc",
+    "grade": "Lớp",
+    "subject": "Môn Học",
+    "skill": "Kỹ Năng",
+    "certification": "Chứng Chỉ",
+    "register": "Đăng Kí Nhận Lớp",
+    "student": "Người Đăng",
+
+
+    "tutorNeedKnow": "Gia sư cần biết"
+  },
+  "description.request.tutor": "Mô Tả Yêu Cầu Gia Sư",
+  "request.tutor": "Yêu Cầu Gia Sư",
+  "timeAvailability": "Thời Gian Có Thể Dạy",
+
+  "details": "Chi Tiết",
+
+  "week": "Tuần",
+  "min": "Phút",
+
+  "Monday": "Thứ 2",
+  "Tuesday": "Thứ 3",
+  "Wednesday": "Thứ 4",
+  "Thursday": "Thứ 5",
+  "Friday": "Thứ 6",
+  "Saturday": "Thứ 7",
+  "Sunday": "Chủ Nhật",
+  "skill": "Kỹ Năng",
+  "certification": "Chứng Chỉ",
+  "summary" : "Tóm Tắt Yêu Cầu",
+  "summaryDetails" : "Chi Tiết Yêu Cầu",
+  "grade": "Lớp",
+  "subject": "Môn Học",
+  "timeStart": "Thời Gian Bắt Đầu",
+  "time_hours": "Giờ Mỗi Buổi",
+  "fee": "Phí",
+  "perTime": "Theo",
+  "day/week": "Buổi/Tuần",
+  "please.select" : "Vui Lòng Chọn",
+
+
+  "address": "Địa Chỉ Chi Tiết",
+  "Province": "Thành Phố/Tỉnh",
+  "District": "Quận/Huyện",
+  "Ward": "Phường/Xã",
+  "New": "Phường/Xã"
 }
+
+

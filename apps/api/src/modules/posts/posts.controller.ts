@@ -57,6 +57,7 @@ export class PostsController {
       { entity: 'post_time_availability', field: 'postTimeAvailability' },
       { entity: 'wards', field: 'wards' },
       { entity: 'user', field: 'user' },
+      { entity: 'photo', field: 'user.photo' },
     ]);
   }
 
@@ -203,6 +204,7 @@ export class PostsController {
       { entity: 'post_time_availability', field: 'postTimeAvailability' },
       { entity: 'wards', field: 'wards' },
       { entity: 'user', field: 'user' },
+      { entity: 'photo', field: 'user.photo' },
     ]);
   }
 

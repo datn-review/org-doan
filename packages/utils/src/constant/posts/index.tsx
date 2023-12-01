@@ -70,6 +70,20 @@ export const color = [
 export const colorCovert: Record<number, string> = color.reduce((acc, currentValue, index) => {
   return { ...acc, [index]: currentValue };
 }, {});
+
+export const colorCovertReverse: Record<number, string> = [...color]
+  .reverse()
+  .reduce((acc, currentValue, index) => {
+    return { ...acc, [index]: currentValue };
+  }, {});
 export const colorRandom = () => {
   return colorCovert[Math.floor(Math.random() * (color.length - 1))];
+};
+
+export const colorById = (id: number, isReverse = false) => {
+  const number = id % 10;
+  if (isReverse) {
+    return colorCovertReverse[number];
+  }
+  return colorCovert[number];
 };

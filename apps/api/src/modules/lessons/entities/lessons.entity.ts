@@ -6,9 +6,13 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Payment } from '../../payment/entities/payment.entity';
+import { Assignment } from 'src/modules/assessment/assignment/entities/assignment.entity';
 
 @Entity({ name: 'lesson' })
 export class Lessons extends EntityHelper {
@@ -16,23 +20,28 @@ export class Lessons extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ManyToOne(() => Collaboration, {
+    eager: true,
+  })
   @Column({ type: Number })
   collaboration?: Collaboration | null;
 
-  @Column({ type: String, nullable: false })
+  @OneToMany(() => Assignment, (payment) => payment.lesson, {
+    onDelete: 'CASCADE',
+  })
+  assignments?: Assignment[] | null;
+
+  @Column({ type: String, nullable: true })
   location: string;
 
-  @Column({ type: String, nullable: false })
-  content_VI: string;
-
-  @Column({ type: String, nullable: false })
-  content_EN: string;
+  @Column({ type: String, nullable: true })
+  content: string;
 
   @Column({ type: Date, nullable: false })
-  lessonDate?: Date | null;
+  lessonStart?: Date | null;
 
   @Column({ type: Date, nullable: false })
-  lessonTime?: Date | null;
+  lessonEnd?: Date | null;
 
   @Column({ type: Number, default: 1 })
   status: number;

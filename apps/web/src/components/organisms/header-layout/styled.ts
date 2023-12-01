@@ -2,18 +2,20 @@ import styled from '@emotion/styled/macro';
 import { COLOR, COLOR_RGB, ZIndex, mediaDesktop } from '@org/utils';
 
 export const Header = styled.div`
+  background: #fff;
   position: relative;
   box-shadow: 0 2px 6px rgba(47, 43, 61, 0.14), 0 0 transparent, 0 0 transparent;
   z-index: ${ZIndex.Header};
-
-  ${mediaDesktop} {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-direction: row-reverse;
-    width: 100%;
-    .logo {
-      display: none;
+  .section-header {
+    ${mediaDesktop} {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-direction: row-reverse;
+      width: 100%;
+      .logo {
+        display: none;
+      }
     }
   }
 `;
