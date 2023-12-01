@@ -4,6 +4,7 @@ import { withForm } from '../../../form';
 import { Space } from '../space';
 import { Show } from '../show';
 import { IconEye, IconEyeClose } from '../../../icons';
+import { mediaTablet } from '@org/utils';
 
 export enum TypeInput {
   Password = 'password',
@@ -48,12 +49,22 @@ export function Input({ onChange, value, labelInput, className, $type, ...props 
               width: 100%;
               margin-bottom: 0.5rem;
               padding: 0.8rem 1rem;
+              font-size: 1.5rem;
+              ${mediaTablet} {
+                font-size: 1.3rem;
+                padding: 0.6rem .7rem;
+                
+              }
               border-radius: 0.5rem;
               outline: none;
-              font-size: 1.5rem;
+           
               padding-right: ${TypeInput.Password === $type ? '3rem' : 'auto'};
+         
               &::placeholder {
                 font-size: 1.4rem;
+                 ${mediaTablet} {
+                  font-size: 1.3rem;
+                }
               }
             `,
             className,

@@ -17,6 +17,7 @@ import React, { useEffect, useTransition } from 'react';
 import { useLazyFindCollaborationQuery } from '@org/store';
 import { useParams } from 'react-router-dom';
 import ScheduleApp from '../schedule/schedule.app';
+import {TagsList} from "@org/core";
 const contentStyle: React.CSSProperties = {
   height: '500px',
   color: '#fff',
@@ -45,12 +46,12 @@ function ClassesDetails() {
   const items: TabsProps['items'] = [
     {
       key: '1',
-      label: 'Thông Tin Lớp Học',
+      label: t('class.info'),
       children: <Information data={data} />,
     },
     {
       key: '2',
-      label: 'Lịch Học',
+      label:t('class.schedule'),
       children: (
         <ScheduleApp
           data={data}
@@ -60,17 +61,17 @@ function ClassesDetails() {
     },
     {
       key: '3',
-      label: 'Tình Trạng Học Phí',
+      label: t('class.fee.status'),
       children: 'Content of Tab Pane 3',
     },
     {
       key: '4',
-      label: 'Bài Tập',
+      label: t('class.Assignment'),
       children: 'Content of Tab Pane 3',
     },
     {
       key: '4',
-      label: 'Đánh Giá',
+      label: t('class.Feedback'),
       children: 'Content of Tab Pane 3',
     },
   ];
@@ -78,7 +79,7 @@ function ClassesDetails() {
     <SectionLayout>
       <Section>
         <BoxCenter>
-          <H2>{t('class')}</H2>
+          <H2>{t('class.details')}</H2>
         </BoxCenter>
         <Space
           className={css`
@@ -100,7 +101,6 @@ function ClassesDetails() {
 
 export default ClassesDetails;
 const Information = ({ data }: any) => {
-  console.log('🚀 ~ file: index.tsx:60 ~ Information ~ data:', data);
   return (
     <Space
       className={css`
@@ -204,11 +204,8 @@ const SkillCertifications = ({ data }: any) => {
           Kỹ Năng
         </h6>
         <Space>
-          {data?.tutorSkills?.map((item: any) => (
-            <Tag color={colorRandom()}>
-              {getNameLanguage(item?.skill?.nameVI, item?.skill?.nameEN)}
-            </Tag>
-          ))}
+          <TagsList data={data?.tutorSkills} isReverse/>
+
         </Space>
       </Space>
       <Space
@@ -226,11 +223,8 @@ const SkillCertifications = ({ data }: any) => {
           Chứng Chỉ
         </h6>
         <Space>
-          {data?.tutorCertifications?.map((item: any) => (
-            <Tag color={colorRandom()}>
-              {getNameLanguage(item?.certification?.nameVI, item?.certification?.nameEN)}
-            </Tag>
-          ))}
+          <TagsList data={data?.tutorCertifications} isReverse/>
+
         </Space>
       </Space>
       <Space

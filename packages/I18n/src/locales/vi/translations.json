@@ -17,6 +17,7 @@
     "createdAt": "Ngày Tạo",
     "fullname": "Họ Và Tên",
     "action": "Thao Tác",
+    "password": "Mật Khẩu",
     "add" :{
       "title": "Thêm Người Dùng",
       "success": "Thêm Người Dùng Thành Công!",
@@ -72,6 +73,7 @@
   "manage.registration" : "Danh Sách Đăng Ký Yêu Cầu",
   "manage.posts.me" : "Danh Sách Bài Đăng",
   "manage.classes" : "Danh Sách Lớp Học",
+  "registration" : "Đăng Ký Yêu Cầu",
   "filter": "Lọc",
 
 
@@ -110,11 +112,14 @@
   "Sunday": "Chủ Nhật",
   "skill": "Kỹ Năng",
   "certification": "Chứng Chỉ",
+  "Certification": "Chứng Chỉ",
+
   "summary" : "Tóm Tắt Yêu Cầu",
   "summaryDetails" : "Chi Tiết Yêu Cầu",
   "grade": "Lớp",
   "subject": "Môn Học",
   "timeStart": "Thời Gian Bắt Đầu",
+  "timeEnd": "Thời Gian Kết Thúc",
   "time_hours": "Giờ Mỗi Buổi",
   "fee": "Phí",
   "perTime": "Theo",
@@ -126,7 +131,87 @@
   "Province": "Thành Phố/Tỉnh",
   "District": "Quận/Huyện",
   "Ward": "Phường/Xã",
-  "New": "Phường/Xã"
+  "New": "Phường/Xã",
+
+  "nameVI": "[TV] Tên",
+  "nameEN": "[EN] Tên",
+  "descriptionVI": "[TV] Mô Tả",
+  "descriptionEN": "[EN] Mô Tả",
+  "grade.edit.title" : "Sửa Lớp",
+  "subject.edit.title" : "Sửa Môn Học",
+  "skill.edit.title" : "Sửa Kỹ Năng",
+  "certification.edit.title" : "Sửa Chứng Chỉ",
+  "grade.add.title" : "Thêm Lớp",
+  "subject.add.title" : "Thêm Môn Học",
+  "skill.add.title" : "Thêm Kỹ Năng",
+  "certification.add.title" : "Thêm Chứng Chỉ",
+  "tutorGradeSubject": "Lớp Môn Học",
+
+
+  "assessment": {
+    "name": "Bài Tập",
+    "exercise": "Bộ Đề",
+    "questions": "Câu Hỏi",
+    "assignment": "Phân Công Bài Tập",
+    "score": "Điểm",
+    "option": "Lựa Chọn"
+  },
+  "exercise.create": "Tạo Đề",
+  "exercise.title": "Tiêu Đề",
+  "exercise.edit": "Sửa Đề",
+  "point": "Điểm",
+  "manage.postsme": "Bài Đăng Tìm Gia Sư",
+  "no.data": "Không có dữ liệu",
+
+  "request": {
+    "delete": "Xóa Yêu Cầu",
+    "rejected": "Yêu Cầu Của Bạn Bị Từ Chối",
+    "contact.signature": "Hợp Đồng Chờ Bạn Ký",
+    "contact.details": "Chi Tiết Hợp Đồng",
+    "details": "Chi Tiết Yêu Cầu"
+  },
+  "pending_pay": "Đăng Chờ Thanh Toán",
+  "collaboration": "Đang Hợp Tác",
+"class": {
+  "details": "Chi Tiết Lớp Học",
+  "my": "Lớp Của Bạn",
+  "info": "Thông Tin Lớp Học",
+  "schedule": "Lịch Học",
+  "fee.status": "Tình Trạng Học Phí",
+  "Assignment": "Bài Tập",
+  "Feedback": "Đánh Giá",
+  "create.schedule": "Tạo Lich Học",
+  "save.schedule": "Lưu Lich Học",
+  "dayOfWeek": "Thứ",
+  "time_date": "Thời Gian Bắt Đầu - Kết Thúc",
+  "text.color": "Màu Chữ",
+  "bg.color": "Màu Nền",
+  "select.dayOfWeek": "Chọn Thứ",
+  "time_day": "Giờ Bắt Đầu - Kết Thúc"
+
+},
+  "remove": "Xóa",
+  "date": "Thời Gian",
+  "update": "Cập Nhập",
+
+  "lesson": {
+    "info": "Thông Tin Buổi Học",
+    "assignment": "Bài Tập Buổi Học",
+    "comment": "Đánh Giá Buổi Học",
+    "details": "Chi Tiết Buổi Học",
+    "content": "Nội Dung Buổi Học"
+  },
+  "assignment": {
+    "create": "Tạo Bài Tập",
+    "exercise": "Bộ Đề",
+    "time.startEnd" : "Thời Gian Bắt Đầu - Kết Thúc",
+    "name": "Tiêu Đề Bài Tập",
+    "success": "Đã Làm",
+    "review": "Kêt Quả Bài Làm"
+  },
+  "result": "Kết Quả",
+  "expired": "Hết Hạn",
+  "do": "Bắt Đầu Làm Bài"
 }
 
 

@@ -3,6 +3,7 @@ import { css } from "@emotion/react";
 
 import { SIZE, TYPE_BUTTON, VARIANT } from "./index";
 import { COLOR, COLOR_RGB } from "@org/utils/src/constant/themes/color";
+import {mediaDesktop, mediaMiniTablet, mediaTablet} from "@org/utils";
 
 const Button = styled.button<{
   $type: TYPE_BUTTON;
@@ -83,36 +84,71 @@ const Button = styled.button<{
           padding: 0 2.8rem;
           height: 5.4rem;
           font-size: 1.9rem;
+     
+
+   
+          ${mediaTablet} {
+            padding: 0 2rem;
+            font-size: 1.7rem;
+          }
+      
         `;
       case SIZE.Large:
         return css`
           padding: 0 2.4rem;
           height: 4.6rem;
           font-size: 1.7rem;
+          ${mediaTablet} {
+            padding: 0 1.4rem;
+            height: 4rem;
+            
+            font-size: 1.6rem;
+          }
         `;
       case SIZE.Normal:
         return css`
           padding: 0 2rem;
           height: 3.8rem;
           font-size: 1.5rem;
+          ${mediaTablet} {
+            padding: 0 1rem;
+            font-size: 1.3rem;
+            height: 3.2rem;
+            
+          }
         `;
       case SIZE.ExtraSmall:
         return css`
           padding: 0 1.6rem;
           height: 3rem;
           font-size: 1.3rem;
+          ${mediaTablet} {
+            padding: 0 .6rem;
+            font-size: 1.2rem;
+            height: 2.6rem;
+            
+          }
         `;
       case SIZE.Small:
         return css`
           padding: 0 1.2rem;
           height: 2.2rem;
           font-size: 1.1rem;
+          ${mediaTablet} {
+            padding: 0 .4rem;
+            font-size: 1rem;
+            height: 2rem;
+          }
         `;
       case SIZE.Menu:
         return css`
           padding: 0 1.2rem;
           height: 3.8rem;
           font-size: 1.5rem;
+          ${mediaTablet} {
+            padding: 0 1rem;
+            font-size: 1.3rem;
+          }
         `;
 
       default:

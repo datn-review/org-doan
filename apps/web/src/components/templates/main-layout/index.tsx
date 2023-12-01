@@ -1,8 +1,6 @@
 import { Link, Outlet } from 'react-router-dom';
 import { ChatIcon, Space, Badge } from '@org/ui';
-import { Outlet } from 'react-router-dom';
 import { Header } from '@components/organisms/header-layout';
-import { Space } from '@org/ui';
 import { css } from '@emotion/css';
 import { Footer } from '@components/organisms/footer';
 import { SiteMap } from '@org/utils';

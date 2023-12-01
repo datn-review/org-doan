@@ -131,7 +131,7 @@ export function Upsert() {
       {contextHolder}
       {isUpsert && (
         <Drawer
-          title={idEdit ? t('user.edit.title') : t('user.add.title')}
+          title={idEdit ? t('certification.edit.title') : t('certification.add.title')}
           placement={'right'}
           width={500}
           onClose={close}

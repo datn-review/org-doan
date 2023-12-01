@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { COLOR } from '@org/utils';
+import {COLOR, mediaDesktop, mediaMiniTablet, mediaPhone, mediaTablet} from '@org/utils';
 import React, { PropsWithChildren } from 'react';
 import { Space } from '../space';
 
@@ -18,6 +18,19 @@ function TextSection({
         margin-bottom: 26px;
         position: relative;
         width: max-content;
+        ${mediaDesktop} {
+          font-size: 3rem;
+        }
+
+        ${mediaTablet} {
+          font-size: 2.5rem;
+        }
+        ${mediaMiniTablet} {
+          font-size: 2rem;
+        }
+        ${mediaPhone} {
+          font-size: 1.8rem;
+        }
 
         &:after {
           content: '';

@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { useCRUDContext, useMessageHook, useUpdateEffect } from '@org/core';
+import {TagsList, useCRUDContext, useMessageHook, useUpdateEffect} from '@org/core';
 import { getNameLanguage, useTranslation } from '@org/i18n';
 import {
   clearActiveMenu,
@@ -10,6 +10,7 @@ import {
   useLazyGetMeCollaborationQuery,
 } from '@org/store';
 import {
+  BoxCenter,
   Dropdown,
   EllipsisOutlined,
   H2,
@@ -112,7 +113,7 @@ function Registration() {
 
   const columns = [
     {
-      title: t('requestSummaryVI'),
+      title: t('summary'),
       dataIndex: 'updatedAt',
       sorter: true,
       render: (_: string, record: any) => <>{record?.posts?.requestSummaryVI}</>,
@@ -123,9 +124,8 @@ function Registration() {
 
       render: (_: string, record: any) => (
         <>
-          {record?.posts?.subjects?.map((item: any) => (
-            <Tag color={colorRandom()}>{getNameLanguage(item?.nameVI, item?.nameEN)}</Tag>
-          ))}
+          <TagsList data={record?.posts?.subjects}/>
+
         </>
       ),
     },
@@ -135,9 +135,8 @@ function Registration() {
 
       render: (_: string, record: any) => (
         <>
-          {record?.posts?.gradeLevels?.map((item: any) => (
-            <Tag color={colorRandom()}>{getNameLanguage(item?.nameVI, item?.nameEN)}</Tag>
-          ))}
+          <TagsList data={record?.posts?.gradeLevels}/>
+
         </>
       ),
     },
@@ -166,6 +165,7 @@ function Registration() {
     {
       title: t('user.action'),
       dataIndex: '',
+      align:"center",
       render: (_: any, record: any) => (
         <Space
           className={css`
@@ -173,6 +173,7 @@ function Registration() {
             align-items: center;
             gap: 0.5rem;
             cursor: pointer;
+            justify-content: center;
           `}
         >
           <Dropdown
@@ -197,7 +198,7 @@ function Registration() {
                         color: #5c5b68 !important;
                       `}
                     >
-                      Xem Chi Tiết Yêu Cầu
+                      {t('request.details')}
                     </Link>
                   ),
                 },
@@ -207,15 +208,15 @@ function Registration() {
                     <Space>
                       <If condition={record?.status === EnumStatusCollap.Pending}>
                         <Then>
-                          <Space onClick={handleDelete(record)}>Xóa yêu cầu</Space>
+                          <Space onClick={handleDelete(record)}>{t('request.delete')}</Space>
                         </Then>
                       </If>
                       <If condition={record.status === EnumStatusCollap.Rejected}>
-                        <Then>Yêu Cầu Của Bạn Bị Từ Chối</Then>
+                        <Then>{t('request.rejected')}</Then>
                       </If>
                       <If condition={record.status === EnumStatusCollap.PendingSignature}>
                         <Then>
-                          <Space onClick={confirmContract(record)}>Hợp Đồng Chờ Bạn Ký</Space>
+                          <Space onClick={confirmContract(record)}>{t('contact.signature')}</Space>
                         </Then>
                       </If>
                       <If
@@ -225,7 +226,7 @@ function Registration() {
                           record.status === EnumStatusCollap.Completed
                         }
                       >
-                        <Then>Xem chi tiet hop dong</Then>
+                        <Then>{t('request.contact.details')}</Then>
                       </If>
                     </Space>
                   ),
@@ -233,14 +234,17 @@ function Registration() {
               ],
             }}
             trigger={['click']}
-            placement='bottomCenter'
-            arrow={{ pointAtCenter: true }}
+            placement='bottomLeft'
+            // arrow={{ pointAtCenter: true }}
           >
-            <EllipsisOutlined
-              className={css`
+              <EllipsisOutlined
+                  className={css`
                 transform: scale(1.6);
+                    display: flex;
+                    justify-content: center;
               `}
-            />
+              />
+
           </Dropdown>
         </Space>
       ),

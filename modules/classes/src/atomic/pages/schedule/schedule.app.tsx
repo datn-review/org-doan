@@ -14,7 +14,7 @@ import {
 import moment from 'dayjs';
 import dayjs from 'dayjs';
 import { css } from '@emotion/css';
-import { getNameLanguage, useTranslation } from '@org/i18n';
+import {getNameLanguage, i18nContant, useTranslation} from '@org/i18n';
 import { COLOR } from '@org/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { createEventId } from '@org/ui/src/atomic/atoms/calendar/event-utils';
@@ -31,32 +31,32 @@ interface ClassTime {
 }
 const options = [
   {
-    label: 'monday',
+    label: i18nContant('Monday'),
     value: 1,
   },
   {
-    label: 'tuesday',
+    label: i18nContant('Tuesday'),
     value: 2,
   },
   {
-    label: 'wednesday',
+    label:  i18nContant('Wednesday'),
     value: 3,
   },
   {
-    label: 'thursday',
+    label:  i18nContant('Thursday'),
     value: 4,
   },
 
   {
-    label: 'friday',
+    label:  i18nContant('Friday'),
     value: 5,
   },
   {
-    label: 'saturday',
+    label:  i18nContant('Saturday'),
     value: 6,
   },
   {
-    label: 'sunday',
+    label: i18nContant('Sunday'),
     value: 0,
   },
 ];
@@ -165,12 +165,11 @@ function Schedule({ data, refetch }: any) {
                 margin-top: 1rem;
               `}
             >
-              <Button
-                $size={SIZE.Small}
-                onClick={() => setEventId(eventContent?.event?.extendedProps?.id)}
-              >
-                Details
-              </Button>
+              {/*<Button*/}
+              {/*  $size={SIZE.Small}*/}
+              {/*  onClick={() => setEventId(eventContent?.event?.extendedProps?.id)}*/}
+              {/*>*/}
+              {/*</Button>*/}
             </Space>
           </Space>
         }
@@ -209,13 +208,13 @@ function Schedule({ data, refetch }: any) {
           justify-content: space-between;
         `}
       >
-        <H2>{t('create.schedule')}</H2>
+        <H2>{t('class.create.schedule')}</H2>
 
         <Button
           onClick={handleSave}
           $size={SIZE.ExtraSmall}
         >
-          {t('save.schedule')}{' '}
+          {t('class.save.schedule')}{' '}
         </Button>
       </Space>
       <Space
@@ -230,7 +229,8 @@ function Schedule({ data, refetch }: any) {
             margin-bottom: 2rem;
           `}
         >
-          <Space>Time Start - Time End</Space>
+
+          <Space>{t('class.time_date')}</Space>
           <RangePicker
             disabled={true}
             // @ts-ignore
@@ -244,7 +244,7 @@ function Schedule({ data, refetch }: any) {
         </Space>
 
         <Space>
-          <Space>Text Color </Space>
+          <Space>{t('class.text.color')}</Space>
           <ColorPicker
             onChange={(color) => setColor(color.toHexString())}
             value={color}
@@ -253,7 +253,7 @@ function Schedule({ data, refetch }: any) {
           />
         </Space>
         <Space>
-          <Space>BackGround Color </Space>
+          <Space>{t('class.bg.color')}</Space>
           <ColorPicker
             onChange={(color) => setBgColor(color.toHexString())}
             value={bgColor}
@@ -275,7 +275,7 @@ function Schedule({ data, refetch }: any) {
             `}
           >
             <Space>
-              <div>{t('dayOfWeek')}</div>
+              <div>{t('class.dayOfWeek')}</div>
               <Select
                 className={css`
                   width: 24rem;
@@ -290,14 +290,14 @@ function Schedule({ data, refetch }: any) {
                     },
                   }))
                 }
-                placeholder={t('select.dayOfWeek')}
+                placeholder={t('class.select.dayOfWeek')}
                 size={'middle'}
                 value={values?.day}
               />
             </Space>
 
             <Space>
-              <div>Time End - Time End</div>
+              <div>{t('class.time_day')}</div>
               <TimePicker.RangePicker
                 onChange={(value) =>
                   setClassArray((prev) => ({
@@ -336,7 +336,7 @@ function Schedule({ data, refetch }: any) {
                   }}
                   $size={SIZE.ExtraSmall}
                 >
-                  - Remove
+                  - {t("remove")}
                 </Button>
               </Space>
             )}
@@ -356,7 +356,7 @@ function Schedule({ data, refetch }: any) {
           }}
           $size={SIZE.ExtraSmall}
         >
-          + Add
+          + {t("add")}
         </Button>
       </Space>
 

@@ -29,6 +29,7 @@ import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
 import { css } from '@emotion/css';
 import { RegistrationPost } from '../../molecules';
+import {isEmpty} from "lodash";
 function Posts() {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
@@ -58,13 +59,11 @@ function Posts() {
   return (
     <SectionLayout>
       <Section>
-        <TextSection>{t('manage.postsme')}</TextSection>
-      </Section>
-      <Section
-        className={css`
-          margin-top: 2rem;
-        `}
-      >
+        <h2>{t('manage.postsme')}</h2>
+
+
+
+        {isEmpty(dataPosts) && <BoxCenter>{t("no.data")}</BoxCenter>}
         <Row gutter={8}>
           {dataPosts?.map((item: any) => (
             <Col span={8}>

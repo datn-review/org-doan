@@ -142,7 +142,7 @@ export function ReviewAssignment() {
           `}
         >
           <TextSection left>
-            {t('review.assignment')}: {dataAssignment?.exercise?.name}
+            {t('assignment.review')}: {dataAssignment?.exercise?.name}
           </TextSection>
           <h3
             className={css`
@@ -191,7 +191,7 @@ export function ReviewAssignment() {
                 {'   '}
                 {index + 1}. {question.content} ({question.score} {t('point')})
                 <Space>
-                  <Question question={question} />
+                  <QuestionReview question={question} />
                 </Space>
               </Space>
             </Space>
@@ -202,9 +202,9 @@ export function ReviewAssignment() {
   );
 }
 
-export const Question = ({ question }: any) => {
+export const QuestionReview = ({ question }: any) => {
   const isRadio = question.type === 0;
-  const value = isRadio ? question.answer : question.answer?.split(',');
+  const value = isRadio ? question?.answer : question?.answer?.split(',');
   const options = useMemo(() => {
     return question.options?.map((option: any, index: number) => {
       let cssSuccess = '';
@@ -221,7 +221,7 @@ export const Question = ({ question }: any) => {
           `;
         }
 
-        if (!isRadio && value.includes(String(option.id))) {
+        if (!isRadio && value?.includes(String(option.id))) {
           cssRadio = css`
             color: red;
           `;
