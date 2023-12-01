@@ -125,7 +125,8 @@
   "address": "Địa Chỉ Chi Tiết",
   "Province": "Thành Phố/Tỉnh",
   "District": "Quận/Huyện",
-  "Ward": "Phường/Xã"
+  "Ward": "Phường/Xã",
+  "New": "Phường/Xã"
 }
 
 
