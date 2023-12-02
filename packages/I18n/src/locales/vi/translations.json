@@ -170,7 +170,7 @@
     "contact.details": "Chi Tiết Hợp Đồng",
     "details": "Chi Tiết Yêu Cầu"
   },
-  "pending_pay": "Đăng Chờ Thanh Toán",
+  "pending_pay": "Đang Chờ Thanh Toán",
   "collaboration": "Đang Hợp Tác",
 "class": {
   "details": "Chi Tiết Lớp Học",
@@ -211,7 +211,30 @@
   },
   "result": "Kết Quả",
   "expired": "Hết Hạn",
-  "do": "Bắt Đầu Làm Bài"
+  "do": "Bắt Đầu Làm Bài",
+  "list.tutor.register": "Danh Sách Gia Sư Đăng Kí Nhận Lớp",
+  "tutor.name": "Tên Gia Sư",
+  "list.tutor.register.post": "Danh Sách Gia Sư Đăng Ký",
+  "contact.title.success": "Tiến Hành Hoán Tất Hợp đồng",
+  "contact.address.title": "Địa chỉ văn phòng",
+  "contact.phone.title": "Địa chỉ văn phòng",
+  "contact.title": "Hợp Đồng Giao(Nhận) Lớp",
+  "contact.note.title":"Lưu ý: Vui lòng đọc kỹ các Điều khoản dưới đây",
+  "user.name": "Họ Và Tên",
+  "user.address": "Địa Chỉ",
+  "contact.confirm": "Xác Nhận Hoàn Tất Hợp Đồng",
+  "contact.startDate" : "Ngày Bắt Đầu",
+  "contact.endDate" : "Ngày Kết Thúc",
+  "contact.time": "Ngày Bắt Đầu - Kết Thúc Hợp Đồng",
+  "contact.date.sign": "Thời Gian Ký Hợp Đồng",
+  "tutor.details": "Chi Tiết Gia Sư",
+  "contact.student.confirm": "Xác Nhận Hợp Tác",
+  "contact.title.link": "Hợp Đồng",
+  "contact.pay": "Tiến Hành Thanh Toán",
+  "contact.confirm.post": "Ký Xác Nhận Và Chờ Bên B Ký",
+  "contact.confirm.register": "Ký Xác Nhận Và Chờ Bên A Hoàn Tất Thanh Toán Học Phí Tháng Đầu",
+  "pending_signature": "Đang Chờ Ký Gia Sư Ký",
+  "contact.signature": "Tiến Hành Ký Hợp Đồng"
 }
 
 

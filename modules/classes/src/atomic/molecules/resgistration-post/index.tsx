@@ -82,7 +82,7 @@ export function RegistrationPost({ id, close }: any) {
               color: #5c5b68 !important;
             `}
           >
-            Xem Chi Tiết Gia Sư
+            {t('tutor.details')}
           </Link>
         ),
       },
@@ -90,7 +90,9 @@ export function RegistrationPost({ id, close }: any) {
         key: '2',
         label: (
           <Space onClick={() => setIdContants(record)}>
-            {record?.status == EnumStatusCollap.Pending ? 'Xác Nhận Hợp Tác' : 'Hợp Đồng'}
+            {record?.status == EnumStatusCollap.Pending
+              ? t('contact.student.confirm')
+              : t('contact.title.link')}
           </Space>
         ),
       },
@@ -98,9 +100,7 @@ export function RegistrationPost({ id, close }: any) {
       {
         ...(record?.status == EnumStatusCollap.PendingPay && {
           key: '3',
-          label: (
-            <Space onClick={() => setPayment(record?.payment?.[0])}>Tien Hanh Thanh Toan</Space>
-          ),
+          label: <Space onClick={() => setPayment(record?.payment?.[0])}>{t('contact.pay')}</Space>,
         }),
       },
     ].filter(Boolean) as any[];
@@ -174,7 +174,7 @@ export function RegistrationPost({ id, close }: any) {
 
   return (
     <ModalAntd
-      title='Danh Sách Gia Sư Đăng Kí Nhận Dạy'
+      title={t('list.tutor.register')}
       open={!!id}
       onCancel={close}
       width={'999px'}

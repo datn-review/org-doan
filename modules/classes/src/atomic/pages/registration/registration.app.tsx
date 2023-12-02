@@ -108,6 +108,7 @@ function Registration() {
   };
 
   const confirmContract = (record: any) => () => {
+    // coonsole.log(record)
     setContants(record);
   };
 
