@@ -75,7 +75,9 @@ export function Table({
     <Spin spinning={loading}>
       <Space
         className={css`
-          overflow-y: auto;
+          //overflow-x: scroll;
+          //overflow-y: unset !important;
+          //overflow-y: auto;
           &::-webkit-scrollbar {
             height: 1rem;
           }

@@ -234,7 +234,13 @@
   "contact.confirm.post": "Ký Xác Nhận Và Chờ Bên B Ký",
   "contact.confirm.register": "Ký Xác Nhận Và Chờ Bên A Hoàn Tất Thanh Toán Học Phí Tháng Đầu",
   "pending_signature": "Đang Chờ Ký Gia Sư Ký",
-  "contact.signature": "Tiến Hành Ký Hợp Đồng"
+  "contact.signature": "Tiến Hành Ký Hợp Đồng",
+  "payment.contact.title": "Thanh Toán Học Phí",
+  "payment.title": "Thanh Toán",
+  "money": "Thành Tiền",
+  "payment.feeMonth": "Kỳ Thanh Toán Học Phí",
+  "payment.code": "Mã Thanh Toán",
+  "payment.dead": "Ngày Hết Hạn Nộp Học Phí "
 }
 
 

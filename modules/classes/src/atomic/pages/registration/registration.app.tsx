@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import {TagsList, useCRUDContext, useMessageHook, useUpdateEffect} from '@org/core';
+import { TagsList, useCRUDContext, useMessageHook, useUpdateEffect } from '@org/core';
 import { getNameLanguage, useTranslation } from '@org/i18n';
 import {
   clearActiveMenu,
@@ -125,8 +125,7 @@ function Registration() {
 
       render: (_: string, record: any) => (
         <>
-          <TagsList data={record?.posts?.subjects}/>
-
+          <TagsList data={record?.posts?.subjects} />
         </>
       ),
     },
@@ -136,8 +135,7 @@ function Registration() {
 
       render: (_: string, record: any) => (
         <>
-          <TagsList data={record?.posts?.gradeLevels}/>
-
+          <TagsList data={record?.posts?.gradeLevels} />
         </>
       ),
     },
@@ -166,7 +164,7 @@ function Registration() {
     {
       title: t('user.action'),
       dataIndex: '',
-      align:"center",
+      align: 'center',
       render: (_: any, record: any) => (
         <Space
           className={css`
@@ -227,7 +225,11 @@ function Registration() {
                           record.status === EnumStatusCollap.Completed
                         }
                       >
-                        <Then>{t('request.contact.details')}</Then>
+                        <Then>
+                          <Space onClick={confirmContract(record)}>
+                            {t('request.contact.details')}
+                          </Space>
+                        </Then>
                       </If>
                     </Space>
                   ),
@@ -238,14 +240,13 @@ function Registration() {
             placement='bottomLeft'
             // arrow={{ pointAtCenter: true }}
           >
-              <EllipsisOutlined
-                  className={css`
+            <EllipsisOutlined
+              className={css`
                 transform: scale(1.6);
-                    display: flex;
-                    justify-content: center;
+                display: flex;
+                justify-content: center;
               `}
-              />
-
+            />
           </Dropdown>
         </Space>
       ),

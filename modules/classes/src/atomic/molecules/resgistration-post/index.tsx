@@ -100,7 +100,20 @@ export function RegistrationPost({ id, close }: any) {
       {
         ...(record?.status == EnumStatusCollap.PendingPay && {
           key: '3',
-          label: <Space onClick={() => setPayment(record?.payment?.[0])}>{t('contact.pay')}</Space>,
+          label: (
+            <Space
+              onClick={() => {
+                console.log(record?.payment);
+                const payment = [...record?.payment]?.sort((a: any, b: any) => a.id - b.id);
+
+                console.log(payment);
+
+                setPayment(payment?.[0]);
+              }}
+            >
+              {t('contact.pay')}
+            </Space>
+          ),
         }),
       },
     ].filter(Boolean) as any[];
