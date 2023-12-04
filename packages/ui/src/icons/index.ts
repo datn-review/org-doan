@@ -18,4 +18,5 @@ export { ReactComponent as IconEye } from '../assets/icons/svg/eye.svg';
 export { ReactComponent as IconEyeClose } from '../assets/icons/svg/eye-close.svg';
 
 export { IconSearch } from './SearchIcon';
+export { ChatIcon } from './ChatIcon';
 // export { IconSearch } from './SearchIcon';

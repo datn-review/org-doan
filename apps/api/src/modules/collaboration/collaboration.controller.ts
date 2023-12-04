@@ -18,7 +18,7 @@ import {
 } from '@nestjs/common';
 
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/roles/roles.decorator';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { InfinityPaginationResultType } from '../../utils/types/infinity-pagination-result.type';
@@ -30,10 +30,44 @@ import { CollaborationService } from './collaboration.service';
 import { CreateCollaborationDto } from './dto/create.dto';
 import { UpdateCollaborationDto } from './dto/update.dto';
 import { RoleEnum } from 'src/roles/roles.enum';
-import { IsEmpty } from 'class-validator';
 import { PaymentService } from '../payment/payment.service';
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
+import * as dayjs from 'dayjs';
+
+function calculateDaysInMonthRange(
+  contractStartDate: string,
+  contractEndDate: string,
+): Record<string, number> {
+  const start = dayjs(contractStartDate);
+  const end = dayjs(contractEndDate);
+
+  const daysInEachMonth: Record<string, number> = {};
+
+  let currentMonth = start;
+
+  while (currentMonth.isSame(end) || currentMonth.isBefore(end)) {
+    const monthKey = currentMonth.format('YYYY-MM');
+    // console.log(
+    //   currentMonth.format('DD-MM-YYYY'),
+    //   currentMonth.endOf('month').format('DD-MM-YYYY'),
+    // );
+    let endDay = currentMonth.endOf('month');
+    if (currentMonth.endOf('month').isAfter(end)) {
+      endDay = end;
+    }
+
+    const daysInMonth = endDay.diff(currentMonth, 'day') + 1; // Thay đổi ở đ
+    // ây
+
+    daysInEachMonth[monthKey] = Math.min(
+      currentMonth.endOf('month').diff(currentMonth, 'day') + 1,
+      daysInMonth,
+    );
+    currentMonth = currentMonth.startOf('month').add(1, 'month');
+  }
+
+  return daysInEachMonth;
+}
+
 const relations = [
   { field: 'posts', entity: 'posts' },
   { field: 'posts.subjects', entity: 'subject' },
@@ -44,9 +78,18 @@ const relations = [
     field: 'user',
     entity: 'user',
   },
+
   {
     field: 'payment',
     entity: 'payment',
+  },
+  {
+    field: 'lessons',
+    entity: 'lesson',
+  },
+  {
+    field: 'schedules',
+    entity: 'schedule',
   },
 ];
 const relationsPay = [
@@ -287,9 +330,6 @@ export class CollaborationController {
       };
     }
 
-    const deadPaymentDate = new Date();
-    deadPaymentDate.setDate(deadPaymentDate.getDate() + 7);
-
     const collaboration = await this.collaborationService.findOne(
       {
         id: +id,
@@ -299,32 +339,91 @@ export class CollaborationController {
     if (collaboration) {
       const sender = collaboration?.posts?.user?.id || 0;
       console.log(collaboration?.posts);
-      let amountX = 1;
+      const daysInMonth = calculateDaysInMonthRange(
+        dayjs(collaboration?.contractStartDate).format('YYYY-MM-DD'),
+        dayjs(collaboration?.contractEndDate).format('YYYY-MM-DD'),
+      );
+      console.log(daysInMonth);
 
-      if (collaboration?.posts?.perTime == 2) {
-        amountX = 4;
-      } else {
-        amountX = 4 * Number(collaboration?.posts?.dayWeek);
-      }
-      const amount = Number(collaboration?.posts?.fee) * amountX;
+      const payment: any[] = [];
+      let dayRemainder = 0;
+      const daysInMonthArray = Object.entries(daysInMonth);
+      daysInMonthArray?.forEach(([key, value], index) => {
+        const dayInMonth = dayRemainder + value;
+        let feeMonthDate = dayjs(key, 'YYYY-MM');
+        feeMonthDate = feeMonthDate.add(1, 'day');
 
-      await this.paymentService.create({
-        collaboration: +id,
-        sender,
-        amount,
-        deadPaymentDate,
+        let deadPaymentDate: any = feeMonthDate.add(7, 'day');
+        console.log('deadPaymentDate', deadPaymentDate.format('DD/MM/YYYY'));
+        if (index === 0) {
+          deadPaymentDate = new Date();
+          deadPaymentDate.setDate(deadPaymentDate.getDate() + 7);
+          console.log('deadPaymentDate2', deadPaymentDate);
+        }
+        let weeks = Math.floor(dayInMonth / 7);
+        const weeksRemainder = dayInMonth % 7;
+        console.log('weeks', weeks);
+        console.log('weeksRemainder', weeksRemainder);
+
+        if (weeksRemainder) {
+          weeks = weeks + 1;
+
+          if (index === daysInMonthArray.length - 1) {
+            if (weeksRemainder < 3) {
+              weeks = weeks - 1;
+            }
+          }
+
+          dayRemainder = 7 - weeksRemainder;
+        } else {
+          dayRemainder = 0;
+        }
+
+        let amountX = 1;
+        let amount = 0;
+        if (collaboration?.posts?.perTime == 1) {
+          const amountForDay = collaboration?.posts?.fee / feeMonthDate.daysInMonth();
+          amount = amountForDay * dayInMonth;
+        }
+
+        if (collaboration?.posts?.perTime == 2) {
+          amountX = weeks;
+          amount = Number(collaboration?.posts?.fee) * amountX;
+        }
+        if (collaboration?.posts?.perTime === 3) {
+          amountX = weeks * Number(collaboration?.posts?.dayWeek);
+          amount = Number(collaboration?.posts?.fee) * amountX;
+        }
+
+        payment.push({
+          collaboration: +id,
+          sender,
+          amount,
+          deadPaymentDate,
+          feeMonthDate,
+        });
       });
+      console.log('PAYMENT', payment);
+      await this.paymentService.createMany(payment);
+
+      // await this.paymentService.create({
+      //   collaboration: +id,
+      //   sender,
+      //   amount,
+      //   deadPaymentDate,
+      // });
     }
 
     return this.collaborationService.update(+id, {
       ...data,
     });
+    // return null;
   }
 
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string): Promise<NullableType<Collaboration>> {
-    return this.collaborationService.findOne({ id: +id });
+    return this.collaborationService.findOne({ id: +id }, relations);
   }
 
   @Get('/post/:id')

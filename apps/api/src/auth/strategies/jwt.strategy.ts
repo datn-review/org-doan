@@ -8,10 +8,7 @@ import { OrNeverType } from '../../utils/types/or-never.type';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(
-    private jwtService: JwtService,
-    private configService: ConfigService,
-  ) {
+  constructor(private jwtService: JwtService, private configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: configService.get('auth.secret'),

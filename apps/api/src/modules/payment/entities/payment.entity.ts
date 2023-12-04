@@ -32,6 +32,9 @@ export class Payment extends EntityHelper {
   @Column({ type: Number })
   collaboration?: Collaboration | null;
 
+  @Column({ type: Date, nullable: true })
+  feeMonthDate?: Date | null;
+
   @Column({ type: Number })
   amount?: number;
 

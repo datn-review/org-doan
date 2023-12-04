@@ -52,6 +52,12 @@ import { DistrictsModule } from './modules/provinces/districts/districts.module'
 import { ProvinceModule } from './modules/provinces/province/province.module';
 import { WardsModule } from './modules/provinces/wards/wards.module';
 import { PostTimeAvailabilityModule } from './modules/posts/post-time-availability/post-time-availability.module';
+import { ExerciseModule } from './modules/assessment/exercise/exercise.module';
+import { QuestionModule } from './modules/assessment/question/question.module';
+import { AssignmentModule } from './modules/assessment/assignment/assignment.module';
+import { ChatBotModule } from './modules/chat/chat-bot/chat-bot.module';
+import { ChatModule } from './modules/chat/chat-message/chat.module';
+import { RoomModule } from './modules/chat/room/room.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -129,6 +135,12 @@ import { PostTimeAvailabilityModule } from './modules/posts/post-time-availabili
     DistrictsModule,
     WardsModule,
     PostTimeAvailabilityModule,
+    ExerciseModule,
+    QuestionModule,
+    AssignmentModule,
+    ChatBotModule,
+    ChatModule,
+    RoomModule,
   ],
 })
 export class AppModule {}

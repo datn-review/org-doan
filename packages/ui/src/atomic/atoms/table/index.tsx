@@ -73,15 +73,39 @@ export function Table({
   }, [columns, sortBy, sortDirection]);
   return (
     <Spin spinning={loading}>
-      <TableBase
-        onChange={handleChange}
-        columns={convertColumns}
-        pagination={false}
-        dataSource={data}
-        showSorterTooltip={false}
-        sortDirections={['ascend', 'descend', 'ascend']}
-        {...props}
-      />
+      <Space
+        className={css`
+          //overflow-x: scroll;
+          //overflow-y: unset !important;
+          //overflow-y: auto;
+          &::-webkit-scrollbar {
+            height: 1rem;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            background-color: darkgrey;
+            cursor: pointer;
+            border-radius: 2rem;
+          }
+        `}
+      >
+        <Space
+          className={css`
+            min-width: 80rem;
+          `}
+        >
+          <TableBase
+            onChange={handleChange}
+            columns={convertColumns}
+            pagination={false}
+            dataSource={data}
+            showSorterTooltip={false}
+            sortDirections={['ascend', 'descend', 'ascend']}
+            {...props}
+          />
+        </Space>
+      </Space>
+
       <Space
         className={css`
           margin-top: 2rem;
@@ -125,3 +149,4 @@ export const SelectLimitTable = ({
 };
 
 export { useTable } from './hooks/useTable';
+export { EditableCell } from './edit-row';

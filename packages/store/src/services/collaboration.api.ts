@@ -39,7 +39,7 @@ export const CollaborationAPI = baseAuthSplitApi.injectEndpoints({
     }),
 
     findCollaboration: builder.query({
-      query: ({ id }) => ({
+      query: (id) => ({
         url: `/collaboration/${id}`,
         method: 'GET',
       }),

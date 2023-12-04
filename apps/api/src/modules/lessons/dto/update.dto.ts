@@ -5,7 +5,8 @@ import { IsOptional } from 'class-validator';
 export class UpdateLessonsDto extends PartialType(CreateLessonsDto) {
   @ApiProperty({ example: '1' })
   @IsOptional()
-  name?: string | undefined;
+  content?: string | undefined;
+
   @ApiProperty({ example: 1 })
   @IsOptional()
   status?: number | undefined;

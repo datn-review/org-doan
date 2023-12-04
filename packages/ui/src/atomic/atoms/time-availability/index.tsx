@@ -1,12 +1,13 @@
-import React, { useRef, useState } from 'react';
+import React, { ReactNode, useRef, useState } from 'react';
 import { Cascader, CascaderProps } from 'antd';
 import { Space } from '../space';
 import { css, cx } from '@emotion/css';
 import { withForm } from '../../../form/connectForm';
 import { COLOR, COLOR_RGB } from '@org/utils';
+import { i18nContant } from '@org/i18n';
 interface Option {
   value: string | number;
-  label: string;
+  label: ReactNode;
   children?: Option[];
 }
 
@@ -21,37 +22,37 @@ const timeInDay: Option[] = Array.from({ length: 24 }, (value, index) => ({
 const timeAvailabilitys: Option[] = [
   {
     value: 2,
-    label: 'Moday',
+    label: <>{i18nContant('Monday')}</>,
     children: timeInDay,
   },
   {
     value: 3,
-    label: 'Tuesday',
+    label: <>{i18nContant('Tuesday')}</>,
     children: timeInDay,
   },
   {
     value: 4,
-    label: 'Wednesday',
+    label: <>{i18nContant('Wednesday')}</>,
     children: timeInDay,
   },
   {
     value: 5,
-    label: 'Thursday',
+    label: <>{i18nContant('Thursday')}</>,
     children: timeInDay,
   },
   {
     value: 6,
-    label: 'Friday',
+    label: <>{i18nContant('Friday')}</>,
     children: timeInDay,
   },
   {
     value: 7,
-    label: 'Saturday',
+    label: <>{i18nContant('Saturday')}</>,
     children: timeInDay,
   },
   {
     value: 8,
-    label: 'Sunday',
+    label: <>{i18nContant('Sunday')}</>,
     children: timeInDay,
   },
 ];
@@ -61,6 +62,10 @@ interface ITimeAvailability {
   onChange?: (value: any) => void;
   [k: string]: any;
 }
+
+export const timeAvailabilityFormat = (data: any) => {
+  return data?.map((item: any) => `${item?.dayofWeekId}__${item?.hourId}`);
+};
 export function TimeAvailability({ label, onChange, value, ...rest }: any) {
   // const [timeAvailabilityCheck, setTimeAvailabilityCheck] = useState<string[]>([]);
 
@@ -91,7 +96,7 @@ export function TimeAvailability({ label, onChange, value, ...rest }: any) {
           css`
             overflow: auto;
             overflow-y: hidden;
-            border: 1px #fff s;
+            border: 1px #fff;
           `,
           'scroll-customer',
         )}
@@ -147,11 +152,9 @@ export function TimeAvailability({ label, onChange, value, ...rest }: any) {
                           height: 30px;
                           line-height: 30px;
                           font-weight: 600;
-                          text-align: center;
                           color: ${color};
                           border: solid 1px #ccc;
                           background: ${bg};
-                          user-select: none;
                           touch-action: none;
                           border-radius: 5px;
                           &:hover {

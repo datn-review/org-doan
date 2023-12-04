@@ -19,7 +19,8 @@ function ProfileApp() {
       dispatch(setActiveGroup({ current: '' }));
     };
   }, []);
-  const { data } = useGetProfileMeQuery({});
+  const { data } = useGetProfileMeQuery({}, { refetchOnMountOrArgChange: true });
+
   console.log('🚀 ~ file: profile-app.tsx:23 ~ ProfileApp ~ data:', data);
   return (
     <>

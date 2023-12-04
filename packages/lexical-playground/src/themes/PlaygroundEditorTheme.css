@@ -16,6 +16,9 @@
   margin: 0;
   position: relative;
 }
+.floating-text-format-popup{
+  height: 45px !important;
+}
 .PlaygroundEditorTheme__quote {
   margin: 0;
   margin-left: 20px;

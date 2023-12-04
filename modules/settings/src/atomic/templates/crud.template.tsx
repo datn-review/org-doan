@@ -4,7 +4,10 @@ import { PropsWithChildren } from 'react';
 
 export function CRUDTemplate({ children }: PropsWithChildren) {
   return (
-    <Space
+      <Space className={'section-layout'}>
+
+
+      <Space
       className={css`
         background-color: white;
         padding: 2rem;
@@ -13,5 +16,6 @@ export function CRUDTemplate({ children }: PropsWithChildren) {
     >
       {children}
     </Space>
+      </Space>
   );
 }

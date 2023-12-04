@@ -4,9 +4,19 @@ export const HEADLINES = {
     LineHeight: '5.2rem',
     FontWeight: 700,
   },
+  H1_SM: {
+    FontSize: '3.2rem',
+    LineHeight: '4.4rem',
+    FontWeight: 600,
+  },
   H2: {
     FontSize: '3.2rem',
     LineHeight: '4.4rem',
+    FontWeight: 600,
+  },
+  H2_SM: {
+    FontSize: '2.6rem',
+    LineHeight: '3.6rem',
     FontWeight: 600,
   },
   H3: {
@@ -14,16 +24,27 @@ export const HEADLINES = {
     LineHeight: '3.6rem',
     FontWeight: 600,
   },
+  H3_SM: {
+    FontSize: '2.2rem',
+    LineHeight: '3.0rem',
+    FontWeight: 600,
+  },
   H4: {
     FontSize: '2.2rem',
     LineHeight: '3.0rem',
     FontWeight: 600,
+  },
+  H4_SM: {
+    FontSize: '1.8rem',
+    LineHeight: '2.4rem',
+    FontWeight: 500,
   },
   H5: {
     FontSize: '1.8rem',
     LineHeight: '2.4rem',
     FontWeight: 500,
   },
+
   H6: {
     FontSize: '1.5rem',
     LineHeight: '2.1rem',
