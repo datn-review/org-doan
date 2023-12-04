@@ -1,15 +1,15 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { FC, ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react';
 import type { InputRef } from 'antd';
 import { Button, Form, Input, Popconfirm, Table } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 
-const EditableContext = React.createContext<FormInstance<any> | null>(null);
+const EditableContext = createContext<FormInstance<any> | null>(null);
 
 interface EditableRowProps {
   index: number;
 }
 
-const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
+const EditableRow: FC<EditableRowProps> = ({ index, ...props }) => {
   const [form] = Form.useForm();
   return (
     <Form
@@ -24,7 +24,7 @@ const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
 };
 
 interface EditableCellProps {
-  title: React.ReactNode;
+  title: ReactNode;
   editable: boolean;
   children: React.ReactNode;
   dataIndex: string;
@@ -32,7 +32,7 @@ interface EditableCellProps {
   handleSave: (record: any) => void;
 }
 
-export const EditableCell: React.FC<EditableCellProps> = ({
+export const EditableCell: FC<EditableCellProps> = ({
   title,
   editable,
   children,
