@@ -5,3 +5,4 @@ export * from './registration';
 export * from './posts';
 export * from './return-pay';
 export * from './classes';
+export * from './classes-details';

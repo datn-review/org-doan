@@ -1,36 +1,43 @@
 import {
-  BoxCenter,
   Button,
-  Card,
   Col,
-  EditFilled,
-  EditTwoTone,
-  EyeTwoTone,
+  FormProvider,
+  Input,
+  ModalAntd,
   Row,
   Section,
   SectionLayout,
+  SIZE,
   Space,
-  Tag,
   TextSection,
-  VARIANT,
+  useForm,
 } from '@org/ui';
-import React, { useEffect } from 'react';
-import { getNameLanguage, useTranslation } from '@org/i18n';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from '@org/i18n';
 import {
   setActiveGroup,
   useAppDispatch,
   useCreateCollaborationMutation,
-  useCreateRegistrationMutation,
   useGetPostsActiveQuery,
 } from '@org/store';
-import { COLOR, DataTimeEnum, DayEnum, SiteMap, colorRandom } from '@org/utils';
-import dayjs from 'dayjs';
-import { Link } from 'react-router-dom';
+import { SiteMap } from '@org/utils';
+import { CardClassNew } from '../../atoms/Card';
 import { css } from '@emotion/css';
+import { SelectCertification, SelectGrade, SelectSkill, SelectSubject } from '@org/core';
 
+const dataInit: any = {
+  grade: undefined,
+  subject: undefined,
+  tutorName: undefined,
+  skills: undefined,
+};
 function ClassNew() {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const [isShowFilter, setIsShowFilter] = useState(false);
+  const methods = useForm<any>({
+    defaultValues: dataInit,
+  });
   const { data: dataPosts } = useGetPostsActiveQuery(
     {
       sortBy: 'createdAt',
@@ -54,107 +61,90 @@ function ClassNew() {
       user,
     });
   };
+  const close = () => setIsShowFilter(false);
+
   return (
     <SectionLayout>
-      <Section>
+      <Section
+        className={css`
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 2rem;
+        `}
+      >
         <TextSection>{t('class.new')}</TextSection>
+        <Button
+          $size={SIZE.ExtraSmall}
+          onClick={() => setIsShowFilter(true)}
+        >
+          {t('filter')}
+        </Button>
       </Section>
 
       <Row gutter={8}>
         <Col span={18}>
-          <Space>Filter</Space>
           <Row gutter={4}>
             {dataPosts?.map((item: any) => (
-              <Col span={12}>
-                <Card
-                  title={item?.requestSummaryVI}
-                  bordered={true}
-                >
-                  <Space>
-                    Học Phí: {item.fee}/{DayEnum[item.perTime]}
-                  </Space>
-
-                  <Space>
-                    Tuần học {item.dayWeek} buổi ({DataTimeEnum[item.timeDay]}
-                    /buổi)
-                  </Space>
-
-                  <Space>
-                    Địa Điểm Dạy: {item.address}- {item?.wards?.name}
-                  </Space>
-                  <Space>Thời Gian Bắt Đầu:{dayjs(item.timeStart).format('DD-MM-YYYY')}</Space>
-                  <Space>
-                    Lớp:
-                    {item.gradeLevels?.map(({ nameEN, nameVI }: any) => (
-                      <Tag
-                        bordered={false}
-                        color={colorRandom()}
-                      >
-                        {getNameLanguage(nameVI, nameEN)}
-                      </Tag>
-                    ))}
-                  </Space>
-                  <Space>
-                    Môn Học:
-                    {item.subjects?.map(({ nameEN, nameVI }: any) => (
-                      <Tag
-                        bordered={false}
-                        color={colorRandom()}
-                      >
-                        {getNameLanguage(nameVI, nameEN)}
-                      </Tag>
-                    ))}
-                  </Space>
-                  <Space>Yêu Cầu</Space>
-                  <Space>
-                    Chứng Chỉ:
-                    {item.certifications?.map(({ nameEN, nameVI }: any) => (
-                      <Tag
-                        bordered={false}
-                        color={colorRandom()}
-                      >
-                        {getNameLanguage(nameVI, nameEN)}
-                      </Tag>
-                    ))}
-                  </Space>
-                  <Space>
-                    Kỹ Năng:
-                    {item.skills?.map(({ nameEN, nameVI }: any) => (
-                      <Tag
-                        bordered={false}
-                        color={colorRandom()}
-                      >
-                        {getNameLanguage(nameVI, nameEN)}
-                      </Tag>
-                    ))}
-                  </Space>
-                  <Space
-                    className={css`
-                      margin-top: 2rem;
-                      display: flex;
-                      gap: 1rem;
-                    `}
-                  >
-                    <Link to={SiteMap.ClassNew.Details.generate(item.id)}>
-                      <Button $variant={VARIANT.Outlined}>
-                        <EyeTwoTone twoToneColor={COLOR.Primary} />
-                        Chi tiết
-                      </Button>
-                    </Link>
-                    <Button onClick={registerForClass(item?.id, item?.user?.id)}>
-                      <EditFilled />
-                      Đăng Kí Nhận Lớp
-                    </Button>
-                  </Space>
-                </Card>
-              </Col>
+              <CardClassNew
+                item={item}
+                registerForClass={registerForClass}
+              />
             ))}
           </Row>
         </Col>
         <Col span={6}>
-          <Row>Right</Row>
+          <Space>{t('classNew.tutorNeedKnow')}</Space>
+          <Space>{t('Quy trình nhận lớp')}</Space>
+          <Space>{t('Hợp đồng mẫu')}</Space>
         </Col>
       </Row>
+      {isShowFilter && (
+        <ModalAntd
+          title={
+            <Space
+              className={css`
+                width: 80%;
+                display: flex;
+                align-items: center;
+                input {
+                  border: unset !important;
+                  margin: 0;
+                  //text-align: center !important;
+                }
+              `}
+            >
+              <Space>Filter</Space>
+              <Input
+                name={'search'}
+                autoFocus={true}
+              />
+            </Space>
+          }
+          open={isShowFilter}
+          onCancel={close}
+          width={'700px'}
+          footer={<Button $size={SIZE.ExtraSmall}>{t('search')}</Button>}
+          // zIndex={999999}
+        >
+          <FormProvider {...methods}>
+            <Row gutter={10}>
+              <Col span={6}>
+                <SelectGrade />
+              </Col>
+              <Col span={6}>
+                <SelectSkill />
+              </Col>
+              <Col span={6}>
+                <SelectCertification />
+              </Col>
+              <Col span={6}>
+                <SelectSubject />
+              </Col>
+            </Row>
+          </FormProvider>
+        </ModalAntd>
+      )}
     </SectionLayout>
   );
 }

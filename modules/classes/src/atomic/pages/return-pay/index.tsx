@@ -18,13 +18,10 @@ const StatusPay = {
 };
 export const ReturnPayPage = () => {
   const location = useLocation();
-  console.log(location);
   const query = querystring.parse(location?.search, {
     ignoreQueryPrefix: true,
   });
   const [getData, { data, isLoading }] = useLazyGetReturnPaymentQuery();
-  console.log(data);
-  console.log(query);
   useEffect(() => {
     if (query) {
       getData({

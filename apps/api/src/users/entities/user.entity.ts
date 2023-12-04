@@ -13,6 +13,7 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -24,6 +25,7 @@ import { Status } from '../../statuses/entities/status.entity';
 import { TutorSubjectGrade } from 'src/modules/tutor-subject-grade/entities/tutor-subject-grade.entity';
 import { TutorTimeAvailability } from '../tutor-time-availability/entities/tutor-time-availability.entity';
 import { Wards } from 'src/modules/provinces/wards/entities/wards.entity';
+import { Room } from 'src/modules/chat/room/entities/room.entity';
 
 @Entity()
 export class User extends EntityHelper {
@@ -119,6 +121,12 @@ export class User extends EntityHelper {
     onDelete: 'CASCADE',
   })
   tutorTimeAvailability: TutorTimeAvailability[];
+
+  @OneToMany(() => Room, (room) => room.owner)
+  rooms: Room[];
+
+  @ManyToMany(() => Room, (room) => room.members)
+  joinedRooms: Room[];
 
   @CreateDateColumn()
   createdAt: Date;

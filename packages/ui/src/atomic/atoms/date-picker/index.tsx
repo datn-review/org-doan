@@ -28,7 +28,7 @@ export function DatePicker({ label, onChange, ...rest }: IDate & DatePickerProps
 
 export const DatePickerForm = withForm<IDate & { name: string }>(DatePicker);
 
-export function RangePicker({ label, onChange, ...rest }: IDate & DatePickerProps) {
+export function RangePicker({ label, onChange, ...rest }: IDate) {
   return (
     <RangePickerBase
       onChange={onChange}
@@ -38,7 +38,7 @@ export function RangePicker({ label, onChange, ...rest }: IDate & DatePickerProp
         `,
         rest?.className,
       )}
-      // {...rest}
+      {...rest}
     />
   );
 }

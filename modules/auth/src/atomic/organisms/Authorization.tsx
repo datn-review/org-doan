@@ -52,6 +52,7 @@ export function useAuthorizationUtil() {
   };
 }
 export const ifAnyGranted = (roles: RolesEnum[]) => {
+  if (roles.length === 0) return true;
   let exits = false;
   const authorities =
     localStorage.getItem('authorities') != null

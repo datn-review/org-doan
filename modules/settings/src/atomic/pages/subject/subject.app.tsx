@@ -154,7 +154,7 @@ function SubjectApp() {
   ];
 
   return (
-    <Space>
+    <Space >
       {contextHolder}
       <Space
         className={css`
