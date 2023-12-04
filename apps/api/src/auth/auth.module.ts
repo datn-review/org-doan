@@ -11,12 +11,14 @@ import { ForgotModule } from 'src/forgot/forgot.module';
 import { MailModule } from 'src/mail/mail.module';
 import { IsExist } from 'src/utils/validators/is-exists.validator';
 import { IsNotExist } from 'src/utils/validators/is-not-exists.validator';
+import { CollaborationModule } from 'src/modules/collaboration/collaboration.module';
 
 @Module({
   imports: [
     UsersModule,
     ForgotModule,
     PassportModule,
+    CollaborationModule,
     MailModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

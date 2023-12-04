@@ -80,19 +80,20 @@ function InfoHeader({ data }: any) {
             </Space>
           </Col>
           <Col span={20}>
-            <h4
-              className={css`
-                margin-bottom: 1rem;
-              `}
-            >
-              {data?.lastName} {data?.firstName}
-            </h4>
             <Space className={'flex justify-between'}>
-              <Space className={'flex gap-1'}>
+              <h4
+                className={css`
+                  margin-bottom: 1rem;
+                `}
+              >
+                {data?.lastName} {data?.firstName}
+              </h4>
+
+              {/* <Space className={'flex gap-1'}>
                 <Space>Toán Lý Văn</Space>
                 <Space>Toán Lý Văn</Space>
                 <Space>Toán Lý Văn</Space>
-              </Space>
+              </Space> */}
               <Space>
                 <Button>Connected</Button>
               </Space>

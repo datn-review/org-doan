@@ -27,3 +27,6 @@ export const formatData = ({ data, name = 'name' }: any) => {
     label: item[name],
   }));
 };
+export const formatMoney = (money: number) => {
+  return money?.toLocaleString('vi', { style: 'currency', currency: 'VND' }) || 0;
+};

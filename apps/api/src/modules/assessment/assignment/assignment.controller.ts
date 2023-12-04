@@ -24,7 +24,6 @@ import { InfinityPaginationResultType } from 'src/utils/types/infinity-paginatio
 import { NullableType } from 'src/utils/types/nullable.type';
 import { Assignment } from './entities/assignment.entity';
 
-import { CreateAssignmentDto } from './dto/create.dto';
 import { UpdateAssignmentDto } from './dto/update.dto';
 import { AssignmentService } from './assignment.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
@@ -48,7 +47,6 @@ const relations = [
 
 @ApiBearerAuth()
 @ApiTags('Assignment')
-@Roles(RoleEnum.WEB_ADMIN, RoleEnum.PESONAL_TUTOR)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'assignment',
@@ -59,7 +57,7 @@ export class AssignmentController {
     private readonly assignmentService: AssignmentService,
     private readonly submissionQuestionService: SubmissionQuestionService,
   ) {}
-
+  @Roles(RoleEnum.WEB_ADMIN, RoleEnum.PESONAL_TUTOR)
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createAssignmentDto: any): Promise<Assignment[]> {
@@ -113,6 +111,7 @@ export class AssignmentController {
     return this.assignmentService.findOne({ id: +id }, relations);
   }
 
+  @Roles(RoleEnum.WEB_ADMIN, RoleEnum.PESONAL_TUTOR, RoleEnum.STUDENT)
   @SerializeOptions({
     groups: ['tutor'],
   })
@@ -143,6 +142,7 @@ export class AssignmentController {
     return assignment;
   }
 
+  @Roles(RoleEnum.STUDENT)
   @Post('/submission/:id')
   @HttpCode(HttpStatus.OK)
   async submission(
@@ -189,7 +189,14 @@ export class AssignmentController {
 
     return submissionQuestion;
   }
+  @Get('/collab/:id')
+  @Roles(RoleEnum.PESONAL_TUTOR, RoleEnum.PESONAL_TUTOR, RoleEnum.STUDENT)
+  @HttpCode(HttpStatus.OK)
+  async findAssignmentByCollap(@Param('id') id: string): Promise<NullableType<Assignment[]>> {
+    return this.assignmentService.findAssignmentByCollap(Number(id));
+  }
 
+  @Roles(RoleEnum.WEB_ADMIN, RoleEnum.PESONAL_TUTOR)
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   update(
@@ -198,7 +205,7 @@ export class AssignmentController {
   ): Promise<Assignment[]> {
     return this.assignmentService.update(id, updateAssignmentDto);
   }
-
+  @Roles(RoleEnum.WEB_ADMIN, RoleEnum.PESONAL_TUTOR)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: number): Promise<void> {

@@ -44,6 +44,12 @@ export const AssignmentAPI = baseAuthSplitApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+    findAssignmentCollap: builder.query({
+      query: ({ id }) => ({
+        url: `/assignment/collab/${id}`,
+        method: 'GET',
+      }),
+    }),
 
     updateAssignment: builder.mutation({
       query: ({ body, id }) => ({
@@ -71,4 +77,5 @@ export const {
   useGetAssignmentActiveQuery,
   useSubmissionMutation,
   useLazyReviewAssignmentQuery,
+  useLazyFindAssignmentCollapQuery,
 } = AssignmentAPI;

@@ -1,9 +1,9 @@
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
+import styled from '@emotion/styled';
+import { css } from '@emotion/react';
 
-import { SIZE, TYPE_BUTTON, VARIANT } from "./index";
-import { COLOR, COLOR_RGB } from "@org/utils/src/constant/themes/color";
-import {mediaDesktop, mediaMiniTablet, mediaTablet} from "@org/utils";
+import { SIZE, TYPE_BUTTON, VARIANT } from './index';
+import { COLOR, COLOR_RGB } from '@org/utils/src/constant/themes/color';
+import { mediaDesktop, mediaMiniTablet, mediaTablet } from '@org/utils';
 
 const Button = styled.button<{
   $type: TYPE_BUTTON;
@@ -34,8 +34,8 @@ const Button = styled.button<{
         return css`
           background-color: white;
           color: ${COLOR[$type]};
-          box-shadow: rgba(47, 43, 61, 0.14) 0px 2px 6px 0px,
-            rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px;
+          box-shadow: rgba(47, 43, 61, 0.14) 0px 2px 6px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+            rgba(0, 0, 0, 0) 0px 0px 0px 0px;
 
           &:hover {
             background-color: ${COLOR[$type]}20;
@@ -67,13 +67,16 @@ const Button = styled.button<{
           & * {
             color: white !important;
           }
+          svg {
+            stroke: white !important;
+          }
         `;
 
       default:
         return css`
           font-weight: 600;
-          box-shadow: rgba(47, 43, 61, 0.14) 0px 2px 6px 0px,
-            rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px;
+          box-shadow: rgba(47, 43, 61, 0.14) 0px 2px 6px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+            rgba(0, 0, 0, 0) 0px 0px 0px 0px;
         `;
     }
   }}
@@ -84,14 +87,11 @@ const Button = styled.button<{
           padding: 0 2.8rem;
           height: 5.4rem;
           font-size: 1.9rem;
-     
 
-   
           ${mediaTablet} {
             padding: 0 2rem;
             font-size: 1.7rem;
           }
-      
         `;
       case SIZE.Large:
         return css`
@@ -101,7 +101,7 @@ const Button = styled.button<{
           ${mediaTablet} {
             padding: 0 1.4rem;
             height: 4rem;
-            
+
             font-size: 1.6rem;
           }
         `;
@@ -114,7 +114,6 @@ const Button = styled.button<{
             padding: 0 1rem;
             font-size: 1.3rem;
             height: 3.2rem;
-            
           }
         `;
       case SIZE.ExtraSmall:
@@ -123,10 +122,9 @@ const Button = styled.button<{
           height: 3rem;
           font-size: 1.3rem;
           ${mediaTablet} {
-            padding: 0 .6rem;
+            padding: 0 0.6rem;
             font-size: 1.2rem;
             height: 2.6rem;
-            
           }
         `;
       case SIZE.Small:
@@ -135,7 +133,7 @@ const Button = styled.button<{
           height: 2.2rem;
           font-size: 1.1rem;
           ${mediaTablet} {
-            padding: 0 .4rem;
+            padding: 0 0.4rem;
             font-size: 1rem;
             height: 2rem;
           }
@@ -182,14 +180,4 @@ const ExtraSmall = css`
   height: 2.2rem;
 `;
 
-export {
-  Button,
-  Default,
-  Outlined,
-  Text,
-  ExtraLarge,
-  Large,
-  Normal,
-  Small,
-  ExtraSmall,
-};
+export { Button, Default, Outlined, Text, ExtraLarge, Large, Normal, Small, ExtraSmall };

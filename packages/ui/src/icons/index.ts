@@ -16,6 +16,13 @@ export { ReactComponent as IconUser } from '../assets/icons/svg/user.svg';
 export { ReactComponent as IconEye } from '../assets/icons/svg/eye.svg';
 
 export { ReactComponent as IconEyeClose } from '../assets/icons/svg/eye-close.svg';
+export { ReactComponent as IconBook } from '../assets/icons/svg/book.svg';
+export { ReactComponent as IconClasses } from '../assets/icons/svg/classes.svg';
+export { ReactComponent as IconPencil } from '../assets/icons/svg/pencil.svg';
+export { ReactComponent as IconSchool } from '../assets/icons/svg/school.svg';
+export { ReactComponent as IconClassesName } from '../assets/icons/svg/classes-new.svg';
+export { ReactComponent as IconContacs } from '../assets/icons/svg/contacts.svg';
+export { ReactComponent as IconNews } from '../assets/icons/svg/news.svg';
 
 export { IconSearch } from './SearchIcon';
 export { ChatIcon } from './ChatIcon';

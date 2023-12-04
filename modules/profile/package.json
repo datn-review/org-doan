@@ -19,7 +19,8 @@
     "@org/ui": "workspace:^",
     "@org/utils": "workspace:^",
     "@org/store": "workspace:^",
-    "@org/auth": "workspace:^"
+    "@org/auth": "workspace:^",
+    "@org/core": "workspace:^"
 
 
     

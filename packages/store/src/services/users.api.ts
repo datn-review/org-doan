@@ -16,6 +16,18 @@ export const UserAPI = baseAuthSplitApi.injectEndpoints({
         socketService.connectWithAuthToken(token);
       },
     }),
+    getProfileForID: builder.query({
+      query: ({ id }) => ({
+        url: `/auth/${id}`,
+        method: 'GET',
+      }),
+      async onQueryStarted(arg, { queryFulfilled }) {
+        const data = (await queryFulfilled).data;
+        const token = localStorage.getItem('accessToken') || '';
+        console.log(arg);
+        socketService.connectWithAuthToken(token);
+      },
+    }),
     getUsersActive: builder.query({
       query: (params) => ({
         url: '/users/active',
@@ -26,4 +38,4 @@ export const UserAPI = baseAuthSplitApi.injectEndpoints({
   }),
 });
 
-export const { useGetProfileMeQuery, useGetUsersActiveQuery } = UserAPI;
+export const { useGetProfileMeQuery, useGetUsersActiveQuery, useGetProfileForIDQuery } = UserAPI;

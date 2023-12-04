@@ -11,4 +11,12 @@ export class AssignmentService extends BaseService<Assignment, Repository<Assign
   constructor(@InjectRepository(Assignment) repository: Repository<Assignment>) {
     super(repository);
   }
+  findAssignmentByCollap(userId: number) {
+    return this.repository
+      .createQueryBuilder('assignment')
+      .leftJoinAndSelect('assignment.lesson', 'lesson')
+      .leftJoinAndSelect('lesson.collaboration', 'collaboration')
+      .where('collaboration.id = :userId', { userId })
+      .getMany();
+  }
 }

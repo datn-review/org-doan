@@ -73,6 +73,11 @@ const relations = [
   { field: 'posts.subjects', entity: 'subject' },
 
   { field: 'posts.gradeLevels', entity: 'grade' },
+  { field: 'posts.certifications', entity: 'certification' },
+  { field: 'posts.skills', entity: 'skill' },
+  { entity: 'wards', field: 'posts.wards' },
+  { entity: 'districts', field: 'wards.districts' },
+  { entity: 'province', field: 'districts.province' },
   { field: 'posts.user', entity: 'userPost' },
   {
     field: 'user',
@@ -82,6 +87,14 @@ const relations = [
   {
     field: 'payment',
     entity: 'payment',
+  },
+  {
+    field: 'payment.sender',
+    entity: 'senderPayment',
+  },
+  {
+    field: 'payment.receiver',
+    entity: 'receiverPayment',
   },
   {
     field: 'lessons',
@@ -338,12 +351,11 @@ export class CollaborationController {
     );
     if (collaboration) {
       const sender = collaboration?.posts?.user?.id || 0;
-      console.log(collaboration?.posts);
+      const receiver = collaboration?.user?.id || 0;
       const daysInMonth = calculateDaysInMonthRange(
         dayjs(collaboration?.contractStartDate).format('YYYY-MM-DD'),
         dayjs(collaboration?.contractEndDate).format('YYYY-MM-DD'),
       );
-      console.log(daysInMonth);
 
       const payment: any[] = [];
       let dayRemainder = 0;
@@ -354,16 +366,12 @@ export class CollaborationController {
         feeMonthDate = feeMonthDate.add(1, 'day');
 
         let deadPaymentDate: any = feeMonthDate.add(7, 'day');
-        console.log('deadPaymentDate', deadPaymentDate.format('DD/MM/YYYY'));
         if (index === 0) {
           deadPaymentDate = new Date();
           deadPaymentDate.setDate(deadPaymentDate.getDate() + 7);
-          console.log('deadPaymentDate2', deadPaymentDate);
         }
         let weeks = Math.floor(dayInMonth / 7);
         const weeksRemainder = dayInMonth % 7;
-        console.log('weeks', weeks);
-        console.log('weeksRemainder', weeksRemainder);
 
         if (weeksRemainder) {
           weeks = weeks + 1;
@@ -394,6 +402,7 @@ export class CollaborationController {
           amountX = weeks * Number(collaboration?.posts?.dayWeek);
           amount = Number(collaboration?.posts?.fee) * amountX;
         }
+        const amountTutor = amount - amount * 0.1;
 
         payment.push({
           collaboration: +id,
@@ -402,8 +411,13 @@ export class CollaborationController {
           deadPaymentDate,
           feeMonthDate,
         });
+        payment.push({
+          collaboration: +id,
+          receiver,
+          amount: amountTutor,
+          feeMonthDate,
+        });
       });
-      console.log('PAYMENT', payment);
       await this.paymentService.createMany(payment);
 
       // await this.paymentService.create({

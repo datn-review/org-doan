@@ -5,12 +5,20 @@ import { colorById } from '@org/utils';
 import { getNameLanguage } from '@org/i18n';
 
 type Props = {};
-export const TagsList = ({ data, isReverse = false }: { data: any; isReverse?: boolean }) => {
+export const TagsList = ({
+  data,
+  isReverse = false,
+  bordered = false,
+}: {
+  data: any;
+  isReverse?: boolean;
+  bordered?: boolean;
+}) => {
   return (
     <>
       {data?.map(({ nameEN, nameVI, id }: any) => (
         <Tag
-          bordered={false}
+          bordered={bordered}
           color={colorById(id, isReverse)}
         >
           {getNameLanguage(nameVI, nameEN)}
