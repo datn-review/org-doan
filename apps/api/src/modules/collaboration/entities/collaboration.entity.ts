@@ -12,9 +12,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Payment } from '../../payment/entities/payment.entity';
-import { TutorCertification } from '../../tutor-certification/entities/tutor-certification.entity';
 import { Lessons } from '../../lessons/entities/lessons.entity';
+import { Payment } from '../../payment/entities/payment.entity';
 import { Schedule } from '../../schedule/entities/schedule.entity';
 
 @Entity({ name: 'collaboration' })

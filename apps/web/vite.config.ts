@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     react({
       include: ['**/*.tsx', '**/*.ts'],
-      jsxRuntime: 'automatic',
+      // jsxRuntime: 'automatic',
     }),
     macrosPlugin(),
     svgr({
@@ -19,7 +19,7 @@ export default defineConfig({
   ],
   server: {
     watch: {
-      usePolling: true,
+      // usePolling: true,
     },
     port: 1111,
     host: true, // Here

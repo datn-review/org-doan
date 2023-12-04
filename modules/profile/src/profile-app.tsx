@@ -1,5 +1,11 @@
 import { useTranslation } from '@org/i18n';
-import { setActiveGroup, useAppDispatch, useAppSelector, useGetProfileMeQuery } from '@org/store';
+import {
+  setActiveGroup,
+  useAppDispatch,
+  useAppSelector,
+  useGetProfileForIDQuery,
+  useGetProfileMeQuery,
+} from '@org/store';
 import { SectionLayout, Space } from '@org/ui';
 import { SiteMap } from '@org/utils';
 import { useEffect } from 'react';
@@ -19,7 +25,16 @@ function ProfileApp() {
       dispatch(setActiveGroup({ current: '' }));
     };
   }, []);
-  const { data } = useGetProfileMeQuery({}, { refetchOnMountOrArgChange: true });
+  const { data: profileMe } = useGetProfileMeQuery(
+    {},
+    { refetchOnMountOrArgChange: true, skip: !!id },
+  );
+  const { data: profileData } = useGetProfileForIDQuery(
+    { id: id },
+    { refetchOnMountOrArgChange: true, skip: !id },
+  );
+  const data = !id ? profileMe : profileData;
+  console.log('🚀 ~ file: profile-app.tsx:30 ~ ProfileApp ~ profileData:', profileData);
 
   console.log('🚀 ~ file: profile-app.tsx:23 ~ ProfileApp ~ data:', data);
   return (

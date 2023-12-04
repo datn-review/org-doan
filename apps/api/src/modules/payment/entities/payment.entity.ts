@@ -23,7 +23,9 @@ export class Payment extends EntityHelper {
   })
   sender?: User | null;
 
-  @Column({ type: Number, nullable: true })
+  @ManyToOne(() => User, {
+    eager: true,
+  })
   receiver?: User | null;
 
   @ManyToOne(() => Collaboration, {
@@ -47,7 +49,7 @@ export class Payment extends EntityHelper {
   @Column({ type: Date, nullable: true })
   paymentDate?: Date | null;
 
-  @Column({ type: Date, nullable: false })
+  @Column({ type: Date, nullable: true })
   deadPaymentDate?: Date | null;
 
   @Column({ type: Number, default: 1 })

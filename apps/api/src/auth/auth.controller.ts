@@ -10,6 +10,7 @@ import {
   Patch,
   Delete,
   SerializeOptions,
+  Param,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -37,9 +38,7 @@ export class AuthController {
   })
   @Post('email/login')
   @HttpCode(HttpStatus.OK)
-  public login(
-    @Body() loginDto: AuthEmailLoginDto,
-  ): Promise<LoginResponseType> {
+  public login(@Body() loginDto: AuthEmailLoginDto): Promise<LoginResponseType> {
     return this.service.validateLogin(loginDto, false);
   }
 
@@ -48,9 +47,7 @@ export class AuthController {
   })
   @Post('admin/email/login')
   @HttpCode(HttpStatus.OK)
-  public adminLogin(
-    @Body() loginDTO: AuthEmailLoginDto,
-  ): Promise<LoginResponseType> {
+  public adminLogin(@Body() loginDTO: AuthEmailLoginDto): Promise<LoginResponseType> {
     return this.service.validateLogin(loginDTO, true);
   }
 
@@ -62,27 +59,20 @@ export class AuthController {
 
   @Post('email/confirm')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async confirmEmail(
-    @Body() confirmEmailDto: AuthConfirmEmailDto,
-  ): Promise<void> {
+  async confirmEmail(@Body() confirmEmailDto: AuthConfirmEmailDto): Promise<void> {
     return this.service.confirmEmail(confirmEmailDto.hash);
   }
 
   @Post('forgot/password')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async forgotPassword(
-    @Body() forgotPasswordDto: AuthForgotPasswordDto,
-  ): Promise<void> {
+  async forgotPassword(@Body() forgotPasswordDto: AuthForgotPasswordDto): Promise<void> {
     return this.service.forgotPassword(forgotPasswordDto.email);
   }
 
   @Post('reset/password')
   @HttpCode(HttpStatus.NO_CONTENT)
   resetPassword(@Body() resetPasswordDto: AuthResetPasswordDto): Promise<void> {
-    return this.service.resetPassword(
-      resetPasswordDto.hash,
-      resetPasswordDto.password,
-    );
+    return this.service.resetPassword(resetPasswordDto.hash, resetPasswordDto.password);
   }
 
   @ApiBearerAuth()
@@ -103,10 +93,7 @@ export class AuthController {
   @Patch('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
-  public update(
-    @Request() request,
-    @Body() userDto: AuthUpdateDto,
-  ): Promise<NullableType<User>> {
+  public update(@Request() request, @Body() userDto: AuthUpdateDto): Promise<NullableType<User>> {
     return this.service.update(request.user, userDto);
   }
 
@@ -116,5 +103,13 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   public async delete(@Request() request): Promise<void> {
     return this.service.softDelete(request.user);
+  }
+
+  @ApiBearerAuth()
+  @Get(':id')
+  @UseGuards(AuthGuard('jwt'))
+  @HttpCode(HttpStatus.OK)
+  public getProfileID(@Param('id') id: string): Promise<NullableType<User>> {
+    return this.service.findById(Number(id));
   }
 }

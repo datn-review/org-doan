@@ -20,7 +20,18 @@ import { MailService } from 'src/mail/mail.service';
 import { NullableType } from '../utils/types/nullable.type';
 import { LoginResponseType } from '../utils/types/auth/login-response.type';
 import { relations } from 'src/users/controller';
+import { CollaborationService } from 'src/modules/collaboration/collaboration.service';
+const relationsPost = [
+  { field: 'posts', entity: 'posts' },
+  { field: 'posts.subjects', entity: 'subject' },
 
+  { field: 'posts.gradeLevels', entity: 'grade' },
+  { field: 'posts.user', entity: 'userPost' },
+  {
+    field: 'user',
+    entity: 'user',
+  },
+];
 @Injectable()
 export class AuthService {
   constructor(
@@ -28,6 +39,7 @@ export class AuthService {
     private usersService: UsersService,
     private forgotService: ForgotService,
     private mailService: MailService,
+    private collaborationService: CollaborationService,
   ) {}
 
   async validateLogin(
@@ -274,6 +286,47 @@ export class AuthService {
       },
       relations,
     );
+  }
+  async findById(id: number): Promise<NullableType<any>> {
+    const classes = await this.collaborationService.findManyWithPagination({
+      page: 1,
+      limit: 2000000,
+      status: 0,
+      sortBy: 'createdAt',
+      sortDirection: 'ASC',
+      searchName: '',
+      fieldSearch: '',
+      relations: relationsPost,
+      or: [
+        [
+          {
+            field: 'status',
+            value: 4,
+          },
+          {
+            field: 'status',
+            value: 5,
+          },
+        ],
+        [
+          {
+            field: 'userId',
+            value: id,
+          },
+          {
+            field: 'posts.userId',
+            value: id,
+          },
+        ],
+      ],
+    });
+    const user = await this.usersService.findOne(
+      {
+        id: id,
+      },
+      relations,
+    );
+    return { ...user, classes };
   }
 
   async update(user: User, userDto: AuthUpdateDto): Promise<NullableType<User>> {

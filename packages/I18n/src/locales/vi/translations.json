@@ -70,9 +70,11 @@
   "tutor":"Gia Sư",
   "class.new" : "Lớp Mới",
   "manage.name" : "Quản Lí Cá Nhân",
-  "manage.registration" : "Danh Sách Đăng Ký Yêu Cầu",
+  "manage.registration" : "Yêu Cầu Nhận Lớp",
   "manage.posts.me" : "Danh Sách Bài Đăng",
   "manage.classes" : "Danh Sách Lớp Học",
+
+
   "registration" : "Đăng Ký Yêu Cầu",
   "filter": "Lọc",
 
@@ -88,7 +90,7 @@
     "subject": "Môn Học",
     "skill": "Kỹ Năng",
     "certification": "Chứng Chỉ",
-    "register": "Đăng Kí Nhận Lớp",
+    "register": "Nhận Lớp",
     "student": "Người Đăng",
 
 
@@ -121,7 +123,7 @@
   "timeStart": "Thời Gian Bắt Đầu",
   "timeEnd": "Thời Gian Kết Thúc",
   "time_hours": "Giờ Mỗi Buổi",
-  "fee": "Phí",
+  "fee": "Học Phí",
   "perTime": "Theo",
   "day/week": "Buổi/Tuần",
   "please.select" : "Vui Lòng Chọn",
@@ -240,7 +242,51 @@
   "money": "Thành Tiền",
   "payment.feeMonth": "Kỳ Thanh Toán Học Phí",
   "payment.code": "Mã Thanh Toán",
-  "payment.dead": "Ngày Hết Hạn Nộp Học Phí "
+  "payment.dead": "Ngày Hết Hạn Nộp Học Phí ",
+  "tutor.title": "Gia Sư",
+  "student.title": "Học Sinh",
+  "fee.status": "Học Sinh",
+  "fee.content": "Nội Dung",
+  "fee.pay.student": "Thanh Toán Học Phí Tháng ",
+  "fee.pay.tutor": "Nhận Học Phí Tháng ",
+  "fee.amount": "Số Tiền ",
+  "fee.deadPaymentDate": "Hạn Cuối",
+  "pay.active": "Đã Thanh Toán",
+  "pay.inactive": "Chờ Thanh Toán",
+  "pay.expired": "Hết Hạn Thanh Toán",
+  "pay.active.tutor" : "Đã Nhận",
+  "pay.inactive.tutor": "Chờ Nhận",
+  "pay.transactionId": "Mã Gia Dịch",
+  "fee.time": "Thời Gian",
+  "manage.classes.student" : "Danh Sách Lớp Học",
+  "manage.classes.tutor" : "Danh Sách Lớp Dạy",
+  "profile" : "Thông Tin Cá Nhân",
+  "logout" : "Đăng Xuất",
+  "news" : "Tin Tức",
+  "contact.category" : "Liên Hệ",
+  "pro" : {
+    "info": "Thông Tin",
+    "classed":"Các Lớp Đã dạy",
+    "feedback":"Đánh Giá",
+    "tutor":"Dạy Môn",
+    "birthday":"Ngày Sinh",
+    "grade":"Học Vấn"
+
+   }
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+
 }
 
 

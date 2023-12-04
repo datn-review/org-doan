@@ -60,7 +60,6 @@ function ClassNewDetails() {
       user,
     });
   };
-  console.log(timeAvailabilityFormat(postData?.postTimeAvailability));
   return (
     <Space className={'section-layout'}>
       <Spin spinning={isLoading}>

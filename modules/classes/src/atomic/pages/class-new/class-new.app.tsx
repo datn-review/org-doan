@@ -82,8 +82,11 @@ function ClassNew() {
         </Button>
       </Section>
 
-      <Row gutter={8}>
-        <Col span={18}>
+      <Row gutter={[4, 20]}>
+        <Col
+          span={24}
+          md={18}
+        >
           <Row gutter={4}>
             {dataPosts?.map((item: any) => (
               <CardClassNew
@@ -93,7 +96,10 @@ function ClassNew() {
             ))}
           </Row>
         </Col>
-        <Col span={6}>
+        <Col
+          span={24}
+          md={6}
+        >
           <Space>{t('classNew.tutorNeedKnow')}</Space>
           <Space>{t('Quy trình nhận lớp')}</Space>
           <Space>{t('Hợp đồng mẫu')}</Space>

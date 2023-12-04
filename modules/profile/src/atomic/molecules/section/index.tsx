@@ -1,9 +1,12 @@
 import { css } from '@emotion/css/macro';
-import { getNameLanguage } from '@org/i18n';
-import { Space, Tabs, TabsProps, Tag } from '@org/ui';
-import { COLOR, colorRandom } from '@org/utils';
+import { getNameLanguage, i18nContant, useTranslation } from '@org/i18n';
+import { Space, Tabs, TabsProps, Tag, TimeAvailability, timeAvailabilityFormat } from '@org/ui';
+import { COLOR, RolesEnum, colorById, colorRandom } from '@org/utils';
 import dayjs from 'dayjs';
 import React from 'react';
+import { TagsList } from '@org/core';
+import { ifAnyGranted } from '@org/auth';
+import { Classes } from '../classes';
 const contentStyle: React.CSSProperties = {
   height: '500px',
   color: '#fff',
@@ -21,18 +24,18 @@ function Section({ data }: any) {
   const items: TabsProps['items'] = [
     {
       key: '1',
-      label: 'Thông Tin',
+      label: i18nContant('pro.info'),
       children: <Information data={data} />,
     },
 
     {
       key: '3',
-      label: 'Các Lớp Đã dạy',
-      children: 'Content of Tab Pane 3',
+      label: i18nContant('pro.classed'),
+      children: <Classes data={data?.classes?.data} />,
     },
     {
       key: '4',
-      label: 'Đánh Giá',
+      label: i18nContant('pro.feedback'),
       children: 'Content of Tab Pane 3',
     },
   ];
@@ -56,6 +59,7 @@ function Section({ data }: any) {
 export default Section;
 const Information = ({ data }: any) => {
   console.log('🚀 ~ file: index.tsx:60 ~ Information ~ data:', data);
+  const { t } = useTranslation();
   return (
     <Space
       className={css`
@@ -76,13 +80,7 @@ const Information = ({ data }: any) => {
         >
           Bio
         </h6>
-        <h6>
-          Em/Mình tên là Phạm Thanh Tâm, hiện đang là lập trình viên. Em/Mình tốt nghiệp đại học
-          chuyên ngành Chuyên nghành CNTT loại giỏi năm 2021, có chứng chỉ sư phạm quốc tế Tesol và
-          hiện đã giảng dạy tiếng anh được gần 2 năm cho nhiều đối tượng, và cụ thể là tiếng anh
-          giao tiếp cho người mất gốc, tiếng anh thiếu nhi, luyện thi các chứng chỉ quốc tế
-          Starters, Movers, Flyers, Ket.
-        </h6>
+        <h6>{data?.bio}</h6>
       </Space>
       <Space
         className={css`
@@ -96,7 +94,7 @@ const Information = ({ data }: any) => {
             font-weight: 700 !important;
           `}
         >
-          Ngày Sinh
+          {t('pro.birthday')}
         </h6>
         <h6>{dayjs('12/05/2001').format('DD-MM-YYYY')}</h6>
       </Space>
@@ -113,7 +111,7 @@ const Information = ({ data }: any) => {
             font-weight: 700 !important;
           `}
         >
-          Học Vấn
+          {t('pro.grade')}
         </h6>
         <h6>Sư Phạm Kỹ Thuật</h6>
       </Space>
@@ -129,19 +127,34 @@ const Information = ({ data }: any) => {
             font-weight: 700 !important;
           `}
         >
-          Địa Chỉ
+          {t('user.address')}
         </h6>
         <h6>
           {data?.address} - {data?.wards?.name} - {data?.wards?.districts?.name} -{' '}
           {data?.wards?.districts?.province?.name}{' '}
         </h6>
       </Space>
-
       <SkillCertifications data={data} />
+      {data?.tutorTimeAvailability && (
+        <>
+          <h6
+            className={css`
+              min-width: 100px;
+              font-weight: 700 !important;
+              margin-top: 1rem;
+              margin-bottom: 1rem;
+            `}
+          >
+            {t('timeAvailability')}
+          </h6>
+          <TimeAvailability value={timeAvailabilityFormat(data?.tutorTimeAvailability)} />
+        </>
+      )}
     </Space>
   );
 };
 const SkillCertifications = ({ data }: any) => {
+  const { t } = useTranslation();
   return (
     <Space>
       <Space
@@ -156,11 +169,11 @@ const SkillCertifications = ({ data }: any) => {
             font-weight: 700 !important;
           `}
         >
-          Kỹ Năng
+          {t('skill')}
         </h6>
         <Space>
           {data?.tutorSkills?.map((item: any) => (
-            <Tag color={colorRandom()}>
+            <Tag color={colorById(item?.skill?.id)}>
               {getNameLanguage(item?.skill?.nameVI, item?.skill?.nameEN)}
             </Tag>
           ))}
@@ -178,11 +191,11 @@ const SkillCertifications = ({ data }: any) => {
             font-weight: 700 !important;
           `}
         >
-          Chứng Chỉ
+          {t('certification')}
         </h6>
         <Space>
           {data?.tutorCertifications?.map((item: any) => (
-            <Tag color={colorRandom()}>
+            <Tag color={colorById(item?.certification?.id)}>
               {getNameLanguage(item?.certification?.nameVI, item?.certification?.nameEN)}
             </Tag>
           ))}
@@ -200,11 +213,11 @@ const SkillCertifications = ({ data }: any) => {
             font-weight: 700 !important;
           `}
         >
-          Dạy Môn
+          {t('pro.tutor')}
         </h6>
         <Space>
           {data?.tutorGradeSubject?.map((item: any) => (
-            <Tag color={colorRandom()}>
+            <Tag color={colorById(item?.subject?.id)}>
               {getNameLanguage(item?.subject?.nameVI, item?.subject?.nameEN)}
             </Tag>
           ))}

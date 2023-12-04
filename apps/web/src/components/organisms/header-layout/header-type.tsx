@@ -10,8 +10,9 @@ export interface MenuItem {
 }
 
 export interface IMenuIcon {
-  title: string;
+  title: ReactNode;
   path: string;
   icon: React.ReactNode;
   key: string;
+  isShow?: boolean;
 }

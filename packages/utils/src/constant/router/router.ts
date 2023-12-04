@@ -142,32 +142,41 @@ export const SiteMap = {
     Registration: {
       path: '/registration',
       menu: 'registration',
-      roles: [],
+      roles: [RolesEnum.PESONAL_TUTOR],
       Details: {
         generate: (id: number | string) => `/registration/${id}`,
         path: '/registration/:id',
-        roles: [],
       },
     },
     PostsMe: {
       path: '/posts-me',
       menu: 'posts-me',
-      roles: [],
+      roles: [RolesEnum.STUDENT],
     },
     RegistrationPost: {
       path: '/registration-post',
       menu: 'registration-post',
-      roles: [],
+      roles: [RolesEnum.STUDENT],
     },
     Classes: {
       path: '/classes',
       menu: 'classes',
-      roles: [],
+      roles: [RolesEnum.STUDENT, RolesEnum.PESONAL_TUTOR],
       Details: {
         generate: (id: number | string) => `/classes/${id}`,
         path: '/classes/:id',
         menu: 'classes',
       },
+    },
+    News: {
+      path: '/news',
+      menu: 'news',
+      roles: [RolesEnum.STUDENT, RolesEnum.PESONAL_TUTOR],
+    },
+    Contacts: {
+      path: '/contacts',
+      menu: 'contacts',
+      roles: [RolesEnum.STUDENT, RolesEnum.PESONAL_TUTOR],
     },
   },
   Pay: {

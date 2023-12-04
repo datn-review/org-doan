@@ -1,19 +1,26 @@
 import {
   BillingIcon,
+  IconBook,
+  IconClasses,
+  IconClassesName,
+  IconContacs,
   IconDashBoard,
   IconDolar,
   IconFAQ,
   IconHelp,
   IconHome,
   IconLogout,
+  IconNews,
+  IconPencil,
   IconPerson,
+  IconSchool,
   IconSetting,
   IconUser,
   MenuProps,
 } from '@org/ui';
 
 import { IMenuIcon, MenuItem } from './header-type';
-import { Translation } from '@org/i18n';
+import { Translation, i18nContant } from '@org/i18n';
 import { RolesEnum, SiteMap } from '@org/utils';
 import { ifAnyGranted } from '@org/auth';
 
@@ -42,7 +49,7 @@ export const menuCategory = (): MenuItem[] => {
       name: <Translation>{(t) => t('class.new')}</Translation>,
       path: SiteMap.ClassNew.path,
       id: SiteMap.ClassNew.menu,
-      icon: <IconHome />,
+      icon: <IconClassesName />,
       subMenu: [],
       isShow: ifAnyGranted(SiteMap.ClassNew.roles),
     },
@@ -50,7 +57,7 @@ export const menuCategory = (): MenuItem[] => {
       name: <Translation>{(t) => t('tutor')}</Translation>,
       path: SiteMap.Tutor.path,
       id: SiteMap.Tutor.menu,
-      icon: <IconHome />,
+      icon: <IconSchool />,
       subMenu: [],
       isShow: ifAnyGranted(SiteMap.Tutor.roles),
     },
@@ -58,7 +65,7 @@ export const menuCategory = (): MenuItem[] => {
       name: <Translation>{(t) => t('find.tutor')}</Translation>,
       path: SiteMap.LookForTutor.path,
       id: SiteMap.LookForTutor.menu,
-      icon: <IconHome />,
+      icon: <IconPencil />,
       subMenu: [],
       isShow: ifAnyGranted(SiteMap.LookForTutor.roles),
     },
@@ -178,41 +185,21 @@ export const menuCategory = (): MenuItem[] => {
         },
       ],
     },
+
     {
-      name: <Translation>{(t) => t('manage.name')}</Translation>,
-      path: '',
-      id: SiteMap.Manage.menu,
-      icon: <IconUser />,
-      isShow: ifAnyGranted(SiteMap.Manage.roles),
-      subMenu: [
-        {
-          label: <Translation>{(t) => t('manage.registration')}</Translation>,
-          path: SiteMap.Manage.Registration.path,
-          id: SiteMap.Manage.Registration.menu,
-          key: SiteMap.Manage.Registration.menu,
-          icon: <></>,
-        },
-        {
-          label: <Translation>{(t) => t('manage.posts.me')}</Translation>,
-          path: SiteMap.Manage.PostsMe.path,
-          id: SiteMap.Manage.PostsMe.menu,
-          key: SiteMap.Manage.PostsMe.menu,
-          icon: <></>,
-        },
-        {
-          label: <Translation>{(t) => t('manage.classes')}</Translation>,
-          path: SiteMap.Manage.Classes.path,
-          id: SiteMap.Manage.Classes.menu,
-          key: SiteMap.Manage.Classes.menu,
-          icon: <></>,
-        },
-      ],
+      name: <Translation>{(t) => t('news')}</Translation>,
+      path: SiteMap.Manage.News.path,
+      id: SiteMap.Manage.News.menu,
+      icon: <IconNews />,
+      isShow: ifAnyGranted(SiteMap.Manage.News.roles),
+      subMenu: [],
     },
     {
-      name: <Translation>{(t) => t('chat.name')}</Translation>,
-      id: SiteMap.Manage.menu,
-      icon: <IconUser />,
-      path: SiteMap.Chat.path,
+      name: <Translation>{(t) => t('contact.category')}</Translation>,
+      path: SiteMap.Manage.Contacts.path,
+      id: SiteMap.Manage.Contacts.menu,
+      icon: <IconContacs />,
+      isShow: ifAnyGranted(SiteMap.Manage.Contacts.roles),
       subMenu: [],
     },
 
@@ -251,10 +238,38 @@ export const menuCategory = (): MenuItem[] => {
 
 export const menuPerson: IMenuIcon[] = [
   {
-    path: '/profile',
+    path: SiteMap.Profile.Me.path,
     icon: <IconPerson />,
-    key: 'profile',
-    title: 'Profile',
+    key: SiteMap.Profile.menu,
+    title: i18nContant('profile'),
+  },
+  {
+    title: <Translation>{(t) => t('manage.posts.me')}</Translation>,
+    path: SiteMap.Manage.PostsMe.path,
+    key: SiteMap.Manage.PostsMe.path,
+    icon: <IconBook />,
+    isShow: ifAnyGranted(SiteMap.Manage.PostsMe.roles),
+  },
+  {
+    title: <Translation>{(t) => t('manage.registration')}</Translation>,
+    path: SiteMap.Manage.Registration.path,
+    key: SiteMap.Manage.Registration.menu,
+    icon: <IconPencil />,
+    isShow: ifAnyGranted(SiteMap.Manage.Registration.roles),
+  },
+
+  {
+    title: (
+      <Translation>
+        {(t) =>
+          t(ifAnyGranted([RolesEnum.STUDENT]) ? 'manage.classes.student' : 'manage.classes.tutor')
+        }
+      </Translation>
+    ),
+    path: SiteMap.Manage.Classes.path,
+    key: SiteMap.Manage.Classes.menu,
+    icon: <IconClasses />,
+    isShow: ifAnyGranted(SiteMap.Manage.Classes.roles),
   },
   {
     path: '/setting',
@@ -291,6 +306,6 @@ export const menuPerson: IMenuIcon[] = [
     path: '',
     icon: <IconLogout />,
     key: 'logout',
-    title: 'logout',
+    title: i18nContant('logout'),
   },
 ];

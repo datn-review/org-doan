@@ -42,7 +42,7 @@ export const Event = ({ id, close }: Props) => {
 
   return (
     <ModalAntd
-      title={t("lesson.details")}
+      title={t('lesson.details')}
       open={!!id}
       onCancel={close}
       width={'999px'}
@@ -126,7 +126,7 @@ export const LessonInfo = ({ data }: any) => {
   );
 };
 
-export const LessonAssigenment = ({ data }: any) => {
+export const LessonAssigenment = ({ data, isCollap }: any) => {
   const { t } = useTranslation();
 
   const getStatus = (record: any) => {
@@ -226,13 +226,15 @@ export const LessonAssigenment = ({ data }: any) => {
           margin: 0 0 2rem 0;
         `}
       >
-        <Link to={SiteMap.Assessment.Assignment.Create.generate(data?.id)}>
-          <Button $size={SIZE.ExtraSmall}>{t('assignment.create')}</Button>
-        </Link>
+        {!isCollap && (
+          <Link to={SiteMap.Assessment.Assignment.Create.generate(data?.id)}>
+            <Button $size={SIZE.ExtraSmall}>{t('assignment.create')}</Button>
+          </Link>
+        )}
       </Space>
       <TableAntd
         columns={columns}
-        dataSource={data?.assignments || []}
+        dataSource={isCollap ? data : data?.assignments || []}
       />
     </Space>
   );

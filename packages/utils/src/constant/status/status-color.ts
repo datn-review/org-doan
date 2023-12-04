@@ -47,3 +47,14 @@ export const StatusRegistrationColor = {
   [3]: 'warning',
   [4]: 'warning',
 };
+export const StatusPayColor = {
+  [2]: 'success',
+  [1]: 'warning',
+  [3]: 'error',
+};
+
+export const StatusPay = {
+  [2]: 'pay.active',
+  [1]: 'pay.inactive',
+  [3]: 'pay.expired',
+};

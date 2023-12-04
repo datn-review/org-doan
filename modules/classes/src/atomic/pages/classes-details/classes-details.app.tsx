@@ -11,13 +11,17 @@ import {
   Tag,
   TextSection,
 } from '@org/ui';
-import { COLOR, colorRandom } from '@org/utils';
+import { COLOR, DataTimeEnum, DayEnum, SiteMap, colorRandom, formatMoney } from '@org/utils';
 import dayjs from 'dayjs';
 import React, { useEffect, useTransition } from 'react';
 import { useLazyFindCollaborationQuery } from '@org/store';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import ScheduleApp from '../schedule/schedule.app';
-import {TagsList} from "@org/core";
+import { TagsList } from '@org/core';
+import styled from '@emotion/styled/macro';
+import { FeeInfomation } from './../../molecules/fee';
+import { AssignmentCollap } from './../../molecules/assignment';
+
 const contentStyle: React.CSSProperties = {
   height: '500px',
   color: '#fff',
@@ -51,7 +55,7 @@ function ClassesDetails() {
     },
     {
       key: '2',
-      label:t('class.schedule'),
+      label: t('class.schedule'),
       children: (
         <ScheduleApp
           data={data}
@@ -62,15 +66,15 @@ function ClassesDetails() {
     {
       key: '3',
       label: t('class.fee.status'),
-      children: 'Content of Tab Pane 3',
+      children: <FeeInfomation payments={data?.payment} />,
     },
     {
       key: '4',
       label: t('class.Assignment'),
-      children: 'Content of Tab Pane 3',
+      children: <AssignmentCollap data={data} />,
     },
     {
-      key: '4',
+      key: '5',
       label: t('class.Feedback'),
       children: 'Content of Tab Pane 3',
     },
@@ -101,154 +105,100 @@ function ClassesDetails() {
 
 export default ClassesDetails;
 const Information = ({ data }: any) => {
+  const { t } = useTranslation();
+
   return (
     <Space
       className={css`
         padding: 0 1rem;
       `}
     >
-      <Space
-        className={css`
-          display: flex;
-          margin-top: 1rem;
-        `}
-      >
-        <h6
+      <WrapItem>
+        <Title>{t('tutor.title')}: </Title>
+        <Link
+          to={SiteMap.Profile.generate(data?.user?.id)}
           className={css`
-            min-width: 100px;
-            font-weight: 700 !important;
+            text-decoration-line: underline !important;
+            color: ${COLOR.Primary} !important;
           `}
         >
-          Bio
-        </h6>
-        <h6>
-          Em/Mình tên là Phạm Thanh Tâm, hiện đang là lập trình viên. Em/Mình tốt nghiệp đại học
-          chuyên ngành Chuyên nghành CNTT loại giỏi năm 2021, có chứng chỉ sư phạm quốc tế Tesol và
-          hiện đã giảng dạy tiếng anh được gần 2 năm cho nhiều đối tượng, và cụ thể là tiếng anh
-          giao tiếp cho người mất gốc, tiếng anh thiếu nhi, luyện thi các chứng chỉ quốc tế
-          Starters, Movers, Flyers, Ket.
-        </h6>
-      </Space>
-      <Space
-        className={css`
-          display: flex;
-          margin-top: 1rem;
-        `}
-      >
-        <h6
+          {data?.user?.lastName} {data?.user?.firstName}
+        </Link>
+      </WrapItem>
+      <WrapItem>
+        <Title>{t('student.title')}: </Title>
+        <Link
+          to={SiteMap.Profile.generate(data?.posts?.user?.id)}
           className={css`
-            min-width: 100px;
-            font-weight: 700 !important;
+            text-decoration-line: underline !important;
+            color: ${COLOR.Primary} !important;
           `}
         >
-          Ngày Sinh
-        </h6>
-        <h6>{dayjs('12/05/2001').format('DD-MM-YYYY')}</h6>
-      </Space>
+          {data?.posts?.user?.lastName} {data?.posts?.user?.firstName}
+        </Link>
+      </WrapItem>
 
-      <Space
-        className={css`
-          display: flex;
-          margin-top: 1rem;
-        `}
-      >
-        <h6
-          className={css`
-            min-width: 100px;
-            font-weight: 700 !important;
-          `}
-        >
-          Học Vấn
-        </h6>
-        <h6>Sư Phạm Kỹ Thuật</h6>
-      </Space>
-      <Space
-        className={css`
-          display: flex;
-          margin-top: 1rem;
-        `}
-      >
-        <h6
-          className={css`
-            min-width: 100px;
-            font-weight: 700 !important;
-          `}
-        >
-          Địa Chỉ
-        </h6>
-        <h6>
-          {data?.address} - {data?.wards?.name} - {data?.wards?.districts?.name} -{' '}
-          {data?.wards?.districts?.province?.name}{' '}
-        </h6>
-      </Space>
+      <WrapItem>
+        <Title>{t('classNew.fee')}: </Title>
+        {formatMoney(data?.posts?.fee)}/{DayEnum[data?.posts?.perTime]}
+      </WrapItem>
 
-      <SkillCertifications data={data} />
+      <WrapItem>
+        <Title>{t('classNew.dayWeek')}: </Title>
+        {data?.posts?.dayWeek} {t('classNew.day')} ({DataTimeEnum[data?.posts?.timeDay]}/
+        {t('classNew.day')})
+      </WrapItem>
+
+      <WrapItem>
+        <Title>{t('classNew.address')}: </Title>
+        {data?.posts?.address} - {data?.posts?.wards?.name} - {data?.posts?.wards?.districts?.name}{' '}
+        - {data?.posts?.wards?.districts?.province?.name}
+      </WrapItem>
+      <WrapItem>
+        <Title>{t('fee.time')}: </Title>
+        {dayjs(data?.contractStartDate).format('DD/MM/YYYY')}
+        {' - '}
+        {dayjs(data?.contractEndDate).format('DD/MM/YYYY')}
+      </WrapItem>
+      <WrapItem>
+        <Title>{t('classNew.grade')}: </Title>
+        <TagsList
+          data={data?.posts?.gradeLevels}
+          isReverse
+          bordered
+        />
+      </WrapItem>
+      <WrapItem>
+        <Title>{t('classNew.subject')}: </Title>
+        <TagsList
+          data={data?.posts?.subjects}
+          bordered
+        />
+      </WrapItem>
+      <WrapItem>
+        <Title>{t('classNew.certification')}: </Title>
+        <TagsList
+          data={data?.posts?.certifications}
+          isReverse
+          bordered
+        />
+      </WrapItem>
+      <WrapItem>
+        <Title>{t('classNew.skill')}: </Title>
+        <TagsList
+          data={data?.posts?.skills}
+          bordered
+        />
+      </WrapItem>
     </Space>
   );
 };
-const SkillCertifications = ({ data }: any) => {
-  return (
-    <Space>
-      <Space
-        className={css`
-          display: flex;
-          margin-top: 1rem;
-        `}
-      >
-        <h6
-          className={css`
-            min-width: 100px;
-            font-weight: 700 !important;
-          `}
-        >
-          Kỹ Năng
-        </h6>
-        <Space>
-          <TagsList data={data?.tutorSkills} isReverse/>
+const Title = styled.h6`
+  min-width: 160px;
+  font-weight: 700 !important;
+`;
 
-        </Space>
-      </Space>
-      <Space
-        className={css`
-          display: flex;
-          margin-top: 1rem;
-        `}
-      >
-        <h6
-          className={css`
-            min-width: 100px;
-            font-weight: 700 !important;
-          `}
-        >
-          Chứng Chỉ
-        </h6>
-        <Space>
-          <TagsList data={data?.tutorCertifications} isReverse/>
-
-        </Space>
-      </Space>
-      <Space
-        className={css`
-          display: flex;
-          margin-top: 1rem;
-        `}
-      >
-        <h6
-          className={css`
-            min-width: 100px;
-            font-weight: 700 !important;
-          `}
-        >
-          Dạy Môn
-        </h6>
-        <Space>
-          {data?.tutorGradeSubject?.map((item: any) => (
-            <Tag color={colorRandom()}>
-              {getNameLanguage(item?.subject?.nameVI, item?.subject?.nameEN)}
-            </Tag>
-          ))}
-        </Space>
-      </Space>
-    </Space>
-  );
-};
+const WrapItem = styled.h6`
+  display: flex;
+  margin-top: 1rem;
+`;

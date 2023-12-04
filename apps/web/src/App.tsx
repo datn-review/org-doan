@@ -1,5 +1,4 @@
 // import { extendBaseTheme } from '@chakra-ui/react';
-
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes';
 import { ProviderI18n } from '@org/i18n';
