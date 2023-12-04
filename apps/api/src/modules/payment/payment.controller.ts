@@ -111,7 +111,7 @@ export class PaymentController {
     vnp_Params['vnp_TxnRef'] = payRef;
     vnp_Params['vnp_OrderInfo'] = orderInfo;
     vnp_Params['vnp_OrderType'] = orderType;
-    vnp_Params['vnp_Amount'] = (5000000 || paymentInfo?.amount || 0) * 100;
+    vnp_Params['vnp_Amount'] = (paymentInfo?.amount || 0) * 100;
     vnp_Params['vnp_ReturnUrl'] = returnUrl;
     vnp_Params['vnp_IpAddr'] = '14.185.51.44';
     vnp_Params['vnp_CreateDate'] = createDate;
@@ -131,6 +131,7 @@ export class PaymentController {
   @Get('/return')
   @HttpCode(HttpStatus.OK)
   async returnPaymentVN(@Body() createPaymentDto: any, @Request() req: any): Promise<any> {
+    // eslint-disable-next-line prefer-const,@typescript-eslint/no-unused-vars
     let { vnp_SecureHash, vnp_SecureHashType, ...vnp_Params } = req.query;
     console.log(vnp_Params);
 

@@ -86,7 +86,7 @@ function AssignmentApp() {
   const columns = [
     {
       key: 'title ',
-      title: t('title'),
+      title: t('assessment.name'),
       dataIndex: 'title',
       sorter: true,
     },
@@ -158,7 +158,7 @@ function AssignmentApp() {
           margin-bottom: 3rem;
         `}
       >
-        <H2>{t('settings.assignment')}</H2>
+        <H2>{t('assessment.assignment')}</H2>
 
         <Select
           label={t('user.status')}

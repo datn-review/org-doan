@@ -29,13 +29,14 @@ import {
   Space,
   Popover,
   Radio,
-  EditableCell,
+  EditableCell, IconEye,
 } from '@org/ui';
 
 import { StatusEnum, getImage, statusOptionUpsert } from '@org/utils';
 import { isEmpty } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import * as yup from 'yup';
+import {QuestionReview} from "../../assignment/review.assignment";
 
 type Status = {
   id: string;
@@ -181,11 +182,11 @@ export function Upsert() {
 
   const columns: any = [
     {
-      title: 'Question',
+      title:t("assessment.questions"),
       dataIndex: 'content',
     },
     {
-      title: t('user.score'),
+      title: t('assessment.score'),
       sorter: true,
 
       dataIndex: 'score',
@@ -201,13 +202,25 @@ export function Upsert() {
     },
 
     {
-      title: 'Options',
+      title:t("assessment.option"),
       dataIndex: 'age',
       align: 'center',
       render: (_: any, record: any) => (
         <Popover
           content={
-            <Space>
+            <Space className={css`
+              .ant-checkbox-group,
+              .ant-radio-group {
+                display: block;
+              }
+              .ant-checkbox-group-item,
+              .ant-radio-wrapper {
+                display: flex;
+                padding: 0.5rem 2rem;
+              }
+            `}>
+              <QuestionReview question={record}/>
+
               {/*{record?.type ===1 ?*/}
 
               {/*    <Radio.Group name="radiogroup" defaultValue={1}>*/}
@@ -217,17 +230,11 @@ export function Upsert() {
               {/*      <Radio value={4}>D</Radio>*/}
               {/*    </Radio.Group> :*/}
               {/*}*/}
-              {record?.options?.map((option: any) => (
-                <Space>
-                  {t('question.option')}
-                  {'.  '}
-                  {option.content}
-                </Space>
-              ))}
+
             </Space>
           }
         >
-          <Space>Details</Space>
+          <BoxCenter><IconEye/></BoxCenter>
         </Popover>
       ),
     },

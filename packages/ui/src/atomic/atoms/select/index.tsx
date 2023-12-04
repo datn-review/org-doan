@@ -27,10 +27,11 @@ export function Select({ label, onChange, ...rest }: ISelect) {
         className={cx(
           css`
             width: 100%;
-            min-height: 3.8rem;
+            //min-height: 3.8rem;
             .ant-select-selector {
               width: 100%;
-              min-height: 3.8rem;
+              //min-height: 3.8rem;
+              
             }
           `,
           rest.className,

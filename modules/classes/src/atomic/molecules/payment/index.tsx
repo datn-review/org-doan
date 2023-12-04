@@ -72,6 +72,7 @@ export function Payment({ data, close, refetch }: IProps) {
   const [registerConfirmCollaboration] = useRegisterConfirmCollaborationMutation();
 
   const [posterConfirmCollaboration] = usePosterConfirmCollaborationMutation();
+  console.log(dayjs(data?.feeMonthDate).format('YYYY-MM-DD'));
   const submitContact = (value: any) => {
     createPaymentVNPAY({
       id: data?.id,
@@ -84,7 +85,7 @@ export function Payment({ data, close, refetch }: IProps) {
   };
   return (
     <ModalAntd
-      title=' Tiến Hành Hoán Tất Hợp đồng '
+      title={t('payment.contact.title')}
       open={!!data}
       onCancel={close}
       width={'90%'}
@@ -93,8 +94,21 @@ export function Payment({ data, close, refetch }: IProps) {
       `}
       footer={<></>}
     >
-      <Space>Tien: {data?.amount}</Space>
-      <Button onClick={submitContact}>Thanh Toan</Button>
+      <Space>
+        <b>{t('payment.code')}</b>: PAY_FEE_{data?.id}
+      </Space>
+      <Space>
+        <b>{t('payment.feeMonth')}</b>: {dayjs(data?.feeMonthDate).format('MM-YYYY')}
+      </Space>
+      <Space>
+        <b> {t('payment.dead')}</b>: {dayjs(data?.deadPaymentDate).format('DD-MM-YYYY')}
+      </Space>
+      <Space>
+        <b>{t('money')}</b>:
+        {data?.amount?.toLocaleString('vi', { style: 'currency', currency: 'VND' })}
+      </Space>
+      <br />
+      <Button onClick={submitContact}>{t('payment.title')}</Button>
     </ModalAntd>
   );
 }

@@ -1,50 +1,44 @@
-import { css } from '@emotion/css';
+import {css} from '@emotion/css';
 import {
   AddressForm,
-  IDistricts,
+  certificationImportFormat,
+  gradeSubjectExport,
+  gradeSubjectImportFormat,
   IWards,
   SelectCertification,
   SelectGradeSubject,
   SelectSkill,
-  certificationImportFormat,
-  gradeSubjectExport,
-  gradeSubjectImportFormat,
   skillImportFormat,
   useCRUDContext,
   useMessageHook,
   useUnmount,
 } from '@org/core';
-import { getNameLanguage, i18next, useTranslation } from '@org/i18n';
-import {
-  useCreateUserTutorMutation,
-  useGetCertificationActiveQuery,
-  useGetGradeLevelActiveQuery,
-  useGetSkillsActiveQuery,
-  useLazyFindUserTutorQuery,
-  useUpdateUserTutorMutation,
-} from '@org/store';
+import {getNameLanguage, i18next, useTranslation} from '@org/i18n';
+import {useCreateUserTutorMutation, useLazyFindUserTutorQuery, useUpdateUserTutorMutation,} from '@org/store';
 import {
   BoxCenter,
   Button,
+  Col,
   Drawer,
   FormProvider,
   InputForm,
-  SIZE,
+  Row,
   SelectForm,
+  SIZE,
   Spin,
-  TYPE_BUTTON,
   TimeAvailabilityForm,
+  timeAvailabilityImport,
+  TYPE_BUTTON,
   TypeInput,
   UnloadImageForm,
-  VARIANT,
-  timeAvailabilityImport,
   useForm,
+  VARIANT,
   yupResolver,
 } from '@org/ui';
 
-import { StatusEnum, formatData, getImage, statusOptionUpsert } from '@org/utils';
-import { isEmpty } from 'lodash';
-import { useEffect, useMemo } from 'react';
+import {getImage, StatusEnum, statusOptionUpsert} from '@org/utils';
+import {isEmpty} from 'lodash';
+import {useEffect} from 'react';
 import * as yup from 'yup';
 
 type Status = {
@@ -282,13 +276,21 @@ export function Upsert() {
               $type={TypeInput.Password}
             />
             <AddressForm methods={methods} />
-            <SelectSkill />
-            <SelectCertification />
+            <Row gutter={[10,10]}>
+              <Col span={12}>
+                <SelectSkill />
+
+              </Col>
+              <Col span={12}>
+                <SelectCertification />
+              </Col>
+            </Row>
+
 
             <SelectGradeSubject />
             <TimeAvailabilityForm
               name='timeAvailability'
-              label={'Time Availability'}
+              label={t('timeAvailability')}
             />
 
             <SelectForm

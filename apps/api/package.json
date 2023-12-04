@@ -78,6 +78,7 @@
     "twitter": "1.7.1",
     "typeorm": "0.3.16",
     "uniqid": "^5.4.0"
+
   },
   "devDependencies": {
     "@nestjs/cli": "9.5.0",

@@ -19,25 +19,48 @@ export const Wrapper = styled.div`
   .H2 {
     font-size: ${HEADLINES.H2.FontSize};
     font-weight: ${HEADLINES.H2.FontWeight};
-    line-height: ${HEADLINES.H3.LineHeight};
+    line-height: ${HEADLINES.H2.LineHeight};
+
+
+    ${mediaTablet} {
+      font-size: ${HEADLINES.H2_SM.FontSize};
+      font-weight: ${HEADLINES.H2_SM.FontWeight};
+      line-height: ${HEADLINES.H2_SM.LineHeight};
+    }
+  
   }
   h3,
   .H3 {
     font-size: ${HEADLINES.H3.FontSize};
     font-weight: ${HEADLINES.H3.FontWeight};
     line-height: ${HEADLINES.H3.LineHeight};
+    ${mediaTablet} {
+      font-size: ${HEADLINES.H3_SM.FontSize};
+      font-weight: ${HEADLINES.H3_SM.FontWeight};
+      line-height: ${HEADLINES.H3_SM.LineHeight};
+    }
   }
   h4,
   .H4 {
     font-size: ${HEADLINES.H4.FontSize};
     font-weight: ${HEADLINES.H4.FontWeight};
     line-height: ${HEADLINES.H4.LineHeight};
+    ${mediaTablet} {
+      font-size: ${HEADLINES.H4_SM.FontSize};
+      font-weight: ${HEADLINES.H4_SM.FontWeight};
+      line-height: ${HEADLINES.H4_SM.LineHeight};
+    }
   }
   h5,
   .H5 {
     font-size: ${HEADLINES.H5.FontSize};
     font-weight: ${HEADLINES.H5.FontWeight};
     line-height: ${HEADLINES.H5.LineHeight};
+    ${mediaTablet} {
+      font-size: ${HEADLINES.H6.FontSize};
+      font-weight: ${HEADLINES.H6.FontWeight};
+      line-height: ${HEADLINES.H6.LineHeight};
+    }
   }
   h6,
   .H6 {
@@ -76,6 +99,20 @@ export const Wrapper = styled.div`
     max-width: 144rem;
     box-shadow: 0 2px 6px rgba(47, 43, 61, 0.14), 0 0 transparent, 0 0 transparent;
     //margin: 0 auto;
+
+    ${mediaDesktop} {
+      padding: 2rem;
+    }
+
+    ${mediaTablet} {
+      padding: 1.5rem;
+    }
+    ${mediaMiniTablet} {
+      padding: 1rem;
+    }
+    ${mediaPhone} {
+      padding:.5rem;
+    }
   }
   .section-layout {
     padding-left: 2rem;

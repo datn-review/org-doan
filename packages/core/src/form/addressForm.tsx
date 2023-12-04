@@ -87,7 +87,7 @@ export function AddressForm({ methods }: any) {
           label={t('Province')}
           name='province'
           options={provinces || []}
-          size='large'
+          size='middle'
           onChange={() => {
             isChangeProvince.current = true;
           }}
@@ -102,7 +102,8 @@ export function AddressForm({ methods }: any) {
           label={t('District')}
           name='district'
           options={districts || []}
-          size='large'
+          size='middle'
+
           onChange={() => {
             isChangeDistrict.current = true;
           }}
@@ -117,7 +118,7 @@ export function AddressForm({ methods }: any) {
           label={t('Ward')}
           name='wards'
           options={wards}
-          size='large'
+          size='middle'
         />
       </Col>
     </Row>

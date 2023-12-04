@@ -27,6 +27,8 @@
       "error": "User Updated Error!"
 
     },
+    "Certification": "Certification",
+
     "delete" :{
       "title": "Detete User",
       "success": "User Deleted Successfully!",
@@ -36,9 +38,9 @@
     "firstName" : "First Name",
     "lastName" : "Last Name",
     "new_password":"New Password",
-    "photo":"Avatar"
-
-  
+    "photo":"Avatar",
+    "password": "Password",
+    "email": "Email"
   },
   "button" : {
     "cancel": "Cancel",
@@ -117,6 +119,7 @@
   "grade": "Grade",
   "subject": "Subject",
   "timeStart": "Time Start",
+  "timeEnd": "Time End",
   "time_hours": "Time Hours",
   "fee": "Fee",
   "perTime": "Per Time",
@@ -126,5 +129,77 @@
   "address": "Address",
   "Province": "Province",
   "District": "District",
-  "Ward": "Ward"
+  "Ward": "Ward",
+  "nameVI": "[VN] Name",
+  "nameEN": "[EN] Name",
+  "descriptionVI": "[VN] Description",
+  "descriptionEN": "[EN] Description",
+  "grade.edit.title" : "Edit Grade",
+  "subject.edit.title" : "Edit Grade",
+  "skill.edit.title" : "Edit Skill",
+  "certification.edit.title" : "Edit Certification",
+  "grade.add.title" : "Add Grade",
+  "subject.add.title" : "Add Grade",
+  "skill.add.title" : "Add Skill",
+  "certification.add.title" : "Add Certification",
+  "tutorGradeSubject": "Tutor Grade Subject",
+  "assessment": {
+    "name": "Assessment",
+    "exercise": "Exercise",
+
+    "questions": "Question",
+    "option": "Option",
+
+    "assignment": "Assignment",
+    "score": "Score",
+    "point": "Point"
+  },
+  "exercise.create": "Create Exercise",
+  "exercise.edit": "Edit Exercise",
+
+  "exercise.title": "Title Exercise",
+  "registration" : "Registration",
+  "manage.postsme": "Posts",
+  "no.data": "No Data",
+  "class": {
+    "details": "Class Details",
+    "my": "My Class",
+    "info": "Class Information",
+    "schedule": "Schedule",
+    "fee.status": "Fee Status",
+    "Assignment": "Assignment",
+    "Feedback": "Feedback",
+    "create.schedule": "Create Schedule",
+    "save.schedule": "Save Schedule",
+    "dayOfWeek": "DayOfWeek",
+    "time_date": "Start Date - End Date Contract",
+    "text.color": "Text Color",
+    "bg.color": "Background Color",
+    "select.dayOfWeek": "Select DayOfWeek",
+    "time_day": "Hour Start - Hour End"
+
+  },
+
+  "remove": "Xóa",
+  "date": "Date",
+  "update": "Update",
+
+  "lesson": {
+    "info": "Lesson Information",
+    "assignment": "Lesson Assignment",
+    "comment": "Lesson Feedback",
+    "details": "Lesson Details",
+    "content": "Lesson Content"
+  },
+  "assignment": {
+    "create": "Create Assignment",
+    "exercise": "Exercise",
+    "time.startEnd" : "Start Time - End Time",
+    "name": "Assignment Name",
+    "success": "Success",
+    "review": "Review Assignment"
+  },
+  "result": "Result",
+  "expired": "Expired",
+  "do": "Do Assignment"
 }

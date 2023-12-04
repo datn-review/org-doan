@@ -21,7 +21,7 @@ export function SelectCertification() {
       size='middle'
       mode='multiple'
       name='certification'
-      label={t('Certification')}
+      label={t('certification')}
       placeholder='Please Select Certification'
       options={certification}
     />

@@ -1,276 +1,280 @@
 import {
-  clearActiveMenu,
-  setActiveGroup,
-  setActiveSubGroup,
-  useAppDispatch,
-  useLazyGetClassesQuery,
+    clearActiveMenu,
+    setActiveGroup,
+    setActiveSubGroup,
+    useAppDispatch,
+    useLazyGetClassesQuery,
 } from '@org/store';
 
-import { css } from '@emotion/css';
-import { useCRUDContext, useMessageHook, useUpdateEffect } from '@org/core';
-import { getNameLanguage, useTranslation } from '@org/i18n';
+import {css} from '@emotion/css';
+import {TagsList, useCRUDContext, useMessageHook, useUpdateEffect} from '@org/core';
+import {getNameLanguage, useTranslation} from '@org/i18n';
 import {
-  Dropdown,
-  EllipsisOutlined,
-  H2,
-  Input,
-  Section,
-  SectionLayout,
-  Select,
-  SelectLimitTable,
-  Space,
-  Table,
-  Tag,
-  useTable,
+    BoxCenter,
+    Dropdown,
+    EllipsisOutlined,
+    H2, IconEye,
+    Input,
+    Section,
+    SectionLayout,
+    Select,
+    SelectLimitTable,
+    Space,
+    Table,
+    Tag,
+    useTable,
 } from '@org/ui';
 import {
-  colorRandom,
-  EnumStatusCollap,
-  SiteMap,
-  StatusEnum,
-  statusOption,
-  StatusRegistration,
-  StatusRegistrationColor,
+    colorRandom,
+    EnumStatusCollap,
+    SiteMap,
+    StatusEnum,
+    statusOption,
+    StatusRegistration,
+    StatusRegistrationColor,
 } from '@org/utils';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { If, Then } from 'react-if';
+import {useEffect, useState} from 'react';
+import {Link} from 'react-router-dom';
+import {If, Then} from 'react-if';
 
 export function ClassesPage() {
-  const [contants, setContants] = useState<any>(null);
+    const [contants, setContants] = useState<any>(null);
 
-  const tableInstance = useTable({
-    initialSortValue: {
-      sortBy: 'createdAt',
-      sortDirection: 'asc',
-    },
-  });
-  console.log(Number('t'));
-  const dispatch = useAppDispatch();
-  const { t } = useTranslation();
-  const { messageSuccess, contextHolder } = useMessageHook();
+    const tableInstance = useTable({
+        initialSortValue: {
+            sortBy: 'createdAt',
+            sortDirection: 'asc',
+        },
+    });
+    console.log(Number('t'));
+    const dispatch = useAppDispatch();
+    const {t} = useTranslation();
+    const {messageSuccess, contextHolder} = useMessageHook();
 
-  const { setIdEdit, setIsUpsert, isFetch, setIsFetch, isUpsert } = useCRUDContext();
+    const {setIdEdit, setIsUpsert, isFetch, setIsFetch, isUpsert} = useCRUDContext();
 
-  const [filter, setFilter] = useState({
-    status: StatusEnum.all,
-    name: '',
-  });
+    const [filter, setFilter] = useState({
+        status: StatusEnum.all,
+        name: '',
+    });
 
-  useEffect(() => {
-    dispatch(setActiveGroup({ current: SiteMap.Manage.menu }));
-    dispatch(setActiveSubGroup({ current: SiteMap.Manage.Registration.menu }));
-    return () => {
-      dispatch(clearActiveMenu());
+    useEffect(() => {
+        dispatch(setActiveGroup({current: SiteMap.Manage.menu}));
+        dispatch(setActiveSubGroup({current: SiteMap.Manage.Registration.menu}));
+        return () => {
+            dispatch(clearActiveMenu());
+        };
+    }, []);
+
+    const [getData, {data, isLoading}] = useLazyGetClassesQuery();
+
+    console.log('data', data);
+
+    const query = {
+        page: tableInstance.values.pagination.currentPage,
+        limit: tableInstance.limit,
+        status: filter.status,
+        searchName: filter.name,
+        sortBy: tableInstance.values.sort.sortBy,
+        sortDirection: tableInstance.values.sort.sortDirection,
     };
-  }, []);
 
-  const [getData, { data, isLoading }] = useLazyGetClassesQuery();
+    useEffect(() => {
+        getData(query);
+    }, [JSON.stringify(query)]);
 
-  console.log('data', data);
+    useUpdateEffect(() => {
+        if (isFetch) {
+            getData({
+                ...query,
+                page: 1,
+            });
+            tableInstance.reset();
+            setIsFetch(false);
+        }
+    }, [isFetch]);
 
-  const query = {
-    page: tableInstance.values.pagination.currentPage,
-    limit: tableInstance.limit,
-    status: filter.status,
-    searchName: filter.name,
-    sortBy: tableInstance.values.sort.sortBy,
-    sortDirection: tableInstance.values.sort.sortDirection,
-  };
+    const confirmContract = (record: any) => () => {
+        setContants(record);
+    };
 
-  useEffect(() => {
-    getData(query);
-  }, [JSON.stringify(query)]);
+    const columns = [
+        {
+            title: t('summary'),
+            dataIndex: 'requestSummaryVI',
+            sorter: true,
+            render: (_: string, record: any) => <>{record?.posts?.requestSummaryVI}</>,
+        },
+        {
+            title: t('subject'),
+            dataIndex: 'subject',
 
-  useUpdateEffect(() => {
-    if (isFetch) {
-      getData({
-        ...query,
-        page: 1,
-      });
-      tableInstance.reset();
-      setIsFetch(false);
-    }
-  }, [isFetch]);
+            render: (_: string, record: any) => (
+                <>
+                    <TagsList data={record?.posts?.subjects} isReverse={true}/>
+                </>
+            ),
+        },
+        {
+            title: t('grade'),
+            dataIndex: 'grade',
 
-  const confirmContract = (record: any) => () => {
-    setContants(record);
-  };
+            render: (_: string, record: any) => (
+                <>
+                    <TagsList data={record?.posts?.gradeLevels}/>
 
-  const columns = [
-    {
-      title: t('requestSummaryVI'),
-      dataIndex: 'updatedAt',
-      sorter: true,
-      render: (_: string, record: any) => <>{record?.posts?.requestSummaryVI}</>,
-    },
-    {
-      title: t('subject'),
-      dataIndex: 'subject',
+                </>
+            ),
+        },
 
-      render: (_: string, record: any) => (
-        <>
-          {record?.posts?.subjects?.map((item: any) => (
-            <Tag color={colorRandom()}>{getNameLanguage(item?.nameVI, item?.nameEN)}</Tag>
-          ))}
-        </>
-      ),
-    },
-    {
-      title: t('grade'),
-      dataIndex: 'grade',
+        {
+            title: t('user.createdAt'),
+            dataIndex: 'updatedAt',
+            sorter: true,
+            render: (_createdAt: string) => <>{dayjs(_createdAt).format('DD/MM/YYYY')}</>,
+        },
 
-      render: (_: string, record: any) => (
-        <>
-          {record?.posts?.gradeLevels?.map((item: any) => (
-            <Tag color={colorRandom()}>{getNameLanguage(item?.nameVI, item?.nameEN)}</Tag>
-          ))}
-        </>
-      ),
-    },
+        {
+            title: t('user.status'),
+            sorter: true,
+            dataIndex: 'status',
+            key: 'status',
+            render: (_: any, record: any) => (
+                <Tag
+                    color={StatusRegistrationColor[record?.status as keyof typeof StatusRegistrationColor]}
+                >
+                    {t(StatusRegistration[record?.status as keyof typeof StatusRegistration])}
+                </Tag>
+            ),
+        },
 
-    {
-      title: t('user.createdAt'),
-      dataIndex: 'updatedAt',
-      sorter: true,
-      render: (_createdAt: string) => <>{dayjs(_createdAt).format('DD/MM/YYYY')}</>,
-    },
-
-    {
-      title: t('user.status'),
-      sorter: true,
-      dataIndex: 'status',
-      key: 'status',
-      render: (_: any, record: any) => (
-        <Tag
-          color={StatusRegistrationColor[record?.status as keyof typeof StatusRegistrationColor]}
-        >
-          {t(StatusRegistration[record?.status as keyof typeof StatusRegistration])}
-        </Tag>
-      ),
-    },
-
-    {
-      title: t('user.action'),
-      dataIndex: '',
-      render: (_: any, record: any) => (
-        <Space
-          className={css`
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-          `}
-        >
-          <Dropdown
-            className={css`
-              cursor: pointer;
-
-              * {
-                font-size: 14px;
-              }
-            `}
-            overlayClassName={css`
-              width: 20rem;
-            `}
-            menu={{
-              items: [
-                {
-                  key: '1',
-                  label: (
-                    <Link
-                      to={SiteMap.Manage.Classes.Details.generate(record?.id || 0)}
-                      className={css`
-                        color: #5c5b68 !important;
-                      `}
+        {
+            title: t('user.action'),
+            dataIndex: '',
+            align: 'center',
+            render: (_: any, record: any) => (
+                <BoxCenter>
+                    <Link to={SiteMap.Manage.Classes.Details.generate(record?.id || 0)}
+                          className={css`
+                            color: #5c5b68 !important;
+                          `}
                     >
-                      Chi Tiết
+                        <IconEye/>
                     </Link>
-                  ),
-                },
-                {
-                  key: '2',
-                  label: <Space></Space>,
-                },
-              ],
-            }}
-            trigger={['click']}
-            placement='bottomCenter'
-            arrow={{ pointAtCenter: true }}
-          >
-            <EllipsisOutlined
-              className={css`
-                transform: scale(1.6);
-              `}
-            />
-          </Dropdown>
-        </Space>
-      ),
-    },
-  ];
 
-  return (
-    <SectionLayout>
-      {contextHolder}
-      <Section>
-        <H2>{t('my.class')}</H2>
+                </BoxCenter>
+                // <Space
+                //   className={css`
+                //     display: flex;
+                //     align-items: center;
+                //     gap: 0.5rem;
+                //     cursor: pointer;
+                //   `}
+                // >
+                //   <Dropdown
+                //     className={css`
+                //       cursor: pointer;
+                //       * {
+                //         font-size: 14px;
+                //       }
+                //     `}
+                //     overlayClassName={css`
+                //       width: 20rem;
+                //     `}
+                //     menu={{
+                //       items: [
+                //         {
+                //           key: '1',
+                //           label: (
+                //             <Link
+                //               to={SiteMap.Manage.Classes.Details.generate(record?.id || 0)}
+                //               className={css`
+                //                 color: #5c5b68 !important;
+                //               `}
+                //             >
+                //               {t("class.details")}
+                //             </Link>
+                //           ),
+                //         },
+                //       ],
+                //     }}
+                //     trigger={['click']}
+                //     placement='bottomCenter'
+                //     // arrow={{ pointAtCenter: true }}
+                //   >
+                //     <EllipsisOutlined
+                //       className={css`
+                //         transform: scale(1.6);
+                //       `}
+                //     />
+                //   </Dropdown>
+                // </Space>
+            ),
+        },
+    ];
 
-        <Space
-          className={css`
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-          `}
-        >
-          <SelectLimitTable
-            defaultValue={tableInstance.limit}
-            onChange={tableInstance.onChangeLimit}
-          />
+    return (
+        <SectionLayout>
+            {contextHolder}
+            <Section>
+                <H2>{t('class.my')}</H2>
 
-          <Space
-            className={css`
-              gap: 0.5rem;
-              display: flex;
-              align-items: center;
-            `}
-          >
-            <Select
-              options={statusOption}
-              defaultValue={StatusEnum.active}
-              value={filter.status}
-              onChange={(value) => setFilter((prev) => ({ ...prev, status: value }))}
-              className={css`
-                min-width: 20rem;
-                min-height: 3.8rem;
-              `}
-            />
-            <Space
-              className={css`
-                width: 18rem;
-              `}
-            >
-              <Input
-                name='seach_name'
-                onChange={(value) => setFilter((prev) => ({ ...prev, name: String(value) }))}
-                value={filter.name}
-                placeholder={t('search.name')}
-                className={css`
-                  margin-bottom: 0;
-                `}
-              />
-            </Space>
-          </Space>
-        </Space>
-        <Table
-          tableInstance={tableInstance}
-          totalPage={data?.totals}
-          columns={columns}
-          data={data?.data}
-          loading={isLoading}
-        />
-      </Section>
-    </SectionLayout>
-  );
+                <Space
+                    className={css`
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      margin-bottom: 2rem;
+                    `}
+                >
+                    <SelectLimitTable
+                        defaultValue={tableInstance.limit}
+                        onChange={tableInstance.onChangeLimit}
+                    />
+
+                    <Space
+                        className={css`
+                          gap: 0.5rem;
+                          display: flex;
+                          align-items: center;
+                        `}
+                    >
+                        <Select
+                            options={statusOption}
+                            defaultValue={StatusEnum.active}
+                            value={filter.status}
+                            onChange={(value) => setFilter((prev) => ({...prev, status: value}))}
+                            className={css`
+                              min-width: 20rem;
+                              min-height: 3.8rem;
+                            `}
+                        />
+                        <Space
+                            className={css`
+                              width: 18rem;
+                            `}
+                        >
+                            <Input
+                                name='seach_name'
+                                onChange={(value) => setFilter((prev) => ({...prev, name: String(value)}))}
+                                value={filter.name}
+                                placeholder={t('search.name')}
+                                className={css`
+                                  margin-bottom: 0;
+                                `}
+                            />
+                        </Space>
+                    </Space>
+                </Space>
+                <Table
+                    tableInstance={tableInstance}
+                    totalPage={data?.totals}
+                    columns={columns}
+                    data={data?.data}
+                    loading={isLoading}
+                />
+            </Section>
+        </SectionLayout>
+    );
 }

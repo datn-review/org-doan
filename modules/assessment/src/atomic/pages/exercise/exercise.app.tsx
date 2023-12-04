@@ -93,7 +93,7 @@ function ExerciseApp() {
     },
 
     {
-      title: t('user.grade'),
+      title: t('grade'),
       sorter: true,
 
       dataIndex: 'grade',
@@ -105,7 +105,7 @@ function ExerciseApp() {
       ),
     },
     {
-      title: t('user.subject'),
+      title: t('subject'),
       sorter: true,
 
       dataIndex: 'subject',
@@ -184,7 +184,7 @@ function ExerciseApp() {
           margin-bottom: 3rem;
         `}
       >
-        <H2>{t('settings.exercise')}</H2>
+        <H2>{t('assessment.exercise')}</H2>
 
         <Space
           className={css`

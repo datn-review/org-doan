@@ -42,7 +42,7 @@ export const Event = ({ id, close }: Props) => {
 
   return (
     <ModalAntd
-      title='Chi Tiet Buoi Hoc '
+      title={t("lesson.details")}
       open={!!id}
       onCancel={close}
       width={'999px'}
@@ -132,7 +132,7 @@ export const LessonAssigenment = ({ data }: any) => {
   const getStatus = (record: any) => {
     switch (record?.status) {
       case 2:
-        return t('success');
+        return t('assignment.success');
       case 1:
         if (dayjs(record.endTime).isBefore(dayjs())) {
           return t('expired');
@@ -156,14 +156,14 @@ export const LessonAssigenment = ({ data }: any) => {
   const columns = [
     {
       key: 'title ',
-      title: t('assignment.title'),
+      title: t('assignment.name'),
       dataIndex: 'title',
       sorter: true,
     },
 
     {
       key: 'startTime',
-      title: t('time.start'),
+      title: t('timeStart'),
       dataIndex: 'startTime',
       sorter: true,
 
@@ -171,7 +171,7 @@ export const LessonAssigenment = ({ data }: any) => {
     },
     {
       key: 'endTime',
-      title: t('time.end'),
+      title: t('timeEnd'),
       dataIndex: 'endTime',
       sorter: true,
 
@@ -223,10 +223,11 @@ export const LessonAssigenment = ({ data }: any) => {
         className={css`
           display: flex;
           justify-content: flex-end;
+          margin: 0 0 2rem 0;
         `}
       >
-        <Link to={SiteMap.Assessment.Assignment.Create.generate(data.id)}>
-          <Button $size={SIZE.ExtraSmall}>{t('assigment.create')}</Button>
+        <Link to={SiteMap.Assessment.Assignment.Create.generate(data?.id)}>
+          <Button $size={SIZE.ExtraSmall}>{t('assignment.create')}</Button>
         </Link>
       </Space>
       <TableAntd

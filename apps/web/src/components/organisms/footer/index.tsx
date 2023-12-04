@@ -40,7 +40,7 @@ export function Footer() {
           'py-[2rem]',
         )}
       >
-        <Space className={'section-layout'}>
+        <Space className={'section-layout section-footer'}>
           <Row gutter={10}>
             <Col
               span={24}
