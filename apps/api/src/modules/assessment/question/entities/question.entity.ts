@@ -21,10 +21,10 @@ export class Question extends EntityHelper {
   id: number;
 
   @Column({ type: Number, nullable: false })
-  gradeLevelId: Number;
+  gradeLevelId: number;
 
   @Column({ type: Number, nullable: false })
-  subjectId: Number;
+  subjectId: number;
 
   @Column({ type: String, nullable: false })
   content: string;
@@ -57,6 +57,9 @@ export class Question extends EntityHelper {
     eager: true,
   })
   author: User | null;
+
+  @Column({ type: Boolean, default: true })
+  isPublish?: boolean;
 
   @Column({ type: Number, default: 1 })
   status: number;
