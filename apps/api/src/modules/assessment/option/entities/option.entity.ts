@@ -30,7 +30,7 @@ export class Option extends EntityHelper {
 
   @Expose({ groups: ['tutor', 'admin'] })
   @Column({ type: Boolean, default: false })
-  isCorrect: Boolean;
+  isCorrect: boolean;
 
   @CreateDateColumn()
   createdAt: Date;

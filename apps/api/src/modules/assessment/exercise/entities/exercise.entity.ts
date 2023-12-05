@@ -44,6 +44,9 @@ export class Exercise extends EntityHelper {
   })
   subject: Subject | null;
 
+  @Column({ type: Boolean, default: true })
+  isPublish: boolean;
+
   @Column({ type: Number, default: 1 })
   status: number;
 

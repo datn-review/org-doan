@@ -11,11 +11,13 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/roles/roles.decorator';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { RolesGuard } from 'src/roles/roles.guard';
@@ -23,11 +25,15 @@ import { InfinityPaginationResultType } from 'src/utils/types/infinity-paginatio
 import { NullableType } from 'src/utils/types/nullable.type';
 import { Exercise } from './entities/exercise.entity';
 
-import { CreateExerciseDto } from './dto/create.dto';
 import { UpdateExerciseDto } from './dto/update.dto';
 import { ExerciseService } from './exercise.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import { IWhere } from '../../../core/base.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { createReadStream } from 'fs';
+import csv from 'csv-parser';
+import request from 'request-promise';
+import * as cheerio from 'cheerio';
 
 const relations = [
   {
@@ -64,6 +70,100 @@ export class ExerciseController {
       ...createExerciseDto,
       questions,
     });
+  }
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('/customs')
+  @HttpCode(HttpStatus.CREATED)
+  async createCustoms(
+    @Body() createExerciseDto: any,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<Exercise[] | null> {
+    if (file) {
+      const results: any[] = [];
+      createReadStream('data.csv')
+        .pipe(csv())
+        .on('data', (data) => results.push(data))
+        .on('end', () => {
+          console.log(results);
+        });
+      return null;
+      const questions = createExerciseDto?.questions?.map((item) => ({
+        id: item,
+      }));
+      return this.exerciseService.create({
+        ...createExerciseDto,
+        questions,
+      });
+    }
+    return null;
+  }
+
+  @Post('/crawl')
+  @HttpCode(HttpStatus.CREATED)
+  async crawlData(@Body() createExerciseDto: any): Promise<Exercise[] | null> {
+    request('https://doctailieu.com/trac-nghiem/lop-6-l6452', (error, response, html) => {
+      if (!error && response.statusCode == 200) {
+        const $ = cheerio.load(html); // load HTML
+
+        $('.content-left .section-content .more-all').each((index, el) => {
+          const link = $(el).find('a').attr('href');
+
+          request(link, (error, response, html) => {
+            if (!error && response.statusCode == 200) {
+              const $ = cheerio.load(html);
+
+              $('.text-cauhoi').each((index, el) => {
+                const link = $(el).find('a').attr('href');
+                request(link, (error, response, html) => {
+                  if (!error && response.statusCode == 200) {
+                    const $ = cheerio.load(html);
+                    const title = $('.the-article-header h1.the-article-title').text() || '';
+
+                    const questions: any[] = [];
+
+                    $('.box-van-dap form-cauhoi').each((index, el) => {
+                      const content = $(el).find('a span.underline').text();
+                      const options: any[] = [];
+                      $(el)
+                        .find('.form-group')
+                        .each((index, el) => {
+                          const content = $(el).find('label-radio').text();
+                          options.push({ content: content });
+                        });
+                      const question = {
+                        content,
+                        type: 1,
+                        level: 1,
+                        score: 1,
+                        gradeLevel: 1,
+                        subject: 1,
+                        options,
+                      };
+                      questions.push(question);
+                    });
+                    console.log('[title]', title);
+                    console.log('[questions]', questions);
+                  }
+                });
+              });
+            }
+          });
+          // console.log(job);
+        });
+      }
+    });
+
+    return null;
+    const questions = createExerciseDto?.questions?.map((item) => ({
+      id: item,
+    }));
+    return this.exerciseService.create({
+      ...createExerciseDto,
+      questions,
+    });
+
+    return null;
   }
 
   @Get('/')

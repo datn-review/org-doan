@@ -45,11 +45,13 @@
     "@types/multer-s3": "^3.0.0",
     "apple-signin-auth": "1.7.5",
     "bcryptjs": "2.4.3",
+    "cheerio": "1.0.0-rc.12",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.0",
     "compromise": "^14.10.1",
     "compromise-dates": "^3.4.2",
     "crypto": "^1.0.1",
+    "csv-parser": "^3.0.0",
     "dayjs": "^1.11.10",
     "fb": "2.0.0",
     "google-auth-library": "8.8.0",
@@ -69,6 +71,7 @@
     "qs": "^6.11.2",
     "querystring": "^0.2.1",
     "reflect-metadata": "0.1.13",
+    "request-promise": "^4.2.6",
     "rimraf": "5.0.1",
     "rxjs": "7.8.1",
     "socket.io": "^4.7.2",
@@ -78,7 +81,6 @@
     "twitter": "1.7.1",
     "typeorm": "0.3.16",
     "uniqid": "^5.4.0"
-
   },
   "devDependencies": {
     "@nestjs/cli": "9.5.0",
