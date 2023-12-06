@@ -20,14 +20,14 @@ export class Question extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: Number, nullable: false })
+  @Column({ type: Number, nullable: true })
   gradeLevelId: number;
 
-  @Column({ type: Number, nullable: false })
+  @Column({ type: Number, nullable: true })
   subjectId: number;
 
-  @Column({ type: String, nullable: false })
-  content: string;
+  @Column({ type: String, nullable: true })
+  content?: string | null;
 
   @OneToMany(() => Option, (option) => option.question, {
     onDelete: 'CASCADE',
@@ -50,7 +50,7 @@ export class Question extends EntityHelper {
   @Column({ type: Number, default: 1 })
   level: number;
 
-  @Column({ type: Number, default: 1 })
+  @Column({ type: 'float', default: 1 })
   score: number;
 
   @ManyToOne(() => User, {

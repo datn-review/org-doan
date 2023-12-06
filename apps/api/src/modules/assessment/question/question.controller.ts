@@ -62,8 +62,6 @@ export class QuestionController {
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createQuestionDto: any): Promise<Question[]> {
-    console.log(createQuestionDto);
-
     const question = await this.questionService.create({
       content: createQuestionDto.content,
       type: createQuestionDto.type,

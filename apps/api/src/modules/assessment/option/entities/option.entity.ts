@@ -19,7 +19,7 @@ export class Option extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Question, {
+  @ManyToOne(() => Question, (question) => question.options, {
     eager: true,
     onDelete: 'CASCADE',
   })
