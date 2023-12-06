@@ -14,26 +14,31 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  Request,
 } from '@nestjs/common';
 
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/roles/roles.decorator';
-import { RoleEnum } from 'src/roles/roles.enum';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { InfinityPaginationResultType } from 'src/utils/types/infinity-pagination-result.type';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { Exercise } from './entities/exercise.entity';
-
 import { UpdateExerciseDto } from './dto/update.dto';
 import { ExerciseService } from './exercise.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import { IWhere } from '../../../core/base.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { createReadStream } from 'fs';
-import csv from 'csv-parser';
-import request from 'request-promise';
+import { createReadStream, writeFileSync } from 'fs';
+import * as csv from 'csv-parser';
+import * as request from 'request-promise';
 import * as cheerio from 'cheerio';
+import { CreateExerciseDto } from './dto/create.dto';
+import { QuestionService } from '../question/question.service';
+import { OptionService } from '../option/option.service';
+import { Question } from '../question/entities/question.entity';
+import { SubjectService } from 'src/modules/subject/subject.service';
+import { GradeLevelService } from 'src/modules/grade-level/grade-level.service';
 
 const relations = [
   {
@@ -58,7 +63,13 @@ const relations = [
   version: '1',
 })
 export class ExerciseController {
-  constructor(private readonly exerciseService: ExerciseService) {}
+  constructor(
+    private readonly exerciseService: ExerciseService,
+    private readonly questionService: QuestionService,
+    private readonly optionService: OptionService,
+    private readonly subjectService: SubjectService,
+    private readonly gradeLevelService: GradeLevelService,
+  ) {}
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
@@ -71,30 +82,78 @@ export class ExerciseController {
       questions,
     });
   }
+
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file'))
   @Post('/customs')
   @HttpCode(HttpStatus.CREATED)
   async createCustoms(
-    @Body() createExerciseDto: any,
     @UploadedFile() file: Express.Multer.File,
+    @Body() createExerciseDto: CreateExerciseDto | any,
+    @Request() request: any,
   ): Promise<Exercise[] | null> {
+    console.log(
+      '🚀 ~ file: exercise.controller.ts:83 ~ ExerciseController ~ createExerciseDto:',
+      createExerciseDto,
+    );
+    const author = request?.user?.id;
     if (file) {
+      const fileName = file.originalname;
+
+      writeFileSync(fileName, file.buffer, 'utf-8');
       const results: any[] = [];
-      createReadStream('data.csv')
-        .pipe(csv())
-        .on('data', (data) => results.push(data))
-        .on('end', () => {
-          console.log(results);
-        });
-      return null;
-      const questions = createExerciseDto?.questions?.map((item) => ({
-        id: item,
-      }));
-      return this.exerciseService.create({
-        ...createExerciseDto,
-        questions,
+
+      const data: Exercise[] = await new Promise((resolve, reject) => {
+        createReadStream(fileName)
+          .pipe(csv())
+          .on('data', (data) => results.push(data))
+          .on('end', async () => {
+            const questions = results?.map((question: any) => {
+              const optionIsCorrect = question?.isCorrect;
+              const options: any[] = [];
+              Object.entries(question).forEach(([key, value]) => {
+                if (key?.includes('option')) {
+                  options.push({
+                    content: value,
+                    isCorrect: key === optionIsCorrect,
+                  });
+                }
+              });
+
+              return {
+                gradeLevelId: Number(createExerciseDto?.gradeLevelId),
+                subjectId: Number(createExerciseDto?.subjectId),
+                content: question?.content || question?.['content'],
+                type: Number(question?.type),
+                isPublish: Boolean(createExerciseDto.isPublish),
+                author,
+                score: parseFloat(question?.score) || 0,
+                level: Number(question?.level),
+                options,
+              };
+            });
+            const questionsIds: number[] = [];
+            questions.forEach(async ({ options, ...question }) => {
+              const questionSave = (await this.questionService.create(
+                question,
+              )) as unknown as Question;
+              const option = options?.map((option) => ({ ...option, question: questionSave?.id }));
+              questionsIds?.push(questionSave?.id);
+              await this.optionService.createMany(option);
+            });
+
+            const exercises = await this.exerciseService.create({
+              name: createExerciseDto?.name,
+              gradeLevel: Number(createExerciseDto?.gradeLevelId),
+              subject: Number(createExerciseDto?.subjectId),
+              isPublish: Boolean(createExerciseDto.isPublish),
+              questions: questionsIds,
+            });
+            resolve(exercises);
+          });
       });
+
+      return data;
     }
     return null;
   }
@@ -102,48 +161,107 @@ export class ExerciseController {
   @Post('/crawl')
   @HttpCode(HttpStatus.CREATED)
   async crawlData(@Body() createExerciseDto: any): Promise<Exercise[] | null> {
+    const [subject, gradeLevel] = await Promise.all([
+      this.subjectService.findManyActive(),
+      this.gradeLevelService.findManyActive(),
+    ]);
+
     request('https://doctailieu.com/trac-nghiem/lop-6-l6452', (error, response, html) => {
       if (!error && response.statusCode == 200) {
         const $ = cheerio.load(html); // load HTML
 
-        $('.content-left .section-content .more-all').each((index, el) => {
-          const link = $(el).find('a').attr('href');
+        $('.content-left .section').each((index, el) => {
+          if (index !== 0) return;
+          const title = $(el).find('.title-cat').text();
+
+          const subjectFind = subject?.find((item) =>
+            title.toLocaleLowerCase()?.includes(item.nameVI.toLocaleLowerCase()),
+          );
+
+          const gradeLevelFind = gradeLevel?.find((item) =>
+            title.toLocaleLowerCase()?.includes(item.nameVI.toLocaleLowerCase()),
+          );
+          if (!(title && subjectFind && gradeLevelFind)) return;
+
+          const link = $(el).find('.section-content .more-all a').attr('href');
 
           request(link, (error, response, html) => {
             if (!error && response.statusCode == 200) {
               const $ = cheerio.load(html);
-
               $('.text-cauhoi').each((index, el) => {
+                if (index !== 0) return;
                 const link = $(el).find('a').attr('href');
-                request(link, (error, response, html) => {
+                request(link, async (error, response, html) => {
                   if (!error && response.statusCode == 200) {
                     const $ = cheerio.load(html);
-                    const title = $('.the-article-header h1.the-article-title').text() || '';
+                    const titleEx = $('.the-article-header h1.the-article-title').text() || '';
+                    const corrects: any[] = [];
+                    $('.box-van-dap[data-tab] tbody tr:not(.bgf2)').each((index, el) => {
+                      const tdList = el.children.filter((el) => $(el).text().trim());
 
+                      corrects.push({
+                        number: $(tdList?.[0]).text().trim(),
+                        value: $(tdList?.[1]).text().trim(),
+                      });
+                      corrects.push({
+                        number: $(tdList?.[2]).text().trim(),
+                        value: $(tdList?.[3]).text().trim(),
+                      });
+
+                      // .find('td')
+                      // .each((index, el) => {
+                      //   console.log(`"${$(el).text()}"`);
+                      // });
+                      // const content = $(el).find('a span.underline').text();
+                      // const options: any[] = [];
+                    });
+                    console.log(corrects);
+                    return;
                     const questions: any[] = [];
 
-                    $('.box-van-dap form-cauhoi').each((index, el) => {
-                      const content = $(el).find('a span.underline').text();
-                      const options: any[] = [];
-                      $(el)
-                        .find('.form-group')
-                        .each((index, el) => {
-                          const content = $(el).find('label-radio').text();
-                          options.push({ content: content });
-                        });
-                      const question = {
-                        content,
-                        type: 1,
-                        level: 1,
-                        score: 1,
-                        gradeLevel: 1,
-                        subject: 1,
-                        options,
-                      };
-                      questions.push(question);
-                    });
-                    console.log('[title]', title);
-                    console.log('[questions]', questions);
+                    // $('.box-van-dap.form-cauhoi').each((index, el) => {
+                    //   const content = $(el).find('a span.underline').text();
+                    //   const options: any[] = [];
+                    //   $(el)
+                    //     .find('.form-group')
+                    //     .each((index, el) => {
+                    //       const content = $(el).find('label-radio').text();
+                    //       options.push({ content: content });
+                    //     });
+                    //   const question = {
+                    //     gradeLevelId: Number(gradeLevelFind?.id),
+                    //     subjectId: Number(subjectFind?.id),
+                    //     content: content,
+                    //     type: 1,
+                    //     isPublish: true,
+                    //     score: 0.25,
+                    //     level: 1,
+                    //     options,
+                    //   };
+                    //   questions.push(question);
+                    // });
+                    // const questionsIds: number[] = [];
+                    // questions.forEach(async ({ options, ...question }) => {
+                    //   const questionSave = (await this.questionService.create(
+                    //     question,
+                    //   )) as unknown as Question;
+                    //   const option = options?.map((option) => ({
+                    //     ...option,
+                    //     question: questionSave?.id,
+                    //   }));
+                    //   questionsIds?.push(questionSave?.id);
+                    //   await this.optionService.createMany(option);
+                    // });
+
+                    // const exercises = await this.exerciseService.create({
+                    //   name: titleEx,
+                    //   gradeLevel: Number(gradeLevelFind?.id),
+                    //   subject: Number(subjectFind?.id),
+                    //   isPublish: true,
+                    //   questions: questionsIds,
+                    // });
+                    // resolve(exercises)
+                    // console.log(exercises);
                   }
                 });
               });
