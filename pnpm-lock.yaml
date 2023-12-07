@@ -249,15 +249,12 @@ importers:
       handlebars:
         specifier: 4.7.7
         version: 4.7.7
-      hnswlib-node:
-        specifier: ^2.0.0
-        version: 2.0.0
       i:
         specifier: ^0.3.7
         version: 0.3.7
       langchain:
         specifier: ^0.0.203
-        version: 0.0.203(@aws-sdk/client-s3@3.350.0)(cheerio@1.0.0-rc.12)(google-auth-library@8.8.0)(googleapis@126.0.1)(hnswlib-node@2.0.0)(lodash@4.17.21)(pg@8.11.0)(typeorm@0.3.16)
+        version: 0.0.203(@aws-sdk/client-s3@3.350.0)(cheerio@1.0.0-rc.12)(google-auth-library@8.8.0)(googleapis@126.0.1)(lodash@4.17.21)(pg@8.11.0)(typeorm@0.3.16)
       multer:
         specifier: 1.4.4
         version: 1.4.4
@@ -327,6 +324,9 @@ importers:
       uniqid:
         specifier: ^5.4.0
         version: 5.4.0
+      web-streams-polyfill:
+        specifier: ^3.2.1
+        version: 3.2.1
     devDependencies:
       '@nestjs/cli':
         specifier: 9.5.0
@@ -10722,12 +10722,6 @@ packages:
     resolution: {integrity: sha512-nbE1WxOTTrUWIfsfZ4aHGYu5DOuNkbxGokjV6Z2kxfJK3uaAb8zNK1muzOeipoLHZjInT4Br88BHpzevc681xA==}
     dev: false
 
-  /bindings@1.5.0:
-    resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
-    dependencies:
-      file-uri-to-path: 1.0.0
-    dev: false
-
   /bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
     dependencies:
@@ -13227,10 +13221,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /file-uri-to-path@1.0.0:
-    resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
-    dev: false
-
   /file-uri-to-path@2.0.0:
     resolution: {integrity: sha512-hjPFI8oE/2iQPVe4gbrJ73Pp+Xfub2+WI2LlXDbsaJBwT5wuMh35WNWVYYTpnz895shtwfyutMFLFywpQAFdLg==}
     engines: {node: '>= 6'}
@@ -14130,14 +14120,6 @@ packages:
 
   /highlight.js@10.7.3:
     resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
-    dev: false
-
-  /hnswlib-node@2.0.0:
-    resolution: {integrity: sha512-ib5c5m5JSW0w/8CfufAozrgXSGnWizH62YZkd2JvGVCi2OE45jQZmtQzh5aXszQiJTr8+6bMxnN/Qo2w4e+Z4A==}
-    requiresBuild: true
-    dependencies:
-      bindings: 1.5.0
-      node-addon-api: 7.0.0
     dev: false
 
   /hoist-non-react-statics@3.3.2:
@@ -15909,7 +15891,7 @@ packages:
       zlibjs: 0.3.1
     dev: false
 
-  /langchain@0.0.203(@aws-sdk/client-s3@3.350.0)(cheerio@1.0.0-rc.12)(google-auth-library@8.8.0)(googleapis@126.0.1)(hnswlib-node@2.0.0)(lodash@4.17.21)(pg@8.11.0)(typeorm@0.3.16):
+  /langchain@0.0.203(@aws-sdk/client-s3@3.350.0)(cheerio@1.0.0-rc.12)(google-auth-library@8.8.0)(googleapis@126.0.1)(lodash@4.17.21)(pg@8.11.0)(typeorm@0.3.16):
     resolution: {integrity: sha512-H41ik99zXVuqe6CqYoySE4p8TpeqB41KTSkHDf5xNBDG7Hvh1Oq1JyWKs4PaxkO04MagXdN21gIGz+E5djsEXA==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -16227,7 +16209,6 @@ packages:
       flat: 5.0.2
       google-auth-library: 8.8.0
       googleapis: 126.0.1
-      hnswlib-node: 2.0.0
       js-tiktoken: 1.0.8
       js-yaml: 4.1.0
       jsonpointer: 5.0.1
@@ -17955,10 +17936,6 @@ packages:
 
   /node-addon-api@3.2.1:
     resolution: {integrity: sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A==}
-
-  /node-addon-api@7.0.0:
-    resolution: {integrity: sha512-vgbBJTS4m5/KkE16t5Ly0WW9hz46swAstv0hYYwMtbG7AznRhNyfLRe8HZAiWIpcHzoO7HxhLuBQj9rJ/Ho0ZA==}
-    dev: false
 
   /node-dir@0.1.17:
     resolution: {integrity: sha512-tmPX422rYgofd4epzrNoOXiE8XFZYOcCq1vD7MAXCDO+O+zndlA2ztdKKMa+EeuBG5tHETpr4ml4RGgpqDCCAg==}

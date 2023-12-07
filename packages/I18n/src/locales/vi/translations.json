@@ -210,6 +210,7 @@
     "name": "Tiêu Đề Bài Tập",
     "success": "Đã Làm",
     "review": "Kêt Quả Bài Làm"
+    
   },
   "result": "Kết Quả",
   "expired": "Hết Hạn",
@@ -272,7 +273,16 @@
     "birthday":"Ngày Sinh",
     "grade":"Học Vấn"
 
-   }
+   },
+   "exercise.crawl":"Cào Dữ Liệu",
+   "exercise.import":"Import CSV",
+   "upload":"Click to Upload",
+   "file":"Tệp",
+   "publish":"Công Khai",
+   "saved.succes":"Lưu Thành Công",
+   "saved.error":"Lưu Thất Bại"
+
+  
 
 
 

@@ -121,8 +121,8 @@ export class ExerciseController {
               });
 
               return {
-                gradeLevelId: Number(createExerciseDto?.gradeLevelId),
-                subjectId: Number(createExerciseDto?.subjectId),
+                gradeLevelId: Number(createExerciseDto?.gradeLevel),
+                subjectId: Number(createExerciseDto?.subject),
                 content: question?.content || question?.['content'],
                 type: Number(question?.type),
                 isPublish: Boolean(createExerciseDto.isPublish),
@@ -144,8 +144,8 @@ export class ExerciseController {
 
             const exercises = await this.exerciseService.create({
               name: createExerciseDto?.name,
-              gradeLevel: Number(createExerciseDto?.gradeLevelId),
-              subject: Number(createExerciseDto?.subjectId),
+              gradeLevel: Number(createExerciseDto?.gradeLevel),
+              subject: Number(createExerciseDto?.subject),
               isPublish: Boolean(createExerciseDto.isPublish),
               questions: questionsIds,
             });
@@ -165,13 +165,14 @@ export class ExerciseController {
       this.subjectService.findManyActive(),
       this.gradeLevelService.findManyActive(),
     ]);
-
-    request('https://doctailieu.com/trac-nghiem/lop-6-l6452', (error, response, html) => {
+    const linkRequest = createExerciseDto.link;
+    //  'https://doctailieu.com/trac-nghiem/lop-6-l6452';
+    if (!linkRequest) return null;
+    request(`${linkRequest}`, (error, response, html) => {
       if (!error && response.statusCode == 200) {
         const $ = cheerio.load(html); // load HTML
 
         $('.content-left .section').each((index, el) => {
-          if (index !== 0) return;
           const title = $(el).find('.title-cat').text();
 
           const subjectFind = subject?.find((item) =>
@@ -189,7 +190,6 @@ export class ExerciseController {
             if (!error && response.statusCode == 200) {
               const $ = cheerio.load(html);
               $('.text-cauhoi').each((index, el) => {
-                if (index !== 0) return;
                 const link = $(el).find('a').attr('href');
                 request(link, async (error, response, html) => {
                   if (!error && response.statusCode == 200) {
@@ -200,85 +200,73 @@ export class ExerciseController {
                       const tdList = el.children.filter((el) => $(el).text().trim());
 
                       corrects.push({
-                        number: $(tdList?.[0]).text().trim(),
+                        number: $(tdList?.[0]).text().trim().replace('Câu ', ''),
                         value: $(tdList?.[1]).text().trim(),
                       });
                       corrects.push({
-                        number: $(tdList?.[2]).text().trim(),
+                        number: $(tdList?.[2]).text().trim().replace('Câu ', ''),
                         value: $(tdList?.[3]).text().trim(),
                       });
-
-                      // .find('td')
-                      // .each((index, el) => {
-                      //   console.log(`"${$(el).text()}"`);
-                      // });
-                      // const content = $(el).find('a span.underline').text();
-                      // const options: any[] = [];
                     });
-                    console.log(corrects);
-                    return;
                     const questions: any[] = [];
 
-                    // $('.box-van-dap.form-cauhoi').each((index, el) => {
-                    //   const content = $(el).find('a span.underline').text();
-                    //   const options: any[] = [];
-                    //   $(el)
-                    //     .find('.form-group')
-                    //     .each((index, el) => {
-                    //       const content = $(el).find('label-radio').text();
-                    //       options.push({ content: content });
-                    //     });
-                    //   const question = {
-                    //     gradeLevelId: Number(gradeLevelFind?.id),
-                    //     subjectId: Number(subjectFind?.id),
-                    //     content: content,
-                    //     type: 1,
-                    //     isPublish: true,
-                    //     score: 0.25,
-                    //     level: 1,
-                    //     options,
-                    //   };
-                    //   questions.push(question);
-                    // });
-                    // const questionsIds: number[] = [];
-                    // questions.forEach(async ({ options, ...question }) => {
-                    //   const questionSave = (await this.questionService.create(
-                    //     question,
-                    //   )) as unknown as Question;
-                    //   const option = options?.map((option) => ({
-                    //     ...option,
-                    //     question: questionSave?.id,
-                    //   }));
-                    //   questionsIds?.push(questionSave?.id);
-                    //   await this.optionService.createMany(option);
-                    // });
+                    $('.box-van-dap.form-cauhoi').each((index, el) => {
+                      const correct = corrects?.find(
+                        (correct) => Number(correct.number) === index + 1,
+                      );
+                      const correctQuestion = correct?.value?.charCodeAt() - 65;
+                      const content = $(el).find('a span.underline').text();
+                      if (content) return;
+                      const options: any[] = [];
+                      $(el)
+                        .find('.form-group')
+                        .each((index, el) => {
+                          const content = $(el).find('.label-radio').text().trim().substring(3);
+                          if (content) return;
+                          const isCorrect = correctQuestion === index;
+                          options.push({ content: content, isCorrect });
+                        });
+                      const question = {
+                        gradeLevelId: Number(gradeLevelFind?.id),
+                        subjectId: Number(subjectFind?.id),
+                        content: content,
+                        type: 1,
+                        isPublish: true,
+                        score: 0.25,
+                        level: 1,
+                        options,
+                      };
+                      questions.push(question);
+                    });
+                    const questionsIds: number[] = [];
+                    questions.forEach(async ({ options, ...question }) => {
+                      const questionSave = (await this.questionService.create(
+                        question,
+                      )) as unknown as Question;
+                      const option = options?.map((option) => ({
+                        ...option,
+                        question: questionSave?.id,
+                      }));
+                      questionsIds?.push(questionSave?.id);
+                      await this.optionService.createMany(option);
+                    });
 
-                    // const exercises = await this.exerciseService.create({
-                    //   name: titleEx,
-                    //   gradeLevel: Number(gradeLevelFind?.id),
-                    //   subject: Number(subjectFind?.id),
-                    //   isPublish: true,
-                    //   questions: questionsIds,
-                    // });
-                    // resolve(exercises)
+                    await this.exerciseService.create({
+                      name: titleEx,
+                      gradeLevel: Number(gradeLevelFind?.id),
+                      subject: Number(subjectFind?.id),
+                      isPublish: true,
+                      questions: questionsIds,
+                    });
+                    // resolve(exercises);
                     // console.log(exercises);
                   }
                 });
               });
             }
           });
-          // console.log(job);
         });
       }
-    });
-
-    return null;
-    const questions = createExerciseDto?.questions?.map((item) => ({
-      id: item,
-    }));
-    return this.exerciseService.create({
-      ...createExerciseDto,
-      questions,
     });
 
     return null;

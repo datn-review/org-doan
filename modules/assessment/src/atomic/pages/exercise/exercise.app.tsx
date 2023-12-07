@@ -26,10 +26,14 @@ import {
   StatusShowHideColor,
   statusOption,
   colorRandom,
+  RolesEnum,
 } from '@org/utils';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { Upsert } from './container/upsert';
+import { ifAnyGranted } from '@org/auth';
+import { ImportCSV } from './container/import-csv';
+import { Crawl } from './container/crawl';
 
 function ExerciseApp() {
   const tableInstance = useTable({
@@ -41,6 +45,8 @@ function ExerciseApp() {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const { messageSuccess, contextHolder } = useMessageHook();
+  const [openImport, setOpenImport] = useState(false);
+  const [openCrawl, setOpenCrawl] = useState(false);
 
   const { setIdEdit, setIsUpsert, isFetch, setIsFetch, isUpsert } = useCRUDContext();
 
@@ -241,7 +247,10 @@ function ExerciseApp() {
               `}
             />
           </Space>
-
+          {ifAnyGranted([RolesEnum.WEB_ADMIN]) && (
+            <Button onClick={() => setOpenCrawl(true)}>{t('exercise.crawl')}</Button>
+          )}
+          <Button onClick={() => setOpenImport(true)}>{t('exercise.import')}</Button>
           <Button onClick={() => setIsUpsert(true)}>{t('add')}</Button>
         </Space>
       </Space>
@@ -254,6 +263,8 @@ function ExerciseApp() {
       />
 
       {isUpsert && <Upsert />}
+      {openImport && <ImportCSV close={() => setOpenImport(false)} />}
+      {openCrawl && <Crawl close={() => setOpenCrawl(false)} />}
     </Section>
   );
 }

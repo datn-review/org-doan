@@ -23,6 +23,20 @@ export const ExerciseAPI = baseAuthSplitApi.injectEndpoints({
         method: 'POST',
       }),
     }),
+    createExerciseCustoms: builder.mutation({
+      query: (body) => ({
+        url: '/exercise/customs',
+        body,
+        method: 'POST',
+      }),
+    }),
+    createExerciseCrawl: builder.mutation({
+      query: (body) => ({
+        url: '/exercise/crawl',
+        body,
+        method: 'POST',
+      }),
+    }),
     findExercise: builder.query({
       query: ({ id }) => ({
         url: `/exercise/${id}`,
@@ -53,4 +67,6 @@ export const {
   useDeleteExerciseMutation,
   useLazyFindExerciseQuery,
   useGetExerciseActiveQuery,
+  useCreateExerciseCustomsMutation,
+  useCreateExerciseCrawlMutation,
 } = ExerciseAPI;
