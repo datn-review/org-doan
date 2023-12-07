@@ -6,12 +6,72 @@ import { ChatBot } from './entities/chat-bot.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NlpManager, containerBootstrap } from 'node-nlp';
 import { BuiltinCompromise } from '@nlpjs/builtin-compromise';
+import { Document } from 'langchain/document';
+import { CharacterTextSplitter } from 'langchain/text_splitter';
+import { HNSWLib } from 'langchain/vectorstores/hnswlib';
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 
 import * as nlp from 'compromise';
 import * as datePlugin from 'compromise-dates';
+import { UsersService } from 'src/users/users.service';
+import { RoleEnum } from 'src/roles/roles.enum';
+export const relations = [
+  {
+    field: 'tutorCertifications',
+    entity: 'tutor_certification',
+  },
+  {
+    field: 'tutor_certification.certification',
+    entity: 'certification',
+  },
+  {
+    field: 'tutorSkills',
+    entity: 'tutor_skill',
+  },
+  {
+    field: 'tutor_skill.skill',
+    entity: 'skill',
+  },
 
-// @ts-ignore
-
+  {
+    field: 'tutorTimeAvailability',
+    entity: 'tutor_time_availability',
+  },
+  {
+    field: 'tutorGradeSubject',
+    entity: 'tutor_subject_grade',
+  },
+  {
+    field: 'tutor_subject_grade.subject',
+    entity: 'subject',
+  },
+  {
+    field: 'tutor_subject_grade.grade',
+    entity: 'gradeLevel',
+  },
+  {
+    field: 'status',
+    entity: 'status',
+  },
+  {
+    field: 'photo',
+    entity: 'photo',
+  },
+  {
+    field: 'wards',
+    entity: 'wards',
+  },
+  {
+    field: 'wards.districts',
+    entity: 'districts',
+  },
+  {
+    field: 'districts.province',
+    entity: 'province',
+  },
+];
+const OPENAI_API_KEY = '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';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 nlp?.plugin(datePlugin);
 export class ChatBotRepository {}
@@ -21,7 +81,10 @@ export class ChatBotService
   implements OnModuleInit
 {
   private readonly manager: NlpManager;
-  constructor(@InjectRepository(ChatBot) repository: Repository<ChatBot>) {
+  constructor(
+    @InjectRepository(ChatBot) repository: Repository<ChatBot>,
+    private readonly usersService: UsersService,
+  ) {
     super(repository);
 
     this.manager = new NlpManager({
@@ -69,6 +132,29 @@ export class ChatBotService
 
     // Đào tạo chatbot
     await this.manager.train();
+  }
+
+  async trainChatbotSearch() {
+    // Lấy dữ liệu lịch học từ cơ sở dữ liệu
+    const data = await this.usersService.findManyActive(1, relations, [
+      {
+        field: 'role',
+        value: RoleEnum.PESONAL_TUTOR,
+      },
+    ]);
+    console.log('data', data);
+    const splitter = new CharacterTextSplitter({
+      chunkSize: 1000,
+    });
+    const docs = await splitter.createDocuments([JSON.stringify(data)]);
+
+    // STEP 4: Generate embeddings from documents
+    const vectorStore = await HNSWLib.fromDocuments(
+      docs,
+      new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY }),
+    );
+
+    await vectorStore.save('hnswlib');
   }
 
   async handleUserRequest({
