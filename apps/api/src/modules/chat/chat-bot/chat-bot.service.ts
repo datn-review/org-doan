@@ -10,6 +10,8 @@ import { Document } from 'langchain/document';
 import { CharacterTextSplitter } from 'langchain/text_splitter';
 import { HNSWLib } from 'langchain/vectorstores/hnswlib';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
+import { RetrievalQAChain, loadQARefineChain } from 'langchain/chains';
+import { OpenAI } from 'langchain/llms/openai';
 
 import * as nlp from 'compromise';
 import * as datePlugin from 'compromise-dates';
@@ -70,7 +72,7 @@ export const relations = [
     entity: 'province',
   },
 ];
-const OPENAI_API_KEY = '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';
+const OPENAI_API_KEY = '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';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 nlp?.plugin(datePlugin);
@@ -81,6 +83,8 @@ export class ChatBotService
   implements OnModuleInit
 {
   private readonly manager: NlpManager;
+  private readonly model: any;
+
   constructor(
     @InjectRepository(ChatBot) repository: Repository<ChatBot>,
     private readonly usersService: UsersService,
@@ -91,6 +95,7 @@ export class ChatBotService
       forceNER: true,
       languages: ['en', 'vi'],
     });
+    this.model = new OpenAI({ openAIApiKey: OPENAI_API_KEY, temperature: 0.9 });
     // const container = containerBootstrap();
     // const builtin = new BuiltinCompromise({
     //   enable: [
@@ -111,7 +116,7 @@ export class ChatBotService
 
   async onModuleInit() {
     await this.trainChatbot();
-
+    await this.trainChatbotSearch();
     // Theo dõi sự thay đổi trong cơ sở dữ liệu và đào tạo lại khi cần
     // const watcher = chokidar.watch('path/to/your/database', { ignoreInitial: true });
     // watcher.on('all', async () => {
@@ -172,6 +177,7 @@ export class ChatBotService
         this.manager.process('en', userInput),
       ]);
 
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const doc = nlp(userInput);
       // console.log(doc);
@@ -184,9 +190,28 @@ export class ChatBotService
       // console.log(responseVI, responseEN);
       console.log(JSON.stringify(responseVI));
 
+      const vectorStore = await HNSWLib.load(
+        'hnswlib',
+        new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY }),
+      );
+
+      // STEP 2: Create the chain
+      const chain = new RetrievalQAChain({
+        combineDocumentsChain: loadQARefineChain(this.model),
+        retriever: vectorStore.asRetriever(),
+      });
+
+      // STEP 3: Get the answer
+      const result = await chain.call({
+        query: userInput,
+      });
+
       // Process the responses or return them as needed
       return (
-        responseVI.answer || responseEN.answer || "I'm sorry, I didn't understand your request."
+        result.output_text ||
+        responseVI.answer ||
+        responseEN.answer ||
+        "I'm sorry, I didn't understand your request."
       );
     } catch (error) {
       // Handle errors from any of the promises

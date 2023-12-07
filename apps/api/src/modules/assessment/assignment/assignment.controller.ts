@@ -47,6 +47,7 @@ const relations = [
 
 @ApiBearerAuth()
 @ApiTags('Assignment')
+@Roles()
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'assignment',
@@ -136,8 +137,6 @@ export class AssignmentController {
     if (assignment instanceof Assignment) {
       delete assignment['submissionQuestions'];
     }
-
-    console.log(assignment);
 
     return assignment;
   }

@@ -13,13 +13,13 @@ export class CreateExerciseDto {
     type: 'number',
   })
   @IsEmpty()
-  gradeLevelId?: number | null;
+  gradeLevel?: number | null;
 
   @ApiProperty({
     type: 'number',
   })
   @IsEmpty()
-  subjectId?: number | null;
+  subject?: number | null;
 
   @ApiProperty({
     type: 'string',
