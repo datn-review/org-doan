@@ -32,10 +32,11 @@ import {
 
 import { StatusEnum, getImage, statusOptionUpsert, COLOR } from '@org/utils';
 import { isEmpty } from 'lodash';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import dayjs from 'dayjs';
 import { useParams } from 'react-router-dom';
+import { ViewExercise } from '../exercise/container/view';
 
 type Status = {
   id: string;
@@ -46,6 +47,7 @@ type IUpdate = {
   status?: number;
   gradeLevel?: number;
   subject?: number;
+  exercise?: number;
 };
 
 const schema = (idEdit: number) =>
@@ -59,18 +61,20 @@ const dataInit: IUpdate = {
   status: 1,
   gradeLevel: undefined,
   subject: undefined,
+  exercise: undefined,
 };
 
 export function CreateAssignment() {
   const { idEdit, isUpsert, setIsFetch, close, setDataUpsert, dataUpsert } = useCRUDContext();
   const { t } = useTranslation();
+  const [exerciseId, setExerciseId] = useState<any>(null);
   const methods = useForm<IUpdate>({
     defaultValues: dataInit,
 
     resolver: yupResolver(schema(idEdit)),
   });
   const { lessonId } = useParams();
-  console.log(lessonId);
+
   const { messageError, messageSuccess, contextHolder } = useMessageHook();
 
   const [createData, { isLoading: isLoadingCreate }] = useCreateAssignmentMutation();
@@ -84,7 +88,8 @@ export function CreateAssignment() {
 
   const gradeLevel = methods?.watch('gradeLevel');
   const subject = methods?.watch('subject');
-  console.log(dataGetExercise);
+  const exerciseIdDetails = methods?.watch('exercise');
+
   const exerciseData = useMemo(() => {
     return (
       dataGetExercise?.data?.map((item: any) => ({
@@ -213,12 +218,16 @@ export function CreateAssignment() {
               `}
               showSearch
             />
-            <Button>{t('details')}</Button>
+            {exerciseIdDetails && (
+              <Button onClick={() => setExerciseId(Number(exerciseIdDetails))}>
+                {t('details')}
+              </Button>
+            )}
           </Space>
 
           <RangePickerForm
             name='time'
-            label={'assignment.time.startEnd'}
+            label={t('assignment.time.startEnd')}
             disabledDate={disabledDate}
             format='YYYY-MM-DD HH:mm'
             showTime
@@ -244,6 +253,12 @@ export function CreateAssignment() {
           >
             {t('assignment.create')}
           </Button>
+          {exerciseId && (
+            <ViewExercise
+              id={exerciseId}
+              close={() => setExerciseId(null)}
+            />
+          )}
         </FormProvider>
       </Spin>
     </Section>

@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { SelectGrade, SelectSubject, useCRUDContext, useMessageHook } from '@org/core';
+import { SelectGrade, SelectSubject, useCRUDContext, useMessageHook, useUnmount } from '@org/core';
 import { i18next, useTranslation } from '@org/i18n';
 import {
   useCreateExerciseMutation,
@@ -29,14 +29,16 @@ import {
   Space,
   Popover,
   Radio,
-  EditableCell, IconEye,
+  EditableCell,
+  IconEye,
+  CheckBoxForm,
 } from '@org/ui';
 
 import { StatusEnum, getImage, statusOptionUpsert } from '@org/utils';
 import { isEmpty } from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as yup from 'yup';
-import {QuestionReview} from "../../assignment/review.assignment";
+import { QuestionReview } from '../../assignment/review.assignment';
 
 type Status = {
   id: string;
@@ -47,6 +49,7 @@ type IUpdate = {
   status?: number;
   gradeLevel?: number;
   subject?: number;
+  isPublish?: boolean;
 };
 
 const schema = (idEdit: number) =>
@@ -60,12 +63,15 @@ const dataInit: IUpdate = {
   status: 1,
   gradeLevel: undefined,
   subject: undefined,
+  isPublish: true,
 };
 
 export function Upsert() {
   const { idEdit, isUpsert, setIsFetch, close, setDataUpsert, dataUpsert } = useCRUDContext();
   const [dataSource, setDataSource] = useState<any[]>([]);
   const { t } = useTranslation();
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const isGetEdit = useRef(true);
   const methods = useForm<IUpdate>({
     defaultValues: dataInit,
 
@@ -81,7 +87,9 @@ export function Upsert() {
     useLazyGetQuestionQuery();
 
   const [updateUser, { isLoading: isLoadingUpdate }] = useUpdateExerciseMutation();
-
+  useUnmount(() => {
+    setDataUpsert({});
+  });
   useEffect(() => {
     if (idEdit) {
       getData({ id: idEdit })
@@ -124,8 +132,15 @@ export function Upsert() {
       Object.entries(dataInit).forEach(([name, value]) => {
         const recordName = name as TypeName;
 
-        const recordData = (dataUpsert as IUpdate)?.[name as TypeName];
-
+        const recordData = (dataUpsert as IUpdate)?.[name as TypeName] as unknown as any;
+        if (name == 'gradeLevel') {
+          methods.setValue(recordName, recordData?.id);
+          return;
+        }
+        if (name == 'subject') {
+          methods.setValue(recordName, recordData?.id);
+          return;
+        }
         if (name == 'status') {
           methods.setValue(recordName, (recordData as unknown as Status)?.id);
           return;
@@ -133,6 +148,8 @@ export function Upsert() {
 
         methods.setValue(recordName, recordData || '');
       });
+      const questionsSelect = dataUpsert?.questions?.map((question: any) => question?.id);
+      setSelectedRowKeys(questionsSelect);
     }
   }, [JSON.stringify(dataUpsert)]);
 
@@ -140,14 +157,14 @@ export function Upsert() {
   const subject = methods?.watch('subject');
 
   useEffect(() => {
-    if (subject && gradeLevel)
+    if (subject && gradeLevel) {
       getQuestion({
         subject,
         gradeLevel,
       });
+    }
   }, [gradeLevel, subject]);
 
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log('selectedRowKeys changed: ', newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
@@ -182,7 +199,7 @@ export function Upsert() {
 
   const columns: any = [
     {
-      title:t("assessment.questions"),
+      title: t('assessment.questions'),
       dataIndex: 'content',
     },
     {
@@ -202,39 +219,32 @@ export function Upsert() {
     },
 
     {
-      title:t("assessment.option"),
+      title: t('assessment.option'),
       dataIndex: 'age',
       align: 'center',
       render: (_: any, record: any) => (
         <Popover
           content={
-            <Space className={css`
-              .ant-checkbox-group,
-              .ant-radio-group {
-                display: block;
-              }
-              .ant-checkbox-group-item,
-              .ant-radio-wrapper {
-                display: flex;
-                padding: 0.5rem 2rem;
-              }
-            `}>
-              <QuestionReview question={record}/>
-
-              {/*{record?.type ===1 ?*/}
-
-              {/*    <Radio.Group name="radiogroup" defaultValue={1}>*/}
-              {/*      <Radio value={1}>A</Radio>*/}
-              {/*      <Radio value={2}>B</Radio>*/}
-              {/*      <Radio value={3}>C</Radio>*/}
-              {/*      <Radio value={4}>D</Radio>*/}
-              {/*    </Radio.Group> :*/}
-              {/*}*/}
-
+            <Space
+              className={css`
+                .ant-checkbox-group,
+                .ant-radio-group {
+                  display: block;
+                }
+                .ant-checkbox-group-item,
+                .ant-radio-wrapper {
+                  display: flex;
+                  padding: 0.5rem 2rem;
+                }
+              `}
+            >
+              <QuestionReview question={record} />
             </Space>
           }
         >
-          <BoxCenter><IconEye/></BoxCenter>
+          <BoxCenter>
+            <IconEye />
+          </BoxCenter>
         </Popover>
       ),
     },
@@ -288,7 +298,17 @@ export function Upsert() {
                   <SelectGrade />
                 </Col>
                 <Col span={12}>
-                  <SelectSubject />
+                  <SelectSubject onChange={() => setSelectedRowKeys([])} />
+                </Col>
+
+                <Col
+                  span={24}
+                  onChange={() => setSelectedRowKeys([])}
+                >
+                  <CheckBoxForm
+                    name={'isPublish'}
+                    labelCB={t('publish')}
+                  />
                 </Col>
               </Row>
 

@@ -23,6 +23,7 @@ export { ReactComponent as IconSchool } from '../assets/icons/svg/school.svg';
 export { ReactComponent as IconClassesName } from '../assets/icons/svg/classes-new.svg';
 export { ReactComponent as IconContacs } from '../assets/icons/svg/contacts.svg';
 export { ReactComponent as IconNews } from '../assets/icons/svg/news.svg';
+export { ReactComponent as IconAssessment } from '../assets/icons/svg/assessment.svg';
 
 export { IconSearch } from './SearchIcon';
 export { ChatIcon } from './ChatIcon';

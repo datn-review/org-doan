@@ -1,16 +1,28 @@
 import { css } from '@emotion/css';
-import { useCRUDContext, useMessageHook, useUpdateEffect } from '@org/core';
+import {
+  SelectGradeSingle,
+  SelectSubjectSingle,
+  useCRUDContext,
+  useMessageHook,
+  useUpdateEffect,
+} from '@org/core';
 import { getNameLanguage, useTranslation } from '@org/i18n';
 import { clearActiveMenu, setActiveGroup, setActiveSubGroup, useAppDispatch } from '@org/store';
 import { useDeleteQuestionMutation, useLazyGetQuestionQuery } from '@org/store';
 import {
   Button,
+  Col,
   H2,
   IconDeleteAction,
   IconEditAction,
+  IconEye,
   Input,
+  Popover,
+  Radio,
+  Row,
   Section,
   Select,
+  SelectForm,
   SelectLimitTable,
   Space,
   Table,
@@ -19,16 +31,22 @@ import {
 } from '@org/ui';
 import {
   COLOR,
+  RolesEnum,
   SiteMap,
   StatusEnum,
   StatusEnumColor,
   StatusShowHide,
   StatusShowHideColor,
+  colorById,
   statusOption,
 } from '@org/utils';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import { Upsert } from './container/upsert';
+import { Upsert, levelQuestions, levelQuestionsObject } from './container/upsert';
+import { exerciseRadio } from '../exercise/exercise.app';
+import { If, Then } from 'react-if';
+import { ifAnyGranted } from '@org/auth';
+import { QuestionReview } from '../exercise/container/view';
 
 function QuestionApp() {
   const tableInstance = useTable({
@@ -46,6 +64,10 @@ function QuestionApp() {
   const [filter, setFilter] = useState({
     status: StatusEnum.all,
     name: '',
+    gradeId: undefined,
+    subjectId: undefined,
+    radio: 0,
+    level: undefined,
   });
 
   useEffect(() => {
@@ -63,6 +85,11 @@ function QuestionApp() {
     page: tableInstance.values.pagination.currentPage,
     limit: tableInstance.limit,
     status: filter.status,
+    author: filter?.radio,
+    gradeLevel: filter.gradeId,
+    subject: filter.subjectId,
+    level: filter.level,
+
     searchName: filter.name,
     sortBy: tableInstance.values.sort.sortBy,
     sortDirection: tableInstance.values.sort.sortDirection,
@@ -93,11 +120,13 @@ function QuestionApp() {
 
     {
       key: 'gradeLevel',
-      title: t('gradeLevel'),
+      title: t('grade'),
       dataIndex: 'gradeLevel',
       sorter: true,
       render: (_createdAt: string, record: any) => (
-        <Tag>{getNameLanguage(record?.gradeLevel?.nameVI, record?.gradeLevel?.nameEN)}</Tag>
+        <Tag color={colorById(record?.gradeLevel?.id)}>
+          {getNameLanguage(record?.gradeLevel?.nameVI, record?.gradeLevel?.nameEN)}
+        </Tag>
       ),
     },
 
@@ -107,7 +136,18 @@ function QuestionApp() {
       dataIndex: 'subject',
       sorter: true,
       render: (_createdAt: string, record: any) => (
-        <Tag>{getNameLanguage(record?.subject?.nameVI, record?.subject?.nameEN)}</Tag>
+        <Tag color={colorById(record?.subject?.id)}>
+          {getNameLanguage(record?.subject?.nameVI, record?.subject?.nameEN)}
+        </Tag>
+      ),
+    },
+    {
+      key: 'level',
+      title: t('assessment.level'),
+      dataIndex: 'level',
+      sorter: true,
+      render: (level: number, record: any) => (
+        <Tag color={colorById(level, true)}>{levelQuestionsObject[level]}</Tag>
       ),
     },
 
@@ -134,6 +174,7 @@ function QuestionApp() {
     {
       title: t('user.action'),
       dataIndex: '',
+      align: 'center',
       render: (_: any, record: any) => (
         <Space
           className={css`
@@ -141,28 +182,66 @@ function QuestionApp() {
             align-items: center;
             gap: 0.5rem;
             cursor: pointer;
+            justify-content: center;
           `}
         >
-          <IconEditAction
-            onClick={() => {
-              setIsUpsert(true);
-              setIdEdit(record.id);
-            }}
-          />
-          <IconDeleteAction
-            onClick={() => {
-              deleteUser(record.id)
-                .then((data) => {
-                  messageSuccess(t('user.delete.success'));
-                })
-                .catch((error) => {
-                  messageSuccess(t('user.delete.error'));
-                })
-                .finally(() => {
-                  setIsFetch(true);
-                });
-            }}
-          />
+          <Popover
+            content={
+              <>
+                <Space
+                  className={css`
+                    .ant-checkbox-group,
+                    .ant-radio-group {
+                      display: block;
+                    }
+                    .ant-checkbox-group-item,
+                    .ant-radio-wrapper {
+                      display: flex;
+                      padding: 0.5rem 2rem;
+                    }
+                  `}
+                >
+                  <QuestionReview question={record} />
+                </Space>
+              </>
+            }
+          >
+            <IconEye
+              onClick={() => {
+                // setExerciseId(record.id);
+              }}
+            />
+          </Popover>
+
+          <If
+            condition={
+              ifAnyGranted([RolesEnum.WEB_ADMIN]) ||
+              (ifAnyGranted([RolesEnum.PESONAL_TUTOR]) && filter.radio === 1)
+            }
+          >
+            <Then>
+              <IconEditAction
+                onClick={() => {
+                  setIsUpsert(true);
+                  setIdEdit(record.id);
+                }}
+              />
+              <IconDeleteAction
+                onClick={() => {
+                  deleteUser(record.id)
+                    .then((data) => {
+                      messageSuccess(t('user.delete.success'));
+                    })
+                    .catch((error) => {
+                      messageSuccess(t('user.delete.error'));
+                    })
+                    .finally(() => {
+                      setIsFetch(true);
+                    });
+                }}
+              />
+            </Then>
+          </If>
         </Space>
       ),
     },
@@ -180,17 +259,72 @@ function QuestionApp() {
       >
         <H2>{t('settings.question')}</H2>
 
-        <Select
-          label={t('user.status')}
-          options={statusOption}
-          defaultValue={StatusEnum.active}
-          value={filter.status}
-          onChange={(value) => setFilter((prev) => ({ ...prev, status: value }))}
-          className={css`
-            min-width: 20rem;
-            min-height: 3.8rem;
-          `}
-        />
+        <Row gutter={[10, 10]}>
+          <Col
+            span={24}
+            sm={12}
+            lg={6}
+          >
+            <Select
+              label={t('user.status')}
+              options={statusOption}
+              defaultValue={StatusEnum.active}
+              value={filter.status}
+              onChange={(value) => setFilter((prev) => ({ ...prev, status: value }))}
+              className={css`
+                /* min-width: 20rem; */
+                width: 100%;
+                min-height: 3.8rem;
+                height: 3.8rem;
+              `}
+            />
+          </Col>
+          <Col
+            span={24}
+            sm={12}
+            lg={6}
+          >
+            <SelectGradeSingle
+              onChange={(value: any) => setFilter((prev) => ({ ...prev, gradeId: value }))}
+              size='large'
+            />
+          </Col>
+
+          <Col
+            span={24}
+            sm={12}
+            lg={6}
+          >
+            <SelectSubjectSingle
+              onChange={(value: any) => setFilter((prev) => ({ ...prev, subjectId: value }))}
+              size='large'
+            />
+          </Col>
+          <Col
+            span={24}
+            sm={12}
+            lg={6}
+          >
+            <Select
+              name='level'
+              size='large'
+              label={t('assessment.level')}
+              options={levelQuestions}
+              onChange={(e: any) => setFilter((prev) => ({ ...prev, level: e }))}
+            />
+          </Col>
+
+          <Col
+            span={24}
+            lg={24}
+          >
+            <Radio.Group
+              options={exerciseRadio}
+              onChange={(e: any) => setFilter((prev) => ({ ...prev, radio: e.target.value }))}
+              value={filter.radio}
+            />
+          </Col>
+        </Row>
       </Space>
       <Space
         className={css`

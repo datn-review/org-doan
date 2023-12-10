@@ -1,10 +1,11 @@
 import { css } from '@emotion/css';
 import { useTranslation } from '@org/i18n';
 import { Button, SIZE, Space, Table, Tag, useTable } from '@org/ui';
-import { StatusPay, StatusPayColor, StatusShowHideColor, formatMoney } from '@org/utils';
+import { RolesEnum, StatusPay, StatusPayColor, StatusShowHideColor, formatMoney } from '@org/utils';
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
 import { Payment } from '../payment';
+import { ifAnyGranted } from '@org/auth';
 
 export function FeeInfomation({ payments = [] }: any) {
   const { t } = useTranslation();
@@ -83,6 +84,7 @@ export function FeeInfomation({ payments = [] }: any) {
           status = 3;
         }
         if (record?.receiver) return null;
+        if (ifAnyGranted([RolesEnum.PESONAL_TUTOR])) return null;
         return (
           <Space
             className={css`

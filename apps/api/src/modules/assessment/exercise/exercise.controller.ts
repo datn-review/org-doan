@@ -15,6 +15,7 @@ import {
   UseGuards,
   UseInterceptors,
   Request,
+  SerializeOptions,
 } from '@nestjs/common';
 
 import { AuthGuard } from '@nestjs/passport';
@@ -24,7 +25,6 @@ import { RolesGuard } from 'src/roles/roles.guard';
 import { InfinityPaginationResultType } from 'src/utils/types/infinity-pagination-result.type';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { Exercise } from './entities/exercise.entity';
-import { UpdateExerciseDto } from './dto/update.dto';
 import { ExerciseService } from './exercise.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import { IWhere } from '../../../core/base.service';
@@ -44,6 +44,10 @@ const relations = [
   {
     field: 'questions',
     entity: 'question',
+  },
+  {
+    field: 'question.options',
+    entity: 'option',
   },
   {
     field: 'gradeLevel',
@@ -92,10 +96,6 @@ export class ExerciseController {
     @Body() createExerciseDto: CreateExerciseDto | any,
     @Request() request: any,
   ): Promise<Exercise[] | null> {
-    console.log(
-      '🚀 ~ file: exercise.controller.ts:83 ~ ExerciseController ~ createExerciseDto:',
-      createExerciseDto,
-    );
     const author = request?.user?.id;
     if (file) {
       const fileName = file.originalname;
@@ -103,7 +103,7 @@ export class ExerciseController {
       writeFileSync(fileName, file.buffer, 'utf-8');
       const results: any[] = [];
 
-      const data: Exercise[] = await new Promise((resolve, reject) => {
+      const data: Exercise[] = await new Promise((resolve) => {
         createReadStream(fileName)
           .pipe(csv())
           .on('data', (data) => results.push(data))
@@ -132,15 +132,32 @@ export class ExerciseController {
                 options,
               };
             });
-            const questionsIds: number[] = [];
-            questions.forEach(async ({ options, ...question }) => {
+            const questionsIds: any[] = [];
+            // questions.forEach(async ({ options, ...question }) => {
+            //   const questionSave = (await this.questionService.create(
+            //     question,
+            //   )) as unknown as Question;
+            //   const option = options?.map((option) => ({ ...option, question: questionSave?.id }));
+            //   questionsIds?.push(questionSave?.id);
+            //   await this.optionService.createMany(option);
+            // });
+            const promises = questions.map(async ({ options, ...question }) => {
               const questionSave = (await this.questionService.create(
                 question,
               )) as unknown as Question;
               const option = options?.map((option) => ({ ...option, question: questionSave?.id }));
-              questionsIds?.push(questionSave?.id);
-              await this.optionService.createMany(option);
+              questionsIds?.push({
+                id: questionSave?.id,
+              });
+              return this.optionService.createMany(option);
             });
+
+            // Wait for all promises to resolve
+            await Promise.all(promises);
+            console.log(
+              '🚀 ~ file: exercise.controller.ts:138 ~ ExerciseController ~ questions.forEach ~ questionsIds:',
+              questionsIds,
+            );
 
             const exercises = await this.exerciseService.create({
               name: createExerciseDto?.name,
@@ -148,8 +165,10 @@ export class ExerciseController {
               subject: Number(createExerciseDto?.subject),
               isPublish: Boolean(createExerciseDto.isPublish),
               questions: questionsIds,
+              author: author,
             });
-            resolve(exercises);
+            const data = await this.exerciseService.save(exercises);
+            resolve(data);
           });
       });
 
@@ -216,13 +235,13 @@ export class ExerciseController {
                       );
                       const correctQuestion = correct?.value?.charCodeAt() - 65;
                       const content = $(el).find('a span.underline').text();
-                      if (content) return;
+                      if (!content) return;
                       const options: any[] = [];
                       $(el)
                         .find('.form-group')
                         .each((index, el) => {
                           const content = $(el).find('.label-radio').text().trim().substring(3);
-                          if (content) return;
+                          if (!content) return;
                           const isCorrect = correctQuestion === index;
                           options.push({ content: content, isCorrect });
                         });
@@ -292,11 +311,22 @@ export class ExerciseController {
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
     @Query('gradeLevel', new DefaultValuePipe(0)) gradeLevel: number,
     @Query('subject', new DefaultValuePipe(0)) subject: number,
+    @Query('author', new DefaultValuePipe(0)) author: number,
+    @Request() request: any,
   ): Promise<InfinityPaginationResultType<Exercise>> {
     if (limit > 50) {
       limit = 1000;
     }
+    const userId = request?.user?.id;
     let where: IWhere[] = [];
+
+    if (author === 0) {
+      where = [...where, { field: 'isPublish', value: true }];
+    }
+    if (author === 1) {
+      where = [...where, { field: 'author', value: userId }];
+    }
+
     if (subject) {
       where = [...where, { field: 'subject', value: subject }];
     }
@@ -321,20 +351,23 @@ export class ExerciseController {
   getActive(): Promise<Exercise[]> {
     return this.exerciseService.findManyActive(StatusEnum['active']);
   }
-
+  @SerializeOptions({
+    groups: ['tutor'],
+  })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string): Promise<NullableType<Exercise>> {
-    return this.exerciseService.findOne({ id: +id });
+    return this.exerciseService.findOne({ id: +id }, relations);
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  update(
-    @Param('id') id: number,
-    @Body() updateExerciseDto: UpdateExerciseDto,
-  ): Promise<Exercise[]> {
-    return this.exerciseService.update(id, updateExerciseDto);
+  update(@Param('id') id: number, @Body() updateExerciseDto: any): Promise<Exercise[]> {
+    const questions = updateExerciseDto?.questions?.map((item) => ({
+      id: item,
+    }));
+
+    return this.exerciseService.update(id, { ...updateExerciseDto, questions });
   }
 
   @Delete(':id')

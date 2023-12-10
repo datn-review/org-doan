@@ -10,8 +10,9 @@ import { Document } from 'langchain/document';
 import { CharacterTextSplitter } from 'langchain/text_splitter';
 import { HNSWLib } from 'langchain/vectorstores/hnswlib';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
-import { RetrievalQAChain, loadQARefineChain } from 'langchain/chains';
+import { RetrievalQAChain, VectorDBQAChain, loadQARefineChain } from 'langchain/chains';
 import { OpenAI } from 'langchain/llms/openai';
+import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 
 import * as nlp from 'compromise';
 import * as datePlugin from 'compromise-dates';
@@ -72,7 +73,8 @@ export const relations = [
     entity: 'province',
   },
 ];
-const OPENAI_API_KEY = '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';
+const OPENAI_API_KEY = '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';
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 nlp?.plugin(datePlugin);
@@ -84,6 +86,8 @@ export class ChatBotService
 {
   private readonly manager: NlpManager;
   private readonly model: any;
+  private vectorStore: any;
+  private inputDocs: any;
 
   constructor(
     @InjectRepository(ChatBot) repository: Repository<ChatBot>,
@@ -95,7 +99,12 @@ export class ChatBotService
       forceNER: true,
       languages: ['en', 'vi'],
     });
-    this.model = new OpenAI({ openAIApiKey: OPENAI_API_KEY, temperature: 0.9 });
+    this.model = new OpenAI({
+      openAIApiKey: OPENAI_API_KEY,
+      temperature: 0.9,
+      modelName: 'gpt-3.5-turbo',
+      maxTokens: 4000,
+    });
     // const container = containerBootstrap();
     // const builtin = new BuiltinCompromise({
     //   enable: [
@@ -147,19 +156,20 @@ export class ChatBotService
         value: RoleEnum.PESONAL_TUTOR,
       },
     ]);
-    console.log('data', data);
+    console.log('data', 'Pham Thanh Tam Sinh Nam 2001');
     const splitter = new CharacterTextSplitter({
       chunkSize: 1000,
+      chunkOverlap: 0,
     });
-    const docs = await splitter.createDocuments([JSON.stringify(data)]);
-
+    const docs = await splitter.createDocuments([JSON.stringify('Pham Thanh Tam Sinh Nam 2001')]);
+    this.inputDocs = docs;
     // STEP 4: Generate embeddings from documents
-    const vectorStore = await HNSWLib.fromDocuments(
+    this.vectorStore = await MemoryVectorStore.fromDocuments(
       docs,
       new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY }),
     );
 
-    await vectorStore.save('hnswlib');
+    // await vectorStore.save('data');
   }
 
   async handleUserRequest({
@@ -189,26 +199,31 @@ export class ChatBotService
       const intent = responseVI.intent || responseEN.intent;
       // console.log(responseVI, responseEN);
       console.log(JSON.stringify(responseVI));
+      // const llm = new OpenAI({ openAIApiKey: process.env.OPENAI_API_KEY });
 
-      const vectorStore = await HNSWLib.load(
-        'hnswlib',
-        new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY }),
-      );
+      // this.vectorStore = await HNSWLib.load(
+      //   'data',
+      //   new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY }),
+
+      // );
 
       // STEP 2: Create the chain
+      console.log(this.vectorStore);
       const chain = new RetrievalQAChain({
         combineDocumentsChain: loadQARefineChain(this.model),
-        retriever: vectorStore.asRetriever(),
+        retriever: this.vectorStore.asRetriever(),
       });
+      // const chain = VectorDBQAChain.fromLLM(this.model, this.vectorStore);
 
       // STEP 3: Get the answer
       const result = await chain.call({
+        input_document: this.inputDocs,
         query: userInput,
       });
-
+      console.log(result);
       // Process the responses or return them as needed
       return (
-        result.output_text ||
+        result?.output_text ||
         responseVI.answer ||
         responseEN.answer ||
         "I'm sorry, I didn't understand your request."
