@@ -13,9 +13,14 @@ import {
   TableAntd,
   Tabs,
   TabsProps,
+  Dropdown,
   Tag,
 } from '@org/ui';
-import { useLazyFindLessonQuery, useUpdateLessonMutation } from '@org/store';
+import {
+  useDeleteAssignmentMutation,
+  useLazyFindLessonQuery,
+  useUpdateLessonMutation,
+} from '@org/store';
 import { useTranslation } from '@org/i18n';
 import { Editor } from '@org/editor';
 import dayjs from 'dayjs';
@@ -30,9 +35,9 @@ import {
 } from '@org/utils';
 import { Link } from 'react-router-dom';
 import { Authorization } from '@org/auth';
-import { Dropdown } from './../../../../../../../../packages/ui/src/atomic/atoms/dropdown/index';
 import { If, Then } from 'react-if';
-
+import { useMessageHook } from '@org/core';
+import { ViewExercise } from '../../../../molecules';
 type Props = {
   close: () => void;
   id: number;
@@ -76,29 +81,6 @@ export const Event = ({ id, close }: Props) => {
         defaultActiveKey='1'
         items={items}
       />
-      {/*<Table*/}
-      {/*    tableInstance={tableInstance}*/}
-      {/*    totalPage={data?.totals}*/}
-      {/*    columns={columns}*/}
-      {/*    data={data}*/}
-      {/*    loading={isLoading}*/}
-      {/*/>*/}
-      {/*<Contants*/}
-      {/*    type={EnumTypeContact.PostSignature}*/}
-      {/*    data={contants}*/}
-      {/*    close={() => setIdContants(null)}*/}
-      {/*    refetch={() => {*/}
-      {/*        getUser(id);*/}
-      {/*    }}*/}
-      {/*/>*/}
-      {/*<Payment*/}
-      {/*    data={payment}*/}
-      {/*    close={() => setPayment(null)}*/}
-      {/*    refetch={() => {*/}
-      {/*        // getUser(id);*/}
-      {/*    }}*/}
-      {/*/>*/}
-      {/*<Space>Bai Tap</Space>*/}
     </ModalAntd>
   );
 };
@@ -152,6 +134,9 @@ export const LessonInfo = ({ data }: any) => {
 export const LessonAssigenment = ({ data, isCollap }: any) => {
   const [exerciseID, setExerciseID] = useState<any>(null);
   const { t } = useTranslation();
+  const [deleteUser] = useDeleteAssignmentMutation();
+  const { messageSuccess, messageError, contextHolder } = useMessageHook();
+
   const getStatus = (record: any) => {
     let status = EnumStatusAssignment.Active;
     if (dayjs(record.endTime).isBefore(dayjs())) {
@@ -248,7 +233,7 @@ export const LessonAssigenment = ({ data, isCollap }: any) => {
                       key: '1',
                       label: (
                         <Space
-                          onClick={() => setExerciseID(record)}
+                          onClick={() => setExerciseID(record?.exercise?.id)}
                           className={css`
                             color: #5c5b68 !important;
                           `}
@@ -263,7 +248,7 @@ export const LessonAssigenment = ({ data, isCollap }: any) => {
                       label: (
                         <Space>
                           <Link
-                            to={SiteMap.Assessment.Assignment.path}
+                            to={SiteMap.Assessment.Assignment.Edit.generate(record?.id, '10')}
                             className={css`
                               color: #5c5b68 !important;
                             `}
@@ -276,7 +261,24 @@ export const LessonAssigenment = ({ data, isCollap }: any) => {
                     },
                     {
                       key: '3',
-                      label: <Space onClick={() => console.log('Delete')}>{t('delete')}</Space>,
+                      label: (
+                        <Space
+                          onClick={() =>
+                            deleteUser(record.id)
+                              .then((data) => {
+                                messageSuccess(t('user.delete.success'));
+                              })
+                              .catch((error) => {
+                                messageError(t('user.delete.error'));
+                              })
+                              .finally(() => {
+                                // setIsFetch(true);
+                              })
+                          }
+                        >
+                          {t('remove')}
+                        </Space>
+                      ),
                       isShow: status === EnumStatusAssignment.Pending,
                     },
                     {
@@ -335,6 +337,7 @@ export const LessonAssigenment = ({ data, isCollap }: any) => {
 
   return (
     <Space>
+      {contextHolder}
       <Space
         className={css`
           display: flex;
@@ -352,6 +355,12 @@ export const LessonAssigenment = ({ data, isCollap }: any) => {
         columns={columns}
         dataSource={isCollap ? data : data?.assignments || []}
       />
+      {exerciseID && (
+        <ViewExercise
+          id={exerciseID}
+          close={() => setExerciseID(null)}
+        />
+      )}
     </Space>
   );
 };
