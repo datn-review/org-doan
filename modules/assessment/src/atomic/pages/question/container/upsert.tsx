@@ -6,6 +6,7 @@ import {
   SelectSubject,
   useCRUDContext,
   useMessageHook,
+  useUnmount,
 } from '@org/core';
 import { i18next, Translation, useTranslation } from '@org/i18n';
 import {
@@ -62,7 +63,7 @@ const typeQuestions = [
     label: <Translation>{(t) => t('assessment.type.radio')}</Translation>,
   },
 ];
-const levelQuestions = [
+export const levelQuestions = [
   {
     value: LevelEnum.Low,
     label: <Translation>{(t) => t('assessment.type.low')}</Translation>,
@@ -76,6 +77,9 @@ const levelQuestions = [
     label: <Translation>{(t) => t('assessment.type.pro')}</Translation>,
   },
 ];
+export const levelQuestionsObject = levelQuestions?.reduce((acc: any, question: any) => {
+  return { ...acc, [question?.value]: question.label };
+}, {});
 
 type Status = {
   id: string;
@@ -86,6 +90,9 @@ type IUpdate = {
   status?: number;
   type?: TypeQuestionEnum;
   level?: LevelEnum;
+  score?: number;
+  gradeLevel?: number | undefined;
+  subject?: number | undefined;
 };
 
 const schema = (idEdit: number) =>
@@ -99,6 +106,9 @@ const dataInit: IUpdate = {
   status: 1,
   type: TypeQuestionEnum.Radio,
   level: LevelEnum.Low,
+  gradeLevel: undefined,
+  subject: undefined,
+  score: 0.25,
 };
 type OptionRecord = Record<number, any>;
 
@@ -122,7 +132,9 @@ export function Upsert() {
   const [getData, { isLoading: isLoadingGet }] = useLazyFindQuestionQuery();
 
   const [updateUser, { isLoading: isLoadingUpdate }] = useUpdateQuestionMutation();
-
+  useUnmount(() => {
+    setDataUpsert({});
+  });
   useEffect(() => {
     if (idEdit) {
       getData({ id: idEdit })
@@ -134,7 +146,9 @@ export function Upsert() {
   }, [idEdit]);
   const handleSave = async (formData: any) => {
     console.log(formData);
-    const option = Object.entries(options).map(([_, value]) => value);
+    const option = idEdit
+      ? Object.entries(options).map(([id, value]) => ({ id: Number(id), ...value }))
+      : Object.entries(options).map(([_, value]) => value);
     const body = { ...formData, options: option };
     if (idEdit) {
       updateUser({ body: body, id: idEdit })
@@ -167,7 +181,15 @@ export function Upsert() {
       Object.entries(dataInit).forEach(([name, value]) => {
         const recordName = name as TypeName;
 
-        const recordData = (dataUpsert as IUpdate)?.[name as TypeName];
+        const recordData = (dataUpsert as IUpdate)?.[name as TypeName] as unknown as any;
+        if (name == 'gradeLevel') {
+          methods.setValue(recordName, recordData?.id);
+          return;
+        }
+        if (name == 'subject') {
+          methods.setValue(recordName, recordData?.id);
+          return;
+        }
 
         if (name == 'status') {
           methods.setValue(recordName, (recordData as unknown as Status)?.id);
@@ -176,6 +198,12 @@ export function Upsert() {
 
         methods.setValue(recordName, recordData || '');
       });
+
+      const optionsData = dataUpsert?.options.reduce(
+        (a: any, v: any) => ({ ...a, [v?.id]: { content: v?.content, isCorrect: v.isCorrect } }),
+        {},
+      );
+      setOptions({ ...optionsData });
     }
   }, [JSON.stringify(dataUpsert)]);
 
@@ -228,7 +256,7 @@ export function Upsert() {
                 >
                   <Input
                     name='content'
-                    label={t('question')}
+                    label={t('question.content')}
                     value={item.content}
                     onChange={(value) =>
                       setOptions((prevState) => ({

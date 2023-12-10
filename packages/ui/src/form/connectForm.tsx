@@ -73,7 +73,7 @@ export const withForm = <T extends IProps>(WrappedComponent: React.ComponentType
                   bottom: 1rem;
                 `}
               >
-                {errors?.[name] && String(errors[name]?.message)}
+                {errors?.[name] && String(errors?.[name]?.message)}
               </div>
             </Space>
           );

@@ -71,11 +71,11 @@
   "class.new" : "Lớp Mới",
   "manage.name" : "Quản Lí Cá Nhân",
   "manage.registration" : "Yêu Cầu Nhận Lớp",
-  "manage.posts.me" : "Danh Sách Bài Đăng",
+  "manage.posts.me" : "Bài Đăng",
   "manage.classes" : "Danh Sách Lớp Học",
 
 
-  "registration" : "Đăng Ký Yêu Cầu",
+  "registration" : "Yêu Cầu Nhận Lớp",
   "filter": "Lọc",
 
 
@@ -154,7 +154,7 @@
     "name": "Bài Tập",
     "exercise": "Bộ Đề",
     "questions": "Câu Hỏi",
-    "assignment": "Phân Công Bài Tập",
+    "assignment": "Bài Tập Đã Giao",
     "score": "Điểm",
     "option": "Lựa Chọn"
   },
@@ -280,23 +280,27 @@
    "file":"Tệp",
    "publish":"Công Khai",
    "saved.succes":"Lưu Thành Công",
-   "saved.error":"Lưu Thất Bại"
+   "saved.error":"Lưu Thất Bại",
+   "settings.question":"Danh Sách Câu Hỏi",
+   "exercise.public":"Công Khai",
+   "exercise.me":"Cá Nhân",
+   "select.please":"Vui lòng chọn...",
 
-  
-
-
-
-
-
-
-
-
-  
-
-
-
-  
-
+   "assessment.type.radio":"Radio",
+   "assessment.type.checkbox":"Checkbox",
+   "assessment.type":"Loại Câu Hỏi",
+   "assessment.level":"Độ Khó",
+   "assessment.type.low":"Dễ",
+   "assessment.type.medium":"Trung Bình",
+   "assessment.type.pro":"Khó",
+   "edit.title":"Chỉnh Sửa",
+   "add.title":"Thêm Mới",
+   "question.content":"Nội Dung Câu Hỏi",
+   "assignment.time.startEnd":"Thời Gian",
+    "exercise.details":"Bài Tập",
+    "assignment.active":"Đang Làm Bài",
+    "assignment.pending":"Đang Chờ",
+    "complete":"Đã Hoàn Thành"
 }
 
 

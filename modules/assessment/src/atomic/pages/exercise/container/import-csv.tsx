@@ -27,7 +27,7 @@ const dataInit: any = {
   subject: undefined,
 };
 
-export function ImportCSV({ close }: any) {
+export function ImportCSV({ close, refresh }: any) {
   const { messageError, messageSuccess, contextHolder } = useMessageHook();
   const { t } = useTranslation();
   const [createExerciseCustoms] = useCreateExerciseCustomsMutation();
@@ -41,9 +41,12 @@ export function ImportCSV({ close }: any) {
     createExerciseCustoms(value)
       .then(() => {
         messageSuccess(t('saved.succes'));
+
+        refresh();
       })
       .catch(() => {
         messageError(t('saved.error'));
+        refresh();
       });
   };
 
@@ -114,7 +117,7 @@ export function ImportCSV({ close }: any) {
             </Col>
             <Col span={12}>
               <CheckBoxForm
-                name={'isPulish'}
+                name={'isPublish'}
                 labelCB={t('publish')}
               />
             </Col>

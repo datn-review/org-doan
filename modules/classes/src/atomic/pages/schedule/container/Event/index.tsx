@@ -1,15 +1,43 @@
 // @flow
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { Button, Col, ModalAntd, Row, SIZE, Space, TableAntd, Tabs, TabsProps, Tag } from '@org/ui';
-import { useLazyFindLessonQuery, useUpdateLessonMutation } from '@org/store';
+import {
+  BoxCenter,
+  Button,
+  Col,
+  EllipsisOutlined,
+  ModalAntd,
+  Row,
+  SIZE,
+  Space,
+  TableAntd,
+  Tabs,
+  TabsProps,
+  Dropdown,
+  Tag,
+} from '@org/ui';
+import {
+  useDeleteAssignmentMutation,
+  useLazyFindLessonQuery,
+  useUpdateLessonMutation,
+} from '@org/store';
 import { useTranslation } from '@org/i18n';
 import { Editor } from '@org/editor';
 import dayjs from 'dayjs';
 import { css } from '@emotion/css';
-import { SiteMap } from '@org/utils';
+import {
+  EnumStatusAssignment,
+  EnumStatusAssignmentColor,
+  EnumStatusCollap,
+  RolesEnum,
+  SiteMap,
+  TypeRolesEnum,
+} from '@org/utils';
 import { Link } from 'react-router-dom';
-
+import { Authorization } from '@org/auth';
+import { If, Then } from 'react-if';
+import { useMessageHook } from '@org/core';
+import { ViewExercise } from '../../../../molecules';
 type Props = {
   close: () => void;
   id: number;
@@ -53,29 +81,6 @@ export const Event = ({ id, close }: Props) => {
         defaultActiveKey='1'
         items={items}
       />
-      {/*<Table*/}
-      {/*    tableInstance={tableInstance}*/}
-      {/*    totalPage={data?.totals}*/}
-      {/*    columns={columns}*/}
-      {/*    data={data}*/}
-      {/*    loading={isLoading}*/}
-      {/*/>*/}
-      {/*<Contants*/}
-      {/*    type={EnumTypeContact.PostSignature}*/}
-      {/*    data={contants}*/}
-      {/*    close={() => setIdContants(null)}*/}
-      {/*    refetch={() => {*/}
-      {/*        getUser(id);*/}
-      {/*    }}*/}
-      {/*/>*/}
-      {/*<Payment*/}
-      {/*    data={payment}*/}
-      {/*    close={() => setPayment(null)}*/}
-      {/*    refetch={() => {*/}
-      {/*        // getUser(id);*/}
-      {/*    }}*/}
-      {/*/>*/}
-      {/*<Space>Bai Tap</Space>*/}
     </ModalAntd>
   );
 };
@@ -127,33 +132,43 @@ export const LessonInfo = ({ data }: any) => {
 };
 
 export const LessonAssigenment = ({ data, isCollap }: any) => {
+  const [exerciseID, setExerciseID] = useState<any>(null);
   const { t } = useTranslation();
+  const [deleteUser] = useDeleteAssignmentMutation();
+  const { messageSuccess, messageError, contextHolder } = useMessageHook();
 
   const getStatus = (record: any) => {
-    switch (record?.status) {
-      case 2:
-        return t('assignment.success');
-      case 1:
-        if (dayjs(record.endTime).isBefore(dayjs())) {
-          return t('expired');
-        } else {
-          return t('active');
-        }
+    let status = EnumStatusAssignment.Active;
+    if (dayjs(record.endTime).isBefore(dayjs())) {
+      status = EnumStatusAssignment.Expired;
+    }
+    if (dayjs(record.startTime).isAfter(dayjs())) {
+      status = EnumStatusAssignment.Pending;
+    }
+    if (record?.status === EnumStatusAssignment.Complete) {
+      status = EnumStatusAssignment.Complete;
+    }
+    return status;
+  };
+  const getStatusName = (record: any) => {
+    let status = getStatus(record);
+
+    switch (status) {
+      case EnumStatusAssignment.Active:
+        return t('assignment.active');
+      case EnumStatusAssignment.Pending:
+        return t('assignment.pending');
+      case EnumStatusAssignment.Expired:
+        return t('expired');
+      case EnumStatusAssignment.Complete:
+        return t('complete');
     }
   };
   const getStatusColor = (record: any) => {
-    switch (record?.status) {
-      case 2:
-        return 'success';
-      case 1:
-        if (dayjs(record.endTime).isBefore(dayjs())) {
-          return 'error';
-        } else {
-          return 'success';
-        }
-    }
+    let status = getStatus(record);
+    return EnumStatusAssignmentColor?.[status] || 'error';
   };
-  const columns = [
+  const columns: any[] = [
     {
       key: 'title ',
       title: t('assignment.name'),
@@ -185,40 +200,144 @@ export const LessonAssigenment = ({ data, isCollap }: any) => {
       dataIndex: 'status',
       key: 'status',
       render: (_: any, record: any) => (
-        <Tag color={getStatusColor(record)}>{getStatus(record)}</Tag>
+        <Tag color={getStatusColor(record)}>{getStatusName(record)}</Tag>
       ),
     },
 
     {
       title: t('user.action'),
       dataIndex: '',
-      render: (_: any, record: any) => (
-        <Space
-          className={css`
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-          `}
-        >
-          {record?.status === 2 ? (
-            <Link to={SiteMap.Assessment.Assignment.Review.generate(record.id)}>
-              <Button $size={SIZE.ExtraSmall}>{t('result')}</Button>
-            </Link>
-          ) : dayjs(record.endTime).isBefore(dayjs()) ? (
-            <Button $size={SIZE.ExtraSmall}>{t('expired')}</Button>
-          ) : (
-            <Link to={SiteMap.Assessment.Assignment.Do.generate(record.id)}>
-              <Button $size={SIZE.ExtraSmall}>{t('do')}</Button>
-            </Link>
-          )}
-        </Space>
-      ),
+      align: 'center',
+      render: (_: any, record: any) => {
+        const status = getStatus(record);
+        return (
+          <BoxCenter>
+            <Authorization
+              type={TypeRolesEnum.IF_ANY_GRANTED}
+              roles={[RolesEnum.PESONAL_TUTOR]}
+            >
+              <Dropdown
+                className={css`
+                  cursor: pointer;
+
+                  * {
+                    font-size: 14px;
+                  }
+                `}
+                overlayClassName={css`
+                  width: 20rem;
+                `}
+                menu={{
+                  items: [
+                    {
+                      key: '1',
+                      label: (
+                        <Space
+                          onClick={() => setExerciseID(record?.exercise?.id)}
+                          className={css`
+                            color: #5c5b68 !important;
+                          `}
+                        >
+                          {t('exercise.details')}
+                        </Space>
+                      ),
+                      isShow: true,
+                    },
+                    {
+                      key: '2',
+                      label: (
+                        <Space>
+                          <Link
+                            to={SiteMap.Assessment.Assignment.Edit.generate(record?.id, '10')}
+                            className={css`
+                              color: #5c5b68 !important;
+                            `}
+                          >
+                            {t('edit')}
+                          </Link>
+                        </Space>
+                      ),
+                      isShow: status === EnumStatusAssignment.Pending,
+                    },
+                    {
+                      key: '3',
+                      label: (
+                        <Space
+                          onClick={() =>
+                            deleteUser(record.id)
+                              .then((data) => {
+                                messageSuccess(t('user.delete.success'));
+                              })
+                              .catch((error) => {
+                                messageError(t('user.delete.error'));
+                              })
+                              .finally(() => {
+                                // setIsFetch(true);
+                              })
+                          }
+                        >
+                          {t('remove')}
+                        </Space>
+                      ),
+                      isShow: status === EnumStatusAssignment.Pending,
+                    },
+                    {
+                      key: '4',
+                      label: (
+                        <Link
+                          to={SiteMap.Assessment.Assignment.Review.generate(record.id)}
+                          className={css`
+                            color: #5c5b68 !important;
+                          `}
+                        >
+                          {t('result')}
+                        </Link>
+                      ),
+                      isShow: status === EnumStatusAssignment.Complete,
+                    },
+                  ].filter(({ isShow }) => isShow) as any[],
+                }}
+                trigger={['click']}
+                placement='bottomLeft'
+                // arrow={{ pointAtCenter: true }}
+              >
+                <EllipsisOutlined
+                  className={css`
+                    transform: scale(1.6);
+                    display: flex;
+                    justify-content: center;
+                  `}
+                />
+              </Dropdown>
+            </Authorization>
+
+            <Authorization
+              type={TypeRolesEnum.IF_ANY_GRANTED}
+              roles={[RolesEnum.STUDENT, RolesEnum.PARENT]}
+            >
+              {status === EnumStatusAssignment.Complete && (
+                <Link to={SiteMap.Assessment.Assignment.Review.generate(record.id)}>
+                  <Button $size={SIZE.ExtraSmall}>{t('result')}</Button>
+                </Link>
+              )}
+              {status === EnumStatusAssignment.Expired && (
+                <Button $size={SIZE.ExtraSmall}>{t('expired')}</Button>
+              )}
+              {status === EnumStatusAssignment.Active && (
+                <Link to={SiteMap.Assessment.Assignment.Do.generate(record.id)}>
+                  <Button $size={SIZE.ExtraSmall}>{t('do')}</Button>
+                </Link>
+              )}
+            </Authorization>
+          </BoxCenter>
+        );
+      },
     },
   ];
 
   return (
     <Space>
+      {contextHolder}
       <Space
         className={css`
           display: flex;
@@ -236,6 +355,12 @@ export const LessonAssigenment = ({ data, isCollap }: any) => {
         columns={columns}
         dataSource={isCollap ? data : data?.assignments || []}
       />
+      {exerciseID && (
+        <ViewExercise
+          id={exerciseID}
+          close={() => setExerciseID(null)}
+        />
+      )}
     </Space>
   );
 };

@@ -15,6 +15,7 @@ export class AssignmentService extends BaseService<Assignment, Repository<Assign
     return this.repository
       .createQueryBuilder('assignment')
       .leftJoinAndSelect('assignment.lesson', 'lesson')
+      .leftJoinAndSelect('assignment.exercise', 'exercise')
       .leftJoinAndSelect('lesson.collaboration', 'collaboration')
       .where('collaboration.id = :userId', { userId })
       .getMany();

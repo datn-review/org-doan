@@ -1,5 +1,6 @@
 import {
   BillingIcon,
+  IconAssessment,
   IconBook,
   IconClasses,
   IconClassesName,
@@ -207,8 +208,8 @@ export const menuCategory = (): MenuItem[] => {
       name: <Translation>{(t) => t('assessment.name')}</Translation>,
       path: '',
       id: SiteMap.Manage.menu,
-      icon: <IconUser />,
-      isShow: ifAnyGranted([RolesEnum.WEB_ADMIN]),
+      icon: <IconAssessment />,
+      isShow: ifAnyGranted([RolesEnum.WEB_ADMIN, RolesEnum.PESONAL_TUTOR]),
       subMenu: [
         {
           label: <Translation>{(t) => t('assessment.exercise')}</Translation>,
@@ -224,13 +225,13 @@ export const menuCategory = (): MenuItem[] => {
           key: SiteMap.Assessment.Questions.menu,
           icon: <></>,
         },
-        {
-          label: <Translation>{(t) => t('assessment.assignment')}</Translation>,
-          path: SiteMap.Assessment.Assignment.path,
-          id: SiteMap.Assessment.Assignment.menu,
-          key: SiteMap.Assessment.Assignment.menu,
-          icon: <></>,
-        },
+        // {
+        //   label: <Translation>{(t) => t('assessment.assignment')}</Translation>,
+        //   path: SiteMap.Assessment.Assignment.path,
+        //   id: SiteMap.Assessment.Assignment.menu,
+        //   key: SiteMap.Assessment.Assignment.menu,
+        //   icon: <></>,
+        // },
       ],
     },
   ].filter((item) => item.isShow);
@@ -268,7 +269,7 @@ export const menuPerson: IMenuIcon[] = [
     ),
     path: SiteMap.Manage.Classes.path,
     key: SiteMap.Manage.Classes.menu,
-    icon: <IconClasses />,
+    icon: <IconClassesName />,
     isShow: ifAnyGranted(SiteMap.Manage.Classes.roles),
   },
   {

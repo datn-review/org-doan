@@ -11,6 +11,8 @@ import {
   Post,
   Put,
   Query,
+  Request,
+  SerializeOptions,
   UseGuards,
 } from '@nestjs/common';
 
@@ -29,6 +31,7 @@ import { QuestionService } from './question.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import { OptionService } from '../option/option.service';
 import { IWhere } from 'src/core/base.service';
+import { differenceBy, differenceWith, isEmpty } from 'lodash';
 
 const relations = [
   {
@@ -68,8 +71,8 @@ export class QuestionController {
       status: createQuestionDto.status,
       level: createQuestionDto.status,
       score: createQuestionDto.score,
-      gradeLevel: createQuestionDto.gradeLevel,
-      subject: createQuestionDto.subject,
+      gradeLevelId: createQuestionDto.gradeLevel,
+      subjectId: createQuestionDto.subject,
     });
     const questionId = (question as unknown as Question)?.id;
 
@@ -93,6 +96,9 @@ export class QuestionController {
   @ApiQuery({ name: 'fieldSearch', required: false })
   @ApiQuery({ name: 'gradeLevel', required: false })
   @ApiQuery({ name: 'subject', required: false })
+  @SerializeOptions({
+    groups: ['tutor'],
+  })
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number,
@@ -103,18 +109,32 @@ export class QuestionController {
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
     @Query('gradeLevel', new DefaultValuePipe(0)) gradeLevel: number,
     @Query('subject', new DefaultValuePipe(0)) subject: number,
+    @Query('author', new DefaultValuePipe(0)) author: number,
+    @Query('level', new DefaultValuePipe(0)) level: number,
+
+    @Request() request: any,
   ): Promise<InfinityPaginationResultType<Question>> {
     if (limit > 50) {
       limit = 1000;
     }
+    const userId = request?.user?.id;
+
     let where: IWhere[] = [];
+    if (author === 0) {
+      where = [...where, { field: 'isPublish', value: true }];
+    }
+    if (author === 1) {
+      where = [...where, { field: 'author', value: userId }];
+    }
     if (subject) {
       where = [...where, { field: 'subject', value: subject }];
     }
     if (gradeLevel) {
       where = [...where, { field: 'gradeLevelId', value: gradeLevel }];
     }
-
+    if (level) {
+      where = [...where, { field: 'level', value: level }];
+    }
     return await this.questionService.findManyWithPagination({
       page,
       limit,
@@ -133,7 +153,9 @@ export class QuestionController {
   getActive(): Promise<Question[]> {
     return this.questionService.findManyActive(StatusEnum['active']);
   }
-
+  @SerializeOptions({
+    groups: ['tutor'],
+  })
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string): Promise<NullableType<Question>> {
@@ -142,11 +164,62 @@ export class QuestionController {
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  update(
+  async update(
     @Param('id') id: number,
-    @Body() updateQuestionDto: UpdateQuestionDto,
-  ): Promise<Question[]> {
-    return this.questionService.update(id, updateQuestionDto);
+    @Body() updateQuestionDto: any,
+  ): Promise<Question[] | null> {
+    const optionsUpdate: any = updateQuestionDto?.options?.map((item) => ({
+      optionId: Number(item?.id),
+      content: item.content,
+      isCorrect: item.isCorrect,
+    }));
+    if (optionsUpdate) {
+      const options = await this.optionService.findMany({ questionId: id });
+
+      if (options) {
+        const newRow = differenceWith(optionsUpdate, options, (source: any, compare) => {
+          return (
+            source?.content === compare.content &&
+            source?.isCorrect === compare.isCorrect &&
+            source?.optionId === compare.id
+          );
+        }).map(({ isCorrect, content }) => ({
+          isCorrect,
+          content,
+          question: id,
+        }));
+
+        const deleteRow = differenceWith(options, optionsUpdate, (source: any, compare: any) => {
+          return (
+            source?.content === compare?.content &&
+            source?.isCorrect === compare?.isCorrect &&
+            source?.id === compare?.optionId
+          );
+        }).map((item) => item?.id);
+
+        !isEmpty(newRow) && void this.optionService.createMany(newRow);
+        !isEmpty(deleteRow) &&
+          deleteRow.forEach((id) => {
+            void this.optionService.softDelete(id);
+          });
+      }
+    }
+    console.log(
+      '🚀 ~ file: question.controller.ts:213 ~ QuestionController ~ question.updateQuestionDto:',
+      updateQuestionDto,
+    );
+
+    const question = {
+      content: updateQuestionDto.content,
+      type: updateQuestionDto.type,
+      status: updateQuestionDto.status,
+      level: updateQuestionDto.status,
+      score: updateQuestionDto.score,
+      gradeLevelId: updateQuestionDto.gradeLevel,
+      subjectId: updateQuestionDto.subject,
+    };
+    // return null;
+    return await this.questionService.update(id, question);
   }
 
   @Delete(':id')

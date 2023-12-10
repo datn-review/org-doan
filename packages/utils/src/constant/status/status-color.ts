@@ -38,6 +38,19 @@ export enum EnumStatusCollap {
   Collaboration = 5,
   Completed = 6,
 }
+export enum EnumStatusAssignment {
+  Pending = 1,
+  Complete = 2,
+  Expired = 3,
+  Active = 4,
+}
+
+export const EnumStatusAssignmentColor = {
+  [2]: 'success',
+  [1]: 'processing',
+  [3]: 'error',
+  [4]: 'success',
+};
 
 export const StatusRegistrationColor = {
   [5]: 'success',

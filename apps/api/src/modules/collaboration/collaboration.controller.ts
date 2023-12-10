@@ -262,11 +262,12 @@ export class CollaborationController {
     @Query('status', new DefaultValuePipe(0), ParseIntPipe) status: number,
     @Query('fieldSearch', new DefaultValuePipe('')) fieldSearch: string | string[],
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
+    @Request() req: any,
   ): Promise<InfinityPaginationResultType<Collaboration>> {
     if (limit > 50) {
       limit = 1000;
     }
-
+    const userId = req?.user?.id;
     return await this.collaborationService.findManyWithPagination({
       page,
       limit,
@@ -276,6 +277,12 @@ export class CollaborationController {
       searchName,
       fieldSearch,
       relations,
+      where: [
+        {
+          field: 'userId',
+          value: userId,
+        },
+      ],
     });
   }
   @Put('/poster-confirm/:id')

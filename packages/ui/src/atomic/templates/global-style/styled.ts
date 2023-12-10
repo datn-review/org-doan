@@ -1,5 +1,6 @@
 import styled from '@emotion/styled/macro';
 import {
+  COLOR,
   HEADLINES,
   TEXTS,
   mediaDesktop,
@@ -21,13 +22,11 @@ export const Wrapper = styled.div`
     font-weight: ${HEADLINES.H2.FontWeight};
     line-height: ${HEADLINES.H2.LineHeight};
 
-
     ${mediaTablet} {
       font-size: ${HEADLINES.H2_SM.FontSize};
       font-weight: ${HEADLINES.H2_SM.FontWeight};
       line-height: ${HEADLINES.H2_SM.LineHeight};
     }
-  
   }
   h3,
   .H3 {
@@ -111,7 +110,7 @@ export const Wrapper = styled.div`
       padding: 1rem;
     }
     ${mediaPhone} {
-      padding:.5rem;
+      padding: 0.5rem;
     }
   }
   .section-layout {
@@ -186,5 +185,15 @@ export const Wrapper = styled.div`
   }
   .scroll-customer::-webkit-scrollbar-thumb:hover {
     background: #9b9b9b;
+  }
+  .fc-header-toolbar {
+    .fc-button-primary {
+      background-color: ${COLOR.Secondary};
+      border-color: ${COLOR.White};
+    }
+    .fc-button-active {
+      background-color: ${COLOR.Primary} !important;
+      border-color: ${COLOR.White} !important;
+    }
   }
 `;
