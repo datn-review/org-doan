@@ -2,8 +2,8 @@ version: '3'
 services:
   web:
     build:
-      context: ./apps/web
-      dockerfile: Dockerfile.prod
+      context: .
+      dockerfile: apps/web/Dockerfile.prod
     ports:
       - '1111:1111'
     volumes:
@@ -16,8 +16,8 @@ services:
 
   api:
     build:
-      dockerfile: Dockerfile.prod
-      context: ./apps/api
+      dockerfile: apps/api/Dockerfile.prod
+      context: .
     ports:
       - '2222:2222'
     volumes:
