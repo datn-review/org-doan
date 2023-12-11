@@ -39,6 +39,6 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
 
-  volumes:
-    db:
-      driver: local
+volumes:
+  db:
+    driver: local
