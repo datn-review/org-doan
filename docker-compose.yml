@@ -24,7 +24,7 @@ services:
       - /app/node_modules
       - ./server:/app
     env_file:
-      - .apps/api/.env
+      - ./apps/api/.env
     environment:
       - NODE_ENV=production
 
