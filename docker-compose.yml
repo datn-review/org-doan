@@ -3,7 +3,7 @@ services:
   web:
     build:
       context: ./apps/web
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     ports:
       - '1111:1111'
     volumes:
@@ -27,3 +27,18 @@ services:
       - .apps/api/.env
     environment:
       - NODE_ENV=production
+
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=tampham
+      - POSTGRES_PASSWORD=05122001
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  volumes:
+    db:
+      driver: local
