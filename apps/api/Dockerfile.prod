@@ -4,6 +4,6 @@ WORKDIR /app
 COPY ../../ ./
 RUN npm i -g pnpm@8.7.4 
 RUN pnpm i
-RUN nx run api:build
+RUN npx nx run api:build
 
 CMD ["npm", "run", "/apps/api/dist/main.js"]
