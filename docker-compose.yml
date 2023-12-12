@@ -16,15 +16,15 @@ services:
 
   api:
     build:
-      dockerfile: apps/api/Dockerfile.prod
       context: .
+      dockerfile: apps/api/Dockerfile.prod
     ports:
       - '2222:2222'
     volumes:
       - /app/node_modules
       - ./server:/app
     env_file:
-      - ./apps/api/.env
+      - ./apps/api/.env.prod
     environment:
       - NODE_ENV=production
 
