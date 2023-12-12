@@ -5,6 +5,7 @@ COPY ../../package.json .
 COPY ../../ ./
 RUN npm i -g pnpm@8.7.4 
 RUN pnpm i
+ENV NODE_ENV=production
 RUN npx nx run api:build:prod
 
 RUN npx nx run api:start:prod
