@@ -20,6 +20,8 @@ import ScheduleApp from '../schedule/schedule.app';
 import { TagsList } from '@org/core';
 import styled from '@emotion/styled/macro';
 import { FeeInfomation } from './../../molecules/fee';
+import { Feedback } from './../../molecules/feedback';
+
 import { AssignmentCollap } from './../../molecules/assignment';
 
 const contentStyle: React.CSSProperties = {
@@ -76,7 +78,7 @@ function ClassesDetails() {
     {
       key: '5',
       label: t('class.Feedback'),
-      children: 'Content of Tab Pane 3',
+      children: <Feedback data={data} />,
     },
   ];
   return (

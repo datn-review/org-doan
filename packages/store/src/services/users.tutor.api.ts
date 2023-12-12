@@ -9,6 +9,13 @@ export const UserTutorAPI = baseAuthSplitApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getUserTutorActive: builder.query({
+      query: (params) => ({
+        url: '/users/tutor/active',
+        params: params,
+        method: 'GET',
+      }),
+    }),
     createUserTutor: builder.mutation({
       query: (body) => ({
         url: '/users/tutor',
@@ -45,4 +52,5 @@ export const {
   useCreateUserTutorMutation,
   useDeleteUserTutorMutation,
   useLazyFindUserTutorQuery,
+  useGetUserTutorActiveQuery,
 } = UserTutorAPI;

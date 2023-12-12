@@ -19,3 +19,4 @@ export * from './cascader-panel';
 export * from './time-availability';
 export * from './layout';
 export * from './calendar';
+export * from './rate';

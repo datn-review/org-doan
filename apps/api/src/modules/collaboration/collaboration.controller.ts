@@ -101,6 +101,10 @@ const relations = [
     entity: 'lesson',
   },
   {
+    field: 'feedback',
+    entity: 'feedback',
+  },
+  {
     field: 'schedules',
     entity: 'schedule',
   },
