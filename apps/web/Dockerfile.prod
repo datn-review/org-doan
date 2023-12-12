@@ -4,7 +4,7 @@ WORKDIR /app
 COPY ../../ ./
 RUN npm i -g pnpm@8.7.4 
 RUN pnpm i
-RUN npx nx run web:build
+RUN npx nx run web:build:prod
 
 FROM nginx
 EXPOSE 1111
