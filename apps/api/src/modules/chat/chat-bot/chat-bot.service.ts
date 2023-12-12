@@ -73,7 +73,7 @@ export const relations = [
     entity: 'province',
   },
 ];
-const OPENAI_API_KEY = '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';
+const OPENAI_API_KEY = process.env.KEY_OPEN_AI
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
