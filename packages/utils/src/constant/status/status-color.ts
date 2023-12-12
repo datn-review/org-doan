@@ -18,7 +18,7 @@ export const StatusRegistration = {
   [3]: 'pending_signature',
   [4]: 'pending_pay',
   [5]: 'collaboration',
-  [6]: 'success',
+  [6]: 'classes.success',
 };
 
 export enum EnumStatusRegistration {

@@ -300,8 +300,18 @@
     "exercise.details":"Bài Tập",
     "assignment.active":"Đang Làm Bài",
     "assignment.pending":"Đang Chờ",
-    "complete":"Đã Hoàn Thành"
-    
+    "complete":"Đã Hoàn Thành",
+    "classes.success":"Đã Hoàn Thành",
+    "overallRating": "Điểm đánh giá tổng thể cho toàn bộ khóa học.",
+    "interactionRating": "Điểm đánh giá về tương tác giữa giáo viên và học viên.",
+    "qualityRatting": " Điểm đánh giá về chất lượng giảng dạy.",
+    "contentRatting": "Điểm đánh giá về nội dung",
+    "presentationRating": "Điểm đánh giá về cách thức trình bày thông tin",
+    "comment":"Bình Luận",
+    "tutor.dateofbirth":"Ngày Sinh",
+    "tutor.bio":"Bio",
+    "tutor.quatity.class":"Lớp Đã Dạy",
+    "tutor.rating":"Đánh Giá"
 }
 
 

@@ -58,7 +58,7 @@ import { AssignmentModule } from './modules/assessment/assignment/assignment.mod
 import { ChatBotModule } from './modules/chat/chat-bot/chat-bot.module';
 import { ChatModule } from './modules/chat/chat-message/chat.module';
 import { RoomModule } from './modules/chat/room/room.module';
-
+import { FeedbackModule } from './modules/feedback/feedback.module';
 export const envFilePath = process.env.NODE_ENV === 'production' ? `.env.prod` : `.env`;
 
 console.log('🚀 ~ file: app.module.ts:64 ~  process.env.NODE_ENV:', process.env.NODE_ENV);
@@ -146,6 +146,7 @@ console.log('🚀 ~ file: app.module.ts:64 ~ envFilePath:', envFilePath);
     ChatBotModule,
     ChatModule,
     RoomModule,
+    FeedbackModule,
   ],
 })
 export class AppModule {}

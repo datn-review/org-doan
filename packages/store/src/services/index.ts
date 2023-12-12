@@ -23,3 +23,4 @@ export * from './question.api';
 export * from './assignment.api';
 export * from './chat.api';
 export * from './room.api';
+export * from './feedback.api';

@@ -91,8 +91,6 @@ export const relations = [
 ];
 @ApiBearerAuth()
 @ApiTags('User Tutor')
-@Roles(RoleEnum.WEB_ADMIN)
-@Roles(RoleEnum.WEB_STAFF)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'users/tutor',
@@ -109,7 +107,8 @@ export class UsersTutorController {
 
     private readonly filesService: FilesService,
   ) {}
-
+  @Roles(RoleEnum.WEB_ADMIN)
+  @Roles(RoleEnum.WEB_STAFF)
   @SerializeOptions({
     groups: ['admin'],
   })
@@ -169,7 +168,8 @@ export class UsersTutorController {
 
     return user;
   }
-
+  @Roles(RoleEnum.WEB_ADMIN)
+  @Roles(RoleEnum.WEB_STAFF)
   @SerializeOptions({
     groups: ['admin'],
   })
@@ -206,7 +206,41 @@ export class UsersTutorController {
       relations,
     });
   }
+  @Roles()
+  @Get('/active')
+  @HttpCode(HttpStatus.OK)
+  async findAllActive(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(50), ParseIntPipe) limit: number,
+    @Query('searchName', new DefaultValuePipe('')) searchName: string,
+    @Query('sortBy', new DefaultValuePipe('lastName')) sortBy: string,
+    @Query('sortDirection', new DefaultValuePipe('ASC')) sortDirection: string,
+    @Query('fieldSearch', new DefaultValuePipe(['lastName', 'firstName']))
+    fieldSearch: string | string[],
+  ): Promise<InfinityPaginationResultType<User>> {
+    if (limit > 50) {
+      limit = 50;
+    }
 
+    return await this.usersService.findManyWithPagination({
+      page,
+      limit,
+      sortBy,
+      sortDirection,
+      status: 1,
+      searchName,
+      fieldSearch,
+      where: [
+        {
+          field: 'role',
+          value: RoleEnum.PESONAL_TUTOR,
+        },
+      ],
+      relations,
+    });
+  }
+  @Roles(RoleEnum.WEB_ADMIN)
+  @Roles(RoleEnum.WEB_STAFF)
   @SerializeOptions({
     groups: ['admin'],
   })
@@ -224,6 +258,8 @@ export class UsersTutorController {
   @SerializeOptions({
     groups: ['admin'],
   })
+  @Roles(RoleEnum.WEB_ADMIN)
+  @Roles(RoleEnum.WEB_STAFF)
   @Put(':id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('photo'))

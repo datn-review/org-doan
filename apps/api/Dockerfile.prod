@@ -8,4 +8,4 @@ RUN pnpm i
 ENV NODE_ENV=production
 RUN npx nx run api:build:prod
 
-RUN npx nx run api:start:prod
+CMD ["npx", "nx", "run", "api:start:prod"]

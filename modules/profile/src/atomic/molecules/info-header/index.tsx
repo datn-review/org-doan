@@ -1,4 +1,5 @@
 import { css } from '@emotion/css';
+import { useTranslation } from '@org/i18n';
 import {
   Button,
   Col,
@@ -13,6 +14,7 @@ import { COLOR, getImage } from '@org/utils';
 import React, { useEffect } from 'react';
 
 function InfoHeader({ data }: any) {
+  const { t } = useTranslation();
   const methods = useForm<any>({
     defaultValues: { photo: [] },
   });
@@ -95,7 +97,7 @@ function InfoHeader({ data }: any) {
                 <Space>Toán Lý Văn</Space>
               </Space> */}
               <Space>
-                <Button>Connected</Button>
+                <Button>{t('chat')}</Button>
               </Space>
             </Space>
           </Col>

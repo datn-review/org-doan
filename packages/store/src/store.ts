@@ -20,6 +20,7 @@ import {
   LessonAPI,
   ChatAPI,
   RoomAPI,
+  FeedbackAPI,
 } from './services';
 import { baseAuthSplitApi, baseNoAuthSplitApi } from './services/base-auth-query';
 
@@ -29,7 +30,6 @@ const rootReducer = combineReducers({
   user,
   [baseNoAuthSplitApi.reducerPath]: baseNoAuthSplitApi.reducer,
   [baseAuthSplitApi.reducerPath]: baseAuthSplitApi.reducer,
-
   [AuthAPI.reducerPath]: AuthAPI.reducer,
   [UserAPI.reducerPath]: UserAPI.reducer,
   [GradeLevelAPI.reducerPath]: GradeLevelAPI.reducer,
@@ -49,6 +49,7 @@ const rootReducer = combineReducers({
   [LessonAPI.reducerPath]: LessonAPI.reducer,
   [ChatAPI.reducerPath]: ChatAPI.reducer,
   [RoomAPI.reducerPath]: RoomAPI.reducer,
+  [FeedbackAPI.reducerPath]: FeedbackAPI.reducer,
 });
 
 export const store: any = configureStore({

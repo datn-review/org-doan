@@ -15,6 +15,7 @@ import {
 import { Lessons } from '../../lessons/entities/lessons.entity';
 import { Payment } from '../../payment/entities/payment.entity';
 import { Schedule } from '../../schedule/entities/schedule.entity';
+import { Feedback } from 'src/modules/feedback/entities/feedback.entity';
 
 @Entity({ name: 'collaboration' })
 export class Collaboration extends EntityHelper {
@@ -41,6 +42,11 @@ export class Collaboration extends EntityHelper {
     onDelete: 'CASCADE',
   })
   lessons?: Lessons[] | null;
+
+  @OneToMany(() => Feedback, (feedback) => feedback.collaboration, {
+    onDelete: 'CASCADE',
+  })
+  feedback?: Feedback[] | null;
 
   @OneToMany(() => Schedule, (schedule) => schedule.collaboration, {
     onDelete: 'CASCADE',
