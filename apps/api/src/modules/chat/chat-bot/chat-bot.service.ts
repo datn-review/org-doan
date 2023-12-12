@@ -73,7 +73,7 @@ export const relations = [
     entity: 'province',
   },
 ];
-const OPENAI_API_KEY = process.env.KEY_OPEN_AI
+const OPENAI_API_KEY = process.env.KEY_OPEN_AI;
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -156,6 +156,7 @@ export class ChatBotService
         value: RoleEnum.PESONAL_TUTOR,
       },
     ]);
+    console.log('🚀 ~ file: chat-bot.service.ts:77 ~ OPENAI_API_KEY:', OPENAI_API_KEY);
     console.log('data', 'Pham Thanh Tam Sinh Nam 2001');
     const splitter = new CharacterTextSplitter({
       chunkSize: 1000,
