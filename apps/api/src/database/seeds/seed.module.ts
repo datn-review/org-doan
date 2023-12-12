@@ -8,6 +8,7 @@ import { TypeOrmConfigService } from '../typeorm-config.service';
 import { RoleSeedModule } from './role/role-seed.module';
 import { StatusSeedModule } from './status/status-seed.module';
 import { UserSeedModule } from './user/user-seed.module';
+import { envFilePath } from 'src/app.module';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { UserSeedModule } from './user/user-seed.module';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
-      envFilePath: ['.env'],
+      envFilePath: [envFilePath],
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
