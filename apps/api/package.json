@@ -15,7 +15,7 @@
     "seed:create": "hygen seeds create",
     "seed:run": "ts-node -r tsconfig-paths/register ./src/database/seeds/run-seed.ts",
     "prebuild": "rimraf dist",
-    "build": "env-cmd -f .env nest build",
+    "build:dev": "env-cmd -f .env nest build",
     "build:product": "env-cmd -f .env.prod nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
