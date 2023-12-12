@@ -58,6 +58,8 @@ import { AssignmentModule } from './modules/assessment/assignment/assignment.mod
 import { ChatBotModule } from './modules/chat/chat-bot/chat-bot.module';
 import { ChatModule } from './modules/chat/chat-message/chat.module';
 import { RoomModule } from './modules/chat/room/room.module';
+
+export const envFilePath = process.env.NODE_ENV === 'production' ? `.env.prod` : `.env`;
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -73,7 +75,7 @@ import { RoomModule } from './modules/chat/room/room.module';
         twitterConfig,
         appleConfig,
       ],
-      envFilePath: ['.env'],
+      envFilePath: [envFilePath],
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
