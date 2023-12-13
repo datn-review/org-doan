@@ -66,6 +66,18 @@ export const color = [
   'geekblue',
   'purple',
 ];
+export const colorUser = [
+  '#3498db',
+  '#e74c3c',
+  '#2ecc71',
+  '#f39c12',
+  '#1abc9c',
+  '#9b59b6',
+  '#27ae60',
+  '#e67e22',
+  '#34495e',
+  '#e96e61b',
+];
 
 export const colorCovert: Record<number, string> = color.reduce((acc, currentValue, index) => {
   return { ...acc, [index]: currentValue };
@@ -80,10 +92,24 @@ export const colorRandom = () => {
   return colorCovert[Math.floor(Math.random() * (color.length - 1))];
 };
 
+export const colorUserCovert: Record<number, string> = colorUser.reduce(
+  (acc, currentValue, index) => {
+    return { ...acc, [index]: currentValue };
+  },
+  {},
+);
 export const colorById = (id: number, isReverse = false) => {
   const number = id % 10;
   if (isReverse) {
     return colorCovertReverse[number];
   }
   return colorCovert[number];
+};
+
+export const colorByIdUser = (id: number, isReverse = false) => {
+  const number = id % 10;
+  if (isReverse) {
+    return colorUserCovert[number];
+  }
+  return colorUserCovert[number];
 };

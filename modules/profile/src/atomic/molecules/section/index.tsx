@@ -1,12 +1,21 @@
 import { css } from '@emotion/css/macro';
 import { getNameLanguage, i18nContant, useTranslation } from '@org/i18n';
-import { Space, Tabs, TabsProps, Tag, TimeAvailability, timeAvailabilityFormat } from '@org/ui';
+import {
+  Button,
+  Space,
+  Tabs,
+  TabsProps,
+  Tag,
+  TimeAvailability,
+  timeAvailabilityFormat,
+} from '@org/ui';
 import { COLOR, RolesEnum, colorById, colorRandom } from '@org/utils';
 import dayjs from 'dayjs';
-import React from 'react';
+import React, { useState } from 'react';
 import { TagsList } from '@org/core';
 import { ifAnyGranted } from '@org/auth';
 import { Classes } from '../classes';
+import { Upsert } from '../edit-profile/upsert';
 const contentStyle: React.CSSProperties = {
   height: '500px',
   color: '#fff',
@@ -15,17 +24,22 @@ const contentStyle: React.CSSProperties = {
   background: '#364d79',
 };
 
-function Section({ data }: any) {
-  console.log('🚀 ~ file: index.tsx:15 ~ Section ~ data:', data);
+function Section({ data, isMe, refetch }: any) {
+  const [isOpen, setIsOpen] = useState(false);
   const onChange = (key: string) => {
     console.log(key);
   };
-
+  const { t } = useTranslation();
   const items: TabsProps['items'] = [
     {
       key: '1',
       label: i18nContant('pro.info'),
-      children: <Information data={data} />,
+      children: (
+        <Information
+          data={data}
+          isMe={isMe}
+        />
+      ),
     },
 
     {
@@ -33,11 +47,11 @@ function Section({ data }: any) {
       label: i18nContant('pro.classed'),
       children: <Classes data={data?.classes?.data} />,
     },
-    {
-      key: '4',
-      label: i18nContant('pro.feedback'),
-      children: 'Content of Tab Pane 3',
-    },
+    // {
+    //   key: '4',
+    //   label: i18nContant('pro.feedback'),
+    //   children: 'Content of Tab Pane 3',
+    // },
   ];
   return (
     <Space
@@ -45,6 +59,10 @@ function Section({ data }: any) {
         /* padding: 2.4rem; */
         /* background-color: ${COLOR.White}; */
         margin-top: 2rem;
+        position: relative;
+        .ant-tabs-content-holder {
+          background: white;
+        }
       `}
     >
       <Tabs
@@ -52,6 +70,23 @@ function Section({ data }: any) {
         items={items}
         onChange={onChange}
       />
+      <Space
+        className={css`
+          position: absolute;
+          top: 1rem;
+          right: 0;
+        `}
+      >
+        {isMe && <Button onClick={() => setIsOpen(true)}>{t('edit')}</Button>}
+      </Space>
+      {isOpen && isMe && (
+        <Upsert
+          dataUpsert={data}
+          open={isOpen}
+          close={() => setIsOpen(false)}
+          refetch={refetch}
+        />
+      )}
     </Space>
   );
 }
@@ -96,7 +131,7 @@ const Information = ({ data }: any) => {
         >
           {t('pro.birthday')}
         </h6>
-        <h6>{dayjs('12/05/2001').format('DD-MM-YYYY')}</h6>
+        <h6>{data?.birthday && dayjs(data?.birthday).format('DD-MM-YYYY')}</h6>
       </Space>
 
       <Space
@@ -113,7 +148,7 @@ const Information = ({ data }: any) => {
         >
           {t('pro.grade')}
         </h6>
-        <h6>Sư Phạm Kỹ Thuật</h6>
+        <h6>{data?.school}</h6>
       </Space>
       <Space
         className={css`

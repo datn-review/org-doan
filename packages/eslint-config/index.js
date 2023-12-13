@@ -49,6 +49,7 @@ module.exports = {
     '@typescript-eslint/restrict-template-expressions': 'off',
     '@typescript-eslint/unified-signatures': 'off',
     '@typescript-eslint/ban-types': 'off',
+    '@typescript-eslint/consistent-type-exports': 'error',
   },
   overrides: [
     {

@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, PropsWithChildren } from 'react';
+import { ButtonHTMLAttributes, PropsWithChildren } from 'react';
 import * as S from './styled';
 // import { mergeClassName } from "@org/utils";
 export enum VARIANT {
@@ -29,12 +29,12 @@ export enum SIZE {
   Menu = 'Menu',
 }
 
-export type IButton = {
+export interface IButton {
   $variant?: VARIANT;
   $type?: TYPE_BUTTON;
   $size?: SIZE;
   className?: any;
-};
+}
 export function Button({
   $variant = VARIANT.Default,
   $type = TYPE_BUTTON.Primary,

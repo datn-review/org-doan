@@ -1,4 +1,4 @@
-import {css} from '@emotion/css';
+import { css } from '@emotion/css';
 import {
   AddressForm,
   certificationImportFormat,
@@ -13,8 +13,12 @@ import {
   useMessageHook,
   useUnmount,
 } from '@org/core';
-import {getNameLanguage, i18next, useTranslation} from '@org/i18n';
-import {useCreateUserTutorMutation, useLazyFindUserTutorQuery, useUpdateUserTutorMutation,} from '@org/store';
+import { getNameLanguage, i18next, useTranslation } from '@org/i18n';
+import {
+  useCreateUserTutorMutation,
+  useLazyFindUserTutorQuery,
+  useUpdateUserTutorMutation,
+} from '@org/store';
 import {
   BoxCenter,
   Button,
@@ -36,9 +40,9 @@ import {
   yupResolver,
 } from '@org/ui';
 
-import {getImage, StatusEnum, statusOptionUpsert} from '@org/utils';
-import {isEmpty} from 'lodash';
-import {useEffect} from 'react';
+import { getImage, StatusEnum, statusOptionUpsert } from '@org/utils';
+import { isEmpty } from 'lodash';
+import { useEffect } from 'react';
 import * as yup from 'yup';
 
 type Status = {
@@ -175,8 +179,8 @@ export function Upsert() {
         if (name == 'wards') {
           const wards = recordData as unknown as IWards;
           methods.setValue('wards', wards?.id);
-          methods.setValue('district', wards.districts?.id);
-          methods.setValue('province', wards.districts?.province.id);
+          methods.setValue('district', wards?.districts?.id);
+          methods.setValue('province', wards?.districts?.province?.id);
           return;
         }
         if (name == 'skills') {
@@ -276,16 +280,14 @@ export function Upsert() {
               $type={TypeInput.Password}
             />
             <AddressForm methods={methods} />
-            <Row gutter={[10,10]}>
+            <Row gutter={[10, 10]}>
               <Col span={12}>
                 <SelectSkill />
-
               </Col>
               <Col span={12}>
                 <SelectCertification />
               </Col>
             </Row>
-
 
             <SelectGradeSubject />
             <TimeAvailabilityForm

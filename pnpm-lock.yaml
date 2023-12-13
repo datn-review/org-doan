@@ -957,6 +957,9 @@ importers:
       '@org/core':
         specifier: workspace:^
         version: link:../../packages/core
+      '@org/editor':
+        specifier: workspace:^
+        version: link:../../packages/lexical-playground
       '@org/i18n':
         specifier: workspace:^
         version: link:../../packages/I18n

@@ -1,9 +1,10 @@
 // @flow
 import * as React from 'react';
-import { Space } from '../../atoms';
+import { BoxCenter, Space } from '../../atoms';
 import { css } from '@emotion/css';
-import { COLOR, getImage, SiteMap } from '@org/utils';
+import { COLOR, colorById, colorByIdUser, getImage, SiteMap } from '@org/utils';
 import { Link } from 'react-router-dom';
+import { Else, If, Then } from 'react-if';
 type Props = { user: any };
 export const UserHeaderProfile = ({ user }: Props) => {
   return (
@@ -22,18 +23,38 @@ export const UserHeaderProfile = ({ user }: Props) => {
             object-fit: cover;
           `}
         >
-          <img
-            className={css`
-              object-fit: cover;
-              height: 4rem;
-              width: 4rem;
-              border-radius: 50%;
-              border: 1px solid ${COLOR.Primary};
-              padding: 0.1rem;
-            `}
-            src={getImage(user?.photo?.path)}
-            alt={user?.photo?.path}
-          />
+          <If condition={!!user?.photo?.path}>
+            <Then>
+              <img
+                className={css`
+                  object-fit: cover;
+                  height: 4rem;
+                  width: 4rem;
+                  border-radius: 50%;
+                  border: 1px solid ${COLOR.Primary};
+                  padding: 0.1rem;
+                `}
+                src={getImage(user?.photo?.path)}
+                alt={user?.photo?.path}
+              />
+            </Then>
+            <Else>
+              <BoxCenter
+                className={css`
+                  object-fit: cover;
+                  height: 4rem;
+                  width: 4rem;
+                  border-radius: 50%;
+                  border: 1px solid ${COLOR.Primary};
+                  padding: 0.1rem;
+                  background: ${colorByIdUser(user?.id || 1)};
+                  color: white;
+                `}
+              >
+                {user?.firstName?.substring(0, 1) || ''}
+              </BoxCenter>
+            </Else>
+          </If>
         </Space>
       </Link>
 

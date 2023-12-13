@@ -20,8 +20,8 @@
     "@org/utils": "workspace:^",
     "@org/store": "workspace:^",
     "@org/auth": "workspace:^",
-    "@org/core": "workspace:^"
-
+    "@org/core": "workspace:^",
+    "@org/editor": "workspace:^"
 
     
   },

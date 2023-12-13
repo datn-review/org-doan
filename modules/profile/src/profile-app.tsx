@@ -6,7 +6,7 @@ import {
   useGetProfileForIDQuery,
   useGetProfileMeQuery,
 } from '@org/store';
-import { SectionLayout, Space } from '@org/ui';
+import { SectionLayout, Space, Spin } from '@org/ui';
 import { SiteMap } from '@org/utils';
 import { useEffect } from 'react';
 import { If, Then } from 'react-if';
@@ -25,39 +25,32 @@ function ProfileApp() {
       dispatch(setActiveGroup({ current: '' }));
     };
   }, []);
-  const { data: profileMe } = useGetProfileMeQuery(
-    {},
-    { refetchOnMountOrArgChange: true, skip: !!id },
-  );
-  const { data: profileData } = useGetProfileForIDQuery(
+  const {
+    data: profileMe,
+    refetch,
+    isLoading: isLoadingMe,
+  } = useGetProfileMeQuery({}, { refetchOnMountOrArgChange: true, skip: !!id });
+  const { data: profileData, isLoading } = useGetProfileForIDQuery(
     { id: id },
     { refetchOnMountOrArgChange: true, skip: !id },
   );
   const data = !id ? profileMe : profileData;
-  console.log('🚀 ~ file: profile-app.tsx:30 ~ ProfileApp ~ profileData:', profileData);
 
-  console.log('🚀 ~ file: profile-app.tsx:23 ~ ProfileApp ~ data:', data);
   return (
     <>
       <SectionLayout className={'profile'}>
-        <If condition={isAuthenticated}>
-          <Then>
-            <InfoHeader data={data} />
-            <Section data={data} />
-          </Then>
-        </If>
-        {/* <Authorization
-          type={TypeRolesEnum.IF_ANY_GRANTED}
-          roles={[RolesEnum.WEB_ADMIN]}
-        >
-          WEB_ADMIN
-        </Authorization>
-        <Authorization
-          type={TypeRolesEnum.IF_ANY_GRANTED}
-          roles={[RolesEnum.WEB_STAFF]}
-        >
-          WEB_STAFF
-        </Authorization> */}
+        <Spin spinning={isLoadingMe || isLoading}>
+          <If condition={isAuthenticated}>
+            <Then>
+              <InfoHeader data={data} />
+              <Section
+                data={data}
+                isMe={!id}
+                refetch={refetch}
+              />
+            </Then>
+          </If>
+        </Spin>
       </SectionLayout>
     </>
   );

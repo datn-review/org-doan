@@ -311,7 +311,27 @@
     "tutor.dateofbirth":"Ngày Sinh",
     "tutor.bio":"Bio",
     "tutor.quatity.class":"Lớp Đã Dạy",
-    "tutor.rating":"Đánh Giá"
+    "tutor.rating":"Đánh Giá",
+    "update.password":"Cập Nhật Mật Khẩu",
+    "bank.title":"Thông Tin Ngân Hàng",
+    "phone":"Số Điện Thoại",
+    "bio":"Bio",
+    "accountNumberBank":"Số Tài Khoản",
+    "ownerBank":"Tên Chủ Tài Khoản",
+    "nameBank":"Tên Ngân Hàng",
+    "chat":"Nhắn Tin",
+    "exp":"Kinh Nghiệm",
+    "profile.edit.title":"Chỉnh Sửa Thông Tin",
+    "school":"Trường",
+    "file":"Tệp",
+    "birthday":"Ngày Sinh",
+    "feedback":"Xem Đánh Giá",
+    "search": "Tìm",
+    "chats": "Tin Nhắn",
+    "bot": "Bot",
+    "type.your.message":"Gõ Tin Nhắn Của Bạn...",
+    "message.send":"Gửi"
+
 }
 
 

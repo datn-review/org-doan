@@ -55,7 +55,7 @@ function TutorApp() {
           margin-bottom: 2rem;
         `}
       >
-        <TextSection>{t('tutor')}</TextSection>
+        <TextSection left>{t('tutor')}</TextSection>
         <Button
           $size={SIZE.ExtraSmall}
           onClick={() => setIsShowFilter(true)}
@@ -69,7 +69,7 @@ function TutorApp() {
           span={24}
           md={18}
         >
-          <Row gutter={4}>
+          <Row gutter={20}>
             {data?.data?.map((item: any) => (
               <CardTutor
                 item={item}
@@ -110,7 +110,7 @@ function TutorApp() {
             </Space>
           }
           open={isShowFilter}
-          onCancel={close}
+          onCancel={() => setIsShowFilter(false)}
           width={'700px'}
           footer={<Button $size={SIZE.ExtraSmall}>{t('search')}</Button>}
           // zIndex={999999}

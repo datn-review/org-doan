@@ -26,10 +26,18 @@ const relationsPost = [
   { field: 'posts.subjects', entity: 'subject' },
 
   { field: 'posts.gradeLevels', entity: 'grade' },
+
+  { field: 'posts.certifications', entity: 'certification' },
+  { field: 'posts.skills', entity: 'skill' },
+
   { field: 'posts.user', entity: 'userPost' },
   {
     field: 'user',
     entity: 'user',
+  },
+  {
+    field: 'feedback',
+    entity: 'feedback',
   },
 ];
 @Injectable()
@@ -374,7 +382,7 @@ export class AuthService {
       }
     }
 
-    // await this.usersService.update(user.id, userDto);
+    await this.usersService.update(user.id, userDto);
 
     return this.usersService.findOne({
       id: user.id,

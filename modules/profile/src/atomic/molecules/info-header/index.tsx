@@ -91,11 +91,6 @@ function InfoHeader({ data }: any) {
                 {data?.lastName} {data?.firstName}
               </h4>
 
-              {/* <Space className={'flex gap-1'}>
-                <Space>Toán Lý Văn</Space>
-                <Space>Toán Lý Văn</Space>
-                <Space>Toán Lý Văn</Space>
-              </Space> */}
               <Space>
                 <Button>{t('chat')}</Button>
               </Space>

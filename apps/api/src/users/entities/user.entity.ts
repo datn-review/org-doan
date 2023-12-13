@@ -128,6 +128,30 @@ export class User extends EntityHelper {
   @ManyToMany(() => Room, (room) => room.members)
   joinedRooms: Room[];
 
+  @Column({ type: String, nullable: true })
+  phone: string | null;
+
+  @Column({ type: String, nullable: true })
+  bio: string | null;
+
+  @Expose({ groups: ['me', 'admin'] })
+  @Column({ type: String, nullable: true })
+  accountNumberBank: string | null;
+
+  @Expose({ groups: ['me', 'admin'] })
+  @Column({ type: String, nullable: true })
+  nameBank: string | null;
+
+  @Expose({ groups: ['me', 'admin'] })
+  @Column({ type: String, nullable: true })
+  ownerBank: string | null;
+
+  @Column({ type: String, nullable: true })
+  school: string | null;
+
+  @Column({ type: Date, nullable: true })
+  birthday: Date | null;
+  
   @CreateDateColumn()
   createdAt: Date;
 
