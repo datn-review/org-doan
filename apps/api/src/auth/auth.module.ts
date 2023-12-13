@@ -12,6 +12,11 @@ import { MailModule } from 'src/mail/mail.module';
 import { IsExist } from 'src/utils/validators/is-exists.validator';
 import { IsNotExist } from 'src/utils/validators/is-not-exists.validator';
 import { CollaborationModule } from 'src/modules/collaboration/collaboration.module';
+import { FilesModule } from 'src/files-drive/files.module';
+import { TutorCertificationModule } from 'src/modules/tutor-certification/tutor-certification.module';
+import { TutorSkillsModule } from 'src/modules/tutor-skills/tutor-skills.module';
+import { TutorSubjectGradeModule } from 'src/modules/tutor-subject-grade/tutor-subject-grade.module';
+import { TutorTimeAvailabilityModule } from 'src/users/tutor-time-availability/tutor-time-availability.module';
 
 @Module({
   imports: [
@@ -30,6 +35,11 @@ import { CollaborationModule } from 'src/modules/collaboration/collaboration.mod
         },
       }),
     }),
+    FilesModule,
+    TutorCertificationModule,
+    TutorSkillsModule,
+    TutorSubjectGradeModule,
+    TutorTimeAvailabilityModule,
   ],
   controllers: [AuthController],
   providers: [IsExist, IsNotExist, AuthService, JwtStrategy, AnonymousStrategy],

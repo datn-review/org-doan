@@ -22,6 +22,7 @@ import {
   ModalAntd,
   SIZE,
   Button,
+  UserHeaderProfile,
 } from '@org/ui';
 import { COLOR, getImage, SiteMap } from '@org/utils';
 import { useEffect, useMemo, useState } from 'react';
@@ -36,7 +37,7 @@ function ChatApp() {
   const { t } = useTranslation();
   const [chat, setChat] = useState<string>('');
   const [toggle, setToggle] = useState<boolean>(false);
-  const [roomActive, setRoomActive] = useState<boolean>(false);
+  const [roomActive, setRoomActive] = useState<number>(null);
 
   const [room, setRoom] = useState<any>({
     title: '',
@@ -73,25 +74,30 @@ function ChatApp() {
     <Space
       className={cx(
         css`
-          height: 50rem;
+          height: 55rem;
+          margin-bottom: 3rem;
         `,
         'chat',
       )}
     >
       <SectionLayout>
         <Row
-          gutter={[20, 20]}
+          gutter={0}
           className={css`
-            height: 50rem;
+            height: 55rem;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 0 6px rgba(47, 43, 61, 0.14), 0 0 transparent, 0 0 transparent;
           `}
         >
           <Col
             span={8}
             className={css`
               background-color: white;
-              border-radius: 0.5rem;
-              box-shadow: 0 0 6px rgba(47, 43, 61, 0.14), 0 0 transparent, 0 0 transparent;
+
+              /* box-shadow: 0 0 6px rgba(47, 43, 61, 0.14), 0 0 transparent, 0 0 transparent; */
               height: 100%;
+              border-right: 1px solid #9ca3af80;
             `}
           >
             <Space
@@ -110,8 +116,8 @@ function ChatApp() {
                   alt={''}
                   className={css`
                     border-radius: 50%;
-                    height: 3rem;
-                    width: 3rem;
+                    height: 4rem;
+                    width: 4rem;
                     object-fit: cover;
                   `}
                 />
@@ -136,15 +142,47 @@ function ChatApp() {
               </Space>
               <FormOutlined onClick={() => setToggle(true)} />
             </Space>
-            <Space>
-              <h3
+            <Space
+              className={css`
+                padding: 1rem 1.2rem;
+              `}
+            >
+              <h4
+                className={css`
+                  color: ${COLOR.Primary};
+                  padding: 1rem 1.2rem;
+                `}
+              >
+                {t('bot')}
+              </h4>
+              <Space
+                className={css`
+                  padding: 1.2rem;
+                  border-radius: 0.4rem;
+                  cursor: pointer;
+                  &:hover {
+                    background: ${COLOR.Primary};
+                    color: ${COLOR.White};
+                  }
+                  background: ${roomActive == 0 ? COLOR.Primary : 'auto'};
+                  color: ${0 === roomActive ? COLOR.White : 'auto'};
+                  margin-bottom: 0.5rem;
+                `}
+                onClick={() => {
+                  getMessages(0);
+                  setRoomActive(0);
+                }}
+              >
+                {t('bot')}
+              </Space>
+              <h4
                 className={css`
                   color: ${COLOR.Primary};
                   padding: 1rem 1.2rem;
                 `}
               >
                 {t('chats')}
-              </h3>
+              </h4>
               {rooms?.map((room: any) => (
                 <Space
                   className={css`
@@ -155,6 +193,9 @@ function ChatApp() {
                       background: ${COLOR.Primary};
                       color: ${COLOR.White};
                     }
+                    background: ${room.id === roomActive ? COLOR.Primary : 'auto'};
+                    color: ${room.id === roomActive ? COLOR.White : 'auto'};
+                    margin-bottom: 0.5rem;
                   `}
                   onClick={() => {
                     getMessages(room.id);
@@ -169,48 +210,61 @@ function ChatApp() {
           <Col span={16}>
             <Space
               className={css`
-                padding: 1rem;
-                display: flex;
-                justify-content: space-between;
-                gap: 1rem;
-                align-items: center;
-                border-bottom: 1px solid #9ca3af10;
-                background-color: white;
+                position: relative;
+                height: 100%;
               `}
             >
-              <Space></Space>
-
-              <FormOutlined onClick={() => setToggle(true)} />
-            </Space>
-            <Space
-              className={css`
-                height: 40.5rem;
-              `}
-            >
-              {messages?.map((message: any) => (
-                <Space>
-                  {message?.owner?.lastName} {message?.owner?.firstName} : {message?.content}
-                </Space>
-              ))}
-            </Space>
-            <Space
-              className={css`
-                display: flex;
-                gap: 1rem;
-              `}
-            >
-              <Input
-                onChange={(value) => setChat(String(value))}
-                name={'chat'}
-                placeholder={t('type.your.message')}
-              />
-              <Button
-                onClick={() => {
-                  addMessage({ room: roomActive, owner: userId, content: chat });
-                }}
+              <Space
+                className={css`
+                  padding: 1rem;
+                  display: flex;
+                  justify-content: space-between;
+                  /* gap: 1rem; */
+                  align-items: center;
+                  border-bottom: 1px solid #9ca3af80;
+                  display: block;
+                  background-color: white;
+                `}
               >
-                {t('message.send')}
-              </Button>
+                <UserHeaderProfile user={{}} />
+              </Space>
+              <Space
+                className={css`
+                  height: 40.5rem;
+                  padding: 20px;
+                `}
+              >
+                {messages?.map((message: any) => (
+                  <Space>
+                    {message?.owner?.lastName} {message?.owner?.firstName} : {message?.content}
+                  </Space>
+                ))}
+              </Space>
+              <Space
+                className={css`
+                  display: flex;
+                  gap: 1rem;
+                  position: absolute;
+                  width: 100%;
+                  left: 0;
+                  right: 0;
+                  bottom: 10px;
+                  padding: 0 20px;
+                `}
+              >
+                <Input
+                  onChange={(value) => setChat(String(value))}
+                  name={'chat'}
+                  placeholder={t('type.your.message')}
+                />
+                <Button
+                  onClick={() => {
+                    addMessage({ room: roomActive, owner: userId, content: chat });
+                  }}
+                >
+                  {t('message.send')}
+                </Button>
+              </Space>
             </Space>
           </Col>
         </Row>
