@@ -31,6 +31,10 @@ const relations = [
     entity: 'user',
   },
   {
+    field: 'user.photo',
+    entity: 'file',
+  },
+  {
     field: 'members',
     entity: 'room_members_user',
   },
@@ -48,19 +52,19 @@ export class RoomController {
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createRoomDto: any, @Request() request): Promise<Room[]> {
+  async create(@Body() createRoomDto: any, @Request() request): Promise<any> {
     const id = request?.user?.id;
 
     const members = createRoomDto?.members?.map((member) => ({ id: Number(member) })) || [];
 
     const body = {
-      title: createRoomDto.title,
+      title: createRoomDto?.title,
       owner: id,
       members,
     };
-    return this.roomService.create({
+    return (await this.roomService.create({
       ...body,
-    });
+    })) as unknown as Room;
   }
 
   @Get('/')
@@ -73,7 +77,7 @@ export class RoomController {
     @Query('fieldSearch', new DefaultValuePipe('name')) fieldSearch: string | string[],
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
     @Request() request: any,
-  ): Promise<Room[]> {
+  ): Promise<any[]> {
     const userId = request?.user.id;
     console.log('userId', userId);
     // return this.roomRepository
@@ -98,17 +102,34 @@ export class RoomController {
     //     ],
     //   ],
     // });
-    return this.roomService.findRoomByUser(userId);
+    const room = await this.roomService.findRoomByUser(userId);
+    const dataMap = room
+      ?.map((item) => {
+        const isSingle = item?.members?.length == 1;
+        let friends: any = null;
+        let me: any = null;
+        if (item?.owner?.id === userId) {
+          me = { ...item?.owner };
+          friends = [...item.members];
+        } else {
+          me = { ...item?.members?.find((member) => member.id === userId) };
+          friends = [item.owner, ...item.members.filter((member) => member.id !== userId)];
+        }
 
-    // return await this.roomService.findManyWithPagination({
-    //   page,
-    //   limit,
-    //   status,
-    //   sortBy,
-    //   sortDirection,
-    //   searchName,
-    //   fieldSearch,
-    // });
+        return {
+          ...item,
+          isSingle,
+          me,
+          friends,
+        };
+      })
+      .filter(
+        (item) =>
+          item?.messages?.length > 0 || item?.owner?.id === userId || item?.members?.length > 1,
+      );
+
+    console.log('🚀 ~ file: room.controller.ts:132 ~ RoomController ~ dataMap:', dataMap);
+    return dataMap;
   }
 
   @Get('/active')

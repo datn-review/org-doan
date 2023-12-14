@@ -11,6 +11,7 @@ import {
   Post,
   Put,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 
@@ -32,6 +33,10 @@ const relations = [
   {
     field: 'owner',
     entity: 'user',
+  },
+  {
+    field: 'user.photo',
+    entity: 'file',
   },
 ];
 @ApiBearerAuth()
@@ -87,14 +92,19 @@ export class MessageController {
 
   @Get('/list')
   @HttpCode(HttpStatus.OK)
-  getMessages(@Query() room: any) {
-    console.log(room);
-    return this.messageService.findMany(
+  async getMessages(@Query() room: any, @Request() request: any) {
+    const userId = request?.user.id;
+    const messages = await this.messageService.findMany(
       {
         room: Number(room?.roomId),
       },
       relations,
     );
+
+    return messages?.map((message: Message) => ({
+      ...message,
+      isMe: message?.owner.id === userId,
+    }));
   }
 
   @Get('/active')

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/require-await */
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -10,7 +11,16 @@ import { MessageService } from '../message/message.service';
 import { Message } from '../message/entities/message.entity';
 import { AuthService } from '../../../auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
-
+const relations = [
+  {
+    field: 'owner',
+    entity: 'user',
+  },
+  {
+    field: 'user.photo',
+    entity: 'file',
+  },
+];
 @WebSocketGateway({ cors: { origin: '*' } })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(private readonly messageService: MessageService, private authService: AuthService) {}
@@ -30,6 +40,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('join')
   handleJoin(client: Socket, roomId: number) {
     console.log(`Client ${client.id} joined room: ${roomId}`);
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     client.join(roomId.toString());
     return roomId;
   }
@@ -37,6 +48,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('leave')
   handleLeave(client: Socket, roomId: number) {
     console.log(`Client ${client.id} leaved room: ${roomId}`);
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     client.leave(roomId.toString());
     return roomId;
   }
@@ -47,8 +59,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       `Client ${client.id} sended message: ${createMessageDto.content} to room: ${createMessageDto.roomId}`,
     );
     const message = (await this.messageService.create(createMessageDto)) as unknown as Message;
-    client.emit('message', message);
-    client.to(message.room.toString()).emit('message', message);
+    const newMessage = await this.messageService.findOne({ id: +message?.id }, relations);
+    client.emit('message', newMessage);
+    client.to(message.room.toString()).emit('message', newMessage);
   }
 
   @SubscribeMessage('isTyping')

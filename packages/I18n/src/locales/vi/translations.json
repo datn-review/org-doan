@@ -330,7 +330,12 @@
     "chats": "Tin Nhắn",
     "bot": "Bot",
     "type.your.message":"Gõ Tin Nhắn Của Bạn...",
-    "message.send":"Gửi"
+    "message.send":"Gửi",
+    "chat.create":"Nhóm Trò Chuyện",
+    "chat.room.name":"Tên Nhóm",
+    "chat.user":"Thành Viên",
+    "create":"Tạo",
+    "bot.message":"Trò Chuyện Với Bot"
 
 }
 
