@@ -1,3 +1,4 @@
+import { css, cx } from '@emotion/css';
 import { useTranslation } from '@org/i18n';
 import {
   setActiveGroup,
@@ -5,31 +6,32 @@ import {
   useAppDispatch,
   useAppSelector,
   useCreateRoomMutation,
-  useGetMessagesQuery,
   useGetRoomQuery,
   useGetUsersActiveQuery,
-  useGetUserStudentQuery,
   useLazyGetMessagesQuery,
 } from '@org/store';
 import {
-  Input,
-  SectionLayout,
-  Space,
-  Row,
+  Avatar,
+  AvatarUser,
+  Button,
   Col,
   FormOutlined,
-  Select,
+  Input,
   ModalAntd,
+  Row,
+  SectionLayout,
+  Select,
   SIZE,
-  Button,
+  Space,
   UserHeaderProfile,
 } from '@org/ui';
 import { COLOR, getImage, SiteMap } from '@org/utils';
-import { useEffect, useMemo, useState } from 'react';
-import { If, Then } from 'react-if';
-import { useNavigate, useParams } from 'react-router-dom';
-import { css, cx } from '@emotion/css';
-
+import { useEffect, useMemo, useState, useLayoutEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ChatItem } from './atomic/atoms/chat-item';
+import { AvataBot } from './atomic/atoms';
+import { MessageItem } from './atomic/atoms/message-item';
+import { isEmpty } from 'lodash';
 function ChatApp() {
   const { isAuthenticated, userId } = useAppSelector((state) => state.auth);
   const user = useAppSelector((state) => state.user);
@@ -37,14 +39,12 @@ function ChatApp() {
   const { t } = useTranslation();
   const [chat, setChat] = useState<string>('');
   const [toggle, setToggle] = useState<boolean>(false);
-  const [roomActive, setRoomActive] = useState<number>(null);
+  const [roomActive, setRoomActive] = useState<number | null>(0);
 
-  const [room, setRoom] = useState<any>({
-    title: '',
-    members: [],
-  });
+  const [room, setRoom] = useState<any>();
+  const [roomData, setRoomData] = useState<any>({ title: t('bot') });
 
-  const navigate = useNavigate();
+  const [roomList, setRoomList] = useState<any>([]);
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(setActiveGroup({ current: SiteMap.Chat.menu }));
@@ -58,7 +58,7 @@ function ChatApp() {
   const [addMessage] = useAddMessageMutation();
 
   const { data: users } = useGetUsersActiveQuery({});
-  const { data: rooms } = useGetRoomQuery({});
+  const { data: rooms, refetch } = useGetRoomQuery({});
 
   const [createRoom] = useCreateRoomMutation();
 
@@ -68,13 +68,23 @@ function ChatApp() {
       value: user.id,
     }));
   }, [users]);
+  const refMessage = useRef<HTMLDivElement | null>(null);
+  useLayoutEffect(() => {
+    if (refMessage?.current) {
+      refMessage?.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+        inline: 'nearest',
+      });
+    }
+  }, [messages]);
 
   const close = () => setToggle(false);
   return (
     <Space
       className={cx(
         css`
-          height: 55rem;
+          height: calc(100vh - 12rem);
           margin-bottom: 3rem;
         `,
         'chat',
@@ -84,7 +94,7 @@ function ChatApp() {
         <Row
           gutter={0}
           className={css`
-            height: 55rem;
+            height: calc(100vh - 14rem);
             border-radius: 0.5rem;
             overflow: hidden;
             box-shadow: 0 0 6px rgba(47, 43, 61, 0.14), 0 0 transparent, 0 0 transparent;
@@ -136,8 +146,55 @@ function ChatApp() {
                       border-radius: 20rem;
                     }
                   `}
+                  onChange={(value) => {
+                    const data = rooms?.find(
+                      (room: any) => room.isSingle && value === room?.friends?.[0]?.id,
+                    );
+                    if (!isEmpty(data)) {
+                      const friend = data?.friends?.[0];
+                      const title = `${friend?.lastName} ${friend?.firstName}`;
 
-                  // onChange={(value) => setRoom((prev: any) => ({ ...prev, members: value }))}
+                      const logo = friend?.photo?.path;
+
+                      const dataNew = {
+                        friend,
+                        title,
+                        logo,
+                        id: friend?.id,
+                      };
+                      getMessages(data?.id);
+                      setRoomActive(data?.id);
+                      setRoomData(dataNew);
+                    } else {
+                      createRoom({ title: '', members: [value] })
+                        .unwrap()
+                        .then((room: any) => {
+                          refetch()
+                            .unwrap()
+                            .then((response: any) => {
+                              const roomData = response?.find((item: any) => item.id == room?.id);
+
+                              const friend = roomData?.friends?.[0];
+                              const title = roomData?.isSingle
+                                ? `${friend?.lastName} ${friend?.firstName}`
+                                : roomData?.title;
+
+                              const logo = roomData?.isSingle ? friend?.photo?.path : '';
+                              getMessages(roomData?.id);
+                              setRoomActive(roomData?.id);
+
+                              const dataNew = {
+                                friend,
+                                title,
+                                logo,
+                                id: friend?.id,
+                              };
+
+                              setRoomData(dataNew);
+                            });
+                        });
+                    }
+                  }}
                 />
               </Space>
               <FormOutlined onClick={() => setToggle(true)} />
@@ -155,26 +212,20 @@ function ChatApp() {
               >
                 {t('bot')}
               </h4>
-              <Space
-                className={css`
-                  padding: 1.2rem;
-                  border-radius: 0.4rem;
-                  cursor: pointer;
-                  &:hover {
-                    background: ${COLOR.Primary};
-                    color: ${COLOR.White};
-                  }
-                  background: ${roomActive == 0 ? COLOR.Primary : 'auto'};
-                  color: ${0 === roomActive ? COLOR.White : 'auto'};
-                  margin-bottom: 0.5rem;
-                `}
+
+              <ChatItem
+                room={null}
+                isActive={0 === roomActive}
                 onClick={() => {
                   getMessages(0);
                   setRoomActive(0);
+                  setRoomData({
+                    title: t('bot'),
+                  });
                 }}
-              >
-                {t('bot')}
-              </Space>
+                isBot
+              />
+
               <h4
                 className={css`
                   color: ${COLOR.Primary};
@@ -183,28 +234,24 @@ function ChatApp() {
               >
                 {t('chats')}
               </h4>
-              {rooms?.map((room: any) => (
-                <Space
-                  className={css`
-                    padding: 1.2rem;
-                    border-radius: 0.4rem;
-                    cursor: pointer;
-                    &:hover {
-                      background: ${COLOR.Primary};
-                      color: ${COLOR.White};
-                    }
-                    background: ${room.id === roomActive ? COLOR.Primary : 'auto'};
-                    color: ${room.id === roomActive ? COLOR.White : 'auto'};
-                    margin-bottom: 0.5rem;
-                  `}
-                  onClick={() => {
-                    getMessages(room.id);
-                    setRoomActive(room.id);
-                  }}
-                >
-                  {room?.title}
-                </Space>
-              ))}
+              <Space
+                className={css`
+                  height: calc(100vh - 26rem);
+                  overflow-y: auto;
+                `}
+              >
+                {rooms?.map((room: any) => (
+                  <ChatItem
+                    room={room}
+                    isActive={room.id === roomActive}
+                    onClick={(data: any) => {
+                      getMessages(room.id);
+                      setRoomActive(room.id);
+                      setRoomData(data);
+                    }}
+                  />
+                ))}
+              </Space>
             </Space>
           </Col>
           <Col span={16}>
@@ -222,23 +269,56 @@ function ChatApp() {
                   /* gap: 1rem; */
                   align-items: center;
                   border-bottom: 1px solid #9ca3af80;
-                  display: block;
+                  display: flex;
                   background-color: white;
                 `}
               >
-                <UserHeaderProfile user={{}} />
+                <Space
+                  className={css`
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                    gap: 1rem;
+                  `}
+                >
+                  {roomActive === 0 ? (
+                    <AvataBot />
+                  ) : (
+                    <AvatarUser
+                      title={roomData?.title}
+                      img={roomData?.logo}
+                      id={roomData?.id}
+                    />
+                  )}
+
+                  <Space>
+                    <b
+                      className={css`
+                        font-size: 15px;
+                      `}
+                    >
+                      {roomData?.title}
+                    </b>
+                    {(roomData?.isSingle || roomActive === 0) && (
+                      <div>{roomData?.friend?.role?.name || t('bot.message')}</div>
+                    )}
+                  </Space>
+                </Space>
+
+                {/* <UserHeaderProfile user={{}} /> */}
               </Space>
               <Space
                 className={css`
-                  height: 40.5rem;
+                  height: calc(100vh - 26rem);
+
                   padding: 20px;
+                  overflow-y: auto;
                 `}
               >
                 {messages?.map((message: any) => (
-                  <Space>
-                    {message?.owner?.lastName} {message?.owner?.firstName} : {message?.content}
-                  </Space>
+                  <MessageItem message={message} />
                 ))}
+                <div ref={refMessage} />
               </Space>
               <Space
                 className={css`
@@ -260,6 +340,7 @@ function ChatApp() {
                 <Button
                   onClick={() => {
                     addMessage({ room: roomActive, owner: userId, content: chat });
+                    setChat('');
                   }}
                 >
                   {t('message.send')}
@@ -294,7 +375,34 @@ function ChatApp() {
           <Button
             $size={SIZE.ExtraSmall}
             onClick={() => {
-              createRoom({ ...room });
+              createRoom({ ...room })
+                .unwrap()
+                .then((room: any) => {
+                  refetch()
+                    .unwrap()
+                    .then((response: any) => {
+                      const roomData = response?.find((item: any) => item.id == room?.id);
+
+                      const friend = roomData?.friends?.[0];
+                      const title = roomData?.isSingle
+                        ? `${friend?.lastName} ${friend?.firstName}`
+                        : roomData?.title;
+
+                      const logo = roomData?.isSingle ? friend?.photo?.path : '';
+                      getMessages(roomData?.id);
+                      setRoomActive(roomData?.id);
+
+                      const dataNew = {
+                        friend,
+                        title,
+                        logo,
+                        id: friend?.id,
+                      };
+
+                      setRoomData(dataNew);
+                      close();
+                    });
+                });
             }}
           >
             {t('create')}

@@ -31,7 +31,7 @@ export const UserHeaderProfile = ({ user }: Props) => {
                   height: 4rem;
                   width: 4rem;
                   border-radius: 50%;
-                  border: 1px solid ${COLOR.Primary};
+                  border: 2px solid ${COLOR.Primary};
                   padding: 0.1rem;
                 `}
                 src={getImage(user?.photo?.path)}
@@ -45,7 +45,7 @@ export const UserHeaderProfile = ({ user }: Props) => {
                   height: 4rem;
                   width: 4rem;
                   border-radius: 50%;
-                  border: 1px solid ${COLOR.Primary};
+                  border: 2px solid ${COLOR.Primary};
                   padding: 0.1rem;
                   background: ${colorByIdUser(user?.id || 1)};
                   color: white;
@@ -69,6 +69,60 @@ export const UserHeaderProfile = ({ user }: Props) => {
         </Space>
         {/*<Space>{user?.photo?.path}</Space>*/}
       </Space>
+    </Space>
+  );
+};
+export const AvatarUser = ({ title, img, id }: any) => {
+  return (
+    <Space
+      className={css`
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      `}
+    >
+      {/* <Link to={SiteMap.Profile.generate(id)}> */}
+      <Space
+        className={css`
+          //height: 5rem;
+          //width: 5rem;
+          object-fit: cover;
+        `}
+      >
+        <If condition={!!img}>
+          <Then>
+            <img
+              className={css`
+                object-fit: cover;
+                height: 4rem;
+                width: 4rem;
+                border-radius: 50%;
+                border: 2px solid ${COLOR.White};
+                /* padding: 0.1rem; */
+              `}
+              src={getImage(img)}
+              alt={img}
+            />
+          </Then>
+          <Else>
+            <BoxCenter
+              className={css`
+                object-fit: cover;
+                height: 4rem;
+                width: 4rem;
+                border-radius: 50%;
+                border: 2px solid ${COLOR.White};
+                /* padding: 0.1rem; */
+                background: ${colorByIdUser(id || 1)};
+                color: white;
+              `}
+            >
+              {title?.substring(0, 1) || ''}
+            </BoxCenter>
+          </Else>
+        </If>
+      </Space>
+      {/* </Link> */}
     </Space>
   );
 };

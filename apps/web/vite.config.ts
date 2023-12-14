@@ -6,6 +6,7 @@ import * as path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    
     react({
       include: ['**/*.tsx', '**/*.ts'],
       // jsxRuntime: 'automatic',
@@ -21,6 +22,7 @@ export default defineConfig({
     watch: {
       // usePolling: true,
     },
+    hmr: { overlay: false },
     port: 1111,
     host: true, // Here
     // strictPort: true,

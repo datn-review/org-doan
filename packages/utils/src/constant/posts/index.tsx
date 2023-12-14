@@ -76,7 +76,7 @@ export const colorUser = [
   '#27ae60',
   '#e67e22',
   '#34495e',
-  '#e96e61b',
+  '#f85ff6',
 ];
 
 export const colorCovert: Record<number, string> = color.reduce((acc, currentValue, index) => {

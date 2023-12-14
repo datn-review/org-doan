@@ -16,6 +16,11 @@ export class RoomService extends BaseService<Room, Repository<Room>, IParams> {
       .createQueryBuilder('room')
       .leftJoinAndSelect('room.owner', 'owner')
       .leftJoinAndSelect('room.members', 'members')
+      .leftJoinAndSelect('members.photo', 'file')
+      .leftJoinAndSelect('members.role', 'role')
+      .leftJoinAndSelect('owner.role', 'role_')
+      .leftJoinAndSelect('owner.photo', 'file_')
+      .leftJoinAndSelect('room.messages', 'message')
       .where('owner.id = :userId OR members.id = :userId', { userId })
       .getMany();
   }
