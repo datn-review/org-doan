@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "start-api": "env-cmd -f apps/api/.env.prod node apps/api/dist/main"
   },
   "engines": {
     "node": ">=16.8.0 <20",
@@ -45,6 +46,9 @@
     "packages/*",
     "apps/*"
   ],
+  
+  
+  
   "dependencies": {
     "@babel/runtime": "^7.22.15",
     "@emotion/css": "^11.11.2",
