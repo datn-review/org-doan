@@ -3,7 +3,7 @@ import { i18nContant } from '@org/i18n';
 export const dataTime = [
   {
     value: 1,
-    label: <>30 {i18nContant('min')}</>,
+    label: `30 ${i18nContant('min')}`,
   },
   {
     value: 2,
@@ -30,15 +30,15 @@ export const dataTime = [
 export const day = [
   {
     value: 1,
-    label: <>{i18nContant('month')}</>,
+    label: i18nContant('month'),
   },
   {
     value: 2,
-    label: <>{i18nContant('week')}</>,
+    label: i18nContant('week'),
   },
   {
     value: 3,
-    label: <>{i18nContant('day')}</>,
+    label: i18nContant('day'),
   },
 ];
 

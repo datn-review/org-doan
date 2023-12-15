@@ -24,7 +24,7 @@ import { SiteMap } from '@org/utils';
 import { CardClassNew } from '../../atoms/Card';
 import { css } from '@emotion/css';
 import { SelectCertification, SelectGrade, SelectSkill, SelectSubject } from '@org/core';
-
+import bannerClassNew from '../../../assets/classNew-oke.png';
 const dataInit: any = {
   grade: undefined,
   subject: undefined,
@@ -65,7 +65,34 @@ function ClassNew() {
 
   return (
     <SectionLayout>
-      <Section
+      <Space
+        className={css`
+          position: relative;
+          margin-bottom: 2rem;
+        `}
+      >
+        <img
+          src={bannerClassNew}
+          alt='bannerClassNew'
+          className={css`
+            border: 2px solid #675cd8;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 6px 6px rgba(47, 43, 61, 0.14), 0 0 transparent, 0 0 transparent;
+          `}
+        />
+        <TextSection
+          className={css`
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -25%);
+          `}
+        >
+          {t('class.new')}
+        </TextSection>
+      </Space>
+      {/* <Section
         className={css`
           display: flex;
           justify-content: space-between;
@@ -73,14 +100,13 @@ function ClassNew() {
           margin-bottom: 2rem;
         `}
       >
-        <TextSection>{t('class.new')}</TextSection>
         <Button
           $size={SIZE.ExtraSmall}
           onClick={() => setIsShowFilter(true)}
         >
           {t('filter')}
         </Button>
-      </Section>
+      </Section> */}
 
       <Row gutter={[4, 20]}>
         <Col

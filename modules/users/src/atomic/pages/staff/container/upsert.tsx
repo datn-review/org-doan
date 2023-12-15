@@ -1,11 +1,7 @@
 import { css } from '@emotion/css';
 import { AddressForm, IWards, useCRUDContext, useMessageHook, useUnmount } from '@org/core';
 import { getNameLanguage, i18next, useTranslation } from '@org/i18n';
-import {
-  useCreateUserStudentMutation,
-  useLazyFindUserStudentQuery,
-  useUpdateUserStudentMutation,
-} from '@org/store';
+import { useCreateStaffMutation, useLazyFindStaffQuery, useUpdateStaffMutation } from '@org/store';
 import {
   BoxCenter,
   Button,
@@ -83,11 +79,11 @@ export function Upsert() {
 
   const { messageError, messageSuccess, contextHolder } = useMessageHook();
 
-  const [createData, { isLoading: isLoadingCreate }] = useCreateUserStudentMutation();
+  const [createData, { isLoading: isLoadingCreate }] = useCreateStaffMutation();
 
-  const [getData, { isLoading: isLoadingGet }] = useLazyFindUserStudentQuery();
+  const [getData, { isLoading: isLoadingGet }] = useLazyFindStaffQuery();
 
-  const [updateUser, { isLoading: isLoadingUpdate }] = useUpdateUserStudentMutation();
+  const [updateUser, { isLoading: isLoadingUpdate }] = useUpdateStaffMutation();
 
   const name = getNameLanguage('nameVI', 'nameEN');
 

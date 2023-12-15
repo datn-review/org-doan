@@ -1,4 +1,3 @@
-
 export enum RoleEnum {
   'WEB_ADMIN' = 1,
   'WEB_STAFF' = 2,
@@ -8,4 +7,17 @@ export enum RoleEnum {
   'STUDENT' = 6,
   'PARENT' = 7,
   'ANONYMOUS' = 8,
+}
+export enum RolesEnumName {
+  WEB_ADMIN = 'WEB_ADMIN',
+  WEB_STAFF = 'WEB_STAFF',
+
+  CENTER_ADMIN = 'CENTER_ADMIN',
+  CENTER_TUTOR = 'CENTER_TUTOR',
+
+  PESONAL_TUTOR = 'PESONAL_TUTOR',
+
+  STUDENT = 'STUDENT',
+  PARENT = 'PARENT',
+  ANONYMOUS = 'ANONYMOUS',
 }

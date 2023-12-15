@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { useTranslation } from '@org/i18n';
+import { i18nContant, useTranslation } from '@org/i18n';
 import { useAppDispatch, useRegisterUserEmailMutation } from '@org/store';
 import {
   BoxCenter,
@@ -7,6 +7,8 @@ import {
   CheckBoxForm,
   FormProvider,
   InputForm,
+  ModalAntd,
+  Radio,
   Space,
   Spin,
   TextLink,
@@ -14,7 +16,8 @@ import {
   useForm,
   yupResolver,
 } from '@org/ui';
-import { SiteMap } from '@org/utils';
+import { RolesEnum, SiteMap } from '@org/utils';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
@@ -25,7 +28,20 @@ interface IRegister {
   lastName: string;
   policy?: boolean;
 }
-
+const typeRoles = [
+  {
+    value: RolesEnum.STUDENT,
+    label: i18nContant('student'),
+  },
+  {
+    value: RolesEnum.PARENT,
+    label: i18nContant('parent'),
+  },
+  {
+    value: RolesEnum.PESONAL_TUTOR,
+    label: i18nContant('tutor'),
+  },
+];
 const schema = yup.object({
   firstName: yup.string().required('firstName required.'),
   lastName: yup.string().required('lastName required.'),
@@ -39,6 +55,8 @@ function RegisterApp() {
   const navigate = useNavigate();
 
   const [messageApi, contextHolder] = message.useMessage();
+  const [type, setType] = useState(RolesEnum.STUDENT);
+  const [confirm, setConfirm] = useState(false);
 
   const methods = useForm<IRegister>({
     defaultValues: {
@@ -58,21 +76,21 @@ function RegisterApp() {
         lastName,
         email,
         password,
+        type,
       })
         .unwrap()
         .then(() => {
-          messageApi.open({
-            type: 'success',
-            content: 'Vui lòng xác nhận địa chi email của bạn ở hộp thư!',
-            duration: 5,
-          });
-          setTimeout(() => {
-            navigate(SiteMap.Auth.Login.path);
-          }, 5000);
+          // messageApi.open({
+          //   type: 'success',
+          //   content: 'Vui lòng xác nhận địa chi email của bạn ở hộp thư!',
+          //   duration: 5,
+          // });
+          // setTimeout(() => {
+          //   navigate(SiteMap.Auth.Login.path);
+          // }, 5000);
+          setConfirm(true);
         })
-        .catch((err) => {
-          console.log('🚀 ~ file: LoginApp.tsx:89 ~ .then ~ err:', err);
-        });
+        .catch((err) => {});
     }
   };
   return (
@@ -90,29 +108,36 @@ function RegisterApp() {
               padding-bottom: 0.8rem;
             `}
           >
-            Adventure starts here 🚀
+            {t('auth.Welcome')} 👋🏻
           </h5>
-          <p>Make your app management easy and fun!</p>
+          <p>{t('auth.Make-your')}</p>
         </Space>
 
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
+            <BoxCenter>
+              <Radio.Group
+                options={typeRoles}
+                onChange={(e: any) => setType(e.target.value)}
+                value={type}
+              />
+            </BoxCenter>
+            <br />
             <InputForm
               name='firstName'
-              label={'First Name'}
+              label={t('user.firstName')}
             />
             <InputForm
               name='lastName'
-              label={'Last Name'}
+              label={t('user.lastName')}
             />
-
             <InputForm
               name='email'
-              label={'Email'}
+              label={t('user.email')}
             />
             <InputForm
               name='password'
-              label={'Password'}
+              label={t('user.password')}
             />
 
             <Space
@@ -127,7 +152,8 @@ function RegisterApp() {
                 <CheckBoxForm
                   labelCB={
                     <Link to={SiteMap.Auth.ForgotPassword.path}>
-                      I agree to <TextLink> privacy policy & terms </TextLink>
+                      {t('auth.I-agree')}
+                      <TextLink>{t('auth.privacy-policy')} </TextLink>
                     </Link>
                   }
                   name='policy'
@@ -145,14 +171,15 @@ function RegisterApp() {
             </Button>
           </form>
           <BoxCenter>
-            Already have an account?
+            {t('auth.Already')}
+
             <Link to={SiteMap.Auth.Login.path}>
               <TextLink
                 className={css`
                   margin-left: 1rem;
                 `}
               >
-                Sign in instead
+                {t('auth.Sign.in.instead')}
               </TextLink>
             </Link>
           </BoxCenter>
@@ -161,7 +188,7 @@ function RegisterApp() {
               margin: 2rem;
             `}
           >
-            or
+            {t('auth.or')}
           </BoxCenter>
 
           <BoxCenter
@@ -175,6 +202,14 @@ function RegisterApp() {
           </BoxCenter>
         </FormProvider>
       </div>
+      <ModalAntd
+        title={t('auth.confirm')}
+        open={confirm}
+        onCancel={() => setConfirm(false)}
+        onOk={() => navigate(SiteMap.Auth.Login.path)}
+      >
+        {t('auth.please.confirm')}
+      </ModalAntd>
     </Spin>
   );
 }

@@ -4,9 +4,27 @@
   "vi-VN":"Tiếng Việt",
   "en-EN":"Tiếng Anh",
 
-  "auth": {
-    "title": { "login": "Đăng Nhập" }
+  "auth":{
+    "title":{ "login" : "Đăng Nhập","register":"Đăng Ký"},
+    "create.an.acount":"Tạo Tài Khoản Mới",
+    "new.platform":"Người mới trên nền tảng của chúng tôi?",
+    "forgot":"Quên Mật Khẩu?",
+    "Welcome":"Chào Bạn Đến Với SmartTutor!",
+    "Please-sign-in":"Vui lòng đăng nhập vào tài khoản của bạn và bắt đầu học tập",
+    "Remember":"Nhớ",
+    
+    "Make-your":"Làm cho việc quản lý ứng dụng của bạn trở nên dễ dàng và thú vị!",
+    "I-agree":"Tôi đồng ý ",
+    "privacy-policy":" chính sách và điều khoản bảo mật",
+    "Already":"Bạn đã có tài khoản?",
+    "Sign.in.instead":"Đăng nhập tại đây",
+    "or":"Hoặc",
+    "confirm":"Xác Nhận",
+    "please.confirm":"Vui lòng xác nhận địa chỉ email của bạn trong hộp thư đến!"
+
   },
+  "student":"Học Sinh",
+  "parent":"Phụ Huynh",
   "all": "Tất Cả",
   "inactive": "Chưa Xác Nhận",
   "active": "Đã Xác Nhận",
@@ -54,7 +72,7 @@
     "staff": "Nhân Viên",
     "center.admin": "QTV Trung Tâm",
     "center.tutor": "Gia Sư Trung Tâm",
-    "personal.tutor": "Gia Sư Cá Nhân",
+    "personal.tutor": "Gia Sư",
     "parent": "Phụ Huynh",
     "student": "Học Sinh"
   },
@@ -336,6 +354,7 @@
     "chat.user":"Thành Viên",
     "create":"Tạo",
     "bot.message":"Trò Chuyện Với Bot"
+    
 
 }
 

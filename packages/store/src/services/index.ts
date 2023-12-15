@@ -24,3 +24,6 @@ export * from './assignment.api';
 export * from './chat.api';
 export * from './room.api';
 export * from './feedback.api';
+
+export * from './users.staff.api';
+export * from './users.parent.api';

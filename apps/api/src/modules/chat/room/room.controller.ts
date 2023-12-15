@@ -24,19 +24,48 @@ import { Room } from './entities/room.entity';
 import { UpdateRoomDto } from './dto/update.dto';
 import { RoomService } from './room.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
+import { UsersService } from 'src/users/users.service';
 
 const relations = [
   {
-    field: 'owner',
+    field: 'rooms',
+    entity: 'room',
+  },
+  {
+    field: 'joinedRooms',
+    entity: 'room_',
+  },
+  // {
+  //   field: 'joinedRooms.members',
+  //   entity: 'room__',
+  // },
+  // {
+  //   field: 'joinedRooms.owner',
+  //   entity: 'room__',
+  // },
+  {
+    field: 'room.members',
     entity: 'user',
   },
   {
-    field: 'user.photo',
-    entity: 'file',
+    field: 'room_.members',
+    entity: 'user_J',
   },
   {
-    field: 'members',
-    entity: 'room_members_user',
+    field: 'room.owner',
+    entity: 'user_',
+  },
+  {
+    field: 'room_.owner',
+    entity: 'user__O',
+  },
+  {
+    field: 'room.messages',
+    entity: 'message',
+  },
+  {
+    field: 'room_.messages',
+    entity: 'message_',
   },
 ];
 @ApiBearerAuth()
@@ -48,7 +77,10 @@ const relations = [
   version: '1',
 })
 export class RoomController {
-  constructor(private readonly roomService: RoomService) {}
+  constructor(
+    private readonly roomService: RoomService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
@@ -102,7 +134,13 @@ export class RoomController {
     //     ],
     //   ],
     // });
-    const room = await this.roomService.findRoomByUser(userId);
+    const users = await this.usersService.findOne({ id: userId }, relations);
+    console.log('🚀 ~ file: room.controller.ts:110 ~ RoomController ~ users:', users);
+    // const room = await this.findRoomByUser(userId);
+    const room = [
+      ...(users?.joinedRooms ? users?.joinedRooms : []),
+      ...(users?.rooms ? users?.rooms : []),
+    ];
     const dataMap = room
       ?.map((item) => {
         const isSingle = item?.members?.length == 1;
@@ -113,7 +151,7 @@ export class RoomController {
           friends = [...item.members];
         } else {
           me = { ...item?.members?.find((member) => member.id === userId) };
-          friends = [item.owner, ...item.members.filter((member) => member.id !== userId)];
+          friends = [item?.owner, ...item?.members?.filter((member) => member.id !== userId)];
         }
 
         return {
@@ -123,7 +161,7 @@ export class RoomController {
           friends,
         };
       })
-      .filter(
+      ?.filter(
         (item) =>
           item?.messages?.length > 0 || item?.owner?.id === userId || item?.members?.length > 1,
       );

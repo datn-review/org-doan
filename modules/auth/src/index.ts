@@ -1,2 +1,2 @@
-export * from "./atomic/pages";
-export * from "./atomic/organisms";
+export * from './atomic/pages';
+export * from './atomic/organisms';

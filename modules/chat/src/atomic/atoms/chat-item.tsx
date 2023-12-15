@@ -10,13 +10,14 @@ export const ChatItem = ({ room, isActive, onClick, isBot }: any) => {
   const friend = room?.friends?.[0];
   const title = room?.isSingle ? `${friend?.lastName} ${friend?.firstName}` : room?.title;
   const logo = room?.isSingle ? friend?.photo?.path : '';
+  const id = room?.isSingle ? friend?.id : room?.id;
 
   const data = {
     isSingle: room?.isSingle,
     friend,
     title,
     logo,
-    id: friend?.id,
+    id,
   };
 
   const { t } = useTranslation();
@@ -48,7 +49,7 @@ export const ChatItem = ({ room, isActive, onClick, isBot }: any) => {
           <Else>
             <AvatarUser
               img={logo}
-              id={friend?.id}
+              id={id}
               title={title}
             />
           </Else>

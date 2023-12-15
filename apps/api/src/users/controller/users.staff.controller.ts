@@ -52,14 +52,14 @@ const relations = [
   },
 ];
 @ApiBearerAuth()
-@ApiTags('User Admin')
+@ApiTags('User Staff')
 @Roles(RoleEnum.WEB_ADMIN)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
-  path: 'users/admin',
+  path: 'users/staff',
   version: '1',
 })
-export class UsersAdminController {
+export class UsersStaffController {
   postSkillsService: any;
   constructor(
     private readonly usersService: UsersService,
@@ -87,7 +87,7 @@ export class UsersAdminController {
       ...createProfileDto,
       photo: photoCheck.id || null,
       role: {
-        id: RoleEnum.WEB_ADMIN,
+        id: RoleEnum.WEB_STAFF,
       },
     });
 
@@ -124,7 +124,7 @@ export class UsersAdminController {
       where: [
         {
           field: 'role',
-          value: RoleEnum.WEB_ADMIN,
+          value: RoleEnum.WEB_STAFF,
         },
       ],
       relations,

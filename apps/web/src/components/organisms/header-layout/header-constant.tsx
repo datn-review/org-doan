@@ -107,22 +107,22 @@ export const menuCategory = (): MenuItem[] => {
           key: SiteMap.Users.Staff.menu,
           icon: <></>,
         },
-        {
-          label: <Translation>{(t) => t('manage.center.admin')}</Translation>,
-          path: SiteMap.Users.CenterAdmin.path,
-          id: SiteMap.Users.CenterAdmin.menu,
-          key: SiteMap.Users.CenterAdmin.menu,
+        // {
+        //   label: <Translation>{(t) => t('manage.center.admin')}</Translation>,
+        //   path: SiteMap.Users.CenterAdmin.path,
+        //   id: SiteMap.Users.CenterAdmin.menu,
+        //   key: SiteMap.Users.CenterAdmin.menu,
 
-          icon: <></>,
-        },
-        {
-          label: <Translation>{(t) => t('manage.center.tutor')}</Translation>,
-          path: SiteMap.Users.CenterTutor.path,
-          id: SiteMap.Users.CenterTutor.menu,
-          key: SiteMap.Users.CenterTutor.menu,
+        //   icon: <></>,
+        // },
+        // {
+        //   label: <Translation>{(t) => t('manage.center.tutor')}</Translation>,
+        //   path: SiteMap.Users.CenterTutor.path,
+        //   id: SiteMap.Users.CenterTutor.menu,
+        //   key: SiteMap.Users.CenterTutor.menu,
 
-          icon: <></>,
-        },
+        //   icon: <></>,
+        // },
         {
           label: <Translation>{(t) => t('manage.personal.tutor')}</Translation>,
           path: SiteMap.Users.PesonalTutor.path,
