@@ -19,7 +19,7 @@
     "Already":"Already have an account?",
     "Sign.in.instead":"Sign in instead",
     "or":"or",
-    "confirm":"Confirm",
+    "confirm":"Register Successfully",
     "please.confirm":"Please confirm your email address in your inbox!"
 
   },
@@ -92,7 +92,7 @@
   "tutor":"Tutor",
   "class.new" : "Class New",
   "manage.name" : "Manage Personal",
-  "manage.registration" : "Manage Registration",
+  "manage.registration" : "Registration",
   "manage.posts.me" : "Manage Posts",
   "manage.classes" : "Manage Classes",
 

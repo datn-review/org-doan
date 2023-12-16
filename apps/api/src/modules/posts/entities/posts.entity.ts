@@ -20,6 +20,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { PostTimeAvailability } from '../post-time-availability/entities/post-time-availability.entity';
+import { Collaboration } from 'src/modules/collaboration/entities/collaboration.entity';
 
 @Entity({ name: 'posts' })
 export class Posts extends EntityHelper {
@@ -76,6 +77,9 @@ export class Posts extends EntityHelper {
 
   @OneToMany(() => PostTimeAvailability, (postTimeAvailability) => postTimeAvailability.posts)
   postTimeAvailability: PostTimeAvailability[];
+
+  @OneToMany(() => Collaboration, (Collaboration) => Collaboration.posts)
+  collaboration: Collaboration[];
 
   @ManyToMany(() => Skills)
   @JoinTable()

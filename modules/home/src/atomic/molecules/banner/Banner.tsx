@@ -5,7 +5,14 @@ import Home_1 from '../../../assets/home-1.png';
 import Home_2 from '../../../assets/home-2.png';
 import Home_3 from '../../../assets/home-3.png';
 import Home_4 from '../../../assets/home-4.png';
-import { COLOR, COLOR_RGB } from '@org/utils';
+import {
+  COLOR,
+  COLOR_RGB,
+  mediaTablet,
+  mediaMiniTablet,
+  mediaPhone,
+  mediaDesktop,
+} from '@org/utils';
 
 const contentStyle: React.CSSProperties = {
   height: '500px',
@@ -55,6 +62,18 @@ const BanerImg = ({ img }: any) => {
       className={css`
         width: 100%;
         height: 80vh;
+        ${mediaDesktop} {
+          height: 80vh !important;
+        }
+        ${mediaTablet} {
+          height: 60vh !important;
+        }
+        ${mediaMiniTablet} {
+          height: 50vh !important;
+        }
+        ${mediaPhone} {
+          height: 30vh !important;
+        }
       `}
     >
       <img

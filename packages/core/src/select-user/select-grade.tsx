@@ -3,6 +3,7 @@ import { useGetCertificationActiveQuery, useGetGradeLevelActiveQuery } from '@or
 import { Select, SelectForm } from '@org/ui';
 import { formatData } from '@org/utils';
 import { useMemo } from 'react';
+import { defauOptions } from './contants';
 export const gradeImportFormat = (data: any) => {
   return data?.map((item: any) => item?.gradeLevel?.id) || [];
 };
@@ -13,6 +14,9 @@ export function SelectGrade(props: any) {
 
   const name = getNameLanguage('nameVI', 'nameEN');
   const grade = useMemo(() => {
+    if (props?.isDefault) {
+      return [defauOptions, ...formatData({ data: data, name })];
+    }
     return formatData({ data: data, name });
   }, [name, data]);
 

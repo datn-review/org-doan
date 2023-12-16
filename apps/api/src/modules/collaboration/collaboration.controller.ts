@@ -32,6 +32,7 @@ import { UpdateCollaborationDto } from './dto/update.dto';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { PaymentService } from '../payment/payment.service';
 import * as dayjs from 'dayjs';
+import { PostsService } from '../posts/posts.service';
 
 function calculateDaysInMonthRange(
   contractStartDate: string,
@@ -129,6 +130,9 @@ const relationsPay = [
 export class CollaborationController {
   constructor(
     private readonly collaborationService: CollaborationService,
+    @Inject(forwardRef(() => PostsService))
+    private readonly postsService: PostsService,
+
     @Inject(forwardRef(() => PaymentService))
     private paymentService: PaymentService,
   ) {}
@@ -215,7 +219,6 @@ export class CollaborationController {
 
     const status = 5;
     const userId = req?.user?.id;
-    console.log(userId);
 
     return await this.collaborationService.findManyWithPagination({
       page,
@@ -302,7 +305,7 @@ export class CollaborationController {
 
     let data = {};
 
-    if (role === RoleEnum.STUDENT) {
+    if (role === RoleEnum.STUDENT || RoleEnum.PARENT) {
       const studentSignature = createCollaborationDto.signature;
       data = {
         studentSignature,
@@ -316,7 +319,19 @@ export class CollaborationController {
         status,
       };
     }
-    // if (IsEmpty(data)) return null;
+    const collaborationGet = await this.collaborationService.findOne(
+      {
+        id: +id,
+      },
+      relationsPay,
+    );
+    if (collaborationGet) {
+      const postsID = collaborationGet?.posts?.id || 0;
+
+      void this.postsService.update(+postsID, {
+        status: 2,
+      });
+    }
 
     return this.collaborationService.update(+id, {
       ...data,
@@ -339,7 +354,7 @@ export class CollaborationController {
 
     let data = {};
 
-    if (role === RoleEnum.STUDENT) {
+    if (role === RoleEnum.STUDENT || RoleEnum.PARENT) {
       const studentSignature = createCollaborationDto.signature;
       data = {
         studentSignature,

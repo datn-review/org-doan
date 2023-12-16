@@ -29,6 +29,7 @@ export const Calendar = ({
   renderEventContent,
   handleEventClick,
   moreLinkContent,
+  eventChange,
 }: any) => {
   const [currentEvents, setCurrentEvents] = useState<EventApi[]>([]);
 
@@ -77,6 +78,7 @@ export const Calendar = ({
               center: 'title',
               right: 'dayGridMonth,timeGridWeek,timeGridDay',
             }}
+            timeZone={'Asia/Ho_Chi_Minh'}
             locales={[esLocale, viLocate]}
             locale={viLocate}
             initialView='dayGridMonth'
@@ -102,10 +104,12 @@ export const Calendar = ({
             /*/you can update a remote database when these fire:*/
             eventAdd={function (data) {
               console.dir(data.event);
+              // eventAdd(data.event)
             }}
             // titleFormat={'dddd, MMMM D, YYYY'}
             eventChange={function (data) {
-              console.dir(data.event);
+              console.log('🚀 ~ file: Calendar.tsx:110 ~ data:', data);
+              eventChange(data.event);
             }}
             eventRemove={function () {}}
             eventMouseEnter={function (data) {

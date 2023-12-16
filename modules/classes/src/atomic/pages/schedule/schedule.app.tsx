@@ -14,11 +14,11 @@ import {
 import moment from 'dayjs';
 import dayjs from 'dayjs';
 import { css } from '@emotion/css';
-import {getNameLanguage, i18nContant, useTranslation} from '@org/i18n';
+import { getNameLanguage, i18nContant, useTranslation } from '@org/i18n';
 import { COLOR } from '@org/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { createEventId } from '@org/ui/src/atomic/atoms/calendar/event-utils';
-import { useCreateLessonDefaultMutation } from '@org/store';
+import { useCreateLessonDefaultMutation, useUpdateLessonMutation } from '@org/store';
 import { isEmpty } from 'lodash';
 import { Popover } from '@org/ui';
 import { timePickerCss } from './schedule.styled';
@@ -39,20 +39,20 @@ const options = [
     value: 2,
   },
   {
-    label:  i18nContant('Wednesday'),
+    label: i18nContant('Wednesday'),
     value: 3,
   },
   {
-    label:  i18nContant('Thursday'),
+    label: i18nContant('Thursday'),
     value: 4,
   },
 
   {
-    label:  i18nContant('Friday'),
+    label: i18nContant('Friday'),
     value: 5,
   },
   {
-    label:  i18nContant('Saturday'),
+    label: i18nContant('Saturday'),
     value: 6,
   },
   {
@@ -64,7 +64,7 @@ const options = [
 type ClassRecord = Record<number, any>;
 
 function Schedule({ data, refetch }: any) {
-  console.log(data);
+  const [updateLesson] = useUpdateLessonMutation();
   const { t } = useTranslation();
   const [createLesson] = useCreateLessonDefaultMutation();
   const [classArray, setClassArray] = useState<ClassRecord>({
@@ -150,45 +150,47 @@ function Schedule({ data, refetch }: any) {
 
   function renderEventContent(eventContent: any) {
     return (
-      <Popover
-        placement='top'
-        title={eventContent.event.title}
-        zIndex={99999}
-        content={
-          <Space>
-            {'time'} : {eventContent.event?.extendedProps?.start} -{' '}
-            {eventContent.event?.extendedProps?.end}
-            <Space
-              className={css`
-                display: flex;
-                justify-content: flex-end;
-                margin-top: 1rem;
-              `}
-            >
-              {/*<Button*/}
-              {/*  $size={SIZE.Small}*/}
-              {/*  onClick={() => setEventId(eventContent?.event?.extendedProps?.id)}*/}
-              {/*>*/}
-              {/*</Button>*/}
+      <Space>
+        <Popover
+          placement='top'
+          title={eventContent.event.title}
+          zIndex={99999}
+          content={
+            <Space>
+              {'time'} : {eventContent.event?.extendedProps?.start} -{' '}
+              {eventContent.event?.extendedProps?.end}
+              <Space
+                className={css`
+                  display: flex;
+                  justify-content: flex-end;
+                  margin-top: 1rem;
+                `}
+              >
+                {/*<Button*/}
+                {/*  $size={SIZE.Small}*/}
+                {/*  onClick={() => setEventId(eventContent?.event?.extendedProps?.id)}*/}
+                {/*>*/}
+                {/*</Button>*/}
+              </Space>
             </Space>
-          </Space>
-        }
-      >
-        <Space
-          className={css`
-            display: block;
-            word-break: break-word;
-            width: 100%;
-            white-space: initial;
-            padding: 0 4px;
-            background-color: ${eventContent.backgroundColor};
-            color: ${eventContent.textColor};
-          `}
+          }
         >
-          {/*<b>{eventContent.timeText}</b>*/}
-          {eventContent.event.title}
-        </Space>
-      </Popover>
+          <Space
+            className={css`
+              display: block;
+              word-break: break-word;
+              width: 100%;
+              white-space: initial;
+              padding: 0 4px;
+              background-color: ${eventContent.backgroundColor};
+              color: ${eventContent.textColor};
+            `}
+          >
+            {/*<b>{eventContent.timeText}</b>*/}
+            {eventContent.event.title}
+          </Space>
+        </Popover>
+      </Space>
     );
   }
 
@@ -198,6 +200,19 @@ function Schedule({ data, refetch }: any) {
   const handleEventClick = (eventContent: any) => {
     console.log(eventContent);
     setEventId(eventContent?.event?.extendedProps?.id);
+  };
+  const eventChange = (eventContent: any) => {
+    console.log(eventContent);
+
+    updateLesson({
+      body: {
+        lessonStart: dayjs(eventContent?._instance?.range.start).format('YYYY-MM-DD HH:mm'),
+        lessonEnd: dayjs(eventContent?._instance?.range.end).format('YYYY-MM-DD HH:mm'),
+      },
+      id: eventContent?._def?.extendedProps?.id,
+    }).then((res) => {
+      console.log(res);
+    });
   };
 
   return (
@@ -229,7 +244,6 @@ function Schedule({ data, refetch }: any) {
             margin-bottom: 2rem;
           `}
         >
-
           <Space>{t('class.time_date')}</Space>
           <RangePicker
             disabled={true}
@@ -336,7 +350,7 @@ function Schedule({ data, refetch }: any) {
                   }}
                   $size={SIZE.ExtraSmall}
                 >
-                  - {t("remove")}
+                  - {t('remove')}
                 </Button>
               </Space>
             )}
@@ -356,7 +370,7 @@ function Schedule({ data, refetch }: any) {
           }}
           $size={SIZE.ExtraSmall}
         >
-          + {t("add")}
+          + {t('add')}
         </Button>
       </Space>
 
@@ -370,6 +384,7 @@ function Schedule({ data, refetch }: any) {
           renderEventContent={renderEventContent}
           handleEventClick={handleEventClick}
           moreLinkContent={renderMoreLinkContent}
+          eventChange={eventChange}
         />
       </Space>
       <If condition={!!eventId}>

@@ -26,7 +26,9 @@ export {
   Popover,
   Table as TableAntd,
   Radio,
+  Skeleton,
 } from 'antd';
 
 export * from '@ant-design/icons';
 export * from './atomic/molecules';
+export * from './assets/img';

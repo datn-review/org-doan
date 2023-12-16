@@ -28,6 +28,7 @@ export class Assignment extends EntityHelper {
 
   @ManyToOne(() => Lessons, {
     eager: true,
+    onDelete: 'CASCADE',
   })
   lesson: Lessons | null;
 

@@ -88,7 +88,7 @@ export const LessonInfo = ({ data }: any) => {
   const { t } = useTranslation();
   const [content, setContent] = useState(data?.content);
   const [updateLesson] = useUpdateLessonMutation();
-  console.log(content);
+
   const handleSave = () => {
     updateLesson({ body: { content }, id: data?.id }).then((res) => {
       console.log(res);

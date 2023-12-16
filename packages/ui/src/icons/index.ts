@@ -24,6 +24,7 @@ export { ReactComponent as IconClassesName } from '../assets/icons/svg/classes-n
 export { ReactComponent as IconContacs } from '../assets/icons/svg/contacts.svg';
 export { ReactComponent as IconNews } from '../assets/icons/svg/news.svg';
 export { ReactComponent as IconAssessment } from '../assets/icons/svg/assessment.svg';
+export { ReactComponent as NoDataSvg } from '../assets/icons/svg/no-data.svg';
 
 export { IconSearch } from './SearchIcon';
 export { ChatIcon } from './ChatIcon';

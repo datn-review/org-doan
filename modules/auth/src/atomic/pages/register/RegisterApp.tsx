@@ -20,7 +20,8 @@ import { RolesEnum, SiteMap } from '@org/utils';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-
+import IconEmail from '../../../assets/images/icons8-email-100.png';
+import OAuth2ICons from '../../atoms';
 interface IRegister {
   email: string;
   password: string;
@@ -176,7 +177,7 @@ function RegisterApp() {
             <Link to={SiteMap.Auth.Login.path}>
               <TextLink
                 className={css`
-                  margin-left: 1rem;
+                  /* margin-left: 1rem; */
                 `}
               >
                 {t('auth.Sign.in.instead')}
@@ -190,25 +191,46 @@ function RegisterApp() {
           >
             {t('auth.or')}
           </BoxCenter>
-
-          <BoxCenter
-            className={css`
-              gap: 0.5rem;
-            `}
-          >
-            <Space>FB</Space>
-            <Space>GG</Space>
-            <Space>TT</Space>
-          </BoxCenter>
+          <OAuth2ICons />
         </FormProvider>
       </div>
       <ModalAntd
-        title={t('auth.confirm')}
+        title={
+          <Space
+            className={css`
+              display: flex;
+              justify-content: flex-start;
+              align-items: center;
+            `}
+          >
+            {t('auth.confirm')}
+          </Space>
+        }
         open={confirm}
         onCancel={() => setConfirm(false)}
         onOk={() => navigate(SiteMap.Auth.Login.path)}
+        footer={
+          <Space
+            className={css`
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
+            `}
+          >
+            <Button
+              onClick={() => {
+                navigate(SiteMap.Auth.Login.path);
+              }}
+            >
+              {t('OK')}
+            </Button>
+          </Space>
+        }
       >
         {t('auth.please.confirm')}
+        <BoxCenter>
+          <img src={IconEmail}></img>
+        </BoxCenter>
       </ModalAntd>
     </Spin>
   );

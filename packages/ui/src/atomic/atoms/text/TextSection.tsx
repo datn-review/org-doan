@@ -8,7 +8,8 @@ function TextSection({
   className,
   children,
   left = false,
-}: PropsWithChildren<{ color?: string; left?: boolean; className: any }>) {
+  secondary = false,
+}: PropsWithChildren<{ color?: string; left?: boolean; className?: any; secondary?: boolean }>) {
   return (
     <Space
       className={cx(
@@ -39,7 +40,7 @@ function TextSection({
             width: 120px;
             height: 6px;
             border-radius: 12px;
-            background-color: #ff5520;
+            background-color: ${secondary ? COLOR.Primary : '#ff5520'};
             position: absolute;
 
             bottom: 0;

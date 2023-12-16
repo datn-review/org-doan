@@ -7,7 +7,7 @@
   "auth":{
     "title":{ "login" : "Đăng Nhập","register":"Đăng Ký"},
     "create.an.acount":"Tạo Tài Khoản Mới",
-    "new.platform":"Người mới trên nền tảng của chúng tôi?",
+    "new.platform":"Bạn Chưa Có Tài Khoản?",
     "forgot":"Quên Mật Khẩu?",
     "Welcome":"Chào Bạn Đến Với SmartTutor!",
     "Please-sign-in":"Vui lòng đăng nhập vào tài khoản của bạn và bắt đầu học tập",
@@ -19,7 +19,7 @@
     "Already":"Bạn đã có tài khoản?",
     "Sign.in.instead":"Đăng nhập tại đây",
     "or":"Hoặc",
-    "confirm":"Xác Nhận",
+    "confirm":"Đăng Kí Thành Công",
     "please.confirm":"Vui lòng xác nhận địa chỉ email của bạn trong hộp thư đến!"
 
   },
@@ -200,7 +200,7 @@
   "fee.status": "Tình Trạng Học Phí",
   "Assignment": "Bài Tập",
   "Feedback": "Đánh Giá",
-  "create.schedule": "Tạo Lich Học",
+  "create.schedule": "Lich Học",
   "save.schedule": "Lưu Lich Học",
   "dayOfWeek": "Thứ",
   "time_date": "Thời Gian Bắt Đầu - Kết Thúc",
@@ -353,9 +353,18 @@
     "chat.room.name":"Tên Nhóm",
     "chat.user":"Thành Viên",
     "create":"Tạo",
-    "bot.message":"Trò Chuyện Với Bot"
+    "bot.message":"Trò Chuyện Với Bot",
+    "search.title":"Tìm Kiếm",
+    "clear":"Xóa",
+    "post.class.success":"Nhận Lớp Thành Công",
+    "classNew.register.exist":"Đã Giao",
+    "classNew.isUserRegistered":"Chờ Phản Hồi",
+    "status.post.all":"Tất Cả",
+    "status.post.no.collap":"Chưa Giao",
+    "status.post.collap":"Đã Giao",
+    "status.all":"Tất Cả",
+    "no.classes":"Chưa Có Lớp"
     
-
 }
 
 

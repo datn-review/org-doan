@@ -24,6 +24,7 @@ import {
 import { RolesEnum, SiteMap } from '@org/utils';
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import OAuth2ICons from '../../atoms';
 import * as yup from 'yup';
 
 interface ILogin {
@@ -153,7 +154,7 @@ function Login() {
             <Link to={SiteMap.Auth.Register.path}>
               <TextLink
                 className={css`
-                  margin-left: 1rem;
+                  /* margin-left: 1rem; */
                 `}
               >
                 {t('auth.create.an.acount')}
@@ -168,15 +169,7 @@ function Login() {
             {t('auth.or')}
           </BoxCenter>
 
-          <BoxCenter
-            className={css`
-              gap: 0.5rem;
-            `}
-          >
-            <Space>FB</Space>
-            <Space>GG</Space>
-            <Space>TT</Space>
-          </BoxCenter>
+          <OAuth2ICons />
         </FormProvider>
       </div>
     </Spin>

@@ -53,4 +53,5 @@ export const {
   useDeleteUserTutorMutation,
   useLazyFindUserTutorQuery,
   useGetUserTutorActiveQuery,
+  useLazyGetUserTutorActiveQuery,
 } = UserTutorAPI;

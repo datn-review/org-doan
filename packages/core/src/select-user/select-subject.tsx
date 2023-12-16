@@ -7,6 +7,7 @@ import {
 import { Select, SelectForm } from '@org/ui';
 import { formatData } from '@org/utils';
 import { useMemo } from 'react';
+import { defauOptions } from './contants';
 export const subjectImportFormat = (data: any) => {
   return data?.map((item: any) => item?.subject?.id) || [];
 };
@@ -17,6 +18,9 @@ export function SelectSubject(props: any) {
 
   const name = getNameLanguage('nameVI', 'nameEN');
   const subject = useMemo(() => {
+    if (props?.isDefault) {
+      return [defauOptions, ...formatData({ data: data, name })];
+    }
     return formatData({ data: data, name });
   }, [name, data]);
 

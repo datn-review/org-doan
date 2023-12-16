@@ -217,12 +217,34 @@ export class UsersTutorController {
     @Query('sortDirection', new DefaultValuePipe('ASC')) sortDirection: string,
     @Query('fieldSearch', new DefaultValuePipe(['lastName', 'firstName']))
     fieldSearch: string | string[],
-  ): Promise<InfinityPaginationResultType<User>> {
+    @Query('certification', new DefaultValuePipe(0)) certification?: number,
+    @Query('skills', new DefaultValuePipe(0)) skills?: number,
+    @Query('grade', new DefaultValuePipe(0)) grade?: number,
+    @Query('subject', new DefaultValuePipe(0)) subject?: number,
+  ): Promise<InfinityPaginationResultType<any>> {
     if (limit > 50) {
       limit = 50;
     }
 
-    return await this.usersService.findManyWithPagination({
+    const where: any = [
+      {
+        field: 'role',
+        value: RoleEnum.PESONAL_TUTOR,
+      },
+    ];
+    if (certification) {
+      where.push({ field: 'certification.id', value: certification });
+    }
+    if (skills) {
+      where.push({ field: 'skill.id', value: skills });
+    }
+    if (grade) {
+      where.push({ field: 'gradeLevel.id', value: grade });
+    }
+    if (subject) {
+      where.push({ field: 'subject.id', value: subject });
+    }
+    const data = await this.usersService.findManyWithPagination({
       page,
       limit,
       sortBy,
@@ -230,14 +252,45 @@ export class UsersTutorController {
       status: 1,
       searchName,
       fieldSearch,
-      where: [
+      where,
+      relations: [
+        ...relations,
         {
-          field: 'role',
-          value: RoleEnum.PESONAL_TUTOR,
+          field: 'collaboration',
+          entity: 'collaboration',
+        },
+        {
+          field: 'collaboration.feedback',
+          entity: 'feedback',
         },
       ],
-      relations,
     });
+    const dataMap = data?.data.map((item) => {
+      let length = 0;
+      let starSum = 0;
+
+      item.collaboration?.forEach((collaboration) => {
+        const feedback = collaboration?.feedback?.[0];
+        if (!isEmpty(feedback)) {
+          length++;
+          const sumFeedback =
+            feedback?.overallRating +
+            feedback?.interactionRating +
+            feedback?.qualityRatting +
+            feedback?.contentRatting +
+            feedback?.presentationRating;
+          starSum = starSum + sumFeedback / 5;
+        }
+      });
+
+      return {
+        ...item,
+        collaboration: null,
+        star: length === 0 ? 0 : (starSum / length).toFixed(1),
+      };
+    });
+
+    return { data: dataMap, totals: data?.totals };
   }
   @Roles(RoleEnum.WEB_ADMIN)
   @Roles(RoleEnum.WEB_STAFF)
