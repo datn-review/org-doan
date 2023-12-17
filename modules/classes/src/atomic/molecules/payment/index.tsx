@@ -72,7 +72,6 @@ export function Payment({ data, close, refetch }: IProps) {
   const [registerConfirmCollaboration] = useRegisterConfirmCollaborationMutation();
 
   const [posterConfirmCollaboration] = usePosterConfirmCollaborationMutation();
-  console.log(dayjs(data?.feeMonthDate).format('YYYY-MM-DD'));
   const submitContact = (value: any) => {
     createPaymentVNPAY({
       id: data?.id,

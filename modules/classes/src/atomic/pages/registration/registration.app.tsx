@@ -68,7 +68,6 @@ function Registration() {
   }, []);
 
   const [getUser, { data, isLoading }] = useLazyGetMeCollaborationQuery();
-  console.log('data', data);
   const [deleteUser] = useDeleteCollaborationMutation();
 
   const query = {
@@ -98,6 +97,11 @@ function Registration() {
     deleteUser(record.id)
       .then((data) => {
         messageSuccess(t('user.delete.success'));
+        getUser({
+          ...query,
+          page: 1,
+        });
+        tableInstance.reset();
       })
       .catch((error) => {
         messageSuccess(t('user.delete.error'));

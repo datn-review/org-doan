@@ -34,6 +34,7 @@ import { TutorSkillsService } from 'src/modules/tutor-skills/tutor-skills.servic
 import { TutorTimeAvailabilityService } from 'src/users/tutor-time-availability/tutor-time-availability.service';
 import { differenceBy, differenceWith, isEmpty } from 'lodash';
 import { FilesService } from 'src/files-drive/files.service';
+import { RoleEnum, RolesEnumName } from 'src/roles/roles.enum';
 
 @ApiTags('Auth')
 @Controller({

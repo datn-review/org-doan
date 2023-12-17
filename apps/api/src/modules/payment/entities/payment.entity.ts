@@ -31,7 +31,6 @@ export class Payment extends EntityHelper {
   @ManyToOne(() => Collaboration, {
     eager: true,
   })
-  @Column({ type: Number })
   collaboration?: Collaboration | null;
 
   @Column({ type: Date, nullable: true })

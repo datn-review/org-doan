@@ -8,6 +8,7 @@ import {
   Space,
   UnloadImageForm,
   UploadImage,
+  WechatFilled,
   useForm,
 } from '@org/ui';
 import { COLOR, getImage } from '@org/utils';
@@ -92,7 +93,9 @@ function InfoHeader({ data }: any) {
               </h4>
 
               <Space>
-                <Button>{t('chat')}</Button>
+                <Button>
+                  <WechatFilled style={{ color: COLOR.White }} />
+                </Button>
               </Space>
             </Space>
           </Col>

@@ -3,7 +3,7 @@ import { DefaultLayout, MainLayout } from '@components/templates';
 import { HomePage } from '@org/home';
 import { ConfirmEmailPage, LoginPage, RegisterPage } from '@org/auth';
 import { SiteMap } from '@org/utils';
-import { StudentsPage, UserTutorsPage, WebAdminPage } from '@org/users';
+import { ParentPage, StaffPage, StudentsPage, UserTutorsPage, WebAdminPage } from '@org/users';
 import { CertificationPage, GradeLevelPage, SubjectPage, SkillsPage } from '@org/settings';
 import { ProfilePage } from '@org/profile';
 import { LookForTutorPage } from '@org/look-for-tutor';
@@ -18,6 +18,7 @@ import {
   ClassesPage,
   ClassesDetailsPage,
 } from '@org/classes';
+import { DashboardPage, PaymentPage } from '@org/manage';
 import {
   AssignmentPage,
   CreateAssignmentPage,
@@ -27,7 +28,6 @@ import {
   ReviewAssignmentPage,
 } from '@org/assessment';
 import { ChatPage } from '@org/chat';
-
 export const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -38,7 +38,11 @@ export const router = createBrowserRouter([
       },
       {
         path: SiteMap.Dashboard.path,
-        element: <h1>Dashboard</h1>,
+        element: <DashboardPage />,
+      },
+      {
+        path: SiteMap.Payment.path,
+        element: <PaymentPage />,
       },
       {
         path: SiteMap.Users.Admin.path,
@@ -47,6 +51,14 @@ export const router = createBrowserRouter([
       {
         path: SiteMap.Users.PesonalTutor.path,
         element: <UserTutorsPage />,
+      },
+      {
+        path: SiteMap.Users.Staff.path,
+        element: <StaffPage />,
+      },
+      {
+        path: SiteMap.Users.Parent.path,
+        element: <ParentPage />,
       },
       {
         path: SiteMap.Users.Student.path,

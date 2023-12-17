@@ -63,6 +63,13 @@ export const CollaborationAPI = baseAuthSplitApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getClassesAll: builder.query({
+      query: (id) => ({
+        url: `/collaboration/classes/all`,
+        method: 'GET',
+      }),
+    }),
+
     updateCollaboration: builder.mutation({
       query: ({ body, id }) => ({
         url: `/collaboration/${id}`,
@@ -93,4 +100,6 @@ export const {
   useRegisterConfirmCollaborationMutation,
   usePosterConfirmCollaborationMutation,
   useLazyGetClassesQuery,
+  useLazyGetClassesAllQuery,
+  useGetClassesAllQuery,
 } = CollaborationAPI;

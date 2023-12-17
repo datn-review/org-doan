@@ -67,6 +67,7 @@ export function FeeInfomation({ payments = [] }: any) {
           status = 3;
         }
 
+        if (record?.receiver) return null;
         return (
           <Tag color={StatusPayColor[status as keyof typeof StatusShowHideColor]}>
             {t(`${StatusPay[status as keyof typeof StatusPay]}${record?.receiver ? '.tutor' : ''}`)}

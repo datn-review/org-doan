@@ -36,18 +36,16 @@ import * as crypto from 'crypto';
 import { CollaborationService } from '../collaboration/collaboration.service';
 
 function sortObject(obj) {
-  let sorted = {};
-  let str = [];
+  const sorted: any = {};
+  const str: any = [];
   let key;
   for (key in obj) {
     if (obj.hasOwnProperty(key)) {
-      // @ts-ignore
       str.push(encodeURIComponent(key));
     }
   }
   str.sort();
   for (key = 0; key < str.length; key++) {
-    // @ts-ignore
     sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, '+');
   }
   return sorted;
@@ -113,7 +111,7 @@ export class PaymentController {
     vnp_Params['vnp_OrderType'] = orderType;
     vnp_Params['vnp_Amount'] = (paymentInfo?.amount || 0) * 100;
     vnp_Params['vnp_ReturnUrl'] = returnUrl;
-    vnp_Params['vnp_IpAddr'] = '14.185.51.44';
+    vnp_Params['vnp_IpAddr'] = ipAddr || '14.185.51.44';
     vnp_Params['vnp_CreateDate'] = createDate;
     vnp_Params['vnp_ExpireDate'] = Number(createDate) + 60 * 10;
 
@@ -144,16 +142,24 @@ export class PaymentController {
     const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
 
     if (vnp_SecureHash === signed) {
-      const paymentInfo = await this.paymentService.findOne({
-        payRef: vnp_Params['vnp_TxnRef'],
-      });
+      const paymentInfo = await this.paymentService.findOne(
+        {
+          payRef: vnp_Params['vnp_TxnRef'],
+        },
+        [
+          {
+            field: 'collaboration',
+            entity: 'collaboration',
+          },
+        ],
+      );
       console.log(paymentInfo);
       if (paymentInfo) {
         await this.paymentService.update(paymentInfo.id, {
           status: 2,
         });
         if (paymentInfo.collaboration) {
-          await this.collaborationService.update(+paymentInfo.collaboration, {
+          await this.collaborationService.update(+paymentInfo.collaboration.id, {
             status: 5,
           });
         }
@@ -172,6 +178,8 @@ export class PaymentController {
     });
   }
 
+  //   @Roles()
+  // @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('/')
   @HttpCode(HttpStatus.OK)
   @ApiQuery({ name: 'status', required: false })
@@ -188,9 +196,46 @@ export class PaymentController {
     @Query('status', new DefaultValuePipe(0), ParseIntPipe) status: number,
     @Query('fieldSearch', new DefaultValuePipe('')) fieldSearch: string | string[],
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
+    @Query('collaboration', new DefaultValuePipe(0)) collaboration: number,
+    @Query('month', new DefaultValuePipe('')) month: number,
+    @Query('year', new DefaultValuePipe('')) year: number,
+    @Query('type', new DefaultValuePipe(0)) type: number,
   ): Promise<InfinityPaginationResultType<Payment>> {
     if (limit > 50) {
       limit = 1000;
+    }
+    const where: any = [];
+    if (type) {
+      if (type == 1) {
+        where.push({
+          field: 'entity.receiver IS NULL',
+          value: null,
+        });
+      }
+      if (type == 2) {
+        where.push({
+          field: 'entity.sender IS NULL',
+          value: null,
+        });
+      }
+    }
+    if (collaboration) {
+      where.push({
+        field: 'collaboration',
+        value: collaboration,
+      });
+    }
+    if (year) {
+      where.push({
+        field: 'EXTRACT(YEAR FROM entity.feeMonthDate)',
+        value: year,
+      });
+    }
+    if (month) {
+      where.push({
+        field: 'EXTRACT(MONTH FROM entity.feeMonthDate)',
+        value: month,
+      });
     }
 
     return await this.paymentService.findManyWithPagination({
@@ -203,9 +248,10 @@ export class PaymentController {
       fieldSearch,
       relations: [
         { field: 'sender', entity: 'user' },
-        { field: 'receiver', entity: 'user' },
+        { field: 'receiver', entity: 'user_' },
         { field: 'collaboration', entity: 'collaboration' },
       ],
+      where,
     });
   }
 

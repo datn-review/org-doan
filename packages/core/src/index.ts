@@ -5,3 +5,4 @@ export * from './message-global';
 export * from './form';
 export * from './select-user';
 export * from './tags';
+export * from './select-user/contants';

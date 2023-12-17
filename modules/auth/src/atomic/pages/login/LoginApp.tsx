@@ -24,6 +24,7 @@ import {
 import { RolesEnum, SiteMap } from '@org/utils';
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import OAuth2ICons from '../../atoms';
 import * as yup from 'yup';
 
 interface ILogin {
@@ -78,8 +79,6 @@ function Login() {
 
         dispatch(setUserInfo(res.user));
 
-        console.log('User', { res });
-
         switch (res.user.role.name) {
           case RolesEnum.WEB_ADMIN:
           case RolesEnum.WEB_STAFF:
@@ -89,7 +88,6 @@ function Login() {
         }
       })
       .catch((err) => {
-        console.log('🚀 ~ file: LoginApp.tsx:89 ~ .then ~ err:', err);
         return {};
       });
   };
@@ -107,20 +105,20 @@ function Login() {
               padding-bottom: 0.8rem;
             `}
           >
-            Welcome to Smart! 👋🏻
+            {t('auth.Welcome')} 👋🏻
           </h5>
-          <p>Please sign-in to your account and start the adventure</p>
+          <p>{t('auth.Please-sign-in')}</p>
         </Space>
 
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
             <InputForm
               name='email'
-              label={'Email'}
+              label={t('user.email')}
             />
             <InputForm
               name='password'
-              label={'Password'}
+              label={t('user.password')}
               $type={TypeInput.Password}
             />
 
@@ -133,12 +131,12 @@ function Login() {
             >
               <Space>
                 <CheckBoxForm
-                  labelCB='Remember'
+                  labelCB={t('auth.Remember')}
                   name='remember'
                 />
               </Space>
               <Link to={SiteMap.Auth.ForgotPassword.path}>
-                <TextLink>Forgot password? </TextLink>
+                <TextLink>{t('auth.forgot')} </TextLink>
               </Link>
             </Space>
             <Button
@@ -152,14 +150,14 @@ function Login() {
             </Button>
           </form>
           <BoxCenter>
-            New on our platform?{' '}
+            {t('auth.new.platform')}
             <Link to={SiteMap.Auth.Register.path}>
               <TextLink
                 className={css`
-                  margin-left: 1rem;
+                  /* margin-left: 1rem; */
                 `}
               >
-                Create an account
+                {t('auth.create.an.acount')}
               </TextLink>
             </Link>
           </BoxCenter>
@@ -168,18 +166,10 @@ function Login() {
               margin: 2rem;
             `}
           >
-            or
+            {t('auth.or')}
           </BoxCenter>
 
-          <BoxCenter
-            className={css`
-              gap: 0.5rem;
-            `}
-          >
-            <Space>FB</Space>
-            <Space>GG</Space>
-            <Space>TT</Space>
-          </BoxCenter>
+          <OAuth2ICons />
         </FormProvider>
       </div>
     </Spin>

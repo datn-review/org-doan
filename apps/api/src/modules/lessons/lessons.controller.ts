@@ -28,11 +28,10 @@ import { UpdateLessonsDto } from './dto/update.dto';
 import { LessonsService } from './lessons.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import * as moment from 'dayjs';
-import dayjs from 'dayjs';
 import { CollaborationService } from '../collaboration/collaboration.service';
-import { Column } from 'typeorm';
 import { ScheduleService } from '../schedule/schedule.service';
 import { Schedule } from '../schedule/entities/schedule.entity';
+import { isEmpty } from 'lodash';
 interface ClassTime {
   day?: number;
   start?: string;
@@ -110,7 +109,7 @@ export class LessonsController {
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createLessonsDto: CreateLessonsDto): Promise<Lessons[]> {
+  create(@Body() createLessonsDto: any): Promise<Lessons[]> {
     return this.lessonsService.create({
       ...createLessonsDto,
     });
@@ -120,12 +119,27 @@ export class LessonsController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post('/default')
   @HttpCode(HttpStatus.CREATED)
-  createDefault(@Body() createLessonsDto: any): Promise<Lessons[]> | null {
+  async createDefault(@Body() createLessonsDto: any): Promise<Lessons[] | null> {
     console.log('createLessonsDto', createLessonsDto);
+
+    // const lessons = await
+    // const lessons = await
+    const [lessons, schedules] = await Promise.all([
+      this.lessonsService.findMany({
+        collaboration: createLessonsDto?.collaboratorId,
+      }),
+      this.schedule.findMany({
+        collaboration: createLessonsDto?.collaboratorId,
+      }),
+    ]);
+
+    const lessonsDelete = lessons?.map((item) => item.id);
+    const schedulesDelete = schedules?.map((item) => item.id);
 
     const weeklySchedule: Lessons[] | null = generateWeeklySchedule({
       ...createLessonsDto,
     });
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.collaborator
       .update(createLessonsDto?.collaboratorId, {
         bgColor: createLessonsDto?.bgColor,
@@ -133,18 +147,34 @@ export class LessonsController {
       })
       .then();
 
-    if (createLessonsDto?.classTimes) {
+    if (createLessonsDto?.classTimes && weeklySchedule) {
       const classTimes: Schedule[] = createLessonsDto?.classTimes?.map(({ start, day, end }) => ({
         collaboration: createLessonsDto?.collaboratorId,
         dayOfWeek: day,
         timeStart: start,
         timeEnd: end,
       }));
-      this.schedule.createMany(classTimes).then();
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [weeklyScheduleLessons, _, __, ___] = await Promise.all([
+        this.lessonsService.createMany(weeklySchedule),
+        this.lessonsService.delete(lessonsDelete),
+        this.schedule.delete(schedulesDelete),
+        this.schedule.createMany(classTimes),
+      ]);
+      return weeklyScheduleLessons;
     }
+
     if (!weeklySchedule) return null;
 
-    return this.lessonsService.createMany(weeklySchedule);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [weeklyScheduleLessons, _, __] = await Promise.all([
+      this.lessonsService.createMany(weeklySchedule),
+      this.lessonsService.delete(lessonsDelete),
+      this.schedule.delete(schedulesDelete),
+    ]);
+    return weeklyScheduleLessons;
   }
 
   @Get('/')
@@ -194,7 +224,7 @@ export class LessonsController {
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  update(@Param('id') id: number, @Body() updateLessonsDto: UpdateLessonsDto): Promise<Lessons[]> {
+  update(@Param('id') id: number, @Body() updateLessonsDto: any): Promise<Lessons[]> {
     return this.lessonsService.update(id, updateLessonsDto);
   }
 

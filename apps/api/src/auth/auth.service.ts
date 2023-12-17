@@ -5,7 +5,7 @@ import * as bcrypt from 'bcryptjs';
 import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
 import { AuthUpdateDto } from './dto/auth-update.dto';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
-import { RoleEnum } from 'src/roles/roles.enum';
+import { RoleEnum, RolesEnumName } from 'src/roles/roles.enum';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import * as crypto from 'crypto';
 import { plainToClass } from 'class-transformer';
@@ -188,11 +188,19 @@ export class AuthService {
   async register(dto: AuthRegisterLoginDto): Promise<void> {
     const hash = crypto.createHash('sha256').update(randomStringGenerator()).digest('hex');
 
+    let id = RoleEnum.STUDENT;
+    if (dto?.type === RolesEnumName.PESONAL_TUTOR) {
+      id = RoleEnum.PESONAL_TUTOR;
+    }
+    if (dto?.type === RolesEnumName.PARENT) {
+      id = RoleEnum.PARENT;
+    }
+
     await this.usersService.create({
       ...dto,
       email: dto.email,
       role: {
-        id: RoleEnum.STUDENT,
+        id,
       } as Role,
       status: {
         id: StatusEnum.inactive,

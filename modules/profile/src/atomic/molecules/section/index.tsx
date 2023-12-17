@@ -2,6 +2,7 @@ import { css } from '@emotion/css/macro';
 import { getNameLanguage, i18nContant, useTranslation } from '@org/i18n';
 import {
   Button,
+  EditFilled,
   Space,
   Tabs,
   TabsProps,
@@ -77,7 +78,11 @@ function Section({ data, isMe, refetch }: any) {
           right: 0;
         `}
       >
-        {isMe && <Button onClick={() => setIsOpen(true)}>{t('edit')}</Button>}
+        {isMe && (
+          <Button onClick={() => setIsOpen(true)}>
+            <EditFilled style={{ color: COLOR.White }} />
+          </Button>
+        )}
       </Space>
       {isOpen && isMe && (
         <Upsert

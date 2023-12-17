@@ -1,32 +1,9 @@
-import {
-  Body,
-  Controller,
-  DefaultValuePipe,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  ParseIntPipe,
-  Post,
-  Put,
-  Query,
-  SerializeOptions,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { FilesService } from 'src/files-drive/files.service';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/roles/roles.decorator';
-import { RoleEnum } from 'src/roles/roles.enum';
 import { RolesGuard } from 'src/roles/roles.guard';
-import { InfinityPaginationResultType } from '../../utils/types/infinity-pagination-result.type';
 import { NullableType } from '../../utils/types/nullable.type';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from '../entities/user.entity';
 import { UsersService } from '../users.service';
 const relations = [
@@ -67,5 +44,10 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   users(): Promise<NullableType<User[]>> {
     return this.usersService.findManyActive(1, relations);
+  }
+  @Get('/')
+  @HttpCode(HttpStatus.OK)
+  usersAll(): Promise<NullableType<User[]>> {
+    return this.usersService.findMany(0, relations);
   }
 }

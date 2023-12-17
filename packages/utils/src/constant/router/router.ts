@@ -23,6 +23,11 @@ export const SiteMap = {
     menu: 'dashboard',
     roles: [RolesEnum.CENTER_ADMIN, RolesEnum.WEB_ADMIN],
   },
+  Payment: {
+    path: '/manage/payment',
+    menu: '/manage/payment',
+    roles: [RolesEnum.CENTER_ADMIN, RolesEnum.WEB_ADMIN],
+  },
   Users: {
     menu: 'users',
     roles: [RolesEnum.WEB_ADMIN, RolesEnum.WEB_STAFF],

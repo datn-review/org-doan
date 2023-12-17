@@ -5,8 +5,27 @@
   "en-EN":"English",
 
   "auth":{
-    "title":{ "login" : "Login"}
+    "title":{ "login" : "Login","register":"Register"},
+    "create.an.acount":"Create an account",
+    "new.platform":"New on our platform?",
+    "forgot":"Forgot password?",
+    "Welcome":"Welcome to Smart!",
+    "Please-sign-in":"Please sign-in to your account and start the adventure",
+    "Remember":"Remember",
+    
+    "Make-your":"Make your app management easy and fun!",
+    "I-agree":"I agree to ",
+    "privacy-policy":" privacy policy & terms ",
+    "Already":"Already have an account?",
+    "Sign.in.instead":"Sign in instead",
+    "or":"or",
+    "confirm":"Register Successfully",
+    "please.confirm":"Please confirm your email address in your inbox!"
+
   },
+  "student":"Student",
+  "parent":"Parent",
+
   "all": "All Status",
   "inactive": "Inactive",
   "active": "Active",
@@ -56,7 +75,7 @@
     "staff": "Manage staff",
     "center.admin": "Center Admin",
     "center.tutor": "Center Tutor",
-    "personal.tutor": "Personal Tutor",
+    "personal.tutor": "Tutor",
     "parent": "Manage Parent",
     "student": "Manage Student"
   }
@@ -73,7 +92,7 @@
   "tutor":"Tutor",
   "class.new" : "Class New",
   "manage.name" : "Manage Personal",
-  "manage.registration" : "Manage Registration",
+  "manage.registration" : "Registration",
   "manage.posts.me" : "Manage Posts",
   "manage.classes" : "Manage Classes",
 
@@ -202,4 +221,17 @@
   "result": "Result",
   "expired": "Expired",
   "do": "Do Assignment"
+
+
+
+
+
+
+
+
+
+
+
+
+    
 }

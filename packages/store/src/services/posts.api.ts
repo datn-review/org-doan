@@ -16,6 +16,13 @@ export const PostsAPI = baseAuthSplitApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getPostsActiveAuth: builder.query({
+      query: (params) => ({
+        url: '/posts/active/auth',
+        params: params,
+        method: 'GET',
+      }),
+    }),
     getPostsByMe: builder.query({
       query: () => ({
         url: '/posts/my',
@@ -59,5 +66,8 @@ export const {
   useDeletePostsMutation,
   useLazyFindPostsQuery,
   useGetPostsActiveQuery,
+  useLazyGetPostsActiveQuery,
+  useLazyGetPostsActiveAuthQuery,
+
   useGetPostsByMeQuery,
 } = PostsAPI;

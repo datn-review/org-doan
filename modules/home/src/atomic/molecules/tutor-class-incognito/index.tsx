@@ -5,28 +5,30 @@ import comment from './image/comment.png';
 import personalized from './image/personalized.png';
 
 import result from './image/result.png';
+import { i18nContant, useTranslation } from '@org/i18n';
 
 const steps = [
   {
-    title: 'THEO DÕI KẾT QUẢ HỌC TẬP',
+    title: i18nContant('incognito.1'),
     bg: '#FFC6A3',
-    text: 'Báo cáo học tập được cập nhật liên tục theo kết quả học tập - Giúp phụ huynh kịp thời nắm bắt và điều chỉnh để giúp em học tập tốt hơn.',
+    text: i18nContant('incognito.1.1'),
     image: personalized,
   },
   {
-    title: 'GIÁO VIÊN NHẬN XÉT ĐỊNH KỲ',
+    title: i18nContant('incognito.2'),
     bg: '#B3E0F5',
-    text: 'Phụ huynh có thể nắm chắc 100% điểm mạnh, điểm yếu & tiềm năng của con thông qua đánh giá định kì của giáo viên',
+    text: i18nContant('incognito.2.2'),
     image: comment,
   },
   {
-    title: 'LỘ TRÌNH HỌC CÁ NHÂN HÓA',
+    title: i18nContant('incognito.3'),
     bg: '#FFDC99',
-    text: 'Lộ trình học được thiết kế sát với năng lực của con. Sự tiến bộ được đánh giá liên tục thông qua hệ thống bài kiểm tra chất lượng',
+    text: i18nContant('incognito.3.3'),
     image: result,
   },
 ];
 function TutorClass() {
+  const { t } = useTranslation();
   return (
     <Space
       className={css`
@@ -37,11 +39,15 @@ function TutorClass() {
     >
       <Space className={cx('section-layout')}>
         <BoxCenter>
-          <TextSection color={COLOR.Black}>Lớp học gia sư tại SmartTutor.com</TextSection>
+          <TextSection color={COLOR.Black}>{t('incognito.title')}</TextSection>
         </BoxCenter>
-        <Row gutter={10}>
+        <Row gutter={[10, 10]}>
           {steps.map(({ bg, title, text, image }) => (
-            <Col span={8}>
+            <Col
+              span={24}
+              md={8}
+              lg={8}
+            >
               <Space
                 className={css`
                   background-color: ${bg};
@@ -57,7 +63,7 @@ function TutorClass() {
                 <BoxCenter>
                   <img
                     src={image}
-                    alt={title}
+                    alt={'image'}
                     width={50}
                   />
                 </BoxCenter>

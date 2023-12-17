@@ -130,7 +130,7 @@ export function Upsert() {
         });
     }
   };
-  console.log('🚀 ~ file: upsert.tsx:135 ~ useEffect ~ dataUpsert:', dataUpsert);
+
   useEffect(() => {
     if (!isEmpty(dataUpsert)) {
       Object.entries(dataInit).forEach(([name, value]) => {

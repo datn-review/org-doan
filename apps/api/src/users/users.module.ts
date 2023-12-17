@@ -15,6 +15,8 @@ import {
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 import { TutorTimeAvailabilityModule } from './tutor-time-availability/tutor-time-availability.module';
+import { UsersStaffController } from './controller/users.staff.controller';
+import { UsersParentController } from './controller/users.parent.controller';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { TutorTimeAvailabilityModule } from './tutor-time-availability/tutor-tim
     UsersTutorController,
     UsersStudentController,
     UsersController,
+    UsersStaffController,
+    UsersParentController,
   ],
   providers: [IsExist, IsNotExist, UsersService],
   exports: [UsersService],

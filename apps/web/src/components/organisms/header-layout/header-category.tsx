@@ -1,5 +1,6 @@
 import { useAppSelector } from '@org/store';
 import {
+  BoxCenter,
   Button,
   Drawer,
   Dropdown,
@@ -33,7 +34,14 @@ function HeaderCategory() {
         $type={id == menu ? TYPE_BUTTON.Primary : TYPE_BUTTON.Secondary}
         $size={SIZE.Menu}
       >
-        {icon}
+        <BoxCenter
+          className={css`
+            width: 2.2rem;
+            max-width: 2.2rem;
+          `}
+        >
+          {icon}
+        </BoxCenter>
         <Space>{name}</Space>
         {isSub && <IconArrowDown />}
       </Button>

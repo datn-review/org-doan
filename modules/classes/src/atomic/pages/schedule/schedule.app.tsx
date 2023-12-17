@@ -10,20 +10,27 @@ import {
   Space,
   TimePicker,
   ColorPicker,
+  ModalAntd,
 } from '@org/ui';
 import moment from 'dayjs';
 import dayjs from 'dayjs';
 import { css } from '@emotion/css';
-import {getNameLanguage, i18nContant, useTranslation} from '@org/i18n';
+import { getNameLanguage, i18nContant, useTranslation } from '@org/i18n';
 import { COLOR } from '@org/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { createEventId } from '@org/ui/src/atomic/atoms/calendar/event-utils';
-import { useCreateLessonDefaultMutation } from '@org/store';
+import {
+  useCreateLessonDefaultMutation,
+  useCreateLessonMutation,
+  useUpdateLessonMutation,
+} from '@org/store';
 import { isEmpty } from 'lodash';
 import { Popover } from '@org/ui';
 import { timePickerCss } from './schedule.styled';
 import { Event } from './container/Event';
 import { If, Then } from 'react-if';
+import { Editor } from '@org/editor';
+import { useMessage } from '@org/core';
 interface ClassTime {
   day?: number;
   start?: string;
@@ -39,20 +46,20 @@ const options = [
     value: 2,
   },
   {
-    label:  i18nContant('Wednesday'),
+    label: i18nContant('Wednesday'),
     value: 3,
   },
   {
-    label:  i18nContant('Thursday'),
+    label: i18nContant('Thursday'),
     value: 4,
   },
 
   {
-    label:  i18nContant('Friday'),
+    label: i18nContant('Friday'),
     value: 5,
   },
   {
-    label:  i18nContant('Saturday'),
+    label: i18nContant('Saturday'),
     value: 6,
   },
   {
@@ -64,9 +71,14 @@ const options = [
 type ClassRecord = Record<number, any>;
 
 function Schedule({ data, refetch }: any) {
-  console.log(data);
+  const [updateLesson] = useUpdateLessonMutation();
   const { t } = useTranslation();
   const [createLesson] = useCreateLessonDefaultMutation();
+  const [createLessonSingle] = useCreateLessonMutation();
+
+  const isComplete =
+    data?.status === 5 && data?.contractEndDate && dayjs(data?.contractEndDate).isBefore(dayjs());
+
   const [classArray, setClassArray] = useState<ClassRecord>({
     [uuidv4()]: { day: undefined, time: '' },
   });
@@ -74,6 +86,10 @@ function Schedule({ data, refetch }: any) {
   const [color, setColor] = useState<any>('#fff');
   const [bgColor, setBgColor] = useState<any>(COLOR.Primary);
   const [eventId, setEventId] = useState<any>(null);
+
+  const [timeCreate, setTimeCreate] = useState<any>();
+  const [dateCreate, setDateCreate] = useState<any>({});
+  const [content, setContent] = useState<any>(null);
 
   const format = 'HH:mm';
   useEffect(() => {
@@ -150,45 +166,47 @@ function Schedule({ data, refetch }: any) {
 
   function renderEventContent(eventContent: any) {
     return (
-      <Popover
-        placement='top'
-        title={eventContent.event.title}
-        zIndex={99999}
-        content={
-          <Space>
-            {'time'} : {eventContent.event?.extendedProps?.start} -{' '}
-            {eventContent.event?.extendedProps?.end}
-            <Space
-              className={css`
-                display: flex;
-                justify-content: flex-end;
-                margin-top: 1rem;
-              `}
-            >
-              {/*<Button*/}
-              {/*  $size={SIZE.Small}*/}
-              {/*  onClick={() => setEventId(eventContent?.event?.extendedProps?.id)}*/}
-              {/*>*/}
-              {/*</Button>*/}
+      <Space>
+        <Popover
+          placement='top'
+          title={eventContent.event.title}
+          zIndex={99999}
+          content={
+            <Space>
+              {'time'} : {eventContent.event?.extendedProps?.start} -{' '}
+              {eventContent.event?.extendedProps?.end}
+              <Space
+                className={css`
+                  display: flex;
+                  justify-content: flex-end;
+                  margin-top: 1rem;
+                `}
+              >
+                {/*<Button*/}
+                {/*  $size={SIZE.Small}*/}
+                {/*  onClick={() => setEventId(eventContent?.event?.extendedProps?.id)}*/}
+                {/*>*/}
+                {/*</Button>*/}
+              </Space>
             </Space>
-          </Space>
-        }
-      >
-        <Space
-          className={css`
-            display: block;
-            word-break: break-word;
-            width: 100%;
-            white-space: initial;
-            padding: 0 4px;
-            background-color: ${eventContent.backgroundColor};
-            color: ${eventContent.textColor};
-          `}
+          }
         >
-          {/*<b>{eventContent.timeText}</b>*/}
-          {eventContent.event.title}
-        </Space>
-      </Popover>
+          <Space
+            className={css`
+              display: block;
+              word-break: break-word;
+              width: 100%;
+              white-space: initial;
+              padding: 0 4px;
+              background-color: ${eventContent.backgroundColor};
+              color: ${eventContent.textColor};
+            `}
+          >
+            {/*<b>{eventContent.timeText}</b>*/}
+            {eventContent.event.title}
+          </Space>
+        </Popover>
+      </Space>
     );
   }
 
@@ -196,10 +214,28 @@ function Schedule({ data, refetch }: any) {
     return <></>;
   };
   const handleEventClick = (eventContent: any) => {
-    console.log(eventContent);
     setEventId(eventContent?.event?.extendedProps?.id);
   };
+  const eventChange = (eventContent: any) => {
+    console.log(eventContent);
 
+    updateLesson({
+      body: {
+        lessonStart: dayjs(eventContent?._instance?.range.start).format('YYYY-MM-DD HH:mm'),
+        lessonEnd: dayjs(eventContent?._instance?.range.end).format('YYYY-MM-DD HH:mm'),
+      },
+      id: eventContent?._def?.extendedProps?.id,
+    }).then((res) => {
+      console.log(res);
+    });
+  };
+  const createEvent = ({ start, end }: any) => {
+    setDateCreate({
+      start,
+      end,
+    });
+  };
+  const { messageSuccess, messageError } = useMessage();
   return (
     <Space className={css``}>
       <Space
@@ -210,12 +246,14 @@ function Schedule({ data, refetch }: any) {
       >
         <H2>{t('class.create.schedule')}</H2>
 
-        <Button
-          onClick={handleSave}
-          $size={SIZE.ExtraSmall}
-        >
-          {t('class.save.schedule')}{' '}
-        </Button>
+        {!isComplete && (
+          <Button
+            onClick={handleSave}
+            $size={SIZE.ExtraSmall}
+          >
+            {t('class.save.schedule')}{' '}
+          </Button>
+        )}
       </Space>
       <Space
         className={css`
@@ -229,7 +267,6 @@ function Schedule({ data, refetch }: any) {
             margin-bottom: 2rem;
           `}
         >
-
           <Space>{t('class.time_date')}</Space>
           <RangePicker
             disabled={true}
@@ -327,38 +364,42 @@ function Schedule({ data, refetch }: any) {
                   //margin-bottom: 0.5rem;
                 `}
               >
-                <Button
-                  onClick={() => {
-                    setClassArray((prev) => {
-                      delete prev[id];
-                      return { ...prev };
-                    });
-                  }}
-                  $size={SIZE.ExtraSmall}
-                >
-                  - {t("remove")}
-                </Button>
+                {!isComplete && (
+                  <Button
+                    onClick={() => {
+                      setClassArray((prev) => {
+                        delete prev[id];
+                        return { ...prev };
+                      });
+                    }}
+                    $size={SIZE.ExtraSmall}
+                  >
+                    - {t('remove')}
+                  </Button>
+                )}
               </Space>
             )}
           </Space>
         );
       })}
-      <Space>
-        <Button
-          onClick={() => {
-            setClassArray((prev) => ({
-              ...prev,
-              [uuidv4()]: {
-                day: undefined,
-                time: '',
-              },
-            }));
-          }}
-          $size={SIZE.ExtraSmall}
-        >
-          + {t("add")}
-        </Button>
-      </Space>
+      {!isComplete && (
+        <Space>
+          <Button
+            onClick={() => {
+              setClassArray((prev) => ({
+                ...prev,
+                [uuidv4()]: {
+                  day: undefined,
+                  time: '',
+                },
+              }));
+            }}
+            $size={SIZE.ExtraSmall}
+          >
+            + {t('add')}
+          </Button>
+        </Space>
+      )}
 
       <Space
         className={css`
@@ -370,13 +411,66 @@ function Schedule({ data, refetch }: any) {
           renderEventContent={renderEventContent}
           handleEventClick={handleEventClick}
           moreLinkContent={renderMoreLinkContent}
+          eventChange={eventChange}
+          createEvent={createEvent}
+          s
         />
+        {!isEmpty(dateCreate) && !isComplete && (
+          <ModalAntd
+            open={!isEmpty(dateCreate)}
+            onCancel={() => setDateCreate(null)}
+            title={t('create.lesson')}
+            onOk={() => {
+              const body = {
+                content,
+                lessonStart: dateCreate.start + ' ' + dayjs(timeCreate[0])?.format(format),
+
+                collaboration: data?.id,
+                lessonEnd:
+                  dayjs(dateCreate.end).subtract(1, 'day').format('YYYY-MM-DD') +
+                  ' ' +
+                  dayjs(timeCreate[1])?.format(format),
+              };
+
+              createLessonSingle(body)
+                .then((res) => {
+                  console.log('🚀 ~ file: schedule.app.tsx:427 ~ .then ~ res:', res);
+                  messageSuccess(t('create.success'));
+                  setDateCreate(null);
+                  refetch();
+                  setTimeCreate(null);
+                  setContent(null);
+                })
+                .catch(() => {
+                  messageError(t('create.error'));
+                });
+            }}
+          >
+            <div>{t('class.time_day')}</div>
+            <TimePicker.RangePicker
+              onChange={(value) => setTimeCreate(value)}
+              dropdownClassName={timePickerCss}
+              format={format}
+              size={'middle'}
+            />
+            <br />
+            <br />
+
+            <Space>{t('lesson.content')}</Space>
+            <Editor
+              defaultValue={''}
+              onChange={(value: any) => setContent(value)}
+            />
+          </ModalAntd>
+        )}
       </Space>
       <If condition={!!eventId}>
         <Then>
           <Event
+            isComplete={isComplete}
             id={eventId}
             close={() => setEventId(null)}
+            refetch={refetch}
           />
         </Then>
       </If>

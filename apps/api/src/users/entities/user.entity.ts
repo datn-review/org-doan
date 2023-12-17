@@ -26,6 +26,7 @@ import { TutorSubjectGrade } from 'src/modules/tutor-subject-grade/entities/tuto
 import { TutorTimeAvailability } from '../tutor-time-availability/entities/tutor-time-availability.entity';
 import { Wards } from 'src/modules/provinces/wards/entities/wards.entity';
 import { Room } from 'src/modules/chat/room/entities/room.entity';
+import { Collaboration } from 'src/modules/collaboration/entities/collaboration.entity';
 
 @Entity()
 export class User extends EntityHelper {
@@ -125,6 +126,9 @@ export class User extends EntityHelper {
   @OneToMany(() => Room, (room) => room.owner)
   rooms: Room[];
 
+  @OneToMany(() => Collaboration, (collaboration) => collaboration.user)
+  collaboration: Collaboration[];
+
   @ManyToMany(() => Room, (room) => room.members)
   joinedRooms: Room[];
 
@@ -151,7 +155,7 @@ export class User extends EntityHelper {
 
   @Column({ type: Date, nullable: true })
   birthday: Date | null;
-  
+
   @CreateDateColumn()
   createdAt: Date;
 

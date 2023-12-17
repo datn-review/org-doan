@@ -23,6 +23,7 @@ import {
   Select,
   SIZE,
   Space,
+  TextArea,
   UserHeaderProfile,
 } from '@org/ui';
 import { COLOR, getImage, SiteMap } from '@org/utils';
@@ -63,10 +64,12 @@ function ChatApp() {
   const [createRoom] = useCreateRoomMutation();
 
   const userData = useMemo(() => {
-    return users?.map((user: any) => ({
-      label: `${user?.lastName} ${user?.lastName}`,
-      value: user.id,
-    }));
+    return users
+      ?.map((user: any) => ({
+        label: `${user?.lastName} ${user?.lastName}`,
+        value: user.id,
+      }))
+      .filter((user: any) => user?.value !== userId);
   }, [users]);
   const refMessage = useRef<HTMLDivElement | null>(null);
   useLayoutEffect(() => {
@@ -336,6 +339,7 @@ function ChatApp() {
                   onChange={(value) => setChat(String(value))}
                   name={'chat'}
                   placeholder={t('type.your.message')}
+                  value={chat}
                 />
                 <Button
                   onClick={() => {

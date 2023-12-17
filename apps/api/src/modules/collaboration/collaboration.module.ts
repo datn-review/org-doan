@@ -6,9 +6,14 @@ import { Collaboration } from './entities/collaboration.entity';
 import { CollaborationController } from './collaboration.controller';
 import { CollaborationService } from './collaboration.service';
 import { PaymentModule } from '../payment/payment.module';
+import { PostsModule } from '../posts/posts.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Collaboration]), forwardRef(() => PaymentModule)],
+  imports: [
+    TypeOrmModule.forFeature([Collaboration]),
+    forwardRef(() => PaymentModule),
+    forwardRef(() => PostsModule),
+  ],
   controllers: [CollaborationController],
   providers: [IsExist, IsNotExist, CollaborationService],
   exports: [CollaborationService],

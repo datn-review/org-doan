@@ -52,7 +52,7 @@ const relations = [
   },
 ];
 @ApiBearerAuth()
-@ApiTags('User Admib')
+@ApiTags('User Admin')
 @Roles(RoleEnum.WEB_ADMIN)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({

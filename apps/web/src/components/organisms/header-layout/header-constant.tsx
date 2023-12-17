@@ -18,6 +18,7 @@ import {
   IconSetting,
   IconUser,
   MenuProps,
+  PaymentIcon,
 } from '@org/ui';
 
 import { IMenuIcon, MenuItem } from './header-type';
@@ -87,6 +88,14 @@ export const menuCategory = (): MenuItem[] => {
       isShow: ifAnyGranted(SiteMap.Dashboard.roles),
     },
     {
+      name: <Translation>{(t) => t('settings.payment')}</Translation>,
+      path: SiteMap.Payment.path,
+      id: SiteMap.Payment.menu,
+      icon: <PaymentIcon />,
+      subMenu: [],
+      isShow: ifAnyGranted(SiteMap.Payment.roles),
+    },
+    {
       name: <Translation>{(t) => t('users')}</Translation>,
       path: '',
       id: SiteMap.Users.menu,
@@ -107,22 +116,22 @@ export const menuCategory = (): MenuItem[] => {
           key: SiteMap.Users.Staff.menu,
           icon: <></>,
         },
-        {
-          label: <Translation>{(t) => t('manage.center.admin')}</Translation>,
-          path: SiteMap.Users.CenterAdmin.path,
-          id: SiteMap.Users.CenterAdmin.menu,
-          key: SiteMap.Users.CenterAdmin.menu,
+        // {
+        //   label: <Translation>{(t) => t('manage.center.admin')}</Translation>,
+        //   path: SiteMap.Users.CenterAdmin.path,
+        //   id: SiteMap.Users.CenterAdmin.menu,
+        //   key: SiteMap.Users.CenterAdmin.menu,
 
-          icon: <></>,
-        },
-        {
-          label: <Translation>{(t) => t('manage.center.tutor')}</Translation>,
-          path: SiteMap.Users.CenterTutor.path,
-          id: SiteMap.Users.CenterTutor.menu,
-          key: SiteMap.Users.CenterTutor.menu,
+        //   icon: <></>,
+        // },
+        // {
+        //   label: <Translation>{(t) => t('manage.center.tutor')}</Translation>,
+        //   path: SiteMap.Users.CenterTutor.path,
+        //   id: SiteMap.Users.CenterTutor.menu,
+        //   key: SiteMap.Users.CenterTutor.menu,
 
-          icon: <></>,
-        },
+        //   icon: <></>,
+        // },
         {
           label: <Translation>{(t) => t('manage.personal.tutor')}</Translation>,
           path: SiteMap.Users.PesonalTutor.path,
@@ -153,7 +162,7 @@ export const menuCategory = (): MenuItem[] => {
       name: <Translation>{(t) => t('settings.name')}</Translation>,
       path: '',
       id: SiteMap.Settings.menu,
-      icon: <IconUser />,
+      icon: <IconSetting />,
       isShow: ifAnyGranted(SiteMap.Settings.roles),
       subMenu: [
         {
@@ -276,33 +285,33 @@ export const menuPerson: IMenuIcon[] = [
     path: '/setting',
     icon: <IconSetting />,
     key: 'setting',
-    title: 'Setting',
+    title: i18nContant('setting'),
   },
-  {
-    path: '/builling',
-    icon: <BillingIcon />,
-    key: 'builling',
-    title: 'Builling',
-  },
+  // {
+  //   path: '/builling',
+  //   icon: <BillingIcon />,
+  //   key: 'builling',
+  //   title: 'Builling',
+  // },
   {
     path: '/help',
     icon: <IconHelp />,
     key: 'help',
-    title: 'Help',
+    title: i18nContant('Help'),
   },
-  {
-    path: '/Pricing',
-    icon: <IconDolar />,
-    key: 'pricing',
-    title: 'Pricing',
-  },
+  // {
+  //   path: '/Pricing',
+  //   icon: <IconDolar />,
+  //   key: 'pricing',
+  //   title: 'Pricing',
+  // },
 
-  {
-    path: '/FAQ',
-    icon: <IconFAQ />,
-    key: 'FAQ',
-    title: 'FAQ',
-  },
+  // {
+  //   path: '/FAQ',
+  //   icon: <IconFAQ />,
+  //   key: 'FAQ',
+  //   title: 'FAQ',
+  // },
   {
     path: '',
     icon: <IconLogout />,
