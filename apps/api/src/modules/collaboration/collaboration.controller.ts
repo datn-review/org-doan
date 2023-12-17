@@ -148,19 +148,6 @@ export class CollaborationController {
     @Body() createCollaborationDto: CreateCollaborationDto,
   ): Promise<Collaboration[]> {
     const user = request.user.id || 0;
-    // const role = request?.user?.role?.id || 0;
-    //
-    // let student: any = 0;
-    // let tutor: any = 0;
-    //
-    // if (role === RoleEnum.STUDENT) {
-    //   student = userId;
-    //   tutor = createCollaborationDto?.user || 0;
-    // }
-    // if (role === RoleEnum.PESONAL_TUTOR) {
-    //   tutor = userId;
-    //   student = createCollaborationDto?.user || 0;
-    // }
 
     return this.collaborationService.create({
       ...createCollaborationDto,
@@ -252,6 +239,52 @@ export class CollaborationController {
           {
             field: 'posts.userId',
             value: userId,
+          },
+        ],
+      ],
+    });
+  }
+
+  @Get('/classes/all')
+  @HttpCode(HttpStatus.OK)
+  @ApiQuery({ name: 'searchName', required: false })
+  @ApiQuery({ name: 'sortBy', required: false })
+  @ApiQuery({ name: 'sortDirection', required: false })
+  @ApiQuery({ name: 'sortBy', required: false })
+  @ApiQuery({ name: 'fieldSearch', required: false })
+  async findAllClassByAmin(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number,
+    @Query('sortBy', new DefaultValuePipe('createdAt')) sortBy: string,
+    @Query('sortDirection', new DefaultValuePipe('ASC')) sortDirection: string,
+    @Query('fieldSearch', new DefaultValuePipe('')) fieldSearch: string | string[],
+    @Query('searchName', new DefaultValuePipe('')) searchName: string,
+    @Request() req: any,
+  ): Promise<InfinityPaginationResultType<Collaboration>> {
+    if (limit > 50) {
+      limit = 1000;
+    }
+
+    const status = 0;
+
+    return await this.collaborationService.findManyWithPagination({
+      page,
+      limit,
+      status,
+      sortBy,
+      sortDirection,
+      searchName,
+      fieldSearch,
+      relations,
+      or: [
+        [
+          {
+            field: 'status',
+            value: 4,
+          },
+          {
+            field: 'status',
+            value: 5,
           },
         ],
       ],

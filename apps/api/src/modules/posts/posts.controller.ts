@@ -176,7 +176,19 @@ export class PostsController {
       sortDirection,
       searchName,
       fieldSearch,
-      relations: ['user'],
+      relations: [
+        { entity: 'skill', field: 'skills' },
+        { entity: 'gradeLevel', field: 'gradeLevels' },
+        { entity: 'certification', field: 'certifications' },
+        { entity: 'subject', field: 'subjects' },
+        { entity: 'post_time_availability', field: 'postTimeAvailability' },
+        { entity: 'wards', field: 'wards' },
+        { entity: 'districts', field: 'wards.districts' },
+        { entity: 'province', field: 'districts.province' },
+        { entity: 'user', field: 'user' },
+        { entity: 'collaboration', field: 'collaboration' },
+        { entity: 'user__', field: 'collaboration.user' },
+      ],
     });
   }
 

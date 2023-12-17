@@ -35,6 +35,13 @@ export const UserAPI = baseAuthSplitApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getUsers: builder.query({
+      query: (params) => ({
+        url: '/users',
+        params: params,
+        method: 'GET',
+      }),
+    }),
 
     updateMe: builder.mutation({
       query: (body) => ({
@@ -51,4 +58,5 @@ export const {
   useGetUsersActiveQuery,
   useGetProfileForIDQuery,
   useUpdateMeMutation,
+  useGetUsersQuery,
 } = UserAPI;

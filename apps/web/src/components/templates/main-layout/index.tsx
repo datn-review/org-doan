@@ -24,12 +24,15 @@ export const MainLayout = () => {
           position: fixed;
           bottom: 2rem;
           right: 2rem;
+          border-radius: 50%;
+          z-index: 999;
+          /* border: 2px solid white; */
         `}
       >
         <Link to={SiteMap.Chat.path}>
           <Badge
-            count={10}
-            overflowCount={9}
+          // count={10}
+          // overflowCount={9}
           >
             <ChatIcon />
           </Badge>

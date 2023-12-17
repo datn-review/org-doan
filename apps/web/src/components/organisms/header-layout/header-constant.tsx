@@ -88,7 +88,7 @@ export const menuCategory = (): MenuItem[] => {
       isShow: ifAnyGranted(SiteMap.Dashboard.roles),
     },
     {
-      name: <Translation>{(t) => t('setttings.payment')}</Translation>,
+      name: <Translation>{(t) => t('settings.payment')}</Translation>,
       path: SiteMap.Payment.path,
       id: SiteMap.Payment.menu,
       icon: <PaymentIcon />,

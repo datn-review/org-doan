@@ -1,12 +1,19 @@
 import { css, cx } from '@emotion/css/macro';
+import { i18nContant, useTranslation } from '@org/i18n';
 import { Space, BoxCenter, TextSection, Row, Col } from '@org/ui';
-import { COLOR, COLOR_RGB } from '@org/utils';
+import { COLOR, COLOR_RGB, mediaMiniTablet, mediaPhone } from '@org/utils';
 import React from 'react';
 const cssStep = css`
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 3.2rem;
+  ${mediaMiniTablet} {
+    font-size: 20px !important;
+  }
+  ${mediaPhone} {
+    font-size: 18px !important;
+  }
   font-weight: 700;
   color: ${COLOR.White};
   height: 72px;
@@ -28,33 +35,32 @@ const steps = [
   {
     number: 1,
     bg: '#ffba00',
-    text: 'Chọn Khóa Học',
+    text: i18nContant('step.1.1'),
   },
   {
     number: 2,
     bg: '#ff6609',
-    text: 'Học Thử Miễn Phí',
+    text: i18nContant('step.1.2'),
   },
   {
     number: 3,
     bg: '#1dc2da',
-    text: 'Nộp Học Phí',
+    text: i18nContant('step.1.3'),
   },
   {
     number: 4,
     bg: '#327ad5',
-    text: 'Vào Học',
+    text: i18nContant('step.1.4'),
     isLast: true,
   },
 ];
 function StepRegister() {
+  const { t } = useTranslation();
   return (
     <Space>
       <Space className={'section-layout'}>
         <BoxCenter>
-          <TextSection color={COLOR.Black}>
-            THAM GIA SMARTTUTOR.COM DỄ DÀNG CHỈ VỚI 4 BƯỚC
-          </TextSection>
+          <TextSection color={COLOR.Black}>{t('step.title')}</TextSection>
         </BoxCenter>
         <Space
           className={css`
@@ -82,7 +88,14 @@ function StepRegister() {
                   `,
                 )}
               >
-                Bước {number}
+                <Space
+                  className={css`
+                    z-index: 2;
+                    color: white;
+                  `}
+                >
+                  {t('step')} {number}
+                </Space>
               </Space>
               <BoxCenter
                 className={css`
@@ -91,6 +104,12 @@ function StepRegister() {
                   padding: 3rem 0;
                   font-weight: 600;
                   font-size: 2rem;
+                  ${mediaMiniTablet} {
+                    font-size: 16px !important;
+                  }
+                  ${mediaPhone} {
+                    font-size: 12px !important;
+                  }
                   border-right: ${isLast
                     ? 'none'
                     : `0.2rem solid rgba(${COLOR_RGB.Secondary}, 0.1)`};
@@ -110,43 +129,65 @@ function StepRegister() {
           & * {
             color: ${COLOR.White};
           }
+          ${mediaMiniTablet} {
+            h1 {
+              font-size: 3rem !important;
+            }
+            h5 {
+              /* font-size: 16px !important; */
+            }
+          }
+          ${mediaPhone} {
+            h1 {
+              font-size: 2.5rem !important;
+            }
+          }
         `}
+        gutter={[0, 20]}
       >
         <Col
-          span={6}
+          span={12}
+          sm={12}
+          lg={6}
           className={css`
             text-align: center;
           `}
         >
           <h1>100.000+</h1>
-          <h5>HỌC VIÊN</h5>
+          <h5>{t('step.1')}</h5>
         </Col>
         <Col
-          span={6}
+          span={12}
+          sm={12}
+          lg={6}
           className={css`
             text-align: center;
           `}
         >
           <h1>5.000+</h1>
-          <h5>BÀI GIẢNG</h5>
+          <h5>{t('step.2')}</h5>
         </Col>
         <Col
-          span={6}
+          span={12}
+          sm={12}
+          lg={6}
           className={css`
             text-align: center;
           `}
         >
           <h1>300.000+</h1>
-          <h5>BÀI ÔN TẬP</h5>
+          <h5>{t('step.3')}</h5>
         </Col>
         <Col
-          span={6}
+          span={12}
+          sm={12}
+          lg={6}
           className={css`
             text-align: center;
           `}
         >
           <h1>3.000+</h1>
-          <h5>ĐỀ LUYỆN THI</h5>
+          <h5>{t('step.4')}</h5>
         </Col>
       </Row>
     </Space>

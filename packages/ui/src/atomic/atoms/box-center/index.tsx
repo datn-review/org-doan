@@ -23,3 +23,13 @@ export function BoxBetween({ children, className, ...rest }: IProps) {
     </div>
   );
 }
+export function BoxFlex({ children, className, ...rest }: IProps) {
+  return (
+    <div
+      className={`flex justify-start items-center gap-4 ${className}`}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+}

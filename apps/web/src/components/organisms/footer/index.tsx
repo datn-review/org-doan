@@ -1,4 +1,5 @@
 import { css, cx } from '@emotion/css';
+import { useTranslation } from '@org/i18n';
 import { BoxCenter, Col, Row, Space } from '@org/ui';
 import { COLOR } from '@org/utils';
 import React from 'react';
@@ -21,6 +22,7 @@ const cssTextSection = css`
   }
 `;
 export function Footer() {
+  const { t } = useTranslation();
   return (
     <Space
       className={css`
@@ -54,33 +56,8 @@ export function Footer() {
               height={50}
               width={226}
             /> */}
-              <Space>
-                SmartTutor.vn là một trải nghiệm học tập tuyệt vời, cung cấp những khoá học online
-                chất lượng cao cho học sinh tiểu học, THCS và THPT. Với sự hợp tác chuyên môn của
-                các giáo viên hàng đầu cùng phương pháp học tập cá nhân hoá và sự hỗ trợ của công
-                nghệ giúp các em luôn hào hứng trong việc học tập, nắm chắc được vấn đề từ đó hiểu
-                sâu nhớ lâu và học thật tốt chương trình trên lớp cũng như đạt kết quả cao trong các
-                kỳ thi.
-              </Space>
-              <Space>
-                <b>
-                  CÔNG TY CỔ PHẦN SmartTutor
-                  <b>
-                    <br />
-                    Địa chỉ: Tam Vinh - Phú Ninh - Quảng Nam.
-                    <br />
-                    Mã số thuế: 0109906427
-                    <br />
-                    Ngày cấp: 16/02/2022 - Nơi cấp: Sở Kế hoạch và Đầu tư thành phố Hà Nội
-                    <br />
-                    Email: smartTutor@edu.vn
-                    <br />
-                    Điện thoại: 0792920565
-                    <br />
-                    Website: smartTutor.vn
-                  </b>
-                </b>
-              </Space>
+              <Space>{t('footer.content1')}</Space>
+              <Space dangerouslySetInnerHTML={{ __html: t('footer.content2') }} />
             </Col>
 
             <Col
@@ -94,7 +71,7 @@ export function Footer() {
                   sm={24}
                   md={12}
                 >
-                  <Space className={cssTextSection}>Tải Ứng Dụng</Space>
+                  <Space className={cssTextSection}>{t('footer.title1')}</Space>
                   <Space className={'flex'}>
                     <img
                       src='https://static-xxx.vuihoc.vn/theme/vuihoc/imgs/dowload_appstore.png'
@@ -113,7 +90,7 @@ export function Footer() {
                   sm={24}
                   md={12}
                 >
-                  <Space className={cssTextSection}>Kết Nối</Space>
+                  <Space className={cssTextSection}>{t('footer.title2')}</Space>
                   <Space className={'flex'}>
                     <img
                       src='https://static-xxx.vuihoc.vn/theme/vuihoc/imgs/dowload_appstore.png'

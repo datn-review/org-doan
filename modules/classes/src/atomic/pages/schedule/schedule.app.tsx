@@ -76,6 +76,9 @@ function Schedule({ data, refetch }: any) {
   const [createLesson] = useCreateLessonDefaultMutation();
   const [createLessonSingle] = useCreateLessonMutation();
 
+  const isComplete =
+    data?.status === 5 && data?.contractEndDate && dayjs(data?.contractEndDate).isBefore(dayjs());
+
   const [classArray, setClassArray] = useState<ClassRecord>({
     [uuidv4()]: { day: undefined, time: '' },
   });
@@ -243,12 +246,14 @@ function Schedule({ data, refetch }: any) {
       >
         <H2>{t('class.create.schedule')}</H2>
 
-        <Button
-          onClick={handleSave}
-          $size={SIZE.ExtraSmall}
-        >
-          {t('class.save.schedule')}{' '}
-        </Button>
+        {!isComplete && (
+          <Button
+            onClick={handleSave}
+            $size={SIZE.ExtraSmall}
+          >
+            {t('class.save.schedule')}{' '}
+          </Button>
+        )}
       </Space>
       <Space
         className={css`
@@ -359,38 +364,42 @@ function Schedule({ data, refetch }: any) {
                   //margin-bottom: 0.5rem;
                 `}
               >
-                <Button
-                  onClick={() => {
-                    setClassArray((prev) => {
-                      delete prev[id];
-                      return { ...prev };
-                    });
-                  }}
-                  $size={SIZE.ExtraSmall}
-                >
-                  - {t('remove')}
-                </Button>
+                {!isComplete && (
+                  <Button
+                    onClick={() => {
+                      setClassArray((prev) => {
+                        delete prev[id];
+                        return { ...prev };
+                      });
+                    }}
+                    $size={SIZE.ExtraSmall}
+                  >
+                    - {t('remove')}
+                  </Button>
+                )}
               </Space>
             )}
           </Space>
         );
       })}
-      <Space>
-        <Button
-          onClick={() => {
-            setClassArray((prev) => ({
-              ...prev,
-              [uuidv4()]: {
-                day: undefined,
-                time: '',
-              },
-            }));
-          }}
-          $size={SIZE.ExtraSmall}
-        >
-          + {t('add')}
-        </Button>
-      </Space>
+      {!isComplete && (
+        <Space>
+          <Button
+            onClick={() => {
+              setClassArray((prev) => ({
+                ...prev,
+                [uuidv4()]: {
+                  day: undefined,
+                  time: '',
+                },
+              }));
+            }}
+            $size={SIZE.ExtraSmall}
+          >
+            + {t('add')}
+          </Button>
+        </Space>
+      )}
 
       <Space
         className={css`
@@ -404,8 +413,9 @@ function Schedule({ data, refetch }: any) {
           moreLinkContent={renderMoreLinkContent}
           eventChange={eventChange}
           createEvent={createEvent}
+          s
         />
-        {!isEmpty(dateCreate) && (
+        {!isEmpty(dateCreate) && !isComplete && (
           <ModalAntd
             open={!isEmpty(dateCreate)}
             onCancel={() => setDateCreate(null)}
@@ -457,6 +467,7 @@ function Schedule({ data, refetch }: any) {
       <If condition={!!eventId}>
         <Then>
           <Event
+            isComplete={isComplete}
             id={eventId}
             close={() => setEventId(null)}
             refetch={refetch}

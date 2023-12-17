@@ -48,8 +48,9 @@ type Props = {
   close: () => void;
   id: number;
   refetch?: () => void;
+  isComplete?: boolean;
 };
-export const Event = ({ id, close, refetch }: Props) => {
+export const Event = ({ id, close, refetch, isComplete }: Props) => {
   const [getEvent, { data }] = useLazyFindLessonQuery();
   const { t } = useTranslation();
   useEffect(() => {
@@ -66,13 +67,19 @@ export const Event = ({ id, close, refetch }: Props) => {
           data={data}
           refetch={refetch}
           close={close}
+          isComplete={isComplete}
         />
       ),
     },
     {
       key: '2',
       label: t('lesson.assignment'),
-      children: <LessonAssigenment data={data} />,
+      children: (
+        <LessonAssigenment
+          data={data}
+          isComplete={isComplete}
+        />
+      ),
     },
     // {
     //   key: '3',
@@ -97,7 +104,7 @@ export const Event = ({ id, close, refetch }: Props) => {
     </ModalAntd>
   );
 };
-export const LessonInfo = ({ data, refetch, close }: any) => {
+export const LessonInfo = ({ data, refetch, close, isComplete }: any) => {
   const { t } = useTranslation();
   const [content, setContent] = useState(data?.content);
   const [updateLesson] = useUpdateLessonMutation();
@@ -133,28 +140,30 @@ export const LessonInfo = ({ data, refetch, close }: any) => {
               {t('date')} : {dayjs(data?.lessonStart).format('DD-MM-YYYY')}{' '}
               {dayjs(data?.lessonStart).format('HH:mm')} - {dayjs(data?.lessonEnd).format('HH:mm')}
             </Space>
-            <Space
-              className={css`
-                display: flex;
-                justify-content: flex-end;
-                gap: 1rem;
-              `}
-            >
-              <Button
-                $size={SIZE.ExtraSmall}
-                onClick={handleDelete}
-                $type={TYPE_BUTTON.Error}
+            {!isComplete && (
+              <Space
+                className={css`
+                  display: flex;
+                  justify-content: flex-end;
+                  gap: 1rem;
+                `}
               >
-                <DeleteFilled style={{ color: COLOR.White }} />
-              </Button>
-              <Button
-                $size={SIZE.ExtraSmall}
-                onClick={handleSave}
-              >
-                <SaveFilled style={{ color: COLOR.White }} />
-                {/* {t('update')} */}
-              </Button>
-            </Space>
+                <Button
+                  $size={SIZE.ExtraSmall}
+                  onClick={handleDelete}
+                  $type={TYPE_BUTTON.Error}
+                >
+                  <DeleteFilled style={{ color: COLOR.White }} />
+                </Button>
+                <Button
+                  $size={SIZE.ExtraSmall}
+                  onClick={handleSave}
+                >
+                  <SaveFilled style={{ color: COLOR.White }} />
+                  {/* {t('update')} */}
+                </Button>
+              </Space>
+            )}
           </BoxBetween>
         </Col>
         <Col span={24}>
@@ -172,7 +181,7 @@ export const LessonInfo = ({ data, refetch, close }: any) => {
   );
 };
 
-export const LessonAssigenment = ({ data, isCollap }: any) => {
+export const LessonAssigenment = ({ data, isCollap, isComplete }: any) => {
   const [exerciseID, setExerciseID] = useState<any>(null);
   const { t } = useTranslation();
   const [deleteUser] = useDeleteAssignmentMutation();
@@ -386,7 +395,7 @@ export const LessonAssigenment = ({ data, isCollap }: any) => {
           margin: 0 0 2rem 0;
         `}
       >
-        {!isCollap && (
+        {!isCollap && !isComplete && (
           <Link to={SiteMap.Assessment.Assignment.Create.generate(data?.id)}>
             <Button $size={SIZE.ExtraSmall}>{t('assignment.create')}</Button>
           </Link>

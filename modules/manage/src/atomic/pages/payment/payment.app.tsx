@@ -1,7 +1,14 @@
 import { css } from '@emotion/css';
-import { useCRUDContext, useMessageHook, useUpdateEffect } from '@org/core';
-import { useTranslation } from '@org/i18n';
-import { clearActiveMenu, setActiveGroup, setActiveSubGroup, useAppDispatch } from '@org/store';
+import { defauOptions, useCRUDContext, useMessageHook, useUpdateEffect } from '@org/core';
+import { getNameLanguage, useTranslation } from '@org/i18n';
+import {
+  clearActiveMenu,
+  setActiveGroup,
+  setActiveSubGroup,
+  useAppDispatch,
+  useLazyGetClassesAllQuery,
+  useLazyGetCollaborationQuery,
+} from '@org/store';
 import { useDeletePaymentMutation, useLazyGetPaymentQuery } from '@org/store';
 import { CSVLink } from 'react-csv';
 import { Link } from 'react-router-dom';
@@ -61,6 +68,7 @@ function PaymentApp() {
     month: null,
     year: null,
     name: '',
+    collaboration: 0,
   });
 
   useEffect(() => {
@@ -72,6 +80,29 @@ function PaymentApp() {
   }, []);
 
   const [getUser, { data, isLoading }] = useLazyGetPaymentQuery();
+  const [getUserCSV, { data: dataCSV }] = useLazyGetPaymentQuery();
+
+  const [getCollaboration, { data: classes }] = useLazyGetClassesAllQuery();
+  const dataClass = useMemo(() => {
+    return (
+      classes?.data?.map((item: any) => {
+        let subjectString = '';
+        item?.posts?.subjects?.forEach((subject: any, index: number) => {
+          if (index === 0) {
+            subjectString = getNameLanguage(subject?.nameVI, subject?.nameEN);
+          } else {
+            subjectString =
+              subjectString + ' - ' + getNameLanguage(subject?.nameVI, subject?.nameEN);
+          }
+        });
+        return {
+          label: `[#CLASS${item?.id}] ${subjectString}`,
+          value: item?.id,
+        };
+      }) || []
+    );
+  }, [classes]);
+
   const [deleteUser] = useDeletePaymentMutation();
 
   const query = {
@@ -82,13 +113,17 @@ function PaymentApp() {
     type: filter.type,
     month: filter.month ? dayjs(filter.month).format('MM') : null,
     year: filter.year ? dayjs(filter.year).format('YYYY') : null,
-
+    collaboration: filter.collaboration,
     sortBy: tableInstance.values.sort.sortBy,
     sortDirection: tableInstance.values.sort.sortDirection,
   };
+  useEffect(() => {
+    getCollaboration({});
+  }, []);
 
   useEffect(() => {
     getUser(query);
+    getUserCSV({ ...query, limit: 10000000, page: 1 });
   }, [JSON.stringify(query)]);
 
   useUpdateEffect(() => {
@@ -97,6 +132,7 @@ function PaymentApp() {
         ...query,
         page: 1,
       });
+      getUserCSV({ ...query, limit: 10000000, page: 1 });
       tableInstance.reset();
       setIsFetch(false);
     }
@@ -162,7 +198,7 @@ function PaymentApp() {
         if (dayjs(record.deadPaymentDate).isBefore(dayjs()) && status !== 2) {
           status = 3;
         }
-
+        if (record?.receiver) return null;
         return (
           <Tag color={StatusPayColor[status as keyof typeof StatusShowHideColor]}>
             {t(`${StatusPay[status as keyof typeof StatusPay]}${record?.receiver ? '.tutor' : ''}`)}
@@ -207,38 +243,31 @@ function PaymentApp() {
     // },
   ];
   const headers = [
-    { label: 'Tên Gia Dịch', key: 'title' },
+    { label: 'Tên Giao Dịch', key: 'title' },
     { label: 'Họ Và Tên', key: 'fullName' },
+    { label: 'Số Tiền', key: 'amount' },
+
     { label: 'Tên Trên Thẻ', key: 'accountFullNameBank' },
     { label: 'Số Tài Khoản', key: 'accountNumberBank' },
     { label: 'Tên Ngân Hàng', key: 'nameBank' },
   ];
   const dataExport = useMemo(() => {
-    return data?.data?.map((record: any) => ({
-      title: record?.receiver
-        ? t('fee.pay.tutor')
-        : t('fee.pay.student') + ' ' + dayjs(record?.feeMonthDate).format('MM/YYYY'),
-      fullName: record?.receiver
-        ? record?.receiver?.lastName + ' ' + record?.receiver?.firstName
-        : record?.sender?.lastName + ' ' + record?.sender?.firstName,
-      amount: record?.amount,
-      accountNumberBank: record?.accountNumberBank,
-      accountFullNameBank: record?.accountNumberBank,
-      nameBank: record?.accountNumberBank,
-    }));
-  }, [data?.data]);
-  // const dataText = [
-  //   { firstName: 'Warren', lastName: 'Morrow', email: 'sokyt@mailinator.com', age: '36' },
-  //   { firstName: 'Gwendolyn', lastName: 'Galloway', email: 'weciz@mailinator.com', age: '76' },
-  //   { firstName: 'Astra', lastName: 'Wyatt', email: 'quvyn@mailinator.com', age: '57' },
-  //   { firstName: 'Jasmine', lastName: 'Wong', email: 'toxazoc@mailinator.com', age: '42' },
-  //   { firstName: 'Brooke', lastName: 'Mcconnell', email: 'vyry@mailinator.com', age: '56' },
-  //   { firstName: 'Christen', lastName: 'Haney', email: 'pagevolal@mailinator.com', age: '23' },
-  //   { firstName: 'Tate', lastName: 'Vega', email: 'dycubo@mailinator.com', age: '87' },
-  //   { firstName: 'Amber', lastName: 'Brady', email: 'vyconixy@mailinator.com', age: '78' },
-  //   { firstName: 'Philip', lastName: 'Whitfield', email: 'velyfi@mailinator.com', age: '22' },
-  //   { firstName: 'Kitra', lastName: 'Hammond', email: 'fiwiloqu@mailinator.com', age: '35' },
-  //   { firstName: 'Charity', lastName: 'Mathews', email: 'fubigonero@mailinator.com', age: '63' },
+    return (
+      data?.data?.map((record: any) => ({
+        title: record?.receiver
+          ? t('fee.pay.tutor')
+          : t('fee.pay.student') + ' ' + dayjs(record?.feeMonthDate).format('MM/YYYY'),
+        fullName: record?.receiver
+          ? record?.receiver?.lastName + ' ' + record?.receiver?.firstName
+          : record?.sender?.lastName + ' ' + record?.sender?.firstName,
+        amount: record?.amount,
+        accountNumberBank: record?.accountNumberBank || t('updating'),
+        accountFullNameBank: record?.accountNumberBank || t('updating'),
+        nameBank: record?.accountNumberBank || t('updating'),
+      })) || []
+    );
+  }, [dataCSV?.data]);
+
   // ];
   const csvReport = {
     data: dataExport,
@@ -285,6 +314,17 @@ function PaymentApp() {
             defaultValue={0}
             value={filter.type}
             onChange={(value) => setFilter((prev) => ({ ...prev, type: value }))}
+            className={css`
+              min-width: 20rem;
+              min-height: 3.8rem;
+            `}
+          />
+          <Select
+            label={t('payment.classes')}
+            options={[defauOptions, ...dataClass]}
+            defaultValue={0}
+            value={filter.collaboration}
+            onChange={(value) => setFilter((prev) => ({ ...prev, collaboration: value }))}
             className={css`
               min-width: 20rem;
               min-height: 3.8rem;
@@ -378,7 +418,7 @@ function PaymentApp() {
           </Space>
 
           <Button>
-            <CSVLink {...csvReport}>Export to CSV</CSVLink>
+            <CSVLink {...csvReport}>{t('export.csv')}</CSVLink>
           </Button>
         </Space>
       </Space>
