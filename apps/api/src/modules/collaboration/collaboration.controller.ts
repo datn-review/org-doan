@@ -117,6 +117,10 @@ const relationsPay = [
     field: 'posts.user',
     entity: 'user',
   },
+  {
+    field: 'user',
+    entity: 'user_',
+  },
 ];
 
 @ApiBearerAuth()

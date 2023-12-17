@@ -4,7 +4,7 @@ import { router } from './routes';
 import { ProviderI18n } from '@org/i18n';
 import { AntdProvider, ComponentInject, GlobalStyle } from '@org/ui';
 import { StoreProvider } from '@org/store';
-import { PortalProvider } from '@org/core';
+import { MessageProvider, PortalProvider } from '@org/core';
 
 // const theme = extendBaseTheme({
 //   styles: {
@@ -17,12 +17,13 @@ import { PortalProvider } from '@org/core';
 // });
 const Router = () => (
   <>
+    {/* {contextHolder} */}
     <RouterProvider router={router} />
   </>
 );
 
 const App = ComponentInject({
-  providers: [StoreProvider, PortalProvider, ProviderI18n, AntdProvider],
+  providers: [StoreProvider, PortalProvider, MessageProvider, ProviderI18n, AntdProvider],
   template: [GlobalStyle],
   bootstrap: Router,
 });

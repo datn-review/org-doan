@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
 import { EntityHelper } from 'src/utils/entity-helper';
 import {
   Column,
@@ -10,12 +11,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { GradeLevel } from '../../../grade-level/entities/grade-level.entity';
 import { Lessons } from '../../../lessons/entities/lessons.entity';
 import { Exercise } from '../../exercise/entities/exercise.entity';
-import { Option } from '../../option/entities/option.entity';
 import { SubmissionQuestion } from '../../submission-question/entities/submission-question.entity';
-import { Expose } from 'class-transformer';
 
 @Entity({ name: 'assignment' })
 export class Assignment extends EntityHelper {

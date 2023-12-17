@@ -18,6 +18,7 @@ import {
   ClassesPage,
   ClassesDetailsPage,
 } from '@org/classes';
+import { DashboardPage, PaymentPage } from '@org/manage';
 import {
   AssignmentPage,
   CreateAssignmentPage,
@@ -27,7 +28,6 @@ import {
   ReviewAssignmentPage,
 } from '@org/assessment';
 import { ChatPage } from '@org/chat';
-
 export const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -38,7 +38,11 @@ export const router = createBrowserRouter([
       },
       {
         path: SiteMap.Dashboard.path,
-        element: <h1>Dashboard</h1>,
+        element: <DashboardPage />,
+      },
+      {
+        path: SiteMap.Payment.path,
+        element: <PaymentPage />,
       },
       {
         path: SiteMap.Users.Admin.path,

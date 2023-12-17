@@ -38,6 +38,9 @@ td {
 .ant-message-error .anticon * {
   color: red;
 }
+.ant-message {
+  z-index: 9999999999999999999;
+}
 
 #root {
   height: max-content;

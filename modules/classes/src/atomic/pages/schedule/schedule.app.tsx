@@ -10,6 +10,7 @@ import {
   Space,
   TimePicker,
   ColorPicker,
+  ModalAntd,
 } from '@org/ui';
 import moment from 'dayjs';
 import dayjs from 'dayjs';
@@ -18,12 +19,18 @@ import { getNameLanguage, i18nContant, useTranslation } from '@org/i18n';
 import { COLOR } from '@org/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { createEventId } from '@org/ui/src/atomic/atoms/calendar/event-utils';
-import { useCreateLessonDefaultMutation, useUpdateLessonMutation } from '@org/store';
+import {
+  useCreateLessonDefaultMutation,
+  useCreateLessonMutation,
+  useUpdateLessonMutation,
+} from '@org/store';
 import { isEmpty } from 'lodash';
 import { Popover } from '@org/ui';
 import { timePickerCss } from './schedule.styled';
 import { Event } from './container/Event';
 import { If, Then } from 'react-if';
+import { Editor } from '@org/editor';
+import { useMessage } from '@org/core';
 interface ClassTime {
   day?: number;
   start?: string;
@@ -67,6 +74,8 @@ function Schedule({ data, refetch }: any) {
   const [updateLesson] = useUpdateLessonMutation();
   const { t } = useTranslation();
   const [createLesson] = useCreateLessonDefaultMutation();
+  const [createLessonSingle] = useCreateLessonMutation();
+
   const [classArray, setClassArray] = useState<ClassRecord>({
     [uuidv4()]: { day: undefined, time: '' },
   });
@@ -74,6 +83,10 @@ function Schedule({ data, refetch }: any) {
   const [color, setColor] = useState<any>('#fff');
   const [bgColor, setBgColor] = useState<any>(COLOR.Primary);
   const [eventId, setEventId] = useState<any>(null);
+
+  const [timeCreate, setTimeCreate] = useState<any>();
+  const [dateCreate, setDateCreate] = useState<any>({});
+  const [content, setContent] = useState<any>(null);
 
   const format = 'HH:mm';
   useEffect(() => {
@@ -198,7 +211,6 @@ function Schedule({ data, refetch }: any) {
     return <></>;
   };
   const handleEventClick = (eventContent: any) => {
-    console.log(eventContent);
     setEventId(eventContent?.event?.extendedProps?.id);
   };
   const eventChange = (eventContent: any) => {
@@ -214,7 +226,13 @@ function Schedule({ data, refetch }: any) {
       console.log(res);
     });
   };
-
+  const createEvent = ({ start, end }: any) => {
+    setDateCreate({
+      start,
+      end,
+    });
+  };
+  const { messageSuccess, messageError } = useMessage();
   return (
     <Space className={css``}>
       <Space
@@ -385,13 +403,63 @@ function Schedule({ data, refetch }: any) {
           handleEventClick={handleEventClick}
           moreLinkContent={renderMoreLinkContent}
           eventChange={eventChange}
+          createEvent={createEvent}
         />
+        {!isEmpty(dateCreate) && (
+          <ModalAntd
+            open={!isEmpty(dateCreate)}
+            onCancel={() => setDateCreate(null)}
+            title={t('create.lesson')}
+            onOk={() => {
+              const body = {
+                content,
+                lessonStart: dateCreate.start + ' ' + dayjs(timeCreate[0])?.format(format),
+
+                collaboration: data?.id,
+                lessonEnd:
+                  dayjs(dateCreate.end).subtract(1, 'day').format('YYYY-MM-DD') +
+                  ' ' +
+                  dayjs(timeCreate[1])?.format(format),
+              };
+
+              createLessonSingle(body)
+                .then((res) => {
+                  console.log('🚀 ~ file: schedule.app.tsx:427 ~ .then ~ res:', res);
+                  messageSuccess(t('create.success'));
+                  setDateCreate(null);
+                  refetch();
+                  setTimeCreate(null);
+                  setContent(null);
+                })
+                .catch(() => {
+                  messageError(t('create.error'));
+                });
+            }}
+          >
+            <div>{t('class.time_day')}</div>
+            <TimePicker.RangePicker
+              onChange={(value) => setTimeCreate(value)}
+              dropdownClassName={timePickerCss}
+              format={format}
+              size={'middle'}
+            />
+            <br />
+            <br />
+
+            <Space>{t('lesson.content')}</Space>
+            <Editor
+              defaultValue={''}
+              onChange={(value: any) => setContent(value)}
+            />
+          </ModalAntd>
+        )}
       </Space>
       <If condition={!!eventId}>
         <Then>
           <Event
             id={eventId}
             close={() => setEventId(null)}
+            refetch={refetch}
           />
         </Then>
       </If>

@@ -59,6 +59,9 @@ importers:
       qs:
         specifier: ^6.11.2
         version: 6.11.2
+      react-csv:
+        specifier: ^2.2.2
+        version: 2.2.2
       react-if:
         specifier: ^4.1.5
         version: 4.1.5(react@18.2.0)
@@ -536,6 +539,9 @@ importers:
       '@org/look-for-tutor':
         specifier: workspace:^
         version: link:../../modules/look-for-tutor
+      '@org/manage':
+        specifier: workspace:^
+        version: link:../../modules/manage
       '@org/profile':
         specifier: workspace:^
         version: link:../../modules/profile
@@ -905,6 +911,58 @@ importers:
       '@org/editor':
         specifier: workspace:^
         version: link:../../packages/lexical-playground
+      '@org/i18n':
+        specifier: workspace:^
+        version: link:../../packages/I18n
+      '@org/store':
+        specifier: workspace:^
+        version: link:../../packages/store
+      '@org/ui':
+        specifier: workspace:^
+        version: link:../../packages/ui
+      '@org/utils':
+        specifier: workspace:^
+        version: link:../../packages/utils
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+      react-router-dom:
+        specifier: 6.14.2
+        version: 6.14.2(react-dom@18.2.0)(react@18.2.0)
+    devDependencies:
+      '@types/react':
+        specifier: ^18.2.15
+        version: 18.2.21
+      '@types/react-dom':
+        specifier: ^18.2.7
+        version: 18.2.7
+      '@vitejs/plugin-react-swc':
+        specifier: ^3.3.2
+        version: 3.3.2(@swc/helpers@0.5.2)(vite@4.4.9)
+      typescript:
+        specifier: ^5.0.2
+        version: 5.1.3
+      vite:
+        specifier: ^4.4.5
+        version: 4.4.9(@types/node@18.7.1)
+      vite-plugin-dts:
+        specifier: ^2.3.0
+        version: 2.3.0(@types/node@18.7.1)(vite@4.4.9)
+      vite-plugin-svgr:
+        specifier: ^3.2.0
+        version: 3.2.0(typescript@5.1.3)(vite@4.4.9)
+
+  modules/manage:
+    dependencies:
+      '@org/auth':
+        specifier: workspace:^
+        version: link:../auth
+      '@org/core':
+        specifier: workspace:^
+        version: link:../../packages/core
       '@org/i18n':
         specifier: workspace:^
         version: link:../../packages/I18n
@@ -9721,7 +9779,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.22.5(@babel/core@7.22.17)
       magic-string: 0.27.0
       react-refresh: 0.14.0
-      vite: 4.4.9(@types/node@18.16.18)(sass@1.66.1)
+      vite: 4.4.9(@types/node@18.7.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -15095,7 +15153,7 @@ packages:
       pretty-format: 29.7.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.1(@swc/core@1.3.85)(@types/node@18.16.18)(typescript@5.1.3)
+      ts-node: 10.9.1(@swc/core@1.3.85)(@types/node@18.7.1)(typescript@5.1.3)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -20007,6 +20065,10 @@ packages:
       react: 18.2.0
     dev: false
 
+  /react-csv@2.2.2:
+    resolution: {integrity: sha512-RG5hOcZKZFigIGE8LxIEV/OgS1vigFQT4EkaHeKgyuCbUAu9Nbd/1RYq++bJcJJ9VOqO/n9TZRADsXNDR4VEpw==}
+    dev: false
+
   /react-devtools-core@4.28.4:
     resolution: {integrity: sha512-IUZKLv3CimeM07G3vX4H4loxVpByrzq3HvfTX7v9migalwvLs9ZY5D3S3pKR33U+GguYfBBdMMZyToFhsSE/iQ==}
     dependencies:
@@ -21975,7 +22037,7 @@ packages:
       '@babel/core': 7.22.17
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 29.5.0(@types/node@18.16.18)(ts-node@10.9.1)
+      jest: 29.5.0(@types/node@18.7.1)(ts-node@10.9.1)
       jest-util: 29.6.3
       json5: 2.2.3
       lodash.memoize: 4.1.2
@@ -22781,7 +22843,6 @@ packages:
       rollup: 3.29.1
     optionalDependencies:
       fsevents: 2.3.3
-    dev: true
 
   /vlq@1.0.1:
     resolution: {integrity: sha512-gQpnTgkubC6hQgdIcRdYGDSDc+SaujOdyesZQMv6JlfQee/9Mp0Qhnys6WxDWvQnL5WZdT7o2Ul187aSt0Rq+w==}

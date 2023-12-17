@@ -1,24 +1,15 @@
-import React, { useState } from 'react';
-import {
-  EventApi,
-  DateSelectArg,
-  EventClickArg,
-  EventContentArg,
-  formatDate,
-} from '@fullcalendar/core';
-import FullCalendar from '@fullcalendar/react';
+import { DateSelectArg, EventApi, formatDate } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { INITIAL_EVENTS, createEventId } from './event-utils';
+import FullCalendar from '@fullcalendar/react';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import { useState } from 'react';
 import { Wrapper } from './styled';
 
+import { css } from '@emotion/css';
 import esLocale from '@fullcalendar/core/locales/es';
 import viLocate from '@fullcalendar/core/locales/vi';
-import { Space } from '../space';
-import { css } from '@emotion/css';
 import { COLOR } from '@org/utils';
-import { Popover } from 'antd';
 interface DemoAppState {
   weekendsVisible: boolean;
   currentEvents: EventApi[];
@@ -30,26 +21,26 @@ export const Calendar = ({
   handleEventClick,
   moreLinkContent,
   eventChange,
+  createEvent,
 }: any) => {
   const [currentEvents, setCurrentEvents] = useState<EventApi[]>([]);
 
+  // const [isCreate, setIsCreate] = useState<EventApi[]>([]);
+
   const handleDateSelect = (selectInfo: DateSelectArg) => {
-    let title = prompt('Please enter a new title for your event');
+    // let title = prompt('Please enter a new title for your event');
     let calendarApi = selectInfo.view.calendar;
     console.log(selectInfo);
     calendarApi.unselect(); // clear date selection
 
-    if (title) {
-      calendarApi.addEvent({
-        id: createEventId(),
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay,
-
-        // display: 'background',
-      });
-    }
+    // createEvent({
+    //   start: selectInfo.startStr,
+    //   end: selectInfo.endStr,
+    // });
+    createEvent({
+      start: selectInfo.startStr,
+      end: selectInfo.endStr,
+    });
   };
 
   // const handleEventClick = (clickInfo: EventClickArg) => {

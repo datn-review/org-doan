@@ -363,8 +363,24 @@
     "status.post.no.collap":"Chưa Giao",
     "status.post.collap":"Đã Giao",
     "status.all":"Tất Cả",
-    "no.classes":"Chưa Có Lớp"
-    
+    "no.classes":"Chưa Có Lớp",
+    "create.lesson":"Thêm Buổi Học",
+    "create.success":"Thêm Thành Công",
+    "create.error":"Thêm Thất Bại",
+    "edit.success":"Sửa Thành Công",
+    "edit.error":"Sửa Thất Bại",
+    "delete.success":"Xóa Thành Công",
+    "delete.error":"Xóa Thất Bại",
+    "setting":"Cài Đặt",
+    "Help":"Giúp Đỡ",
+    "settings.payment":"Thanh Toán",
+    "payment.type":"Loại Thanh Toán",
+    "payment.type.student":"Học Phí",
+    "payment.type.tutor":"Nhận Lương",
+    "month":"Tháng",
+    "year":"Năm",
+    "back.to.home":"Trở Về Trang Chủ"
+
 }
 
 

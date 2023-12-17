@@ -105,9 +105,13 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
     }
     if (where && where?.length > 0) {
       where?.forEach(({ field, value }, index) => {
-        query.andWhere(`${field.includes('.') ? field : `entity.${field}`} = :value_${field}`, {
-          [`value_${field}`]: value,
-        });
+        if (value === null) {
+          query.andWhere(`${field}`);
+        } else {
+          query.andWhere(`${field.includes('.') ? field : `entity.${field}`} = :value_${index}`, {
+            [`value_${index}`]: value,
+          });
+        }
       });
     }
     if (typeof fieldSearch === 'string' && fieldSearch !== '') {

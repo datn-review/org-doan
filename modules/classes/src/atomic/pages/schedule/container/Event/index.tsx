@@ -15,9 +15,14 @@ import {
   TabsProps,
   Dropdown,
   Tag,
+  TYPE_BUTTON,
+  DeleteFilled,
+  SaveFilled,
+  BoxBetween,
 } from '@org/ui';
 import {
   useDeleteAssignmentMutation,
+  useDeleteLessonMutation,
   useLazyFindLessonQuery,
   useUpdateLessonMutation,
 } from '@org/store';
@@ -26,6 +31,7 @@ import { Editor } from '@org/editor';
 import dayjs from 'dayjs';
 import { css } from '@emotion/css';
 import {
+  COLOR,
   EnumStatusAssignment,
   EnumStatusAssignmentColor,
   EnumStatusCollap,
@@ -36,13 +42,14 @@ import {
 import { Link } from 'react-router-dom';
 import { Authorization } from '@org/auth';
 import { If, Then } from 'react-if';
-import { useMessageHook } from '@org/core';
+import { useMessage, useMessageHook } from '@org/core';
 import { ViewExercise } from '../../../../molecules';
 type Props = {
   close: () => void;
   id: number;
+  refetch?: () => void;
 };
-export const Event = ({ id, close }: Props) => {
+export const Event = ({ id, close, refetch }: Props) => {
   const [getEvent, { data }] = useLazyFindLessonQuery();
   const { t } = useTranslation();
   useEffect(() => {
@@ -54,18 +61,24 @@ export const Event = ({ id, close }: Props) => {
     {
       key: '1',
       label: t('lesson.info'),
-      children: <LessonInfo data={data} />,
+      children: (
+        <LessonInfo
+          data={data}
+          refetch={refetch}
+          close={close}
+        />
+      ),
     },
     {
       key: '2',
       label: t('lesson.assignment'),
       children: <LessonAssigenment data={data} />,
     },
-    {
-      key: '3',
-      label: t('lesson.comment'),
-      children: 'Content of Tab Pane 3',
-    },
+    // {
+    //   key: '3',
+    //   label: t('lesson.comment'),
+    //   children: 'Content of Tab Pane 3',
+    // },
   ];
 
   return (
@@ -84,25 +97,65 @@ export const Event = ({ id, close }: Props) => {
     </ModalAntd>
   );
 };
-export const LessonInfo = ({ data }: any) => {
+export const LessonInfo = ({ data, refetch, close }: any) => {
   const { t } = useTranslation();
   const [content, setContent] = useState(data?.content);
   const [updateLesson] = useUpdateLessonMutation();
-
+  const [deteteLesson] = useDeleteLessonMutation();
+  const { messageSuccess, messageError } = useMessage();
   const handleSave = () => {
-    updateLesson({ body: { content }, id: data?.id }).then((res) => {
-      console.log(res);
-    });
+    updateLesson({ body: { content }, id: data?.id })
+      .then((res) => {
+        close();
+        messageSuccess(t('edit.success'));
+      })
+      .catch((err) => {
+        messageError(t('edit.error'));
+      });
+  };
+  const handleDelete = () => {
+    deteteLesson(data?.id)
+      .then(() => {
+        refetch();
+        close();
+        messageSuccess(t('delete.success'));
+      })
+      .catch((err) => {
+        messageError(t('delete.error'));
+      });
   };
   return (
     <Space>
       <Row gutter={[10, 10]}>
-        <Col span={12}>
-          <Space></Space>
-          <Space>
-            {t('date')} : {dayjs(data?.lessonStart).format('DD-MM-YYYY')}{' '}
-            {dayjs(data?.lessonStart).format('MM:hh')} - {dayjs(data?.lessonEnd).format('MM:hh')}
-          </Space>
+        <Col span={24}>
+          <BoxBetween>
+            <Space>
+              {t('date')} : {dayjs(data?.lessonStart).format('DD-MM-YYYY')}{' '}
+              {dayjs(data?.lessonStart).format('HH:mm')} - {dayjs(data?.lessonEnd).format('HH:mm')}
+            </Space>
+            <Space
+              className={css`
+                display: flex;
+                justify-content: flex-end;
+                gap: 1rem;
+              `}
+            >
+              <Button
+                $size={SIZE.ExtraSmall}
+                onClick={handleDelete}
+                $type={TYPE_BUTTON.Error}
+              >
+                <DeleteFilled style={{ color: COLOR.White }} />
+              </Button>
+              <Button
+                $size={SIZE.ExtraSmall}
+                onClick={handleSave}
+              >
+                <SaveFilled style={{ color: COLOR.White }} />
+                {/* {t('update')} */}
+              </Button>
+            </Space>
+          </BoxBetween>
         </Col>
         <Col span={24}>
           <Space>{t('lesson.content')}</Space>
@@ -111,21 +164,9 @@ export const LessonInfo = ({ data }: any) => {
             onChange={(value) => setContent(value)}
           />
         </Col>
-        <Col span={24}>
-          <Space
-            className={css`
-              display: flex;
-              justify-content: flex-end;
-            `}
-          >
-            <Button
-              $size={SIZE.ExtraSmall}
-              onClick={handleSave}
-            >
-              {t('update')}
-            </Button>
-          </Space>
-        </Col>
+        {/* <Col span={24}>
+      
+        </Col> */}
       </Row>
     </Space>
   );

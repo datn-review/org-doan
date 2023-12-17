@@ -27,3 +27,5 @@ export function useMessageHook(): any {
     messageError,
   };
 }
+// export const { contextHolder, messageApi, messageSuccess, messageError } = useMessageHook();
+export * from './message-provider';
