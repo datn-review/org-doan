@@ -50,8 +50,10 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
     }
 
     if (where && where?.length > 0) {
-      where?.forEach(({ field, value }) => {
-        query.andWhere(`entity.${field} = :value`, { value });
+      where?.forEach(({ field, value }, index) => {
+        query.andWhere(`${field.includes('.') ? field : `entity.${field}`} = :value_${index}`, {
+          [`value_${index}`]: value,
+        });
       });
     }
 

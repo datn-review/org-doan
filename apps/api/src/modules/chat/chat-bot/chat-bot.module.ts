@@ -6,9 +6,10 @@ import { ChatBot } from './entities/chat-bot.entity';
 import { ChatBotController } from './chat-bot.controller';
 import { ChatBotService } from './chat-bot.service';
 import { UsersModule } from 'src/users/users.module';
+import { LessonsModule } from 'src/modules/lessons/lessons.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ChatBot]), UsersModule],
+  imports: [TypeOrmModule.forFeature([ChatBot]), UsersModule, LessonsModule],
   controllers: [ChatBotController],
   providers: [IsExist, IsNotExist, ChatBotService],
   exports: [ChatBotService],
