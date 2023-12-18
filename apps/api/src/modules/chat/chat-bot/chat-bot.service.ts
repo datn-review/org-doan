@@ -14,6 +14,9 @@ import { RetrievalQAChain, VectorDBQAChain, loadQARefineChain } from 'langchain/
 import { OpenAI } from 'langchain/llms/openai';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const translate = require('@iamtraction/google-translate');
+
 import * as nlp from 'compromise';
 import * as datePlugin from 'compromise-dates';
 import { UsersService } from 'src/users/users.service';
@@ -190,14 +193,28 @@ export class ChatBotService
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const doc = nlp(userInput);
-      // console.log(doc);
-      // let dates = doc;
-      // console.log(doc?.emails());
-      console.log(doc?.json());
-      console.log(doc?.dates().get()?.[0]);
 
       const intent = responseVI.intent || responseEN.intent;
+      if (responseEN.intent) {
+        translate(userInput, { from: 'vi', to: 'en' })
+          .then(async (res) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+            const doc = nlp(res?.text);
+            // console.log(doc);
+            // let dates = doc;
+            // console.log(doc?.emails());
+            console.log(doc?.json());
+            console.log(doc?.dates().get());
+      
+            console.log(res.text);
+            const response = await this.manager.process('en', res.text);
+            console.log('🚀 ~ file: chat-bot.service.ts:208 ~ .then ~ response:', response.resolution);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      }
       // console.log(responseVI, responseEN);
       console.log(JSON.stringify(responseVI));
       // const llm = new OpenAI({ openAIApiKey: process.env.OPENAI_API_KEY });
@@ -209,7 +226,7 @@ export class ChatBotService
       // );
 
       // STEP 2: Create the chain
-      console.log(this.vectorStore);
+      // console.log(this.vectorStore);
       const chain = new RetrievalQAChain({
         combineDocumentsChain: loadQARefineChain(this.model),
         retriever: this.vectorStore.asRetriever(),
@@ -221,7 +238,7 @@ export class ChatBotService
         input_document: this.inputDocs,
         query: userInput,
       });
-      console.log(result);
+      // console.log(result);
       // Process the responses or return them as needed
       return (
         result?.output_text ||
