@@ -11,6 +11,7 @@ import { CharacterTextSplitter } from 'langchain/text_splitter';
 import { HNSWLib } from 'langchain/vectorstores/hnswlib';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { RetrievalQAChain, VectorDBQAChain, loadQARefineChain } from 'langchain/chains';
+
 import { OpenAI } from 'langchain/llms/openai';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 
@@ -21,6 +22,11 @@ import * as nlp from 'compromise';
 import * as datePlugin from 'compromise-dates';
 import { UsersService } from 'src/users/users.service';
 import { RoleEnum } from 'src/roles/roles.enum';
+import { LessonsService } from 'src/modules/lessons/lessons.service';
+import * as dayjs from 'dayjs';
+import * as timezone from 'dayjs/plugin/timezone';
+dayjs.extend(timezone);
+
 export const relations = [
   {
     field: 'tutorCertifications',
@@ -91,10 +97,12 @@ export class ChatBotService
   private readonly model: any;
   private vectorStore: any;
   private inputDocs: any;
+  private chain: any;
 
   constructor(
     @InjectRepository(ChatBot) repository: Repository<ChatBot>,
     private readonly usersService: UsersService,
+    private readonly lessonsService: LessonsService,
   ) {
     super(repository);
 
@@ -106,24 +114,9 @@ export class ChatBotService
       openAIApiKey: OPENAI_API_KEY,
       temperature: 0.9,
       modelName: 'gpt-3.5-turbo',
-      maxTokens: 4000,
+
+      // maxTokens: 4000,
     });
-    // const container = containerBootstrap();
-    // const builtin = new BuiltinCompromise({
-    //   enable: [
-    //     'hashtags',
-    //     'person',
-    //     'place',
-    //     'organization',
-    //     'email',
-    //     'phonenumber',
-    //     'date',
-    //     'url',
-    //     'number',
-    //     'dimension',
-    //   ],
-    // });
-    // container.register('extract-builtin-??', builtin, true);
   }
 
   async onModuleInit() {
@@ -159,19 +152,51 @@ export class ChatBotService
         value: RoleEnum.PESONAL_TUTOR,
       },
     ]);
-    console.log('🚀 ~ file: chat-bot.service.ts:77 ~ OPENAI_API_KEY:', OPENAI_API_KEY);
-    console.log('data', 'Pham Thanh Tam Sinh Nam 2001');
-    const splitter = new CharacterTextSplitter({
-      chunkSize: 1000,
-      chunkOverlap: 0,
+    console.log('🚀 ~ file: chat-bot.service.ts:154 ~ data?.forEach ~ data:', data?.[0]);
+    let stringTrain = '';
+    data?.forEach((item, index) => {
+      const nameCertifications = item?.tutorCertifications?.reduce((acc, cert) => {
+        return (acc = `${acc + ' - ' + cert?.certification?.nameVI}`);
+      }, '');
+      const tutorSkills = item?.tutorSkills?.reduce((acc, cert) => {
+        return (acc = `${acc + ' - ' + cert?.skill?.nameVI}`);
+      }, '');
+      const tutorGradeSubject = item?.tutorGradeSubject?.reduce((acc, cert) => {
+        return (acc = `${acc + ' - ' + cert?.subject?.nameVI + ' ' + cert?.grade?.nameVI}`);
+      }, '');
+      const birthday = item.birthday ? `sinh năm: ${item.birthday}` : '';
+      const address = item.address ? `địa chỉ:: ${item.address}` : '';
+      stringTrain =
+        stringTrain +
+        `Gia sư ${index + 1}: Họ và tên:${item.lastName} ${
+          item.firstName
+        },${birthday}, ${address},học trường: ${item.school},${
+          item.bio
+        },chứng chỉ: ${nameCertifications},kỹ năng: ${tutorSkills},nhận dạy lớp: ${tutorGradeSubject} \n`;
     });
-    const docs = await splitter.createDocuments([JSON.stringify('Pham Thanh Tam Sinh Nam 2001')]);
+    console.log(
+      '🚀 ~ file: chat-bot.service.ts:154 ~ trainChatbotSearch ~ stringTrain:',
+      stringTrain,
+    );
+
+    // console.log('🚀 ~ file: chat-bot.service.ts:77 ~ OPENAI_API_KEY:', OPENAI_API_KEY);
+    const splitter = new CharacterTextSplitter({
+      separator: '\n',
+      chunkSize: 7,
+      chunkOverlap: 3,
+    });
+    const docs = await splitter.createDocuments([stringTrain]);
     this.inputDocs = docs;
     // STEP 4: Generate embeddings from documents
     this.vectorStore = await MemoryVectorStore.fromDocuments(
       docs,
       new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY }),
     );
+    this.chain = new RetrievalQAChain({
+      combineDocumentsChain: loadQARefineChain(this.model),
+      retriever: this.vectorStore.asRetriever(),
+      // prompt: chatPrompt,
+    });
 
     // await vectorStore.save('data');
   }
@@ -183,7 +208,7 @@ export class ChatBotService
     userInput: string;
     userId: number;
   }): Promise<string> {
-    console.log(userInput);
+    // console.log(userInput);
 
     try {
       const [responseVI, responseEN] = await Promise.all([
@@ -191,61 +216,55 @@ export class ChatBotService
         this.manager.process('en', userInput),
       ]);
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-
       const intent = responseVI.intent || responseEN.intent;
-      if (responseEN.intent) {
-        translate(userInput, { from: 'vi', to: 'en' })
-          .then(async (res) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-            const doc = nlp(res?.text);
-            // console.log(doc);
-            // let dates = doc;
-            // console.log(doc?.emails());
-            console.log(doc?.json());
-            console.log(doc?.dates().get());
-      
-            console.log(res.text);
-            const response = await this.manager.process('en', res.text);
-            console.log('🚀 ~ file: chat-bot.service.ts:208 ~ .then ~ response:', response.resolution);
-          })
-          .catch((err) => {
-            console.error(err);
-          });
+      // let dataAns = '';
+      if (intent === 'schedule') {
+        const res = await translate(userInput, { from: 'vi', to: 'en' });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // const doc = nlp(res?.text);
+        // const dates = doc.dates();
+        // dates.format('{month} {date-ordinal}');
+        // console.log(dates.text());
+
+        const response = await this.manager.process('en', res.text);
+        // console.log('🚀 ~ file: chat-bot.service.ts:196 ~ response:', response);
+        const dataFind = response.entities?.find((item) => {
+          return item?.entity === 'date' || item?.entity === 'daterange';
+        });
+        if (dataFind.resolution) {
+          let startDay = undefined;
+          let endDay = undefined;
+          if (dataFind?.entity === 'date') {
+            startDay = dataFind?.resolution?.date;
+          }
+          if (dataFind?.entity === 'daterange') {
+            startDay = dataFind?.resolution?.start;
+            endDay = dataFind?.resolution?.end;
+          }
+
+          const date = await this.lessonsService.findDay(startDay, endDay, userId);
+          console.log('🚀 ~ file: chat-bot.service.ts:228 ~ date:', date.data);
+          let textAns = responseVI.answer || responseEN.answer;
+          textAns = textAns + ` (${date?.string}): `;
+
+          return textAns;
+        }
+        return 'Nôi Dung Bạn Hỏi Không Thuộc Trong Phạm Vi Của Chatbot';
       }
       // console.log(responseVI, responseEN);
-      console.log(JSON.stringify(responseVI));
-      // const llm = new OpenAI({ openAIApiKey: process.env.OPENAI_API_KEY });
+      // console.log(JSON.stringify(responseVI));
 
-      // this.vectorStore = await HNSWLib.load(
-      //   'data',
-      //   new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY }),
-
-      // );
-
-      // STEP 2: Create the chain
-      // console.log(this.vectorStore);
-      const chain = new RetrievalQAChain({
-        combineDocumentsChain: loadQARefineChain(this.model),
-        retriever: this.vectorStore.asRetriever(),
+      const result = await this.chain.call({
+        // input_document: this.inputDocs,
+        query: `${userInput}, trả lời bằng tiếng việt`,
+        max_token_limit: 100,
+        input_language: 'vietnamese',
+        output_language: 'vietnamese',
       });
-      // const chain = VectorDBQAChain.fromLLM(this.model, this.vectorStore);
+      console.log('🚀 ~ file: chat-bot.service.ts:257 ~ result:', result);
 
-      // STEP 3: Get the answer
-      const result = await chain.call({
-        input_document: this.inputDocs,
-        query: userInput,
-      });
-      // console.log(result);
-      // Process the responses or return them as needed
-      return (
-        result?.output_text ||
-        responseVI.answer ||
-        responseEN.answer ||
-        "I'm sorry, I didn't understand your request."
-      );
+      return result?.output_text || 'Hông hiểu gì luôn';
     } catch (error) {
       // Handle errors from any of the promises
       console.error('Error:', error);

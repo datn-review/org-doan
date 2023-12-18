@@ -38,7 +38,7 @@ export class Lessons extends EntityHelper {
   content: string;
 
   @Column({ type: Date, nullable: false })
-  lessonStart?: Date | null;
+  lessonStart?: Date | null | string;
 
   @Column({ type: Date, nullable: false })
   lessonEnd?: Date | null;
