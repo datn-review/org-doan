@@ -102,7 +102,12 @@ function Schedule({ data, refetch }: any) {
           subjectString = subjectString + ' - ' + getNameLanguage(subject?.nameVI, subject?.nameEN);
         }
       });
-      setTitle(`[#CLASS${data?.id}] ${subjectString}`);
+      if (data?.nameClass) {
+        setTitle(data?.nameClass);
+      } else {
+        setTitle(`[#CLASS${data?.id}] ${subjectString}`);
+      }
+
       setBgColor(data?.bgColor || COLOR.Primary);
       setColor(data?.textColor || 'white');
 
@@ -156,7 +161,7 @@ function Schedule({ data, refetch }: any) {
       startDate: dayjs(data?.contractStartDate).format('YYYY-MM-DD'),
       endDate: dayjs(data?.contractEndDate).format('YYYY-MM-DD'),
       classTimes: dataCovert,
-      title,
+      nameClass: title,
       textColor: color,
       bgColor,
     }).then(() => refetch());

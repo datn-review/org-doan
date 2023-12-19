@@ -11,6 +11,7 @@ import { MessageService } from '../message/message.service';
 import { Message } from '../message/entities/message.entity';
 import { AuthService } from '../../../auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
+import { ChatBotService } from '../chat-bot/chat-bot.service';
 const relations = [
   {
     field: 'owner',
@@ -21,9 +22,16 @@ const relations = [
     entity: 'file',
   },
 ];
+export const IIFE = (cb: any) => {
+  return cb();
+};
 @WebSocketGateway({ cors: { origin: '*' } })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  constructor(private readonly messageService: MessageService, private authService: AuthService) {}
+  constructor(
+    private readonly messageService: MessageService,
+    private authService: AuthService,
+    private chatBotService: ChatBotService,
+  ) {}
 
   async handleConnection(client: Socket) {
     const token = client.handshake.auth.token;
@@ -58,10 +66,28 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(
       `Client ${client.id} sended message: ${createMessageDto.content} to room: ${createMessageDto.roomId}`,
     );
-    const message = (await this.messageService.create(createMessageDto)) as unknown as Message;
-    const newMessage = await this.messageService.findOne({ id: +message?.id }, relations);
-    client.emit('message', newMessage);
-    client.to(message.room.toString()).emit('message', newMessage);
+    if (createMessageDto?.isBot) {
+      IIFE(async () => {
+        const data = await this.chatBotService.handleUserRequest({
+          userInput: createMessageDto.content,
+          userId: createMessageDto.owner,
+        });
+        const message = (await this.messageService.create({
+          ...createMessageDto,
+          content: data,
+          owner: 0,
+        })) as unknown as Message;
+        const newMessage = await this.messageService.findOne({ id: +message?.id }, relations);
+        client.emit('message', newMessage);
+        client.to(message.room.toString()).emit('message', newMessage);
+      });
+    }
+    IIFE(async () => {
+      const message = (await this.messageService.create(createMessageDto)) as unknown as Message;
+      const newMessage = await this.messageService.findOne({ id: +message?.id }, relations);
+      client.emit('message', newMessage);
+      client.to(message.room.toString()).emit('message', newMessage);
+    });
   }
 
   @SubscribeMessage('isTyping')

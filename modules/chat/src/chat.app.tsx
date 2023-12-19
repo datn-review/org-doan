@@ -46,6 +46,8 @@ function ChatApp() {
   const [roomData, setRoomData] = useState<any>({ title: t('bot') });
 
   const [roomList, setRoomList] = useState<any>([]);
+  const [roomBotID, setRoomBotID] = useState<number>(0);
+
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(setActiveGroup({ current: SiteMap.Chat.menu }));
@@ -60,6 +62,19 @@ function ChatApp() {
 
   const { data: users } = useGetUsersActiveQuery({});
   const { data: rooms, refetch } = useGetRoomQuery({});
+
+  const roomsFilter = useMemo(() => {
+    return (
+      rooms?.filter((room: any) => {
+        const friend = room?.friends?.[0];
+        if (friend.id === 0) {
+          setRoomBotID(room?.id);
+          return false;
+        }
+        return true;
+      }) || []
+    );
+  }, [rooms]);
 
   const [createRoom] = useCreateRoomMutation();
 
@@ -220,11 +235,23 @@ function ChatApp() {
                 room={null}
                 isActive={0 === roomActive}
                 onClick={() => {
-                  getMessages(0);
-                  setRoomActive(0);
-                  setRoomData({
-                    title: t('bot'),
-                  });
+                  if (roomBotID === 0) {
+                    createRoom({ title: '', members: [0] })
+                      .unwrap()
+                      .then((room: any) => {
+                        getMessages(room?.id);
+                        setRoomActive(room?.id);
+                        setRoomData({
+                          title: t('bot'),
+                        });
+                      });
+                  } else {
+                    getMessages(roomBotID);
+                    setRoomActive(roomBotID);
+                    setRoomData({
+                      title: t('bot'),
+                    });
+                  }
                 }}
                 isBot
               />
@@ -243,7 +270,7 @@ function ChatApp() {
                   overflow-y: auto;
                 `}
               >
-                {rooms?.map((room: any) => (
+                {roomsFilter?.map((room: any) => (
                   <ChatItem
                     room={room}
                     isActive={room.id === roomActive}
@@ -284,7 +311,7 @@ function ChatApp() {
                     gap: 1rem;
                   `}
                 >
-                  {roomActive === 0 ? (
+                  {roomActive === roomBotID ? (
                     <AvataBot />
                   ) : (
                     <AvatarUser
@@ -302,7 +329,7 @@ function ChatApp() {
                     >
                       {roomData?.title}
                     </b>
-                    {(roomData?.isSingle || roomActive === 0) && (
+                    {(roomData?.isSingle || roomActive === roomBotID) && (
                       <div>{roomData?.friend?.role?.name || t('bot.message')}</div>
                     )}
                   </Space>
@@ -343,7 +370,12 @@ function ChatApp() {
                 />
                 <Button
                   onClick={() => {
-                    addMessage({ room: roomActive, owner: userId, content: chat });
+                    addMessage({
+                      room: roomActive,
+                      owner: userId,
+                      content: chat,
+                      isBot: roomBotID === roomActive,
+                    });
                     setChat('');
                   }}
                 >
