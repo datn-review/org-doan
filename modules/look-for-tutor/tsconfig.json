@@ -21,7 +21,7 @@
       "@/*": ["@/*"]
     }
   },
-  "include": ["src", "svg.d.ts", "./.eslintrc.cjs", "vite.config.ts"],
+  "include": ["src", "svg.d.ts", "./.eslintrc.cjs", "vite.config.ts", "../classes/src/atomic/molecules/post/look-for-tutor-edit.app.tsx"],
 
   "references": [{ "path": "./tsconfig.node.json" }]
 }

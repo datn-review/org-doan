@@ -11,6 +11,9 @@ import { defauOptions } from './contants';
 export const subjectImportFormat = (data: any) => {
   return data?.map((item: any) => item?.subject?.id) || [];
 };
+export const importFormat = (data: any) => {
+  return data?.map((item: any) => item?.id) || [];
+};
 export function SelectSubject(props: any) {
   const { data } = useGetSubjectActiveQuery({});
 

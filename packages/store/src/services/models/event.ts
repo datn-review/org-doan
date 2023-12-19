@@ -3,6 +3,7 @@ import { AddMessageDto, IMessage } from './message';
 export interface ServerToClientEvents {
   message: (data: IMessage) => void;
   isTyping: (name: string) => void;
+  isBotLoading: (loading: boolean) => void;
 }
 
 export interface ClientToServerEvents {

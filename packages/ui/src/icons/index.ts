@@ -27,6 +27,7 @@ export { ReactComponent as IconAssessment } from '../assets/icons/svg/assessment
 export { ReactComponent as NoDataSvg } from '../assets/icons/svg/no-data.svg';
 export { ReactComponent as PaymentIcon } from '../assets/icons/svg/payment.svg';
 export { ReactComponent as CheckoutSvg } from '../assets/icons/svg/Self-checkout.svg';
+export { ReactComponent as LoadingSvg } from '../assets/icons/svg/loading.svg';
 
 export { IconSearch } from './SearchIcon';
 export { ChatIcon } from './ChatIcon';

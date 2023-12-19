@@ -27,6 +27,7 @@ import { UpdatePostsDto } from './dto/update.dto';
 import { PostTimeAvailabilityService } from './post-time-availability/post-time-availability.service';
 import { PostsService } from './posts.service';
 import { Roles } from 'src/roles/roles.decorator';
+import { differenceWith, isEmpty } from 'lodash';
 
 @ApiTags('Posts')
 @Controller({
@@ -339,12 +340,90 @@ export class PostsController {
     ]);
   }
 
+  @Roles()
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  update(@Param('id') id: number, @Body() updatePostsDto: UpdatePostsDto): Promise<Posts[]> {
-    return this.postsService.update(id, updatePostsDto);
+  async update(@Param('id') id: number, @Body() createPostsDto: any): Promise<Posts[]> {
+    const skills = createPostsDto?.skills?.map((item) => ({
+      id: item,
+    }));
+
+    const certifications = createPostsDto?.certification?.map((item) => ({
+      id: item,
+    }));
+    const gradeLevels =
+      createPostsDto?.gradeLevel?.length > 0
+        ? createPostsDto?.gradeLevel?.map((item) => ({
+            id: item,
+          }))
+        : [{ id: createPostsDto.gradeLevel }];
+
+    const subjects = createPostsDto?.subject?.map((item) => ({
+      id: item,
+    }));
+    const postPayLoad = {
+      address: createPostsDto?.address,
+      dayWeek: createPostsDto?.dayWeek,
+
+      fee: createPostsDto?.fee,
+
+      timeDay: createPostsDto?.timeDay,
+      perTime: createPostsDto?.perTime,
+      requestDetailVI: createPostsDto?.requestDetailVI,
+      requestSummaryVI: createPostsDto?.requestSummaryVI,
+
+      timeStart: createPostsDto?.timeStart,
+      type: createPostsDto?.type,
+      wards: createPostsDto?.wards,
+      skills,
+
+      certifications,
+      gradeLevels,
+      subjects,
+    };
+
+    const timeAvailability = createPostsDto.timeAvailability?.map((item) => {
+      const [dayofWeek, hour] = item?.split('__');
+
+      return { dayofWeekId: Number(dayofWeek), hourId: Number(hour), postsId: id };
+    });
+    if (timeAvailability) {
+      const dataFind = await this.postTimeAvailabilityService.findMany({ postsId: id });
+      if (dataFind) {
+        const newRow = differenceWith(timeAvailability, dataFind, (source: any, compare: any) => {
+          return source.dayofWeekId === compare.dayofWeekId && source.hourId === compare.hourId;
+        });
+
+        const deleteRow = differenceWith(dataFind, timeAvailability, (source, compare: any) => {
+          return source.dayofWeekId === compare.dayofWeekId && source.hourId === compare.hourId;
+        })?.map(({ postsId, dayofWeekId, hourId }) => ({
+          postsId,
+          dayofWeekId,
+          hourId,
+        }));
+
+        !isEmpty(newRow) && void this.postTimeAvailabilityService.createMany(newRow);
+        !isEmpty(deleteRow) &&
+          deleteRow.forEach((id) => {
+            void this.postTimeAvailabilityService.delete(id);
+          });
+      }
+    }
+
+    // try {
+    //   // void this.postGradeService.createMany(gradeLevel);
+    //   // void this.postSkillsService.createMany(skills);
+    //   // void this.postSubjectService.createMany(subject);
+
+    //   // void this.postCertificationService.createMany(certifications);
+    //   void this.postTimeAvailabilityService.createMany(timeAvailability);
+    // } catch (err) {
+    //   console.log(err);
+    // }
+
+    return this.postsService.update(id, postPayLoad);
   }
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'), RolesGuard)

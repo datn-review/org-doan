@@ -235,7 +235,7 @@
   "do": "Bắt Đầu Làm Bài",
   "list.tutor.register": "Danh Sách Gia Sư Đăng Kí Nhận Lớp",
   "tutor.name": "Tên Gia Sư",
-  "list.tutor.register.post": "Danh Sách Gia Sư Đăng Ký",
+  "list.tutor.register.post": "DS Gia Sư",
   "contact.title.success": "Tiến Hành Hoán Tất Hợp đồng",
   "contact.address.title": "Địa chỉ văn phòng",
   "contact.phone.title": "Địa chỉ văn phòng",
@@ -418,8 +418,8 @@
     "footer.title1":"Tải Ứng Dụng",
     "footer.title2":"Kết Nối",
     "footer.content1":"SmartTutor.vn là một trải nghiệm học tập tuyệt vời, cung cấp những khoá học online chất lượng cao cho học sinh tiểu học, THCS và THPT. Với sự hợp tác chuyên môn của các giáo viên hàng đầu cùng phương pháp học tập cá nhân hoá và sự hỗ trợ của công nghệ giúp các em luôn hào hứng trong việc học tập, nắm chắc được vấn đề từ đó hiểu sâu nhớ lâu và học thật tốt chương trình trên lớp cũng như đạt kết quả cao trong các kỳ thi.",
-    "footer.content2":"<b>CÔNG TY CỔ PHẦN SmartTutor<b><br />Địa chỉ: Tam Vinh - Phú Ninh - Quảng Nam.<br />Mã số thuế: 0109906427<br />Ngày cấp: 16/02/2022 - Nơi cấp: Sở Kế hoạch và Đầu tư thành phố Hà Nội<br />Email: smartTutor@edu.vn<br />Điện thoại: 0792920565<br />Website: smartTutor.vn</b></b>"
-
+    "footer.content2":"<b>CÔNG TY CỔ PHẦN SmartTutor<b><br />Địa chỉ: Tam Vinh - Phú Ninh - Quảng Nam.<br />Mã số thuế: 0109906427<br />Ngày cấp: 16/02/2022 - Nơi cấp: Sở Kế hoạch và Đầu tư thành phố Hà Nội<br />Email: smartTutor@edu.vn<br />Điện thoại: 0792920565<br />Website: smartTutor.vn</b></b>",
+     "start.conversation":"Bắt Đầu Cuộc Trò Chuyện"
 
 }
 

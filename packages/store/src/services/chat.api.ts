@@ -1,5 +1,7 @@
+import { useDispatch } from 'react-redux';
 import { baseAuthSplitApi, baseNoAuthSplitApi } from './base-auth-query';
 import { socketService } from './chat.service';
+import { setLoadingBot } from '../slices';
 
 export const ChatAPI = baseAuthSplitApi.injectEndpoints({
   endpoints: (builder) => ({

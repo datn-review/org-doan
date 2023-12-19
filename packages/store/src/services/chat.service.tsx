@@ -32,6 +32,9 @@ class SocketService {
   subscribeToMessages(messageHandler: ServerToClientEvents['message']) {
     this.socket.on('message', messageHandler);
   }
+  subscribeToLoading(messageHandler: ServerToClientEvents['isBotLoading']) {
+    this.socket.on('isBotLoading', messageHandler);
+  }
 
   subscribeToTypingNotifications(typingNotificationsHandler: ServerToClientEvents['isTyping']) {
     this.socket.on('isTyping', typingNotificationsHandler);

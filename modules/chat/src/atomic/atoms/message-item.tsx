@@ -27,11 +27,18 @@ export const MessageItem = ({ message }: any) => {
       <If condition={!message.isMe && !isAuth}>
         <Then>
           <Space>
-            <AvatarUser
-              img={logo}
-              id={message?.onwer?.id}
-              title={title}
-            />
+            <If condition={message?.owner.id === 0}>
+              <Then>
+                <AvataBot />
+              </Then>
+              <Else>
+                <AvatarUser
+                  img={logo}
+                  id={message?.onwer?.id}
+                  title={title}
+                />
+              </Else>
+            </If>
           </Space>
         </Then>
       </If>
@@ -44,6 +51,12 @@ export const MessageItem = ({ message }: any) => {
 
           background: ${message.isMe || isAuth ? COLOR.Primary : 'white'} !important;
           color: ${message.isMe || isAuth ? `white` : 'auto'} !important;
+          & > div {
+            color: ${message.isMe || isAuth ? `white` : 'auto'} !important;
+          }
+          a {
+            color: #016afc;
+          }
 
           /* margin-bottom: 0.5rem; */
           display: flex;
@@ -52,8 +65,9 @@ export const MessageItem = ({ message }: any) => {
           font-weight: 600;
         `}
       >
-        {message?.content}
+        <Space dangerouslySetInnerHTML={{ __html: message?.content }}></Space>
       </Space>
+
       <If condition={message.isMe || isAuth}>
         <Then>
           <Space>
