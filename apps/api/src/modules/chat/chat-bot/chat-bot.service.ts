@@ -1,16 +1,13 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { RetrievalQAChain, loadQARefineChain } from 'langchain/chains';
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
+import { CharacterTextSplitter } from 'langchain/text_splitter';
+import { NlpManager } from 'node-nlp';
 import { BaseService } from 'src/core/base.service';
 import { IParams } from 'src/core/i.base.service';
 import { Repository } from 'typeorm';
 import { ChatBot } from './entities/chat-bot.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { NlpManager, containerBootstrap } from 'node-nlp';
-import { BuiltinCompromise } from '@nlpjs/builtin-compromise';
-import { Document } from 'langchain/document';
-import { CharacterTextSplitter } from 'langchain/text_splitter';
-import { HNSWLib } from 'langchain/vectorstores/hnswlib';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
-import { RetrievalQAChain, VectorDBQAChain, loadQARefineChain } from 'langchain/chains';
 
 import { OpenAI } from 'langchain/llms/openai';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
@@ -20,11 +17,13 @@ const translate = require('@iamtraction/google-translate');
 
 import * as nlp from 'compromise';
 import * as datePlugin from 'compromise-dates';
-import { UsersService } from 'src/users/users.service';
-import { RoleEnum } from 'src/roles/roles.enum';
-import { LessonsService } from 'src/modules/lessons/lessons.service';
 import * as dayjs from 'dayjs';
 import * as timezone from 'dayjs/plugin/timezone';
+import { LessonsService } from 'src/modules/lessons/lessons.service';
+import { RoleEnum } from 'src/roles/roles.enum';
+import { UsersService } from 'src/users/users.service';
+import { isEmpty } from 'lodash';
+
 dayjs.extend(timezone);
 
 export const relations = [
@@ -81,6 +80,14 @@ export const relations = [
     field: 'districts.province',
     entity: 'province',
   },
+  {
+    field: 'collaboration',
+    entity: 'collaboration',
+  },
+  {
+    field: 'collaboration.feedback',
+    entity: 'feedback',
+  },
 ];
 const OPENAI_API_KEY = process.env.KEY_OPEN_AI;
 
@@ -131,21 +138,18 @@ export class ChatBotService
   }
 
   async trainChatbot() {
-    // Lấy dữ liệu lịch học từ cơ sở dữ liệu
     const data = await this.findManyActive();
-    console.log('data', data);
+    // console.log('data', data);
 
     data.forEach((item) => {
       this.manager.addDocument(item.language, item.input, item.intent);
       this.manager.addAnswer(item.language, item.intent, item.output);
     });
 
-    // Đào tạo chatbot
     await this.manager.train();
   }
 
   async trainChatbotSearch() {
-    // Lấy dữ liệu lịch học từ cơ sở dữ liệu
     const data = await this.usersService.findManyActive(1, relations, [
       {
         field: 'role',
@@ -154,32 +158,65 @@ export class ChatBotService
     ]);
     console.log('🚀 ~ file: chat-bot.service.ts:154 ~ data?.forEach ~ data:', data?.[0]);
     let stringTrain = '';
-    data?.forEach((item, index) => {
+    const dataMap = data.map((item) => {
+      let length = 0;
+      let starSum = 0;
+
+      item.collaboration?.forEach((collaboration) => {
+        const feedback = collaboration?.feedback?.[0];
+        if (!isEmpty(feedback)) {
+          length++;
+          const sumFeedback =
+            feedback?.overallRating +
+            feedback?.interactionRating +
+            feedback?.qualityRatting +
+            feedback?.contentRatting +
+            feedback?.presentationRating;
+          starSum = starSum + sumFeedback / 5;
+        }
+      });
+
+      return {
+        ...item,
+        collaboration: null,
+        star: length === 0 ? 0 : (starSum / length).toFixed(1),
+      };
+    });
+    dataMap?.forEach((item, index) => {
       const nameCertifications = item?.tutorCertifications?.reduce((acc, cert) => {
         return (acc = `${acc + ' - ' + cert?.certification?.nameVI}`);
       }, '');
       const tutorSkills = item?.tutorSkills?.reduce((acc, cert) => {
-        return (acc = `${acc + ' - ' + cert?.skill?.nameVI}`);
+        return (acc = `${acc + ' - ' + cert?.skill?.nameVI},`);
       }, '');
       const tutorGradeSubject = item?.tutorGradeSubject?.reduce((acc, cert) => {
-        return (acc = `${acc + ' - ' + cert?.subject?.nameVI + ' ' + cert?.grade?.nameVI}`);
+        return `${acc + ' - ' + cert?.subject?.nameVI} ${
+          cert?.grade?.id === 0 ? 'tất cả lớp' : cert?.grade?.nameVI
+        },
+        `;
       }, '');
-      const birthday = item.birthday ? `sinh năm: ${item.birthday}` : '';
-      const address = item.address ? `địa chỉ:: ${item.address}` : '';
+      const name = `Gia sư ${index + 1}: Họ và tên:${item.lastName} ${item.firstName}`;
+      const birthday = item.birthday ? `sinh năm: ${item.birthday},` : '';
+      const school = item.school ? `học trường: ${item.school},` : '';
+      const bio = item.bio ? `giới thiệu: ${item.bio},` : '';
+      const certifications = nameCertifications ? `chứng chỉ: ${nameCertifications},` : '';
+      const Skills = tutorSkills ? `kỹ năng: ${tutorSkills},` : '';
+      const gradeSubject = tutorGradeSubject ? `nhận dạy lớp: ${tutorGradeSubject},` : '';
+
+      const star = item?.star ? `được đánh giá ${item?.star}/5 sao` : '';
+      const address = item.address
+        ? `địa chỉ: ${item.address},${item?.wards?.name},${item?.wards?.districts.name},${item?.wards?.districts?.province?.name},`
+        : '';
+
       stringTrain =
         stringTrain +
-        `Gia sư ${index + 1}: Họ và tên:${item.lastName} ${
-          item.firstName
-        },${birthday}, ${address},học trường: ${item.school},${
-          item.bio
-        },chứng chỉ: ${nameCertifications},kỹ năng: ${tutorSkills},nhận dạy lớp: ${tutorGradeSubject} \n`;
+        `${name}${birthday}${address}${school}${bio}${certifications}${Skills}${gradeSubject}${star}\n`;
     });
     console.log(
       '🚀 ~ file: chat-bot.service.ts:154 ~ trainChatbotSearch ~ stringTrain:',
       stringTrain,
     );
 
-    // console.log('🚀 ~ file: chat-bot.service.ts:77 ~ OPENAI_API_KEY:', OPENAI_API_KEY);
     const splitter = new CharacterTextSplitter({
       separator: '\n',
       chunkSize: 7,
@@ -218,7 +255,7 @@ export class ChatBotService
 
       const intent = responseVI.intent || responseEN.intent;
       // let dataAns = '';
-      if (intent === 'schedule') {
+      if (intent.includes('schedule')) {
         const res = await translate(userInput, { from: 'vi', to: 'en' });
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -245,12 +282,31 @@ export class ChatBotService
 
           const date = await this.lessonsService.findDay(startDay, endDay, userId);
           console.log('🚀 ~ file: chat-bot.service.ts:228 ~ date:', date.data);
+
+          const dateStr = date?.data?.reduce((acc, cert) => {
+            let lessonStart = '';
+            const date = new Date(cert.lessonStart);
+            const yyyy = date.getFullYear();
+            const mm = date.getMonth() + 1;
+            const dd = date.getDate();
+            const dateStrFormat = dd + '-' + mm + '-' + yyyy;
+            const hour = date.getHours();
+            const min = date.getMinutes();
+            const time = hour + ':' + min;
+            if (dataFind?.entity === 'date') {
+              lessonStart = `${cert.nameClass}: ${time}`;
+            } else {
+              lessonStart = `${cert.nameClass}: ${dateStrFormat} ${time}`;
+            }
+
+            return `${acc + ' - ' + lessonStart}.\n`;
+          }, '');
           let textAns = responseVI.answer || responseEN.answer;
-          textAns = textAns + ` (${date?.string}): `;
+          textAns = textAns + ` (${date?.string}): \n${dateStr}`;
 
           return textAns;
         }
-        return 'Nôi Dung Bạn Hỏi Không Thuộc Trong Phạm Vi Của Chatbot';
+        // return 'Nôi Dung Bạn Hỏi Không Thuộc Trong Phạm Vi Của Chatbot';
       }
       // console.log(responseVI, responseEN);
       // console.log(JSON.stringify(responseVI));

@@ -144,6 +144,7 @@ export class LessonsController {
       .update(createLessonsDto?.collaboratorId, {
         bgColor: createLessonsDto?.bgColor,
         textColor: createLessonsDto?.textColor,
+        nameClass: createLessonsDto?.nameClass,
       })
       .then();
 
