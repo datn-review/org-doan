@@ -2,6 +2,8 @@ import { css, cx } from '@emotion/css';
 import { useTranslation } from '@org/i18n';
 import {
   setActiveGroup,
+  setLoadingBot,
+  socketService,
   useAddMessageMutation,
   useAppDispatch,
   useAppSelector,
@@ -13,10 +15,13 @@ import {
 import {
   Avatar,
   AvatarUser,
+  BoxBetween,
+  BoxCenter,
   Button,
   Col,
   FormOutlined,
   Input,
+  LoadingSvg,
   ModalAntd,
   Row,
   SectionLayout,
@@ -25,6 +30,7 @@ import {
   Space,
   TextArea,
   UserHeaderProfile,
+  WechatOutlined,
 } from '@org/ui';
 import { COLOR, getImage, SiteMap } from '@org/utils';
 import { useEffect, useMemo, useState, useLayoutEffect, useRef } from 'react';
@@ -33,14 +39,18 @@ import { ChatItem } from './atomic/atoms/chat-item';
 import { AvataBot } from './atomic/atoms';
 import { MessageItem } from './atomic/atoms/message-item';
 import { isEmpty } from 'lodash';
+import { If, Then, Else } from 'react-if';
 function ChatApp() {
   const { isAuthenticated, userId } = useAppSelector((state) => state.auth);
+  const { loadingBot } = useAppSelector((state) => state.botChat);
+
   const user = useAppSelector((state) => state.user);
 
   const { t } = useTranslation();
   const [chat, setChat] = useState<string>('');
   const [toggle, setToggle] = useState<boolean>(false);
-  const [roomActive, setRoomActive] = useState<number | null>(0);
+  const [roomActive, setRoomActive] = useState<number | null>(-1);
+  console.log('🚀 ~ file: chat.app.tsx:44 ~ ChatApp ~ roomActive:', roomActive);
 
   const [room, setRoom] = useState<any>();
   const [roomData, setRoomData] = useState<any>({ title: t('bot') });
@@ -53,6 +63,15 @@ function ChatApp() {
     dispatch(setActiveGroup({ current: SiteMap.Chat.menu }));
     return () => {
       dispatch(setActiveGroup({ current: '' }));
+    };
+  }, []);
+  useEffect(() => {
+    socketService.subscribeToLoading((data: any) => {
+      console.log('🚀 ~ file: chat.api.ts:59 ~ socketService.subscribeToLoading ~ data:', data);
+      dispatch(setLoadingBot(data));
+    });
+    return () => {
+      dispatch(setLoadingBot(false));
     };
   }, []);
 
@@ -69,6 +88,9 @@ function ChatApp() {
         const friend = room?.friends?.[0];
         if (friend.id === 0) {
           setRoomBotID(room?.id);
+          // if (roomActive === 0) {
+          //   setRoomActive(room?.id);
+          // }
           return false;
         }
         return true;
@@ -95,7 +117,7 @@ function ChatApp() {
         inline: 'nearest',
       });
     }
-  }, [messages]);
+  }, [messages, loadingBot]);
 
   const close = () => setToggle(false);
   return (
@@ -233,7 +255,7 @@ function ChatApp() {
 
               <ChatItem
                 room={null}
-                isActive={0 === roomActive}
+                isActive={roomBotID === roomActive}
                 onClick={() => {
                   if (roomBotID === 0) {
                     createRoom({ title: '', members: [0] })
@@ -291,97 +313,127 @@ function ChatApp() {
                 height: 100%;
               `}
             >
-              <Space
-                className={css`
-                  padding: 1rem;
-                  display: flex;
-                  justify-content: space-between;
-                  /* gap: 1rem; */
-                  align-items: center;
-                  border-bottom: 1px solid #9ca3af80;
-                  display: flex;
-                  background-color: white;
-                `}
-              >
-                <Space
-                  className={css`
-                    display: flex;
-                    justify-content: flex-start;
-                    align-items: center;
-                    gap: 1rem;
-                  `}
-                >
-                  {roomActive === roomBotID ? (
-                    <AvataBot />
-                  ) : (
-                    <AvatarUser
-                      title={roomData?.title}
-                      img={roomData?.logo}
-                      id={roomData?.id}
-                    />
-                  )}
-
-                  <Space>
-                    <b
+              <If condition={roomActive === -1}>
+                <Then>
+                  <BoxCenter
+                    className={css`
+                      height: 100%;
+                      flex-direction: column;
+                    `}
+                  >
+                    <BoxCenter
                       className={css`
-                        font-size: 15px;
+                        height: 10rem;
+                        width: 10rem;
+                        border-radius: 50%;
+                        background-color: white;
                       `}
                     >
-                      {roomData?.title}
-                    </b>
-                    {(roomData?.isSingle || roomActive === roomBotID) && (
-                      <div>{roomData?.friend?.role?.name || t('bot.message')}</div>
-                    )}
+                      <WechatOutlined style={{ fontSize: 50 }} />
+                    </BoxCenter>
+                    <h5>{t('start.conversation')}</h5>
+                  </BoxCenter>
+                </Then>
+                <Else>
+                  <Space
+                    className={css`
+                      padding: 1rem;
+                      display: flex;
+                      justify-content: space-between;
+                      /* gap: 1rem; */
+                      align-items: center;
+                      border-bottom: 1px solid #9ca3af80;
+                      display: flex;
+                      background-color: white;
+                    `}
+                  >
+                    <Space
+                      className={css`
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
+                        gap: 1rem;
+                      `}
+                    >
+                      {roomActive === roomBotID ? (
+                        <AvataBot />
+                      ) : (
+                        <AvatarUser
+                          title={roomData?.title}
+                          img={roomData?.logo}
+                          id={roomData?.id}
+                        />
+                      )}
+
+                      <Space>
+                        <b
+                          className={css`
+                            font-size: 15px;
+                          `}
+                        >
+                          {roomData?.title}
+                        </b>
+                        {(roomData?.isSingle || roomActive === roomBotID) && (
+                          <div>{roomData?.friend?.role?.name || t('bot.message')}</div>
+                        )}
+                      </Space>
+                    </Space>
+
+                    {/* <UserHeaderProfile user={{}} /> */}
                   </Space>
-                </Space>
+                  <Space
+                    className={css`
+                      height: calc(100vh - 26rem);
 
-                {/* <UserHeaderProfile user={{}} /> */}
-              </Space>
-              <Space
-                className={css`
-                  height: calc(100vh - 26rem);
+                      padding: 20px;
+                      overflow-y: auto;
+                    `}
+                  >
+                    {messages?.map((message: any) => (
+                      <MessageItem message={message} />
+                    ))}
+                    {loadingBot && (
+                      <BoxBetween>
+                        <LoadingSvg />
+                      </BoxBetween>
+                    )}
 
-                  padding: 20px;
-                  overflow-y: auto;
-                `}
-              >
-                {messages?.map((message: any) => (
-                  <MessageItem message={message} />
-                ))}
-                <div ref={refMessage} />
-              </Space>
-              <Space
-                className={css`
-                  display: flex;
-                  gap: 1rem;
-                  position: absolute;
-                  width: 100%;
-                  left: 0;
-                  right: 0;
-                  bottom: 10px;
-                  padding: 0 20px;
-                `}
-              >
-                <Input
-                  onChange={(value) => setChat(String(value))}
-                  name={'chat'}
-                  placeholder={t('type.your.message')}
-                  value={chat}
-                />
-                <Button
-                  onClick={() => {
-                    addMessage({
-                      room: roomActive,
-                      owner: userId,
-                      content: chat,
-                      isBot: roomBotID === roomActive,
-                    });
-                    setChat('');
-                  }}
-                >
-                  {t('message.send')}
-                </Button>
-              </Space>
+                    <div ref={refMessage} />
+                  </Space>
+                  <Space
+                    className={css`
+                      display: flex;
+                      gap: 1rem;
+                      position: absolute;
+                      width: 100%;
+                      left: 0;
+                      right: 0;
+                      bottom: 10px;
+                      padding: 0 20px;
+                    `}
+                  >
+                    <Input
+                      onChange={(value) => setChat(String(value))}
+                      name={'chat'}
+                      placeholder={t('type.your.message')}
+                      value={chat}
+                    />
+                    <Button
+                      onClick={() => {
+                        addMessage({
+                          room: roomActive,
+                          owner: userId,
+                          content: chat,
+                          isBot: roomBotID === roomActive,
+                        });
+                        setChat('');
+                      }}
+                    >
+                      {t('message.send')}
+                    </Button>
+                  </Space>
+                </Else>
+              </If>
             </Space>
           </Col>
         </Row>

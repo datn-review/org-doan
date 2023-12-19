@@ -9,6 +9,7 @@ export const AvataBot = () => {
       className={css`
         height: 4rem;
         width: 4rem;
+        min-width: 4rem;
       `}
     />
   );
