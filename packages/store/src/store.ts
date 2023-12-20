@@ -23,6 +23,7 @@ import {
   FeedbackAPI,
   UserParentAPI,
   UserStaffAPI,
+  ChatBotAPI,
 } from './services';
 import { baseAuthSplitApi, baseNoAuthSplitApi } from './services/base-auth-query';
 
@@ -55,6 +56,7 @@ const rootReducer = combineReducers({
   [FeedbackAPI.reducerPath]: FeedbackAPI.reducer,
   [UserParentAPI.reducerPath]: UserParentAPI.reducer,
   [UserStaffAPI.reducerPath]: UserStaffAPI.reducer,
+  [ChatBotAPI.reducerPath]: ChatBotAPI.reducer,
 });
 
 export const store: any = configureStore({

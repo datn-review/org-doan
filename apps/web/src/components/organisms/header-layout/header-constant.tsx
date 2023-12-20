@@ -193,6 +193,13 @@ export const menuCategory = (): MenuItem[] => {
           key: SiteMap.Settings.Skills.menu,
           icon: <></>,
         },
+        {
+          label: <Translation>{(t) => t('settings.chat-bot')}</Translation>,
+          path: SiteMap.Settings.ChatBot.path,
+          id: SiteMap.Settings.ChatBot.menu,
+          key: SiteMap.Settings.ChatBot.menu,
+          icon: <></>,
+        },
       ],
     },
 

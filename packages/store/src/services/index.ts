@@ -27,4 +27,7 @@ export * from './feedback.api';
 
 export * from './users.staff.api';
 export * from './users.parent.api';
+export * from './chat-bot.api';
+
 export * from './chat.service';
+

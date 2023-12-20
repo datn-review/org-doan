@@ -42,7 +42,7 @@ export class ChatBotController {
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createChatBotDto: CreateChatBotDto): Promise<ChatBot[]> {
+  create(@Body() createChatBotDto: any): Promise<ChatBot[]> {
     return this.chatBotService.create({
       ...createChatBotDto,
     });
@@ -59,10 +59,10 @@ export class ChatBotController {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number,
-    @Query('sortBy', new DefaultValuePipe('name')) sortBy: string,
+    @Query('sortBy', new DefaultValuePipe('intent')) sortBy: string,
     @Query('sortDirection', new DefaultValuePipe('ASC')) sortDirection: string,
     @Query('status', new DefaultValuePipe(0), ParseIntPipe) status: number,
-    @Query('fieldSearch', new DefaultValuePipe('name')) fieldSearch: string | string[],
+    @Query('fieldSearch', new DefaultValuePipe('intent')) fieldSearch: string | string[],
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
   ): Promise<InfinityPaginationResultType<ChatBot>> {
     if (limit > 50) {
@@ -105,7 +105,7 @@ export class ChatBotController {
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  update(@Param('id') id: number, @Body() updateChatBotDto: UpdateChatBotDto): Promise<ChatBot[]> {
+  update(@Param('id') id: number, @Body() updateChatBotDto: any): Promise<ChatBot[]> {
     return this.chatBotService.update(id, updateChatBotDto);
   }
 
