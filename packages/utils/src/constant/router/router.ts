@@ -105,6 +105,11 @@ export const SiteMap = {
       menu: 'settings/skills',
       roles: [RolesEnum.WEB_ADMIN],
     },
+    ChatBot: {
+      path: 'settings/chat-bot',
+      menu: 'settings/chat-bot',
+      roles: [RolesEnum.WEB_ADMIN],
+    },
   },
   Profile: {
     Me: {

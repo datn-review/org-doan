@@ -1,10 +1,16 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { DefaultLayout, MainLayout } from '@components/templates';
 import { HomePage } from '@org/home';
-import { ConfirmEmailPage, LoginPage, RegisterPage } from '@org/auth';
-import { SiteMap } from '@org/utils';
+import { Authorization, ConfirmEmailPage, LoginPage, RegisterPage } from '@org/auth';
+import { SiteMap, TypeRolesEnum } from '@org/utils';
 import { ParentPage, StaffPage, StudentsPage, UserTutorsPage, WebAdminPage } from '@org/users';
-import { CertificationPage, GradeLevelPage, SubjectPage, SkillsPage } from '@org/settings';
+import {
+  CertificationPage,
+  GradeLevelPage,
+  SubjectPage,
+  SkillsPage,
+  ChatBotPage,
+} from '@org/settings';
 import { ProfilePage } from '@org/profile';
 import { LookForTutorPage } from '@org/look-for-tutor';
 import { TutorPage } from '@org/tutor';
@@ -28,6 +34,7 @@ import {
   ReviewAssignmentPage,
 } from '@org/assessment';
 import { ChatPage } from '@org/chat';
+import ProtectedRoute from './ProtectedRoute';
 export const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -38,11 +45,21 @@ export const router = createBrowserRouter([
       },
       {
         path: SiteMap.Dashboard.path,
-        element: <DashboardPage />,
+        element: (
+          <ProtectedRoute
+            roles={SiteMap.Dashboard.roles}
+            component={<DashboardPage />}
+          />
+        ),
       },
       {
         path: SiteMap.Payment.path,
-        element: <PaymentPage />,
+        element: (
+          <ProtectedRoute
+            roles={SiteMap.Payment.roles}
+            component={<PaymentPage />}
+          />
+        ),
       },
       {
         path: SiteMap.Users.Admin.path,
@@ -79,6 +96,10 @@ export const router = createBrowserRouter([
       {
         path: SiteMap.Settings.Skills.path,
         element: <SkillsPage />,
+      },
+      {
+        path: SiteMap.Settings.ChatBot.path,
+        element: <ChatBotPage />,
       },
       {
         path: SiteMap.Profile.path,
