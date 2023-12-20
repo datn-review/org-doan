@@ -64,10 +64,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('message')
   async handleMessage(client: Socket, createMessageDto: any) {
     console.log(
-      `Client ${client.id} sended message: ${createMessageDto.content} to room: ${createMessageDto.roomId}`,
+      `Client ${client.id} sended message: ${createMessageDto.content} to room: ${createMessageDto.room}`,
     );
+
+    const message = (await this.messageService.create(createMessageDto)) as unknown as Message;
+    const newMessage = await this.messageService.findOne({ id: +message?.id }, relations);
+    client.emit('message', newMessage);
+    client.to(message.room.toString()).emit('message', newMessage);
+
     if (createMessageDto?.isBot) {
       IIFE(async () => {
+        client.emit('isBotLoading', true);
+        client.to(createMessageDto.room).emit('isBotLoading', true);
         const data = await this.chatBotService.handleUserRequest({
           userInput: createMessageDto.content,
           userId: createMessageDto.owner,
@@ -78,16 +86,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           owner: 0,
         })) as unknown as Message;
         const newMessage = await this.messageService.findOne({ id: +message?.id }, relations);
+        client.emit('isBotLoading', false);
         client.emit('message', newMessage);
         client.to(message.room.toString()).emit('message', newMessage);
       });
     }
-    IIFE(async () => {
-      const message = (await this.messageService.create(createMessageDto)) as unknown as Message;
-      const newMessage = await this.messageService.findOne({ id: +message?.id }, relations);
-      client.emit('message', newMessage);
-      client.to(message.room.toString()).emit('message', newMessage);
-    });
   }
 
   @SubscribeMessage('isTyping')

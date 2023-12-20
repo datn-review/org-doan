@@ -1,5 +1,5 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { activeMenu, auth, user } from './slices';
+import { activeMenu, auth, user, botChat } from './slices';
 import {
   AuthAPI,
   UserAPI,
@@ -31,6 +31,7 @@ const rootReducer = combineReducers({
   activeMenu,
   auth,
   user,
+  botChat,
   [baseNoAuthSplitApi.reducerPath]: baseNoAuthSplitApi.reducer,
   [baseAuthSplitApi.reducerPath]: baseAuthSplitApi.reducer,
   [AuthAPI.reducerPath]: AuthAPI.reducer,

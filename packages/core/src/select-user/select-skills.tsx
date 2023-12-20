@@ -8,6 +8,9 @@ import { defauOptions } from './contants';
 export const skillImportFormat = (data: any) => {
   return data?.map((item: any) => item?.skill?.id) || [];
 };
+export const skillImportFormat2 = (data: any) => {
+  return data?.map((item: any) => item?.id) || [];
+};
 
 export function SelectSkill({ single = false, isDefault }: any) {
   const { data: dataSkills } = useGetSkillsActiveQuery({});

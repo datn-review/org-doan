@@ -211,7 +211,7 @@
   "do": "Bắt Đầu Làm Bài",
   "list.tutor.register": "Danh Sách Gia Sư Đăng Kí Nhận Lớp",
   "tutor.name": "Tên Gia Sư",
-  "list.tutor.register.post": "Danh Sách Gia Sư Đăng Ký",
+  "list.tutor.register.post": "DS Gia Sư",
   "contact.title.success": "Tiến Hành Hoán Tất Hợp đồng",
   "contact.address.title": "Địa chỉ văn phòng",
   "contact.phone.title": "Địa chỉ văn phòng",
@@ -392,5 +392,7 @@
   "input": "Đầu vào",
   "output": "Đầu ra",
   "language": "Ngôn ngữ",
-  "intent": "Intent"
+  "intent": "Intent",
+  "start.conversation":"Bắt Đầu Cuộc Trò Chuyện"
 }
+

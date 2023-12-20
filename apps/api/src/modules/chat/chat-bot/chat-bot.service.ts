@@ -89,6 +89,16 @@ export const relations = [
     entity: 'feedback',
   },
 ];
+const Day = {
+  2: ' thứ 2',
+  3: ' thứ 3',
+  4: ' thứ 4',
+  5: ' thứ 5',
+  6: ' thứ 6',
+
+  7: ' thứ 7',
+  8: ' chủ nhật',
+};
 const OPENAI_API_KEY = process.env.KEY_OPEN_AI;
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -182,35 +192,57 @@ export class ChatBotService
         star: length === 0 ? 0 : (starSum / length).toFixed(1),
       };
     });
-    dataMap?.forEach((item, index) => {
+    dataMap?.forEach((item) => {
       const nameCertifications = item?.tutorCertifications?.reduce((acc, cert) => {
         return (acc = `${acc + ' - ' + cert?.certification?.nameVI}`);
       }, '');
       const tutorSkills = item?.tutorSkills?.reduce((acc, cert) => {
-        return (acc = `${acc + ' - ' + cert?.skill?.nameVI},`);
+        return (acc = `${acc + ' - ' + cert?.skill?.nameVI}`);
       }, '');
       const tutorGradeSubject = item?.tutorGradeSubject?.reduce((acc, cert) => {
         return `${acc + ' - ' + cert?.subject?.nameVI} ${
           cert?.grade?.id === 0 ? 'tất cả lớp' : cert?.grade?.nameVI
-        },
+        }
         `;
       }, '');
-      const name = `Gia sư ${index + 1}: Họ và tên:${item.lastName} ${item.firstName}`;
-      const birthday = item.birthday ? `sinh năm: ${item.birthday},` : '';
-      const school = item.school ? `học trường: ${item.school},` : '';
-      const bio = item.bio ? `giới thiệu: ${item.bio},` : '';
-      const certifications = nameCertifications ? `chứng chỉ: ${nameCertifications},` : '';
-      const Skills = tutorSkills ? `kỹ năng: ${tutorSkills},` : '';
-      const gradeSubject = tutorGradeSubject ? `nhận dạy lớp: ${tutorGradeSubject},` : '';
+      const daySort = [
+        ...item?.tutorTimeAvailability?.sort((a, b) => a.dayofWeekId - b.dayofWeekId),
+      ];
+      const tutorTimeAvailability = daySort?.reduce((acc, cert, index) => {
+        let str = '';
+        const dayyStr = Day[cert.dayofWeekId || 2];
+        if (daySort[index - 1]?.dayofWeekId === cert.dayofWeekId) {
+          // str = `${cert.hourId}giờ đến ${cert.hourId + 1}giờ, `;
+        } else {
+          // str = `${dayyStr}${cert.hourId} giờ đến ${cert.hourId + 1} giờ, `;
+          str = `${dayyStr},`;
+        }
+        return `${acc + str}`;
+      }, '');
+      const name = `+ Gia sư ${item.lastName} ${item.firstName} có ID trên website smartTutor.pttam là ${item.id}, `;
+      const birthday = item.birthday
+        ? ` sinh năm: ${dayjs(item.birthday).format('DD-MM-YYYY')},`
+        : '';
+      const school = item.school ? `đã tốt nghiệp học trường: ${item.school}. ` : '';
+      const bio = item.bio ? ` giới thiệu : ${item.bio}.` : '';
+      const certifications = nameCertifications
+        ? `đã được cấp các chứng chỉ: ${nameCertifications}. `
+        : '';
+      const Skills = tutorSkills ? `Có các kỹ năng: ${tutorSkills}. ` : '';
+      const gradeSubject = tutorGradeSubject ? `Gia sư nhận dạy : ${tutorGradeSubject}. ` : '';
 
-      const star = item?.star ? `được đánh giá ${item?.star}/5 sao` : '';
+      const tutorTimeAvailabilityStr = tutorTimeAvailability
+        ? `Thời gian có thể dạy: ${tutorTimeAvailability}. `
+        : '';
+
+      const star = item?.star ? `được các học sinh trước đánh giá ${item?.star}/5 sao. ` : '';
       const address = item.address
-        ? `địa chỉ: ${item.address},${item?.wards?.name},${item?.wards?.districts.name},${item?.wards?.districts?.province?.name},`
+        ? ` quê quán ở ${item.address}, ${item?.wards?.name}, ${item?.wards?.districts.name}, ${item?.wards?.districts?.province?.name}. `
         : '';
 
       stringTrain =
         stringTrain +
-        `${name}${birthday}${address}${school}${bio}${certifications}${Skills}${gradeSubject}${star}\n`;
+        `${name}${birthday}${address}${school}${bio}${certifications}${Skills}${gradeSubject}${star}${tutorTimeAvailabilityStr}\n`;
     });
     console.log(
       '🚀 ~ file: chat-bot.service.ts:154 ~ trainChatbotSearch ~ stringTrain:',
@@ -254,6 +286,7 @@ export class ChatBotService
       ]);
 
       const intent = responseVI.intent || responseEN.intent;
+      console.log('🚀 ~ file: chat-bot.service.ts:257 ~ intent:', intent);
       // let dataAns = '';
       if (intent.includes('schedule')) {
         const res = await translate(userInput, { from: 'vi', to: 'en' });
@@ -269,7 +302,7 @@ export class ChatBotService
         const dataFind = response.entities?.find((item) => {
           return item?.entity === 'date' || item?.entity === 'daterange';
         });
-        if (dataFind.resolution) {
+        if (dataFind?.resolution) {
           let startDay = undefined;
           let endDay = undefined;
           if (dataFind?.entity === 'date') {
@@ -282,27 +315,37 @@ export class ChatBotService
 
           const date = await this.lessonsService.findDay(startDay, endDay, userId);
           console.log('🚀 ~ file: chat-bot.service.ts:228 ~ date:', date.data);
-
+          let textAns = responseVI.answer || responseEN.answer;
+          if (isEmpty(date.data)) {
+            return textAns + ` (${date?.string}): chưa có `;
+          }
           const dateStr = date?.data?.reduce((acc, cert) => {
             let lessonStart = '';
             const date = new Date(cert.lessonStart);
+            const lessonEnd = new Date(cert.lessonEnd);
+
             const yyyy = date.getFullYear();
             const mm = date.getMonth() + 1;
             const dd = date.getDate();
             const dateStrFormat = dd + '-' + mm + '-' + yyyy;
+
             const hour = date.getHours();
             const min = date.getMinutes();
-            const time = hour + ':' + min;
+            const hourEnd = lessonEnd.getHours();
+            const minEnd = lessonEnd.getMinutes();
+            const time = hour + 'h' + min;
+            const timeEnd = hourEnd + 'h' + minEnd;
+
             if (dataFind?.entity === 'date') {
-              lessonStart = `${cert.nameClass}: ${time}`;
+              lessonStart = `${cert?.collaboration?.nameClass}: ${time} -> ${timeEnd} - <a href='/classes/${cert.collaboration.id}'>Liên Kết</a>`;
             } else {
-              lessonStart = `${cert.nameClass}: ${dateStrFormat} ${time}`;
+              lessonStart = `${cert?.collaboration?.nameClass}: ${dateStrFormat} - ${time} -> ${timeEnd} - <a href='/classes/${cert.collaboration.id}'>Liên Kết</a>`;
             }
 
-            return `${acc + ' - ' + lessonStart}.\n`;
+            return `${acc + ' - ' + lessonStart}.<br/>`;
           }, '');
-          let textAns = responseVI.answer || responseEN.answer;
-          textAns = textAns + ` (${date?.string}): \n${dateStr}`;
+
+          textAns = textAns + ` (${date?.string}): <br/>${dateStr}`;
 
           return textAns;
         }
@@ -314,9 +357,9 @@ export class ChatBotService
       const result = await this.chain.call({
         // input_document: this.inputDocs,
         query: `${userInput}, trả lời bằng tiếng việt`,
-        max_token_limit: 100,
-        input_language: 'vietnamese',
-        output_language: 'vietnamese',
+        max_token_limit: 80,
+        // input_language: 'vietnamese',
+        // output_language: 'vietnamese',
       });
       console.log('🚀 ~ file: chat-bot.service.ts:257 ~ result:', result);
 
