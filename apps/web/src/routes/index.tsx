@@ -48,7 +48,7 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute
             roles={SiteMap.Dashboard.roles}
-            component={<DashboardPage />}
+            component={DashboardPage}
           />
         ),
       },
@@ -57,7 +57,7 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute
             roles={SiteMap.Payment.roles}
-            component={<PaymentPage />}
+            component={PaymentPage}
           />
         ),
       },

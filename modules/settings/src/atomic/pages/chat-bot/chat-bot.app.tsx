@@ -9,6 +9,7 @@ import {
   IconDeleteAction,
   IconEditAction,
   Input,
+  Section,
   Select,
   SelectLimitTable,
   Space,
@@ -166,7 +167,7 @@ function ChatBotApp() {
   ];
 
   return (
-    <Space>
+    <Section>
       {contextHolder}
       <Space
         className={css`
@@ -237,7 +238,7 @@ function ChatBotApp() {
       />
 
       {isUpsert && <Upsert />}
-    </Space>
+    </Section>
   );
 }
 
