@@ -2,9 +2,11 @@ FROM node:18.16.0-alpine as builder
 WORKDIR /app
 
 COPY ../../ ./
-RUN npm i -g pnpm@8.7.4 
-RUN pnpm i
+RUN npm i -g pnpm@8.8.0
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
 RUN npx nx run web:build:prod
+RUN pnpm deploy --filter=web --prod /apps/web
 
 FROM nginx
 EXPOSE 1111

@@ -249,10 +249,12 @@ export class ChatBotService
       stringTrain,
     );
 
+    //  stringTrain = 'pham thanh tam';
+
     const splitter = new CharacterTextSplitter({
       separator: '\n',
-      chunkSize: 7,
-      chunkOverlap: 3,
+      chunkSize: 5000,
+      chunkOverlap: 20,
     });
     const docs = await splitter.createDocuments([stringTrain]);
     this.inputDocs = docs;
@@ -353,14 +355,16 @@ export class ChatBotService
       }
       // console.log(responseVI, responseEN);
       // console.log(JSON.stringify(responseVI));
-
+      console.log(dayjs().format('HH:mm:ss'));
       const result = await this.chain.call({
-        // input_document: this.inputDocs,
+        input_document: this.inputDocs,
         query: `${userInput}, trả lời bằng tiếng việt`,
-        max_token_limit: 80,
+        max_token_limit: 90,
+        // timeout: 2000,
         // input_language: 'vietnamese',
         // output_language: 'vietnamese',
       });
+      console.log(dayjs().format('HH:mm:ss'));
       console.log('🚀 ~ file: chat-bot.service.ts:257 ~ result:', result);
 
       return result?.output_text || 'Hông hiểu gì luôn';
