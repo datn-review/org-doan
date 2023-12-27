@@ -1,33 +1,5 @@
 version: '3'
 services:
-  web:
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile.prod
-    ports:
-      - '1111:1111'
-    volumes:
-      - .:/app
-      - /app/node_modules
-    environment:
-      - NODE_ENV=production
-    stdin_open: true
-    tty: true
-
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile.api.prod
-    ports:
-      - '2222:2222'
-    volumes:
-      - /app/node_modules
-      - ./server:/app
-    env_file:
-      - ./apps/api/.env.prod
-    environment:
-      - NODE_ENV=production
-
   db:
     image: postgres:14.1-alpine
     restart: always
@@ -38,6 +10,35 @@ services:
       - '5432:5432'
     volumes:
       - db:/var/lib/postgresql/data
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile.prod
+    ports:
+      - '1111:1111'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - ./apps/web/.env.prod
+    environment:
+      - NODE_ENV=production
+    stdin_open: true
+    tty: true
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile.prod
+    ports:
+      - '2222:2222'
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    env_file:
+      - ./apps/api/.env.prod
+    environment:
+      - NODE_ENV=production
 
 volumes:
   db:

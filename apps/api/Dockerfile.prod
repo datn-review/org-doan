@@ -1,18 +1,12 @@
-FROM node:18.16.0-alpine as builder 
-WORKDIR /app
-COPY ../../package.json .
+FROM node:20.0.0
+WORKDIR /usr/app
 
 COPY ../../ ./
-RUN npm i -g pnpm@8.7.4 
-RUN pnpm i
-RUN pnpm --filter api --prod deploy pruned
-ENV NODE_ENV=production
-RUN npx nx run api:build:prod
 
-FROM node:18.16.0-alpine AS production
-WORKDIR /app
+RUN npm i -g pnpm@8.7.4
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN npx nx run api:build:prod
+RUN pnpm deploy --filter=api --prod /apps/api
 ENV NODE_ENV=production
-COPY --from=builder /app/apps/api/dist ./dist/apps/api
-COPY --from=builder /app/node_modules ./node_modules
-EXPOSE 2222
-CMD ["node", "/dist/apps/api/main.js"]
+
+CMD ["/bin/sh", "-c", "npx nx run api:start:prod"]

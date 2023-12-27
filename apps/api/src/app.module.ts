@@ -42,9 +42,7 @@ import { TutorCertificationModule } from './modules/tutor-certification/tutor-ce
 import { TutorSubjectGradeModule } from './modules/tutor-subject-grade/tutor-subject-grade.module';
 import { TimeAvailabilityModule } from './modules/time-availability/time-availability.module';
 import { ConversationModule } from './modules/conversation/conversation.module';
-import { ChatMessageModule } from './modules/chat-message/chat-message.module';
 import { PostsModule } from './modules/posts/posts.module';
-import { PostCommentModule } from './modules/post-comment/post-comment.module';
 import { CollaborationModule } from './modules/collaboration/collaboration.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { LessonsModule } from './modules/lessons/lessons.module';
@@ -130,9 +128,7 @@ console.log('🚀 ~ file: app.module.ts:64 ~ envFilePath:', envFilePath);
     TutorSubjectGradeModule,
     TimeAvailabilityModule,
     ConversationModule,
-    ChatMessageModule,
     PostsModule,
-    PostCommentModule,
     CollaborationModule,
     PaymentModule,
     LessonsModule,
