@@ -29,7 +29,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: apps/web/Dockerfile.prod
+      dockerfile: apps/api/Dockerfile.prod
     ports:
       - '2222:2222'
     volumes:
