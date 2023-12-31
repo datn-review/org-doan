@@ -1,5 +1,6 @@
 {
   "title": "Xin Chào 1111",
+  "document.title": "SmartTutorVN - Nền Tảng Số 1 Việt Nam",
   "vi-VN": "Tiếng Việt",
   "en-EN": "Tiếng Anh",
   "auth": {
@@ -393,6 +394,7 @@
   "output": "Đầu ra",
   "language": "Ngôn ngữ",
   "intent": "Intent",
-  "start.conversation":"Bắt Đầu Cuộc Trò Chuyện"
+  "start.conversation":"Bắt Đầu Cuộc Trò Chuyện",
+  "button.send" : "Gửi"
 }
 

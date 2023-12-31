@@ -40,8 +40,6 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { TutorSkillsModule } from './modules/tutor-skills/tutor-skills.module';
 import { TutorCertificationModule } from './modules/tutor-certification/tutor-certification.module';
 import { TutorSubjectGradeModule } from './modules/tutor-subject-grade/tutor-subject-grade.module';
-import { TimeAvailabilityModule } from './modules/time-availability/time-availability.module';
-import { ConversationModule } from './modules/conversation/conversation.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { CollaborationModule } from './modules/collaboration/collaboration.module';
 import { PaymentModule } from './modules/payment/payment.module';
@@ -126,8 +124,6 @@ console.log('🚀 ~ file: app.module.ts:64 ~ envFilePath:', envFilePath);
     TutorSkillsModule,
     TutorCertificationModule,
     TutorSubjectGradeModule,
-    TimeAvailabilityModule,
-    ConversationModule,
     PostsModule,
     CollaborationModule,
     PaymentModule,

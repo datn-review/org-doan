@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'chatBot' })
+@Entity({ name: 'chatbot_script' })
 export class ChatBot extends EntityHelper {
   @ApiProperty({ example: 'cbcfa8b8-3a25-4adb-a9c6-e325f0d0f3ae' })
   @PrimaryGeneratedColumn()

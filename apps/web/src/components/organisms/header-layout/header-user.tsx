@@ -68,7 +68,7 @@ const itemsPerson: MenuProps['items'] = menuPerson.map(({ icon, title, path, key
 }));
 
 function HeaderUser() {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { user } = useAppSelector((state) => state.user);
 
@@ -164,7 +164,7 @@ function HeaderUser() {
                   border-radius: 2rem !important;
                 `}
               >
-                Sign In
+                {t('auth.title.login')}
               </Button>
             </Link>
           }
