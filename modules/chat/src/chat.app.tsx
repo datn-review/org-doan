@@ -28,6 +28,7 @@ import {
   Select,
   SIZE,
   Space,
+  Spin,
   TextArea,
   UserHeaderProfile,
   WechatOutlined,
@@ -67,7 +68,6 @@ function ChatApp() {
   }, []);
   useEffect(() => {
     socketService.subscribeToLoading((data: any) => {
-      console.log('🚀 ~ file: chat.api.ts:59 ~ socketService.subscribeToLoading ~ data:', data);
       dispatch(setLoadingBot(data));
     });
     return () => {
@@ -75,12 +75,12 @@ function ChatApp() {
     };
   }, []);
 
-  const [getMessages, { data: messages }] = useLazyGetMessagesQuery();
+  const [getMessages, { data: messages, isLoading: isLoadingMessage }] = useLazyGetMessagesQuery();
 
   const [addMessage] = useAddMessageMutation();
 
   const { data: users } = useGetUsersActiveQuery({});
-  const { data: rooms, refetch } = useGetRoomQuery({});
+  const { data: rooms, refetch, isLoading: isLoadingRoom } = useGetRoomQuery({});
 
   const roomsFilter = useMemo(() => {
     return (
@@ -150,163 +150,167 @@ function ChatApp() {
               border-right: 1px solid #9ca3af80;
             `}
           >
-            <Space
-              className={css`
-                padding: 1rem;
-                display: flex;
-                //justify-content: space-between;
-                gap: 1rem;
-                align-items: center;
-                border-bottom: 1px solid #9ca3af80;
-              `}
-            >
-              <Space>
-                <img
-                  src={getImage(user?.photo?.path)}
-                  alt={''}
-                  className={css`
-                    border-radius: 50%;
-                    height: 4rem;
-                    width: 4rem;
-                    object-fit: cover;
-                  `}
-                />
-              </Space>
+            <Spin spinning={isLoadingRoom}>
               <Space
                 className={css`
-                  flex: 1;
+                  padding: 1rem;
+                  display: flex;
+                  //justify-content: space-between;
+                  gap: 1rem;
+                  align-items: center;
+                  border-bottom: 1px solid #9ca3af80;
                 `}
               >
-                <Select
-                  options={userData || []}
-                  showSearch
+                <Space>
+                  <img
+                    src={getImage(user?.photo?.path)}
+                    alt={''}
+                    className={css`
+                      border-radius: 50%;
+                      height: 4rem;
+                      width: 4rem;
+                      object-fit: cover;
+                    `}
+                  />
+                </Space>
+                <Space
                   className={css`
-                    width: 100%;
-                    .ant-select-selector {
-                      border-radius: 20rem;
-                    }
+                    flex: 1;
                   `}
-                  onChange={(value) => {
-                    const data = rooms?.find(
-                      (room: any) => room.isSingle && value === room?.friends?.[0]?.id,
-                    );
-                    if (!isEmpty(data)) {
-                      const friend = data?.friends?.[0];
-                      const title = `${friend?.lastName} ${friend?.firstName}`;
+                >
+                  <Select
+                    options={userData || []}
+                    showSearch
+                    className={css`
+                      width: 100%;
+                      .ant-select-selector {
+                        border-radius: 20rem;
+                      }
+                    `}
+                    onChange={(value) => {
+                      const data = rooms?.find(
+                        (room: any) => room.isSingle && value === room?.friends?.[0]?.id,
+                      );
+                      if (!isEmpty(data)) {
+                        const friend = data?.friends?.[0];
+                        const title = `${friend?.lastName} ${friend?.firstName}`;
 
-                      const logo = friend?.photo?.path;
+                        const logo = friend?.photo?.path;
 
-                      const dataNew = {
-                        friend,
-                        title,
-                        logo,
-                        id: friend?.id,
-                      };
-                      getMessages(data?.id);
-                      setRoomActive(data?.id);
-                      setRoomData(dataNew);
-                    } else {
-                      createRoom({ title: '', members: [value] })
-                        .unwrap()
-                        .then((room: any) => {
-                          refetch()
-                            .unwrap()
-                            .then((response: any) => {
-                              const roomData = response?.find((item: any) => item.id == room?.id);
+                        const dataNew = {
+                          friend,
+                          title,
+                          logo,
+                          id: friend?.id,
+                        };
+                        getMessages(data?.id);
+                        setRoomActive(data?.id);
+                        setRoomData(dataNew);
+                      } else {
+                        createRoom({ title: '', members: [value] })
+                          .unwrap()
+                          .then((room: any) => {
+                            refetch()
+                              .unwrap()
+                              .then((response: any) => {
+                                const roomData = response?.find((item: any) => item.id == room?.id);
 
-                              const friend = roomData?.friends?.[0];
-                              const title = roomData?.isSingle
-                                ? `${friend?.lastName} ${friend?.firstName}`
-                                : roomData?.title;
+                                const friend = roomData?.friends?.[0];
+                                const title = roomData?.isSingle
+                                  ? `${friend?.lastName} ${friend?.firstName}`
+                                  : roomData?.title;
 
-                              const logo = roomData?.isSingle ? friend?.photo?.path : '';
-                              getMessages(roomData?.id);
-                              setRoomActive(roomData?.id);
+                                const logo = roomData?.isSingle ? friend?.photo?.path : '';
+                                getMessages(roomData?.id);
+                                setRoomActive(roomData?.id);
 
-                              const dataNew = {
-                                friend,
-                                title,
-                                logo,
-                                id: friend?.id,
-                              };
+                                const dataNew = {
+                                  friend,
+                                  title,
+                                  logo,
+                                  id: friend?.id,
+                                };
 
-                              setRoomData(dataNew);
-                            });
-                        });
-                    }
-                  }}
-                />
-              </Space>
-              <FormOutlined onClick={() => setToggle(true)} />
-            </Space>
-            <Space
-              className={css`
-                padding: 1rem 1.2rem;
-              `}
-            >
-              <h4
-                className={css`
-                  color: ${COLOR.Primary};
-                  padding: 1rem 1.2rem;
-                `}
-              >
-                {t('bot')}
-              </h4>
-
-              <ChatItem
-                room={null}
-                isActive={roomBotID === roomActive}
-                onClick={() => {
-                  if (roomBotID === 0) {
-                    createRoom({ title: '', members: [0] })
-                      .unwrap()
-                      .then((room: any) => {
-                        getMessages(room?.id);
-                        setRoomActive(room?.id);
-                        setRoomData({
-                          title: t('bot'),
-                        });
-                      });
-                  } else {
-                    getMessages(roomBotID);
-                    setRoomActive(roomBotID);
-                    setRoomData({
-                      title: t('bot'),
-                    });
-                  }
-                }}
-                isBot
-              />
-
-              <h4
-                className={css`
-                  color: ${COLOR.Primary};
-                  padding: 1rem 1.2rem;
-                `}
-              >
-                {t('chats')}
-              </h4>
-              <Space
-                className={css`
-                  height: calc(100vh - 26rem);
-                  overflow-y: auto;
-                `}
-              >
-                {roomsFilter?.map((room: any) => (
-                  <ChatItem
-                    room={room}
-                    isActive={room.id === roomActive}
-                    onClick={(data: any) => {
-                      getMessages(room.id);
-                      setRoomActive(room.id);
-                      setRoomData(data);
+                                setRoomData(dataNew);
+                              });
+                          });
+                      }
                     }}
                   />
-                ))}
+                </Space>
+                <FormOutlined onClick={() => setToggle(true)} />
               </Space>
-            </Space>
+              <Space
+                className={css`
+                  padding: 1rem 1.2rem;
+                `}
+              >
+                <h4
+                  className={css`
+                    color: ${COLOR.Primary};
+                    padding: 1rem 1.2rem;
+                  `}
+                >
+                  {t('bot')}
+                </h4>
+
+                <ChatItem
+                  room={null}
+                  isActive={roomBotID === roomActive}
+                  onClick={() => {
+                    if (roomBotID === 0) {
+                      createRoom({ title: '', members: [0] })
+                        .unwrap()
+                        .then((room: any) => {
+                          getMessages(room?.id);
+                          setRoomActive(room?.id);
+                          setRoomData({
+                            title: t('bot'),
+                          });
+                        });
+                    } else {
+                      getMessages(roomBotID);
+                      setRoomActive(roomBotID);
+                      setRoomData({
+                        title: t('bot'),
+                      });
+                    }
+                  }}
+                  isBot
+                />
+
+                <h4
+                  className={css`
+                    color: ${COLOR.Primary};
+                    padding: 1rem 1.2rem;
+                  `}
+                >
+                  {t('chats')}
+                </h4>
+                <Space
+                  className={css`
+                    height: calc(100vh - 26rem);
+                    overflow-y: auto;
+                  `}
+                >
+                  {roomsFilter?.map((room: any) => (
+                    <ChatItem
+                      room={room}
+                      isActive={room.id === roomActive}
+                      onClick={(data: any) => {
+                        getMessages(room.id);
+                        setRoomActive(room.id);
+                        setRoomData(data);
+                      }}
+                    />
+                  ))}
+                </Space>
+              </Space>
+            </Spin>
           </Col>
+
           <Col span={16}>
+            {/* <Spin spinning={isLoadingMessage}> */}
             <Space
               className={css`
                 position: relative;
@@ -387,6 +391,9 @@ function ChatApp() {
 
                       padding: 20px;
                       overflow-y: auto;
+                      /* display: flex;
+                      flex-direction: column;
+                      justify-content: end; */
                     `}
                   >
                     {messages?.map((message: any) => (
@@ -435,6 +442,7 @@ function ChatApp() {
                 </Else>
               </If>
             </Space>
+            {/* </Spin> */}
           </Col>
         </Row>
         <ModalAntd

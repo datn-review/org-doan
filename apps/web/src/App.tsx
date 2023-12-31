@@ -1,10 +1,11 @@
 // import { extendBaseTheme } from '@chakra-ui/react';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes';
-import { ProviderI18n } from '@org/i18n';
+import { ProviderI18n, useTranslation } from '@org/i18n';
 import { AntdProvider, ComponentInject, GlobalStyle } from '@org/ui';
 import { StoreProvider } from '@org/store';
 import { MessageProvider, PortalProvider } from '@org/core';
+import { useEffect } from 'react';
 
 // const theme = extendBaseTheme({
 //   styles: {
@@ -15,12 +16,17 @@ import { MessageProvider, PortalProvider } from '@org/core';
 //     // Popover,
 //   },
 // });
-const Router = () => (
-  <>
-    {/* {contextHolder} */}
-    <RouterProvider router={router} />
-  </>
-);
+const Router = () => {
+  const { t } = useTranslation();
+  useEffect(() => {
+    document.title = t('document.title');
+  }, [t]);
+  return (
+    <>
+      <RouterProvider router={router} />
+    </>
+  );
+};
 
 const App = ComponentInject({
   providers: [StoreProvider, PortalProvider, MessageProvider, ProviderI18n, AntdProvider],

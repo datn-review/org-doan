@@ -21,6 +21,7 @@ export class TutorCertification extends EntityHelper {
   certificationId?: number;
   @ManyToOne(() => User, {
     eager: true,
+    onDelete: 'CASCADE',
   })
   tutor?: User | null;
 

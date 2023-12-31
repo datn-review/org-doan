@@ -14,6 +14,7 @@ import {
   Put,
   Query,
   Request,
+  SerializeOptions,
   UseGuards,
 } from '@nestjs/common';
 
@@ -89,7 +90,7 @@ export class PaymentController {
     const secretKey = 'KYSVPKUNTISAOIMNDWIUQUXTPIMJDEUP';
     let vnpUrl = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
 
-    const returnUrl = 'http://localhost:1111/returnPayVN';
+    const returnUrl = `${process.env.FRONTEND_DOMAIN || 'http://localhost:1111'}/returnPayVN`;
 
     const createDate = dayjs(date).format('YYYYMMDDHHmmss');
 
@@ -180,6 +181,9 @@ export class PaymentController {
 
   //   @Roles()
   // @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @SerializeOptions({
+    groups: ['admin'],
+  })
   @Get('/')
   @HttpCode(HttpStatus.OK)
   @ApiQuery({ name: 'status', required: false })

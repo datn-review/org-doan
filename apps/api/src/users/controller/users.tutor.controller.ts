@@ -91,7 +91,6 @@ export const relations = [
 ];
 @ApiBearerAuth()
 @ApiTags('User Tutor')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'users/tutor',
   version: '1',
@@ -107,6 +106,7 @@ export class UsersTutorController {
 
     private readonly filesService: FilesService,
   ) {}
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(RoleEnum.WEB_ADMIN)
   @Roles(RoleEnum.WEB_STAFF)
   @SerializeOptions({
@@ -158,16 +158,21 @@ export class UsersTutorController {
       return { dayofWeekId: Number(dayofWeek), hourId: Number(hour), tutorId: userId };
     });
     try {
-      if (skills) void this.tutorSkillsService.createMany(skills);
-      if (certifications) void this.tutorCertificationService.createMany(certifications);
-      if (tutorGradeSubject) void this.tutorSubjectGradeService.createMany(tutorGradeSubject);
-      if (timeAvailability) void this.tutorTimeAvailabilityService.createMany(timeAvailability);
+      if (!isEmpty(skills)) void this.tutorSkillsService.createMany(skills as any[]);
+      if (!isEmpty(certifications))
+        void this.tutorCertificationService.createMany(certifications as any[]);
+      if (!isEmpty(tutorGradeSubject))
+        void this.tutorSubjectGradeService.createMany(tutorGradeSubject as any[]);
+      if (!isEmpty(timeAvailability)) {
+        void this.tutorTimeAvailabilityService.createMany(timeAvailability as any[]);
+      }
     } catch (err) {
       console.log(err);
     }
 
     return user;
   }
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(RoleEnum.WEB_ADMIN)
   @Roles(RoleEnum.WEB_STAFF)
   @SerializeOptions({
@@ -206,7 +211,7 @@ export class UsersTutorController {
       relations,
     });
   }
-  @Roles()
+
   @Get('/active')
   @HttpCode(HttpStatus.OK)
   async findAllActive(
@@ -292,6 +297,7 @@ export class UsersTutorController {
 
     return { data: dataMap, totals: data?.totals };
   }
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(RoleEnum.WEB_ADMIN)
   @Roles(RoleEnum.WEB_STAFF)
   @SerializeOptions({
@@ -311,6 +317,7 @@ export class UsersTutorController {
   @SerializeOptions({
     groups: ['admin'],
   })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(RoleEnum.WEB_ADMIN)
   @Roles(RoleEnum.WEB_STAFF)
   @Put(':id')
@@ -322,17 +329,21 @@ export class UsersTutorController {
     @Body() updateProfileDto: UpdateUserDto,
     @UploadedFile() photo: Express.Multer.File,
   ): Promise<User[]> {
-    const certifications = updateProfileDto?.certification?.split(',').map((item) => ({
-      certificationId: Number(item),
-      tutor: id,
-    }));
-    const skills = updateProfileDto?.skills?.split(',')?.map((item) => ({
-      skillId: Number(item),
-      tutor: id,
-    }));
-    const tutorGradeSubject = updateProfileDto?.tutorGradeSubject
-      ?.split(',')
-      ?.map((item: string) => {
+    const certifications =
+      !isEmpty(updateProfileDto?.certification) &&
+      updateProfileDto?.certification?.split(',').map((item) => ({
+        certificationId: Number(item),
+        tutor: id,
+      }));
+    const skills =
+      !isEmpty(updateProfileDto?.skills) &&
+      updateProfileDto?.skills?.split(',')?.map((item) => ({
+        skillId: Number(item),
+        tutor: id,
+      }));
+    const tutorGradeSubject =
+      !isEmpty(updateProfileDto?.tutorGradeSubject) &&
+      updateProfileDto?.tutorGradeSubject?.split(',')?.map((item: string) => {
         const [subject, grade] = item.split('__');
         return {
           gradeId: Number(grade) || 0,
@@ -341,25 +352,28 @@ export class UsersTutorController {
         };
       });
 
-    const timeAvailability = updateProfileDto?.timeAvailability?.split(',').map((item) => {
-      const [dayofWeek, hour] = item?.split('__');
-      return { dayofWeekId: Number(dayofWeek), hourId: Number(hour), tutorId: id };
-    });
+    const timeAvailability =
+      !isEmpty(updateProfileDto?.timeAvailability) &&
+      updateProfileDto?.timeAvailability?.split(',').map((item) => {
+        const [dayofWeek, hour] = item?.split('__');
+        return { dayofWeekId: Number(dayofWeek), hourId: Number(hour), tutorId: id };
+      });
 
     if (skills) {
-      const tutorSkills = await this.tutorSkillsService.findMany({ tutorId: id });
+      const tutorSkills = (await this.tutorSkillsService.findMany({ tutorId: id })) || [];
+
       if (tutorSkills) {
         const newRow = differenceBy(skills, tutorSkills, 'skillId');
         const deleteRow = differenceBy(tutorSkills, skills, 'skillId')?.map((item) => item?.id);
         !isEmpty(newRow) && void this.tutorSkillsService.createMany(newRow);
         !isEmpty(deleteRow) &&
           deleteRow.forEach((id) => {
-            void this.tutorSkillsService.softDelete(id);
+            void this.tutorSkillsService.delete(id);
           });
       }
     }
     if (certifications) {
-      const dataFind = await this.tutorCertificationService.findMany({ tutorId: id });
+      const dataFind = (await this.tutorCertificationService.findMany({ tutorId: id })) || [];
 
       if (dataFind) {
         const newRow = differenceBy(certifications, dataFind, 'certificationId');
@@ -371,17 +385,29 @@ export class UsersTutorController {
         !isEmpty(newRow) && void this.tutorCertificationService.createMany(newRow);
         !isEmpty(deleteRow) &&
           deleteRow.forEach((id) => {
-            void this.tutorCertificationService.softDelete(id);
+            void this.tutorCertificationService.delete(id);
           });
       }
     }
 
     if (timeAvailability) {
-      const dataFind = await this.tutorTimeAvailabilityService.findMany({ tutorId: id });
+      console.log(
+        '🚀 ~ file: users.tutor.controller.ts:388 ~ UsersTutorController ~ timeAvailability:',
+        timeAvailability,
+      );
+      const dataFind = (await this.tutorTimeAvailabilityService.findMany({ tutorId: id })) || [];
       if (dataFind) {
+        console.log(
+          '🚀 ~ file: users.tutor.controller.ts:390 ~ UsersTutorController ~ dataFind:',
+          dataFind,
+        );
         const newRow = differenceWith(timeAvailability, dataFind, (source, compare) => {
           return source.dayofWeekId === compare.dayofWeekId && source.hourId === compare.hourId;
         });
+        console.log(
+          '🚀 ~ file: users.tutor.controller.ts:393 ~ UsersTutorController ~ newRow ~ newRow:',
+          newRow,
+        );
 
         const deleteRow = differenceWith(dataFind, timeAvailability, (source, compare) => {
           return source.dayofWeekId === compare.dayofWeekId && source.hourId === compare.hourId;
@@ -399,7 +425,7 @@ export class UsersTutorController {
       }
     }
     if (tutorGradeSubject) {
-      const dataFind = await this.tutorSubjectGradeService.findMany({ tutorId: id });
+      const dataFind = (await this.tutorSubjectGradeService.findMany({ tutorId: id })) || [];
       if (dataFind) {
         const newRow = differenceWith(tutorGradeSubject, dataFind, (source, compare) => {
           return source.subjectId === compare.subjectId && source.gradeId === compare.gradeId;

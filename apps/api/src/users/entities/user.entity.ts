@@ -118,6 +118,7 @@ export class User extends EntityHelper {
     onDelete: 'CASCADE',
   })
   tutorGradeSubject: TutorSubjectGrade[];
+
   @OneToMany(() => TutorTimeAvailability, (tutorTimeAvailability) => tutorTimeAvailability.tutor, {
     onDelete: 'CASCADE',
   })

@@ -39,7 +39,7 @@ export const CardTutor = ({ item }: any) => {
         className={css`
           line-height: 3rem;
           box-shadow: 0px 01px 7px rgba(0, 0, 0, 0.2);
-
+          height: 100%;
           .ant-card-body {
             min-height: 220px;
             padding: 0;
@@ -54,7 +54,7 @@ export const CardTutor = ({ item }: any) => {
             position: relative;
             cursor: pointer;
             flex-direction: column;
-            background-color: ${COLOR.Primary};
+            background-color: ${colorByIdUser(item?.id, true)};
             border-radius: 18px;
             padding: 10px 0;
             .ant-tag {
@@ -121,6 +121,7 @@ export const CardTutor = ({ item }: any) => {
               data={item?.tutorSkills}
               bordered
               name='skill'
+              isReverse
             />
           </Space>
           <Space>
@@ -135,6 +136,7 @@ export const CardTutor = ({ item }: any) => {
           className={css`
             padding: 16px;
             flex-direction: column;
+            padding-bottom: 40px;
           `}
         >
           <Space>
@@ -149,19 +151,30 @@ export const CardTutor = ({ item }: any) => {
             <EnvironmentTwoTone twoToneColor={COLOR.Primary} />{' '}
             {item?.wards?.districts?.province?.name || t('updating')}
           </Space>
-          <Space>
+          <Space
+            className={css`
+              text-align: center;
+            `}
+          >
             {/* <b>{t('classNew.subject')}: </b> */}
             <BookTwoTone twoToneColor={COLOR.Primary} /> {item?.school || t('updating')}
           </Space>
-          <Button
-            $size={SIZE.ExtraSmall}
-            onClick={() => {
-              navigate(SiteMap.Chat.path);
-            }}
+          <Space
+            className={css`
+              position: absolute;
+              bottom: 16px;
+            `}
           >
-            <WechatFilled style={{ color: COLOR.White }} />
-            <b>{t('chat')} </b>
-          </Button>
+            <Button
+              $size={SIZE.ExtraSmall}
+              onClick={() => {
+                navigate(SiteMap.Chat.path);
+              }}
+            >
+              <WechatFilled style={{ color: COLOR.White }} />
+              <b>{t('chat')} </b>
+            </Button>
+          </Space>
         </BoxCenter>
       </Card>
     </Col>

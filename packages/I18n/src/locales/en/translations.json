@@ -1,5 +1,6 @@
 {
   "title": "Hello",
+  "document.title": "SmartTutorVN - Nền Tảng Số 1 Việt Nam",
   "vi-VN": "Vietnamese",
   "en-EN": "English",
   "auth": {
@@ -382,5 +383,7 @@
   "input": "Input",
   "output": "Output",
   "language": "Language",
-  "intent": "Intent"
+  "intent": "Intent",
+  "start.conversation":"Start Conversation",
+  "button.send" : "Gửi"
 }

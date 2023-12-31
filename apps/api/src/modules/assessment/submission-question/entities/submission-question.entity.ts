@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { EntityHelper } from 'src/utils/entity-helper';
 import {
   Column,
@@ -7,15 +6,12 @@ import {
   Entity,
   ManyToOne,
   PrimaryColumn,
-  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from '../../../../users/entities/user.entity';
-import { Subject } from '../../../subject/entities/subject.entity';
 import { Assignment } from '../../assignment/entities/assignment.entity';
 import { Question } from '../../question/entities/question.entity';
 
-@Entity({ name: 'submissionQuestion' })
+@Entity({ name: 'submission_question' })
 export class SubmissionQuestion extends EntityHelper {
   @PrimaryColumn()
   assignmentId: number;
@@ -33,10 +29,10 @@ export class SubmissionQuestion extends EntityHelper {
   question: Question;
 
   @Column({ type: String, nullable: false })
-  answer: String;
+  answer: string;
 
   @Column({ type: Boolean, nullable: true })
-  isCorrect: Boolean;
+  isCorrect: boolean;
 
   @Column({ type: Number, default: 1 })
   status: number;

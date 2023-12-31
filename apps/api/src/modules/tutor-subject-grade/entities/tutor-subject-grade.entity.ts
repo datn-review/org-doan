@@ -23,6 +23,7 @@ export class TutorSubjectGrade extends EntityHelper {
 
   @ManyToOne(() => User, {
     eager: true,
+    onDelete: 'CASCADE',
   })
   tutor: User;
 

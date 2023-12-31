@@ -22,6 +22,7 @@ export class TutorTimeAvailability extends EntityHelper {
 
   @ManyToOne(() => User, {
     eager: true,
+    onDelete: 'CASCADE',
   })
   tutor: User;
 
