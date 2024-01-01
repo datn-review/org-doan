@@ -12,6 +12,7 @@ import {
   IconSearch,
   Table,
   Logo,
+  AvatarUser,
 } from '@org/ui';
 import * as S from './styled';
 import { useTranslation } from '@org/i18n';
@@ -26,7 +27,7 @@ import {
   useGetProfileMeQuery,
   setUserInfo,
 } from '@org/store';
-import { COLOR, SiteMap } from '@org/utils';
+import { COLOR, SiteMap, getImage } from '@org/utils';
 import { css } from '@emotion/css';
 import { useEffect } from 'react';
 
@@ -70,7 +71,7 @@ const itemsPerson: MenuProps['items'] = menuPerson.map(({ icon, title, path, key
 function HeaderUser() {
   const { i18n, t } = useTranslation();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
-  const { user } = useAppSelector((state) => state.user);
+  const user = useAppSelector((state) => state.user);
 
   const dispatch = useAppDispatch();
 
@@ -178,6 +179,11 @@ function HeaderUser() {
               onClick: handlePerson,
             }}
           >
+            {/* <AvatarUser
+              // img={user?.photo?.path ? user?.photo?.path : ''}
+              title={user?.lastName}
+              id={user?.id}
+            /> */}
             <Avatar className={`bg-purple-500 text-white cursor-pointer`}>T</Avatar>
           </Dropdown>
         </Show>

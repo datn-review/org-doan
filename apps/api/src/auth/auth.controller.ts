@@ -1,40 +1,37 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
-  Request,
-  Post,
-  UseGuards,
-  Patch,
-  Delete,
-  SerializeOptions,
   Param,
-  UseInterceptors,
-  UploadedFile,
+  Post,
   Put,
+  Request,
+  SerializeOptions,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
-import { AuthForgotPasswordDto } from './dto/auth-forgot-password.dto';
-import { AuthConfirmEmailDto } from './dto/auth-confirm-email.dto';
-import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
-import { AuthUpdateDto } from './dto/auth-update.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
-import { LoginResponseType } from '../utils/types/auth/login-response.type';
-import { User } from '../users/entities/user.entity';
-import { NullableType } from '../utils/types/nullable.type';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { TutorCertificationService } from 'src/modules/tutor-certification/tutor-certification.service';
-import { TutorSubjectGradeService } from 'src/modules/tutor-subject-grade/tutor-subject-grade.service';
-import { TutorSkillsService } from 'src/modules/tutor-skills/tutor-skills.service';
-import { TutorTimeAvailabilityService } from 'src/users/tutor-time-availability/tutor-time-availability.service';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { differenceBy, differenceWith, isEmpty } from 'lodash';
 import { FilesService } from 'src/files-drive/files.service';
-import { RoleEnum, RolesEnumName } from 'src/roles/roles.enum';
+import { TutorCertificationService } from 'src/modules/tutor-certification/tutor-certification.service';
+import { TutorSkillsService } from 'src/modules/tutor-skills/tutor-skills.service';
+import { TutorSubjectGradeService } from 'src/modules/tutor-subject-grade/tutor-subject-grade.service';
+import { TutorTimeAvailabilityService } from 'src/users/tutor-time-availability/tutor-time-availability.service';
+import { User } from '../users/entities/user.entity';
+import { LoginResponseType } from '../utils/types/auth/login-response.type';
+import { NullableType } from '../utils/types/nullable.type';
+import { AuthService } from './auth.service';
+import { AuthConfirmEmailDto } from './dto/auth-confirm-email.dto';
+import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
+import { AuthForgotPasswordDto } from './dto/auth-forgot-password.dto';
+import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
+import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
 
 @ApiTags('Auth')
 @Controller({
@@ -119,17 +116,21 @@ export class AuthController {
     @UploadedFile() photo: Express.Multer.File,
   ): Promise<NullableType<User>> {
     const id = request?.user?.id;
-    const certifications = updateProfileDto?.certification?.split(',').map((item) => ({
-      certificationId: Number(item),
-      tutor: id,
-    }));
-    const skills = updateProfileDto?.skills?.split(',')?.map((item) => ({
-      skillId: Number(item),
-      tutor: id,
-    }));
-    const tutorGradeSubject = updateProfileDto?.tutorGradeSubject
-      ?.split(',')
-      ?.map((item: string) => {
+    const certifications =
+      !isEmpty(updateProfileDto?.certification) &&
+      updateProfileDto?.certification?.split(',').map((item) => ({
+        certificationId: Number(item),
+        tutor: id,
+      }));
+    const skills =
+      !isEmpty(updateProfileDto?.skills) &&
+      updateProfileDto?.skills?.split(',')?.map((item) => ({
+        skillId: Number(item),
+        tutor: id,
+      }));
+    const tutorGradeSubject =
+      !isEmpty(updateProfileDto?.tutorGradeSubject) &&
+      updateProfileDto?.tutorGradeSubject?.split(',')?.map((item: string) => {
         const [subject, grade] = item.split('__');
         return {
           gradeId: Number(grade) || 0,
@@ -138,10 +139,12 @@ export class AuthController {
         };
       });
 
-    const timeAvailability = updateProfileDto?.timeAvailability?.split(',').map((item) => {
-      const [dayofWeek, hour] = item?.split('__');
-      return { dayofWeekId: Number(dayofWeek), hourId: Number(hour), tutorId: id };
-    });
+    const timeAvailability =
+      !isEmpty(updateProfileDto?.timeAvailability) &&
+      updateProfileDto?.timeAvailability?.split(',').map((item) => {
+        const [dayofWeek, hour] = item?.split('__');
+        return { dayofWeekId: Number(dayofWeek), hourId: Number(hour), tutorId: id };
+      });
 
     if (skills) {
       const tutorSkills = await this.tutorSkillsService.findMany({ tutorId: id });

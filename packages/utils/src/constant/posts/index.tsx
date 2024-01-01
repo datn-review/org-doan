@@ -3,7 +3,7 @@ import { i18nContant } from '@org/i18n';
 export const dataTime = [
   {
     value: 1,
-    label: <>30 ${i18nContant('min')}</>,
+    label: <>30 {i18nContant('min')}</>,
   },
   {
     value: 2,

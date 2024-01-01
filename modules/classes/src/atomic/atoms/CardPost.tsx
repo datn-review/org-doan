@@ -25,6 +25,7 @@ import {
   colorRandom,
   DataTimeEnum,
   DayEnum,
+  formatMoney,
   RolesEnum,
   SiteMap,
 } from '@org/utils';
@@ -124,6 +125,7 @@ export const CardPost = ({ item, handleClick }: any) => {
           overflow: hidden;
           cursor: pointer;
           box-shadow: 0px 0 4px rgba(108, 108, 108, 0.6);
+          height: 100%;
           &:hover {
             .button-group {
               display: flex !important;
@@ -157,13 +159,13 @@ export const CardPost = ({ item, handleClick }: any) => {
             <b> {item?.requestSummaryVI}</b>
           </Space>
           <Space>
-            <MoneyCollectTwoTone twoToneColor={COLOR.Primary} /> {item?.fee}/
+            <MoneyCollectTwoTone twoToneColor={COLOR.Primary} /> {formatMoney(item?.fee)}/
             {DayEnum[item?.perTime]}
           </Space>
 
           <Space>
-            <AlertTwoTone twoToneColor={COLOR.Primary} /> {item?.fee}/{item.dayWeek}{' '}
-            {t('classNew.day')} ({DataTimeEnum[item.timeDay]}/{t('classNew.day')})
+            <AlertTwoTone twoToneColor={COLOR.Primary} /> {item.dayWeek} {t('classNew.day')}/
+            {t('week')} ({DataTimeEnum[item.timeDay]}/{t('classNew.day')})
           </Space>
 
           <Space>

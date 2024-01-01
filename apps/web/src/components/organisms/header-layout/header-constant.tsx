@@ -24,7 +24,7 @@ import {
 import { IMenuIcon, MenuItem } from './header-type';
 import { Translation, i18nContant } from '@org/i18n';
 import { RolesEnum, SiteMap } from '@org/utils';
-import { ifAnyGranted } from '@org/auth';
+import { ifAnyGranted, ifNotGranted } from '@org/auth';
 
 export const itemsLanguge: MenuProps['items'] = [
   {
@@ -45,7 +45,7 @@ export const menuCategory = (): MenuItem[] => {
       id: SiteMap.Home.menu,
       icon: <IconHome />,
       subMenu: [],
-      isShow: ifAnyGranted(SiteMap.Home.roles),
+      isShow: ifNotGranted(SiteMap.Home.notRoles),
     },
     {
       name: <Translation>{(t) => t('class.new')}</Translation>,
@@ -53,7 +53,7 @@ export const menuCategory = (): MenuItem[] => {
       id: SiteMap.ClassNew.menu,
       icon: <IconClassesName />,
       subMenu: [],
-      isShow: ifAnyGranted(SiteMap.ClassNew.roles),
+      isShow: ifNotGranted(SiteMap.ClassNew.notRoles),
     },
     {
       name: <Translation>{(t) => t('tutor')}</Translation>,
@@ -61,7 +61,7 @@ export const menuCategory = (): MenuItem[] => {
       id: SiteMap.Tutor.menu,
       icon: <IconSchool />,
       subMenu: [],
-      isShow: ifAnyGranted(SiteMap.Tutor.roles),
+      isShow: ifNotGranted(SiteMap.Tutor.notRoles),
     },
     {
       name: <Translation>{(t) => t('find.tutor')}</Translation>,
@@ -69,7 +69,7 @@ export const menuCategory = (): MenuItem[] => {
       id: SiteMap.LookForTutor.menu,
       icon: <IconPencil />,
       subMenu: [],
-      isShow: ifAnyGranted(SiteMap.LookForTutor.roles),
+      isShow: ifNotGranted(SiteMap.LookForTutor.notRoles),
     },
     // {
     //   name: <Translation>{(t) => t('manage.class')}</Translation>,
@@ -193,13 +193,6 @@ export const menuCategory = (): MenuItem[] => {
           key: SiteMap.Settings.Skills.menu,
           icon: <></>,
         },
-        {
-          label: <Translation>{(t) => t('settings.chat-bot')}</Translation>,
-          path: SiteMap.Settings.ChatBot.path,
-          id: SiteMap.Settings.ChatBot.menu,
-          key: SiteMap.Settings.ChatBot.menu,
-          icon: <></>,
-        },
       ],
     },
 
@@ -249,6 +242,14 @@ export const menuCategory = (): MenuItem[] => {
         //   icon: <></>,
         // },
       ],
+    },
+    {
+      name: <Translation>{(t) => t('settings.chat-bot')}</Translation>,
+      path: SiteMap.Settings.ChatBot.path,
+      id: SiteMap.Settings.ChatBot.menu,
+      icon: <IconSetting />,
+      isShow: ifAnyGranted(SiteMap.Settings.roles),
+      subMenu: [],
     },
   ].filter((item) => item.isShow);
 };

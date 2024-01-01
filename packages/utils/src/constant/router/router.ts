@@ -5,6 +5,7 @@ export const SiteMap = {
     path: '/',
     menu: 'home',
     roles: [],
+    notRoles: [RolesEnum.CENTER_ADMIN, RolesEnum.WEB_ADMIN],
   },
   Auth: {
     Login: {
@@ -124,12 +125,14 @@ export const SiteMap = {
     path: '/tutor',
     menu: 'tutor',
     roles: [],
+    notRoles: [RolesEnum.CENTER_ADMIN, RolesEnum.WEB_ADMIN],
   },
 
   LookForTutor: {
     path: '/look-for-tutor',
     menu: 'look-for-tutor',
     roles: [],
+    notRoles: [RolesEnum.CENTER_ADMIN, RolesEnum.WEB_ADMIN],
   },
   TutorClass: {
     path: '/tutor-class',
@@ -140,6 +143,7 @@ export const SiteMap = {
     path: '/class-new',
     menu: 'class-new',
     roles: [],
+    notRoles: [RolesEnum.CENTER_ADMIN, RolesEnum.WEB_ADMIN],
     Details: {
       generate: (id: number | string) => `/class-new/${id}`,
       path: '/class-new/:id',

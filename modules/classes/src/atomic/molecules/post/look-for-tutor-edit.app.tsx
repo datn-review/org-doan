@@ -5,6 +5,7 @@ import {
   useAppDispatch,
   useAppSelector,
   useCreatePostsMutation,
+  useDeletePostsMutation,
   useGetCertificationActiveQuery,
   useGetGradeLevelActiveQuery,
   useGetSkillsActiveQuery,
@@ -34,6 +35,7 @@ import {
   TextSection,
   BoxCenter,
   timeAvailabilityImport,
+  BoxFlex,
 } from '@org/ui';
 import { COLOR, SiteMap, dataTime, day, formatData } from '@org/utils';
 import { useEffect, useMemo, useState } from 'react';
@@ -99,6 +101,7 @@ function LookForTutorEditApp({ id, refetch }: any) {
   const { data: dataCertification } = useGetCertificationActiveQuery({});
   const { data: dataGradeLevel } = useGetGradeLevelActiveQuery({});
   const [getData, { data: dataPost }] = useLazyFindPostsQuery();
+  const [deletePost] = useDeletePostsMutation();
 
   useEffect(() => {
     getData({ id });
@@ -340,25 +343,42 @@ function LookForTutorEditApp({ id, refetch }: any) {
                   />
                 </Col>
               </Row>
-              <Button
-                $type={TYPE_BUTTON.Primary}
-                onClick={methods.handleSubmit((values) => {
-                  update({
-                    id,
-                    body: {
-                      ...values,
-                      gradeLevel: [values.gradeLevel],
-                      timeStart: dayjs(values?.['timeStart']),
-                      requestDetailVI: requestDetail,
-                    },
-                  }).then(() => {
-                    messageSuccess(t("edit.success"))
-                    refetch();
-                  });
-                })}
+              <BoxFlex
+                className={css`
+                  gap: 1rem;
+                `}
               >
-                {t('button.save')}
-              </Button>
+                <Button
+                  $type={TYPE_BUTTON.Primary}
+                  onClick={methods.handleSubmit((values) => {
+                    update({
+                      id,
+                      body: {
+                        ...values,
+                        gradeLevel: [values.gradeLevel],
+                        timeStart: dayjs(values?.['timeStart']),
+                        requestDetailVI: requestDetail,
+                      },
+                    }).then(() => {
+                      messageSuccess(t('edit.success'));
+                      refetch();
+                    });
+                  })}
+                >
+                  {t('button.save')}
+                </Button>
+                <Button
+                  $type={TYPE_BUTTON.Error}
+                  onClick={() => {
+                    deletePost(id).then(() => {
+                      messageSuccess(t('delete.success'));
+                      refetch();
+                    });
+                  }}
+                >
+                  {t('remove')}
+                </Button>
+              </BoxFlex>
             </FormProvider>
           </Then>
           <Else>

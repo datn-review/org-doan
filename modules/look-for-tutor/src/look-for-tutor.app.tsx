@@ -36,61 +36,76 @@ import { COLOR, SiteMap, dataTime, day, formatData } from '@org/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { Else, If, Then } from 'react-if';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { AddressForm } from '@org/core';
+import { AddressForm, useMessage } from '@org/core';
 import * as yup from 'yup';
 import dayjs from 'dayjs';
 import { Editor } from '@org/editor';
-const schema = yup.object({
-  province: yup.number().required(i18next.t('required.field')),
-  district: yup.number().required(i18next.t('required.field')),
-  wards: yup.number().required(i18next.t('required.field')),
-  // descriptionVI: yup.string(),
-  // descriptionEN: yup.string(),
-  // status: yup.number(),
-});
+
+const dataInit: any = {
+  province: undefined,
+  district: undefined,
+  wards: undefined,
+  requestSummaryVI: '',
+  requestDetailVI: '',
+  address: '',
+  status: 1,
+  fee: undefined,
+  perTime: undefined,
+  dayWeek: undefined,
+  type: 1,
+  timeAvailability: [],
+  certification: [],
+  gradeLevel: [],
+  skills: [],
+  subject: [],
+};
 // const dataInit: any = {
-//   province: undefined,
-//   district: undefined,
-//   wards: undefined,
-//   requestSummaryVI: '',
-//   requestDetailVI: '',
-//   address: '',
+//   province: 2,
+//   district: 3,
+//   wards: 1,
+//   requestSummaryVI: 'Mô tả yêu',
+//   requestDetailVI:
+//     '<p class="PlaygroundEditorTheme__paragraph" dir="ltr"><b><strong class="PlaygroundEditorTheme__textBold" style="white-space: pre-wrap;">Mô tả yêu</strong></b></p>',
+//   address: 'Mô tả yêu',
 //   status: 1,
 //   skill: [],
-//   fee: 0,
-//   perTime: 0,
-//   dayWeek: 0,
+//   fee: '100',
+//   perTime: 2,
+//   dayWeek: '10',
 //   type: 1,
-//   timeAvailability: [],
-//   certification: [],
-//   gradeLevel: [],
-//   skills: [],
-//   subject: [],
+//   timeAvailability: ['3__0', '3__1', '3__2', '4__2', '4__3', '4__4'],
+//   certification: [2],
+//   gradeLevel: 2,
+//   skills: [1, 2],
+//   subject: [1, 2],
+//   timeStart: dayjs('2023-11-03T12:21:02.324Z'),
+//   timeDay: 2,
 // };
-const dataInit: any = {
-  province: 2,
-  district: 3,
-  wards: 1,
-  requestSummaryVI: 'Mô tả yêu',
-  requestDetailVI:
-    '<p class="PlaygroundEditorTheme__paragraph" dir="ltr"><b><strong class="PlaygroundEditorTheme__textBold" style="white-space: pre-wrap;">Mô tả yêu</strong></b></p>',
-  address: 'Mô tả yêu',
-  status: 1,
-  skill: [],
-  fee: '100',
-  perTime: 2,
-  dayWeek: '10',
-  type: 1,
-  timeAvailability: ['3__0', '3__1', '3__2', '4__2', '4__3', '4__4'],
-  certification: [2],
-  gradeLevel: 2,
-  skills: [1, 2],
-  subject: [1, 2],
-  timeStart: dayjs('2023-11-03T12:21:02.324Z'),
-  timeDay: 2,
-};
 
 function LookForTutorApp() {
+  const { t } = useTranslation();
+  const { messageSuccess } = useMessage();
+  const schema = yup.object({
+    province: yup.number().required(t('required.field')),
+    district: yup.number().required(t('required.field')),
+    wards: yup.number().required(t('required.field')),
+    timeAvailability: yup.array().required(t('required.field')),
+    // gradeLevel: yup.array().required(t('required.field')),
+    // skills: yup.array().required(t('required.field')),
+    // subject: yup.array().required(t('required.field')),
+
+    dayWeek: yup.number().required(t('required.field')),
+
+    // type: yup.number().required(t('required.field')),
+    fee: yup.number().required(t('required.field')),
+    perTime: yup.number().required(t('required.field')),
+
+    requestSummaryVI: yup.string().required(t('required.field')),
+
+    // descriptionVI: yup.string(),
+    // descriptionEN: yup.string(),
+    // status: yup.number(),
+  });
   const methods = useForm<any>({
     defaultValues: dataInit,
 
@@ -98,7 +113,6 @@ function LookForTutorApp() {
   });
 
   const { isAuthenticated } = useAppSelector((state) => state.auth);
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [requestDetail, setRequestDetail] = useState('');
@@ -161,9 +175,10 @@ function LookForTutorApp() {
                   </label>
                   <Editor
                     onChange={(value) => setRequestDetail(value)}
-                    defaultValue={
-                      '<p class="PlaygroundEditorTheme__paragraph" dir="ltr"><b><strong class="PlaygroundEditorTheme__textBold" style="white-space: pre-wrap;">Mô tả yêu</strong></b></p>'
-                    }
+                    // defaultValue={
+                    //   '<p class="PlaygroundEditorTheme__paragraph" dir="ltr"><b><strong class="PlaygroundEditorTheme__textBold" style="white-space: pre-wrap;">Mô tả yêu</strong></b></p>'
+                    // }
+                    defaultValue=''
                   />
                 </Col>
                 <Col
@@ -290,12 +305,14 @@ function LookForTutorApp() {
               <Button
                 $type={TYPE_BUTTON.Primary}
                 onClick={methods.handleSubmit((values) => {
-                  console.log(dayjs(values?.['timeStart']).format('YYYY-MM-DD'));
                   createPosts({
                     ...values,
                     gradeLevel: [values.gradeLevel],
                     timeStart: dayjs(values?.['timeStart']),
                     requestDetailVI: requestDetail,
+                  }).then(() => {
+                    messageSuccess('create.success');
+                    navigate(SiteMap.Manage.PostsMe.path);
                   });
                 })}
               >

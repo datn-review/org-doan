@@ -105,7 +105,7 @@
   },
   "details": "Details",
   "description.request.tutor": "Description Request Tutor",
-  "request.tutor": "Request S Tutor",
+  "request.tutor": "Request Tutor",
   "timeAvailability": "Time Availability",
   "week": "Week",
   "min": "Min",
@@ -385,5 +385,6 @@
   "language": "Language",
   "intent": "Intent",
   "start.conversation":"Start Conversation",
-  "button.send" : "Gửi"
+  "button.send" : "Gửi",
+  "required.field":"Field Required"
 }
