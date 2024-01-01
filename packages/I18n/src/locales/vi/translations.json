@@ -395,6 +395,8 @@
   "language": "Ngôn ngữ",
   "intent": "Intent",
   "start.conversation":"Bắt Đầu Cuộc Trò Chuyện",
-  "button.send" : "Gửi"
+  "button.send" : "Gửi",
+  "required.field":"Trường bắt buộc nhập",
+  "day":"Ngày"
 }
 

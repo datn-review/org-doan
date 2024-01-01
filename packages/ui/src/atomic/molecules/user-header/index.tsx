@@ -79,6 +79,7 @@ export const AvatarUser = ({ title, img, id }: any) => {
         display: flex;
         align-items: center;
         gap: 1rem;
+        cursor: pointer;
       `}
     >
       {/* <Link to={SiteMap.Profile.generate(id)}> */}

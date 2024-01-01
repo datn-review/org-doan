@@ -3,7 +3,9 @@ import { useTranslation } from '@org/i18n';
 import {
   setActiveGroup,
   useAppDispatch,
+  useAppSelector,
   useCreateCollaborationMutation,
+  useLazyFindAuthPostsQuery,
   useLazyFindPostsQuery,
 } from '@org/store';
 import {
@@ -24,22 +26,25 @@ import {
   UserHeaderProfile,
   VARIANT,
 } from '@org/ui';
-import { COLOR, DataTimeEnum, DayEnum, SiteMap } from '@org/utils';
+import { COLOR, DataTimeEnum, DayEnum, RolesEnum, SiteMap, formatMoney } from '@org/utils';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { TagsList } from '@org/core';
+import { TagsList, useMessage, useMessageHook } from '@org/core';
 import dayjs from 'dayjs';
 import { Editor } from '@org/editor';
+import { ifAnyGranted } from '@org/auth';
 
 function ClassNewDetails() {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   const { id } = useParams();
 
-  const [findPosts, { data: postData, isLoading }] = useLazyFindPostsQuery({});
-  console.log('🚀 ~ file: class-new-details.app.tsx:53 ~ ClassNewDetails ~ postData:', postData);
+  const [findPosts, { data: postData, isLoading }] = isAuthenticated
+    ? useLazyFindAuthPostsQuery()
+    : useLazyFindPostsQuery();
 
   const [createCollaboration] = useCreateCollaborationMutation();
 
@@ -54,7 +59,7 @@ function ClassNewDetails() {
     };
   }, []);
 
-  const registerForClass = (posts: number, user: number) => () => {
+  const registerForClass = (posts: number, user: number) => {
     createCollaboration({
       posts,
       user,
@@ -80,14 +85,36 @@ function ClassNewDetails() {
               {/*    {t('classNew.student')}*/}
               {/*  </Button>*/}
               {/*</Link>*/}
+              {ifAnyGranted([RolesEnum.PESONAL_TUTOR]) && (
+                <Button
+                  onClick={() => {
+                    if (!(postData?.isExistTutor || postData?.isExistTutor)) {
+                      registerForClass(postData?.id, postData?.user?.id);
+                    }
+                  }}
+                  $size={SIZE.ExtraSmall}
+                  className={css`
+                    flex: 1;
+                  `}
+                >
+                  <EditFilled />
 
-              <Button
-                onClick={registerForClass(postData?.id, postData?.user?.id)}
-                $size={SIZE.ExtraSmall}
-              >
-                <EditFilled />
-                {t('classNew.register')}
-              </Button>
+                  {postData?.isExistTutor
+                    ? t('classNew.register.exist')
+                    : postData?.isUserRegistered
+                    ? t('classNew.isUserRegistered')
+                    : t('classNew.register')}
+                </Button>
+              )}
+              {/* {ifAnyGranted([RolesEnum.PESONAL_TUTOR]) && (
+                <Button
+                  onClick={registerForClass(postData?.id, postData?.user?.id)}
+                  $size={SIZE.ExtraSmall}
+                >
+                  <EditFilled />
+                  {t('classNew.register')}
+                </Button>
+              )} */}
             </Space>
           </BoxBetween>
           <br />
@@ -98,6 +125,7 @@ function ClassNewDetails() {
             defaultValue={postData?.requestDetailVI}
             isShow={true}
           />
+          <br />
           <h4
             className={css`
               color: ${COLOR.Primary};
@@ -118,7 +146,7 @@ function ClassNewDetails() {
                 `}
               >
                 <b>{t('classNew.fee')}: </b>
-                {postData?.fee}/{DayEnum[postData?.perTime]}
+                {formatMoney(postData?.fee)}/{DayEnum[postData?.perTime]}
               </Space>
             </Col>
             <Col
@@ -178,6 +206,7 @@ function ClassNewDetails() {
                 <TagsList
                   data={postData?.gradeLevels}
                   isReverse
+                  bordered
                 />
               </Space>
             </Col>
@@ -191,7 +220,10 @@ function ClassNewDetails() {
             >
               <Space>
                 <b>{t('classNew.subject')}: </b>
-                <TagsList data={postData?.subjects} />
+                <TagsList
+                  data={postData?.subjects}
+                  bordered
+                />
               </Space>
             </Col>
           </Row>
@@ -215,7 +247,10 @@ function ClassNewDetails() {
             >
               <Space>
                 <b>{t('classNew.skill')}: </b>
-                <TagsList data={postData?.skills} />
+                <TagsList
+                  data={postData?.skills}
+                  bordered
+                />
               </Space>
             </Col>
             <Col
@@ -231,6 +266,7 @@ function ClassNewDetails() {
                 <TagsList
                   data={postData?.certifications}
                   isReverse
+                  bordered
                 />
               </Space>
             </Col>

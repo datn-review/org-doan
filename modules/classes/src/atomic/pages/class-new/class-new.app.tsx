@@ -73,7 +73,7 @@ function ClassNew() {
   useMount(() => {
     getData({
       sortBy: 'createdAt',
-      sortDirection: 'asc',
+      sortDirection: 'desc',
       limit,
       page: currentPage,
     });
@@ -87,7 +87,7 @@ function ClassNew() {
       dispatch(setActiveGroup({ current: '' }));
     };
   }, []);
-  const registerForClass = (posts: number, user: number) => () => {
+  const registerForClass = (posts: number, user: number) => {
     createCollaboration({
       posts,
       user,

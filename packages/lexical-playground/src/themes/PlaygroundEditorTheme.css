@@ -16,7 +16,7 @@
   margin: 0;
   position: relative;
 }
-.floating-text-format-popup{
+.floating-text-format-popup {
   height: 45px !important;
 }
 .PlaygroundEditorTheme__quote {
@@ -286,6 +286,7 @@
   padding: 0;
   margin: 0;
   list-style-position: inside;
+  list-style: circle;
 }
 .PlaygroundEditorTheme__ol2 {
   padding: 0;
@@ -315,6 +316,7 @@
   padding: 0;
   margin: 0;
   list-style-position: inside;
+  list-style: number;
 }
 .PlaygroundEditorTheme__listItem {
   margin: 0 32px;

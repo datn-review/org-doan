@@ -25,6 +25,7 @@ import {
   colorRandom,
   DataTimeEnum,
   DayEnum,
+  formatMoney,
   RolesEnum,
   SiteMap,
 } from '@org/utils';
@@ -123,6 +124,7 @@ export const CardClassNew = ({ item, registerForClass }: any) => {
           line-height: 3rem;
           overflow: hidden;
           cursor: pointer;
+          height: 100%;
           &:hover {
             .button-group {
               display: flex !important;
@@ -156,13 +158,13 @@ export const CardClassNew = ({ item, registerForClass }: any) => {
             <b> {item?.requestSummaryVI}</b>
           </Space>
           <Space>
-            <MoneyCollectTwoTone twoToneColor={COLOR.Primary} /> {item?.fee}/
+            <MoneyCollectTwoTone twoToneColor={COLOR.Primary} /> {formatMoney(item?.fee)}/
             {DayEnum[item?.perTime]}
           </Space>
 
           <Space>
-            <AlertTwoTone twoToneColor={COLOR.Primary} /> {item?.fee}/{item.dayWeek}{' '}
-            {t('classNew.day')} ({DataTimeEnum[item.timeDay]}/{t('classNew.day')})
+            <AlertTwoTone twoToneColor={COLOR.Primary} /> {item.dayWeek} {t('classNew.day')}/
+            {t('week')} ({DataTimeEnum[item.timeDay]}/{t('classNew.day')})
           </Space>
 
           <Space>
@@ -249,7 +251,11 @@ export const CardClassNew = ({ item, registerForClass }: any) => {
             </Link>
             {ifAnyGranted([RolesEnum.PESONAL_TUTOR]) && (
               <Button
-                onClick={registerForClass(item?.id, item?.user?.id)}
+                onClick={() => {
+                  if (!(item?.isExistTutor || item?.isExistTutor)) {
+                    registerForClass(item?.id, item?.user?.id);
+                  }
+                }}
                 $size={SIZE.ExtraSmall}
                 className={css`
                   flex: 1;
@@ -259,7 +265,7 @@ export const CardClassNew = ({ item, registerForClass }: any) => {
 
                 {item?.isExistTutor
                   ? t('classNew.register.exist')
-                  : item.isUserRegistered
+                  : item?.isUserRegistered
                   ? t('classNew.isUserRegistered')
                   : t('classNew.register')}
               </Button>

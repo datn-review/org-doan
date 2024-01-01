@@ -75,10 +75,14 @@ export class Posts extends EntityHelper {
   @Column({ type: Number, default: 1 })
   status: number;
 
-  @OneToMany(() => PostTimeAvailability, (postTimeAvailability) => postTimeAvailability.posts)
+  @OneToMany(() => PostTimeAvailability, (postTimeAvailability) => postTimeAvailability.posts, {
+    onDelete: 'CASCADE',
+  })
   postTimeAvailability: PostTimeAvailability[];
 
-  @OneToMany(() => Collaboration, (Collaboration) => Collaboration.posts)
+  @OneToMany(() => Collaboration, (Collaboration) => Collaboration.posts,{
+    onDelete: 'CASCADE',
+  })
   collaboration: Collaboration[];
 
   @ManyToMany(() => Skills)

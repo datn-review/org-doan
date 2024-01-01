@@ -235,7 +235,7 @@ pre::-webkit-scrollbar-thumb {
 
 .typeahead-popover ul {
   padding: 0;
-  list-style: none;
+  list-style: number;
   margin: 0;
   border-radius: 8px;
   max-height: 200px;

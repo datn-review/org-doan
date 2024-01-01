@@ -68,9 +68,11 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       removeUserInfoLocalStorage();
+      localStorage.setItem('role', RolesEnum.ANONYMOUS);
+      localStorage.setItem('authorities', RolesEnum.ANONYMOUS);
       return {
         ...state,
-        usetId: null,
+        userId: null,
         isAuthenticated: false,
         authorities: [RolesEnum.ANONYMOUS],
         role: RolesEnum.ANONYMOUS,
