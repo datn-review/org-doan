@@ -465,7 +465,9 @@ export class CollaborationController {
           amountX = weeks * Number(collaboration?.posts?.dayWeek);
           amount = Number(collaboration?.posts?.fee) * amountX;
         }
-        const amountTutor = amount - amount * 0.1;
+
+        const amountProfits = amount * 0.1;
+        const amountTutor = amount - amountProfits;
 
         payment.push({
           collaboration: +id,
@@ -479,6 +481,7 @@ export class CollaborationController {
           receiver,
           amount: amountTutor,
           feeMonthDate,
+          profits: amountProfits,
         });
       });
       await this.paymentService.createMany(payment);

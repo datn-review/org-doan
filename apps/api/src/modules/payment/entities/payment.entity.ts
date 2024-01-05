@@ -50,6 +50,8 @@ export class Payment extends EntityHelper {
 
   @Column({ type: Date, nullable: true })
   deadPaymentDate?: Date | null;
+  @Column({ type: Number, nullable: true })
+  profits?: number;
 
   @Column({ type: Number, default: 1 })
   status: number;

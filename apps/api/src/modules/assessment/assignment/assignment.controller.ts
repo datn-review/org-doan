@@ -29,6 +29,11 @@ import { AssignmentService } from './assignment.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import { SubmissionQuestion } from '../submission-question/entities/submission-question.entity';
 import { SubmissionQuestionService } from '../submission-question/submission-question.service';
+import { NotificationsService } from 'src/modules/notifications/notifications.service';
+import { IIFE } from 'src/modules/chat/chat-message/chat.gateway';
+import { LessonsService } from 'src/modules/lessons/lessons.service';
+import { Lessons } from 'src/modules/lessons/entities/lessons.entity';
+import { Notifications } from 'src/modules/notifications/entities/notifications.entity';
 
 const relations = [
   {
@@ -57,11 +62,40 @@ export class AssignmentController {
   constructor(
     private readonly assignmentService: AssignmentService,
     private readonly submissionQuestionService: SubmissionQuestionService,
+    private readonly notifications: NotificationsService,
+    private readonly lessonsService: LessonsService,
   ) {}
   @Roles(RoleEnum.WEB_ADMIN, RoleEnum.PESONAL_TUTOR)
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createAssignmentDto: any): Promise<Assignment[]> {
+    IIFE(async () => {
+      const id = +createAssignmentDto?.lesson as number;
+      const lesson = await this.lessonsService.findOne(id, [
+        {
+          field: 'collaboration',
+          entity: 'collaboration',
+        },
+        {
+          field: 'collaboration.posts',
+          entity: 'posts',
+        },
+        {
+          field: 'posts.user',
+          entity: 'user',
+        },
+      ]);
+
+      if (lesson) {
+        const data = {
+          user: { id: lesson?.collaboration?.posts?.user?.id },
+          ['text_VI']: `<a href='/classes/${lesson.collaboration?.id}?lesson=${lesson.id}'>[${lesson?.collaboration?.nameClass}] Bạn có một bài tập mới được giao vào lúc ${createAssignmentDto?.startTime} đến  ${createAssignmentDto?.endTime}  </a>`,
+          ['text_EN']: `<a href='/classes/${lesson.collaboration?.id}?lesson=${lesson.id}'>[${lesson?.collaboration?.nameClass}] You have a new assignment due at ${createAssignmentDto?.startTime} to  ${createAssignmentDto?.endTime}  </a>`,
+        };
+        void this.notifications.create(data as Notifications);
+      }
+    });
+
     return this.assignmentService.create({
       ...createAssignmentDto,
     });

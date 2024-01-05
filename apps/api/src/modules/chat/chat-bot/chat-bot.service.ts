@@ -11,7 +11,7 @@ import { ChatBot } from './entities/chat-bot.entity';
 
 import { OpenAI } from 'langchain/llms/openai';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
-
+import { Cron, CronExpression } from '@nestjs/schedule';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const translate = require('@iamtraction/google-translate');
 
@@ -145,6 +145,12 @@ export class ChatBotService
     //   console.log('Database changed. Retraining chatbot...');
     //   await this.trainChatbot();
     // });
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  async handleCron() {
+    await this.trainChatbot();
+    await this.trainChatbotSearch();
   }
 
   async trainChatbot() {
