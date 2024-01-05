@@ -3,10 +3,13 @@ import { io, Socket } from 'socket.io-client';
 import { ClientToServerEvents, ServerToClientEvents } from './models/event';
 
 import { AddMessageDto } from './models/message';
-
+const URL_WS =
+  process.env.NODE_ENV === 'production'
+    ? import.meta.env.VITE_APP_API_WS_PROD
+    : import.meta.env.VITE_APP_API_WS_DEV;
 class SocketService {
   private readonly socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-    'ws://localhost:2222',
+    `ws://${URL_WS}`,
     {
       autoConnect: false,
     },
