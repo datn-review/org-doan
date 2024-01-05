@@ -8,6 +8,7 @@ import { CollaborationService } from './collaboration.service';
 import { PaymentModule } from '../payment/payment.module';
 import { PostsModule } from '../posts/posts.module';
 
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([Collaboration]),

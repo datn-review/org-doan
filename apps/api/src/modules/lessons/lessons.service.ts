@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { BaseService } from 'src/core/base.service';
 import { IParams } from 'src/core/i.base.service';
-import { Between, LessThanOrEqual, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Lessons } from './entities/lessons.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as dayjs from 'dayjs';
 
 export class LessonsRepository {}
 @Injectable()
@@ -40,5 +39,27 @@ export class LessonsService extends BaseService<Lessons, Repository<Lessons>, IP
     const string = `${start.toLocaleDateString()}${dayEnd ? ` - ${end.toLocaleDateString()}` : ''}`;
 
     return { data, string };
+  }
+
+  async findToDayAll(): Promise<any> {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date();
+    end.setDate(start.getDate());
+    end.setHours(23, 59, 59, 59.99);
+
+    const data = await this.repository
+      .createQueryBuilder('entity')
+      .leftJoinAndSelect('entity.collaboration', 'collaboration')
+      .leftJoinAndSelect('collaboration.posts', 'posts')
+      .leftJoinAndSelect('posts.user', 'user')
+      .where('(entity.lessonStart BETWEEN :startDate AND :endDate)', {
+        startDate: start.toLocaleString(),
+        endDate: end.toLocaleString(),
+      })
+      .getMany();
+
+    return { data };
   }
 }
