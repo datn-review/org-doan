@@ -39,11 +39,13 @@ import {
   SiteMap,
   TypeRolesEnum,
 } from '@org/utils';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Authorization } from '@org/auth';
 import { If, Then } from 'react-if';
 import { useMessage, useMessageHook } from '@org/core';
 import { ViewExercise } from '../../../../molecules';
+import qs from 'qs';
+
 type Props = {
   close: () => void;
   id: number;
@@ -52,7 +54,9 @@ type Props = {
 };
 export const Event = ({ id, close, refetch, isComplete }: Props) => {
   const [getEvent, { data }] = useLazyFindLessonQuery();
+  const [activeKey, setActiveKey] = useState('1');
   const { t } = useTranslation();
+  const navigate = useNavigate();
   useEffect(() => {
     if (id) {
       getEvent({ id });
@@ -87,7 +91,20 @@ export const Event = ({ id, close, refetch, isComplete }: Props) => {
     //   children: 'Content of Tab Pane 3',
     // },
   ];
-
+  const query = qs.parse(location?.search, {
+    ignoreQueryPrefix: true,
+  });
+  useEffect(() => {
+    if (query?.tabLesson) {
+      setActiveKey(String(query?.tabLesson));
+    }
+  }, [query]);
+  const onChange = (key: string) => {
+    const newQuery = { ...query, tabLesson: key };
+    navigate({
+      search: qs.stringify(newQuery),
+    });
+  };
   return (
     <ModalAntd
       title={t('lesson.details')}
@@ -100,6 +117,8 @@ export const Event = ({ id, close, refetch, isComplete }: Props) => {
       <Tabs
         defaultActiveKey='1'
         items={items}
+        onChange={onChange}
+        activeKey={activeKey}
       />
     </ModalAntd>
   );
@@ -384,6 +403,14 @@ export const LessonAssigenment = ({ data, isCollap, isComplete }: any) => {
       },
     },
   ];
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    const path = window.location.pathname;
+    const search = window.location.search;
+    localStorage.setItem('path-lesson', path + search);
+    navigate(SiteMap.Assessment.Assignment.Create.generate(data?.id));
+  };
 
   return (
     <Space>
@@ -396,9 +423,12 @@ export const LessonAssigenment = ({ data, isCollap, isComplete }: any) => {
         `}
       >
         {!isCollap && !isComplete && (
-          <Link to={SiteMap.Assessment.Assignment.Create.generate(data?.id)}>
-            <Button $size={SIZE.ExtraSmall}>{t('assignment.create')}</Button>
-          </Link>
+          <Button
+            $size={SIZE.ExtraSmall}
+            onClick={handleNavigate}
+          >
+            {t('assignment.create')}
+          </Button>
         )}
       </Space>
       <TableAntd

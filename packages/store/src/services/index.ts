@@ -31,3 +31,4 @@ export * from './chat-bot.api';
 
 export * from './chat.service';
 
+export * from './notification.api';

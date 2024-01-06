@@ -31,6 +31,9 @@ import { Event } from './container/Event';
 import { If, Then } from 'react-if';
 import { Editor } from '@org/editor';
 import { useMessage } from '@org/core';
+import { useNavigate } from 'react-router-dom';
+import qs from 'qs';
+
 interface ClassTime {
   day?: number;
   start?: string;
@@ -90,6 +93,16 @@ function Schedule({ data, refetch }: any) {
   const [timeCreate, setTimeCreate] = useState<any>();
   const [dateCreate, setDateCreate] = useState<any>({});
   const [content, setContent] = useState<any>(null);
+
+  const navigate = useNavigate();
+  const query = qs.parse(location?.search, {
+    ignoreQueryPrefix: true,
+  });
+  useEffect(() => {
+    if (query?.lesson) {
+      setEventId(Number(query?.lesson));
+    }
+  }, [query]);
 
   const format = 'HH:mm';
   useEffect(() => {
@@ -220,6 +233,10 @@ function Schedule({ data, refetch }: any) {
   };
   const handleEventClick = (eventContent: any) => {
     setEventId(eventContent?.event?.extendedProps?.id);
+    const newQuery = { ...query, lesson: eventContent?.event?.extendedProps?.id };
+    navigate({
+      search: qs.stringify(newQuery),
+    });
   };
   const eventChange = (eventContent: any) => {
     console.log(eventContent);
@@ -474,7 +491,16 @@ function Schedule({ data, refetch }: any) {
           <Event
             isComplete={isComplete}
             id={eventId}
-            close={() => setEventId(null)}
+            close={() => {
+              setEventId(null);
+              const newQuery = { ...query };
+              delete newQuery['lesson'];
+              delete newQuery['tabLesson'];
+
+              navigate({
+                search: qs.stringify(newQuery),
+              });
+            }}
             refetch={refetch}
           />
         </Then>

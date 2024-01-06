@@ -28,6 +28,9 @@ export class Notifications extends EntityHelper {
   })
   user?: User | null;
 
+  @Column({ type: String, nullable: true })
+  path?: string;
+
   @Column({ type: Number, default: 1 })
   status: number;
 

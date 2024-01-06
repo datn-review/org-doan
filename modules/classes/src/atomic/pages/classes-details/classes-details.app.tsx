@@ -13,9 +13,9 @@ import {
 } from '@org/ui';
 import { COLOR, DataTimeEnum, DayEnum, SiteMap, colorRandom, formatMoney } from '@org/utils';
 import dayjs from 'dayjs';
-import React, { useEffect, useTransition } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 import { useLazyFindCollaborationQuery } from '@org/store';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import ScheduleApp from '../schedule/schedule.app';
 import { TagsList } from '@org/core';
 import styled from '@emotion/styled/macro';
@@ -23,7 +23,7 @@ import { FeeInfomation } from './../../molecules/fee';
 import { Feedback } from './../../molecules/feedback';
 
 import { AssignmentCollap } from './../../molecules/assignment';
-
+import qs from 'qs';
 const contentStyle: React.CSSProperties = {
   height: '500px',
   color: '#fff',
@@ -35,9 +35,19 @@ const contentStyle: React.CSSProperties = {
 function ClassesDetails() {
   const { t } = useTranslation();
   const [getData, { data }] = useLazyFindCollaborationQuery();
+  const [activeKey, setActiveKey] = useState('1');
+  const { search } = useLocation();
+  const navigate = useNavigate();
+  const query = qs.parse(location?.search, {
+    ignoreQueryPrefix: true,
+  });
+  useEffect(() => {
+    if (query?.tab) {
+      setActiveKey(String(query?.tab));
+    }
+  }, [query]);
 
   const { id } = useParams();
-  console.log(id);
   useEffect(() => {
     getData(id);
   }, [id]);
@@ -46,7 +56,10 @@ function ClassesDetails() {
     getData(id);
   };
   const onChange = (key: string) => {
-    console.log(key);
+    const newQuery = { ...query, tab: key };
+    navigate({
+      search: qs.stringify(newQuery),
+    });
   };
 
   const items: TabsProps['items'] = [
@@ -98,6 +111,7 @@ function ClassesDetails() {
             defaultActiveKey='1'
             items={items}
             onChange={onChange}
+            activeKey={activeKey}
           />
         </Space>
       </Section>

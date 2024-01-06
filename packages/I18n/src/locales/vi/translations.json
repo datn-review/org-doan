@@ -200,7 +200,7 @@
     "content": "Nội Dung Buổi Học"
   },
   "assignment": {
-    "create": "Tạo Bài Tập",
+    "create": "Giao Bài Tập",
     "exercise": "Bộ Đề",
     "time.startEnd": "Thời Gian Bắt Đầu - Kết Thúc",
     "name": "Tiêu Đề Bài Tập",
@@ -397,6 +397,7 @@
   "start.conversation":"Bắt Đầu Cuộc Trò Chuyện",
   "button.send" : "Gửi",
   "required.field":"Trường bắt buộc nhập",
-  "day":"Ngày"
+  "day":"Ngày",
+  "notification":"Thông báo"
 }
 

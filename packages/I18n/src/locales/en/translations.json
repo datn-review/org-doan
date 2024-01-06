@@ -386,5 +386,7 @@
   "intent": "Intent",
   "start.conversation":"Start Conversation",
   "button.send" : "Gửi",
-  "required.field":"Field Required"
+  "required.field":"Field Required",
+  "day":"Day",
+  "notification":"Notification"
 }

@@ -43,13 +43,23 @@ export class NotificationsService extends BaseService<
       const time = hour + 'h' + min;
       const timeEnd = hourEnd + 'h' + minEnd;
 
-      const textVIStudent = `<a href='/classes/${lesson.collaboration.id}?lesson=${lesson.id}'>Hôm nay bạn có lịch học lớp ${lesson?.collaboration?.nameClass}: ${time} -> ${timeEnd} </a>`;
-      const textENStudent = `<a href='/classes/${lesson.collaboration.id}?lesson=${lesson.id}'>Today you have a class schedule ${lesson?.collaboration?.nameClass}: ${time} -> ${timeEnd} </a>`;
-      const textENTutor = `<a href='/classes/${lesson.collaboration.id}?lesson=${lesson.id}'>Hôm nay bạn có lịch dạy lớp ${lesson?.collaboration?.nameClass}: ${time} -> ${timeEnd} </a>`;
-      const textVITutor = `<a href='/classes/${lesson.collaboration.id}?lesson=${lesson.id}'>Today you have a class schedule ${lesson?.collaboration?.nameClass}: ${time} -> ${timeEnd} </a>`;
+      const textVIStudent = `Hôm nay bạn có lịch học lớp ${lesson?.collaboration?.nameClass}: ${time} -> ${timeEnd}`;
+      const textENStudent = `Today you have a class schedule ${lesson?.collaboration?.nameClass}: ${time} -> ${timeEnd}`;
+      const textENTutor = `Hôm nay bạn có lịch dạy lớp ${lesson?.collaboration?.nameClass}: ${time} -> ${timeEnd}`;
+      const textVITutor = `Today you have a class schedule ${lesson?.collaboration?.nameClass}: ${time} -> ${timeEnd}`;
 
-      const stu = { ['text_VI']: textVIStudent, ['text_EN']: textENStudent, user: userStu };
-      const tutor = { ['text_VI']: textVITutor, ['text_EN']: textENTutor, user: userTutor };
+      const stu = {
+        ['text_VI']: textVIStudent,
+        ['text_EN']: textENStudent,
+        user: userStu,
+        path: `/classes/${lesson.collaboration?.id}?tab=2&lesson=${lesson.id}&tabLesson=1`,
+      };
+      const tutor = {
+        ['text_VI']: textVITutor,
+        ['text_EN']: textENTutor,
+        user: userTutor,
+        path: `/classes/${lesson.collaboration?.id}?tab=2&lesson=${lesson.id}&tabLesson=1`,
+      };
       data.push(stu);
       data.push(tutor);
     });
