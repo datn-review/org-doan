@@ -7,9 +7,11 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: build_and_push
     name: Deploy API to google Cloud
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Connect with SSH and Deploy
         uses: appleboy/ssh-action@master
         with:
