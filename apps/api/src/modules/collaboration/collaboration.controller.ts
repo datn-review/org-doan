@@ -33,6 +33,7 @@ import { RoleEnum } from 'src/roles/roles.enum';
 import { PaymentService } from '../payment/payment.service';
 import * as dayjs from 'dayjs';
 import { PostsService } from '../posts/posts.service';
+import { isEmpty } from 'lodash';
 
 function calculateDaysInMonthRange(
   contractStartDate: string,
@@ -208,7 +209,7 @@ export class CollaborationController {
       limit = 1000;
     }
 
-    const status = 5;
+    const status = undefined;
     const userId = req?.user?.id;
 
     return await this.collaborationService.findManyWithPagination({
@@ -222,13 +223,21 @@ export class CollaborationController {
       relations,
       or: [
         [
-          {
-            field: 'status',
-            value: 4,
-          },
+          // {
+          //   field: 'status',
+          //   value: 4,
+          // },
           {
             field: 'status',
             value: 5,
+          },
+          {
+            field: 'status',
+            value: 7,
+          },
+          {
+            field: 'status',
+            value: 8,
           },
         ],
         [
@@ -285,6 +294,14 @@ export class CollaborationController {
           {
             field: 'status',
             value: 5,
+          },
+          {
+            field: 'status',
+            value: 7,
+          },
+          {
+            field: 'status',
+            value: 8,
           },
         ],
       ],
@@ -376,6 +393,80 @@ export class CollaborationController {
       contractStartDate: createCollaborationDto?.contractStartDate,
       contractTerms: createCollaborationDto?.contractTerms,
     });
+  }
+  @Put('/cancel/:id')
+  @HttpCode(HttpStatus.OK)
+  async cancel(
+    @Request() request,
+    @Body() createCollaborationDto: UpdateCollaborationDto,
+    @Param('id') id: string,
+  ): Promise<Collaboration[] | null> {
+    // const role = request?.user?.role?.id || 0;
+
+    // const status = 4;
+
+    // let data = {};
+
+    // if (role === RoleEnum.STUDENT || RoleEnum.PARENT) {
+    //   const studentSignature = createCollaborationDto.signature;
+    //   data = {
+    //     studentSignature,
+    //     status,
+    //   };
+    // }
+    // if (role === RoleEnum.PESONAL_TUTOR) {
+    //   const tutorSignature = createCollaborationDto.signature;
+    //   data = {
+    //     tutorSignature,
+    //     status,
+    //   };
+    // }
+
+    const collaboration = await this.collaborationService.findOne(
+      {
+        id: +id,
+      },
+      ['payment'],
+    );
+    if (collaboration) {
+      const day = dayjs();
+      const lastDayOfMonth = day.endOf('month');
+
+      // console.log(
+      //   'Ngày cuối cùng của tháng hiện tại:',
+      //   lastDayOfMonth.format('YYYY-MM-DD HH:mm:ss'),
+      // );
+      const payment: any[] | undefined = collaboration?.payment
+        ?.filter((item) => {
+          // console.log(dayjs(item.feeMonthDate).format('DD-MM-YYYY'));
+          // console.log(dayjs(item.feeMonthDate).isAfter(lastDayOfMonth));
+          return dayjs(item.feeMonthDate).isAfter(lastDayOfMonth);
+
+          // void this.paymentService.update({
+          // collaboration: +id,
+          // sender,
+          // amount,
+          // deadPaymentDate,
+        })
+        .map((item) => {
+          return this.paymentService.update(item?.id, { status: 4 });
+        });
+      if (!isEmpty(payment) && payment) {
+        await Promise.all(payment);
+      }
+
+      // await this.paymentService.updateMany({
+      //   collaboration: +id,
+      //   sender,
+      //   amount,
+      //   deadPaymentDate,
+      // });
+    }
+
+    return this.collaborationService.update(+id, {
+      status: 8,
+    });
+    return null;
   }
 
   @Put('/register-confirm/:id')

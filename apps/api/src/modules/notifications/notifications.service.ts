@@ -6,7 +6,9 @@ import { Notifications } from './entities/notifications.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { LessonsService } from '../lessons/lessons.service';
-
+function addLeadingZero(number) {
+  return number < 10 ? '0' + number : number.toString();
+}
 export class NotificationsRepository {}
 @Injectable()
 export class NotificationsService extends BaseService<
@@ -20,9 +22,10 @@ export class NotificationsService extends BaseService<
   ) {
     super(repository);
   }
-  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  @Cron('0 10 0 * * *')
   async handleCron() {
     const lessons = await this.lessonsService.findToDayAll();
+    console.log('🚀 ~ file: notifications.service.ts:26 ~ handleCron ~ lessons:', lessons);
     const data: any[] = [];
     lessons?.data.forEach((lesson: any) => {
       const userStu = { id: lesson?.collaboration?.posts?.user?.id };
@@ -40,16 +43,26 @@ export class NotificationsService extends BaseService<
       const min = date.getMinutes();
       const hourEnd = lessonEnd.getHours();
       const minEnd = lessonEnd.getMinutes();
-      const time = hour + 'h' + min;
-      const timeEnd = hourEnd + 'h' + minEnd;
+      const time = addLeadingZero(hour) + 'h' + addLeadingZero(min);
+      const timeEnd = addLeadingZero(hourEnd) + 'h' + addLeadingZero(minEnd);
 
-      const textVIStudent = `<a href='/classes/${lesson.collaboration.id}?lesson=${lesson.id}'>Hôm nay bạn có lịch học lớp ${lesson?.collaboration?.nameClass}: ${time} -> ${timeEnd} </a>`;
-      const textENStudent = `<a href='/classes/${lesson.collaboration.id}?lesson=${lesson.id}'>Today you have a class schedule ${lesson?.collaboration?.nameClass}: ${time} -> ${timeEnd} </a>`;
-      const textENTutor = `<a href='/classes/${lesson.collaboration.id}?lesson=${lesson.id}'>Hôm nay bạn có lịch dạy lớp ${lesson?.collaboration?.nameClass}: ${time} -> ${timeEnd} </a>`;
-      const textVITutor = `<a href='/classes/${lesson.collaboration.id}?lesson=${lesson.id}'>Today you have a class schedule ${lesson?.collaboration?.nameClass}: ${time} -> ${timeEnd} </a>`;
+      const textVIStudent = `Hôm nay bạn có lịch học lớp ${lesson?.collaboration?.nameClass}: ${time} -> ${timeEnd}`;
+      const textENStudent = `Today you have a class schedule ${lesson?.collaboration?.nameClass}: ${time} -> ${timeEnd}`;
+      const textVITutor = `Hôm nay bạn có lịch dạy lớp ${lesson?.collaboration?.nameClass}: ${time} -> ${timeEnd}`;
+      const textENTutor = `Today you have a class schedule ${lesson?.collaboration?.nameClass}: ${time} -> ${timeEnd}`;
 
-      const stu = { ['text_VI']: textVIStudent, ['text_EN']: textENStudent, user: userStu };
-      const tutor = { ['text_VI']: textVITutor, ['text_EN']: textENTutor, user: userTutor };
+      const stu = {
+        ['text_VI']: textVIStudent,
+        ['text_EN']: textENStudent,
+        user: userStu,
+        path: `/classes/${lesson.collaboration?.id}?tab=2&lesson=${lesson.id}&tabLesson=1`,
+      };
+      const tutor = {
+        ['text_VI']: textVITutor,
+        ['text_EN']: textENTutor,
+        user: userTutor,
+        path: `/classes/${lesson.collaboration?.id}?tab=2&lesson=${lesson.id}&tabLesson=1`,
+      };
       data.push(stu);
       data.push(tutor);
     });

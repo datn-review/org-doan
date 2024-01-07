@@ -24,6 +24,7 @@ import {
   UserParentAPI,
   UserStaffAPI,
   ChatBotAPI,
+  NotificationsAPI,
 } from './services';
 import { baseAuthSplitApi, baseNoAuthSplitApi } from './services/base-auth-query';
 
@@ -57,6 +58,7 @@ const rootReducer = combineReducers({
   [UserParentAPI.reducerPath]: UserParentAPI.reducer,
   [UserStaffAPI.reducerPath]: UserStaffAPI.reducer,
   [ChatBotAPI.reducerPath]: ChatBotAPI.reducer,
+  [NotificationsAPI.reducerPath]: NotificationsAPI.reducer,
 });
 
 export const store: any = configureStore({
