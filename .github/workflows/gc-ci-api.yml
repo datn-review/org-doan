@@ -19,6 +19,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
+            git config --global --add safe.directory /home/pttam512/org-doan
             cd /home/pttam512/org-doan
             git checkout prod-api
             git pull
