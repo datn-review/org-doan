@@ -25,7 +25,9 @@ import { UsersService } from 'src/users/users.service';
 import { isEmpty } from 'lodash';
 
 dayjs.extend(timezone);
-
+function addLeadingZero(number) {
+  return number < 10 ? '0' + number : number.toString();
+}
 export const relations = [
   {
     field: 'tutorCertifications',
@@ -147,7 +149,7 @@ export class ChatBotService
     // });
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  @Cron('0 10 0 * * *')
   async handleCron() {
     await this.trainChatbot();
     await this.trainChatbotSearch();
@@ -325,7 +327,7 @@ export class ChatBotService
           console.log('🚀 ~ file: chat-bot.service.ts:228 ~ date:', date.data);
           let textAns = responseVI.answer || responseEN.answer;
           if (isEmpty(date.data)) {
-            return textAns + ` (${date?.string}): chưa có `;
+            return textAns + ` (${date?.string}): Không có lịch học! `;
           }
           const dateStr = date?.data?.reduce((acc, cert) => {
             let lessonStart = '';
@@ -341,8 +343,8 @@ export class ChatBotService
             const min = date.getMinutes();
             const hourEnd = lessonEnd.getHours();
             const minEnd = lessonEnd.getMinutes();
-            const time = hour + 'h' + min;
-            const timeEnd = hourEnd + 'h' + minEnd;
+            const time = addLeadingZero(hour) + 'h' + addLeadingZero(min);
+            const timeEnd = addLeadingZero(hourEnd) + 'h' + addLeadingZero(minEnd);
 
             if (dataFind?.entity === 'date') {
               lessonStart = `${cert?.collaboration?.nameClass}: ${time} -> ${timeEnd} - <a href='/classes/${cert.collaboration.id}'>Liên Kết</a>`;

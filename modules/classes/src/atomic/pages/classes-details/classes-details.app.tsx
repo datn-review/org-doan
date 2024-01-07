@@ -2,28 +2,49 @@ import { css } from '@emotion/css/macro';
 import { getNameLanguage, useTranslation } from '@org/i18n';
 import {
   BoxCenter,
+  Button,
+  Dropdown,
+  EllipsisOutlined,
   H2,
+  ModalAntd,
   Section,
   SectionLayout,
   Space,
+  TYPE_BUTTON,
   Tabs,
   TabsProps,
   Tag,
   TextSection,
 } from '@org/ui';
-import { COLOR, DataTimeEnum, DayEnum, SiteMap, colorRandom, formatMoney } from '@org/utils';
+import {
+  COLOR,
+  DataTimeEnum,
+  DayEnum,
+  EnumStatusCollap,
+  RolesEnum,
+  SiteMap,
+  colorRandom,
+  formatMoney,
+} from '@org/utils';
 import dayjs from 'dayjs';
 import React, { useEffect, useState, useTransition } from 'react';
-import { useLazyFindCollaborationQuery } from '@org/store';
+import {
+  useCancelCollaborationMutation,
+  useLazyFindCollaborationQuery,
+  useUpdateCollaborationMutation,
+} from '@org/store';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import ScheduleApp from '../schedule/schedule.app';
-import { TagsList } from '@org/core';
+import { TagsList, useMessage } from '@org/core';
 import styled from '@emotion/styled/macro';
 import { FeeInfomation } from './../../molecules/fee';
 import { Feedback } from './../../molecules/feedback';
+import { Contants, EnumTypeContact } from '../../molecules';
 
 import { AssignmentCollap } from './../../molecules/assignment';
 import qs from 'qs';
+import { If, Then } from 'react-if';
+import { ifAnyGranted } from '@org/auth';
 const contentStyle: React.CSSProperties = {
   height: '500px',
   color: '#fff',
@@ -66,7 +87,12 @@ function ClassesDetails() {
     {
       key: '1',
       label: t('class.info'),
-      children: <Information data={data} />,
+      children: (
+        <Information
+          data={data}
+          refetch={refetch}
+        />
+      ),
     },
     {
       key: '2',
@@ -120,15 +146,150 @@ function ClassesDetails() {
 }
 
 export default ClassesDetails;
-const Information = ({ data }: any) => {
+const Information = ({ data, refetch }: any) => {
   const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+  const [contants, setContants] = useState(null);
+  const { messageSuccess } = useMessage();
+
+  let status = data?.status;
+  if (status === 5 && data?.contractEndDate && dayjs(data?.contractEndDate).isBefore(dayjs())) {
+    status = 6;
+  }
+
+  const [updateStatus] = useUpdateCollaborationMutation();
+  const [cancelColap] = useCancelCollaborationMutation();
+
+  const handleCloseContact = () => {
+    console.log(data);
+    updateStatus({
+      id: data?.id,
+      body: {
+        status: 7,
+      },
+    }).then(() => {
+      refetch();
+      messageSuccess(t('success'));
+    });
+  };
+
+  const handleCancelCloseContact = () => {
+    updateStatus({
+      id: data?.id,
+      body: {
+        status: 5,
+      },
+    }).then(() => {
+      refetch();
+      setIsOpen(false);
+      messageSuccess(t('success'));
+    });
+  };
+
+  const handleConfirmCloseContact = () => {
+    // handleConfirmCloseContact
+    console.log(data);
+    cancelColap({
+      id: data?.id,
+    }).then(() => setIsOpen(false));
+  };
+  const viewContract = () => {
+    setContants(data);
+  };
+
+  const items: any = [
+    {
+      key: '1',
+      label: <Space onClick={viewContract}>{t('request.contact.details')}</Space>,
+      show: true,
+    },
+    {
+      show:
+        status !== EnumStatusCollap.ReqCloseContact &&
+        status !== EnumStatusCollap.SuccessCloseContact &&
+        status !== EnumStatusCollap.Completed &&
+        ifAnyGranted([RolesEnum.STUDENT]),
+      key: '2',
+      label: <Space onClick={handleCloseContact}>{t('request.close.contact')}</Space>,
+    },
+    {
+      show: status === EnumStatusCollap.ReqCloseContact && ifAnyGranted([RolesEnum.STUDENT]),
+      key: '3',
+      label: <Space onClick={handleCancelCloseContact}>{t('cancel.request.close.contact')}</Space>,
+    },
+    {
+      show: status === EnumStatusCollap.ReqCloseContact && ifAnyGranted([RolesEnum.PESONAL_TUTOR]),
+      key: '4',
+      label: <Space onClick={() => setIsOpen(true)}>{t('success.close.contact')}</Space>,
+    },
+  ].filter((item: any) => item?.show);
 
   return (
     <Space
       className={css`
         padding: 0 1rem;
+        position: relative;
       `}
     >
+      <Space
+        className={css`
+          position: absolute;
+          right: 0;
+          top: 0;
+        `}
+      >
+        <Dropdown
+          className={css`
+            cursor: pointer;
+            * {
+              font-size: 14px;
+            }
+          `}
+          overlayClassName={css`
+            width: 20rem;
+          `}
+          menu={{
+            items: items,
+          }}
+          trigger={['click']}
+          placement='bottomLeft'
+          // arrow={{ pointAtCenter: true }}
+        >
+          <EllipsisOutlined
+            className={css`
+              transform: scale(1.6);
+              display: flex;
+              justify-content: center;
+            `}
+          />
+        </Dropdown>
+        <ModalAntd
+          title={t('success.close.contact')}
+          open={isOpen}
+          onCancel={() => setIsOpen(false)}
+          footer={
+            <BoxCenter>
+              <Button onClick={handleConfirmCloseContact}>{t('confirm')}</Button>
+              <Button
+                $type={TYPE_BUTTON.Secondary}
+                onClick={handleCancelCloseContact}
+              >
+                {t('cancel')}
+              </Button>
+            </BoxCenter>
+          }
+        >
+          {t('close.contact.content')}
+        </ModalAntd>
+      </Space>
+      <Contants
+        type={EnumTypeContact.View}
+        data={contants}
+        close={() => setContants(null)}
+        refetch={() => {
+          //
+        }}
+      />
       <WrapItem>
         <Title>{t('tutor.title')}: </Title>
         <Link

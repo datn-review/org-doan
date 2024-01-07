@@ -1,6 +1,6 @@
 import { css } from '@emotion/css';
 import { defauOptions, useCRUDContext, useMessageHook, useUpdateEffect } from '@org/core';
-import { getNameLanguage, useTranslation } from '@org/i18n';
+import { Translation, getNameLanguage, useTranslation } from '@org/i18n';
 import {
   clearActiveMenu,
   setActiveGroup,
@@ -48,6 +48,15 @@ import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 import { Upsert } from './container/upsert';
 import { ifAnyGranted } from '@org/auth';
+import { isEmpty } from 'lodash';
+
+export const statusPaymentOption: any[] = [
+  { value: StatusEnum.all, label: <Translation>{(t) => t('all')}</Translation> },
+  { value: StatusEnum.inactive, label: <Translation>{(t) => t('pay.active')}</Translation> },
+  { value: StatusEnum.active, label: <Translation>{(t) => t('pay.inactive')}</Translation> },
+  { value: StatusEnum.pending, label: <Translation>{(t) => t('pay.expired')}</Translation> },
+  { value: 4, label: <Translation>{(t) => t('closed.contact')}</Translation> },
+];
 
 function PaymentApp() {
   const tableInstance = useTable({
@@ -63,10 +72,10 @@ function PaymentApp() {
   const { setIdEdit, setIsUpsert, isFetch, setIsFetch, isUpsert } = useCRUDContext();
 
   const [filter, setFilter] = useState({
-    status: StatusEnum.all,
-    type: 0,
-    month: null,
-    year: null,
+    status: 1,
+    type: 1,
+    month: dayjs(),
+    year: dayjs(),
     name: '',
     collaboration: 0,
   });
@@ -169,17 +178,35 @@ function PaymentApp() {
       render: (amount: number) => <>{formatMoney(amount)}</>,
     },
     {
-      key: 'deadPaymentDate',
-      title: t('fee.deadPaymentDate'),
-      dataIndex: 'deadPaymentDate',
-      render: (deadPaymentDate: string, record: any) => (
-        <>{deadPaymentDate && dayjs(deadPaymentDate).format('DD/MM/YYYY')}</>
-      ),
+      ...(filter.type === 2 && {
+        key: 'profits',
+        title: t('pay.profits'),
+        dataIndex: 'profits',
+        render: (profits: number) => <>{formatMoney(profits)}</>,
+      }),
     },
     {
-      key: 'payRef',
-      title: t('pay.transactionId'),
-      dataIndex: 'payRef',
+      key: 'grade',
+      title: t('grade'),
+      dataIndex: 'grade',
+      render: (deadPaymentDate: string, record: any) => <>{record?.collaboration?.nameClass}</>,
+    },
+    {
+      ...(filter.type === 1 && {
+        key: 'deadPaymentDate',
+        title: t('fee.deadPaymentDate'),
+        dataIndex: 'deadPaymentDate',
+        render: (deadPaymentDate: string, record: any) => (
+          <>{deadPaymentDate && dayjs(deadPaymentDate).format('DD/MM/YYYY')}</>
+        ),
+      }),
+    },
+    {
+      ...(filter.type === 1 && {
+        key: 'payRef',
+        title: t('pay.transactionId'),
+        dataIndex: 'payRef',
+      }),
     },
 
     // {
@@ -241,7 +268,8 @@ function PaymentApp() {
     //     );
     //   },
     // },
-  ];
+  ].filter((item) => !isEmpty(item));
+  console.log(columns);
   const headers = [
     { label: 'Tên Giao Dịch', key: 'title' },
     { label: 'Họ Và Tên', key: 'fullName' },
@@ -261,9 +289,9 @@ function PaymentApp() {
           ? record?.receiver?.lastName + ' ' + record?.receiver?.firstName
           : record?.sender?.lastName + ' ' + record?.sender?.firstName,
         amount: record?.amount,
-        accountNumberBank: record?.accountNumberBank || t('updating'),
-        accountFullNameBank: record?.accountNumberBank || t('updating'),
-        nameBank: record?.accountNumberBank || t('updating'),
+        accountNumberBank: record?.receiver?.accountNumberBank || t('updating'),
+        accountFullNameBank: record?.receiver?.ownerBank || t('updating'),
+        nameBank: record?.receiver?.nameBank || t('updating'),
       })) || []
     );
   }, [dataCSV?.data]);
@@ -298,27 +326,30 @@ function PaymentApp() {
           `}
         >
           <Select
-            label={t('user.status')}
-            options={statusOption}
-            defaultValue={StatusEnum.active}
-            value={filter.status}
-            onChange={(value) => setFilter((prev) => ({ ...prev, status: value }))}
-            className={css`
-              min-width: 20rem;
-              min-height: 3.8rem;
-            `}
-          />
-          <Select
             label={t('payment.type')}
             options={typePayment}
-            defaultValue={0}
+            defaultValue={1}
             value={filter.type}
-            onChange={(value) => setFilter((prev) => ({ ...prev, type: value }))}
+            onChange={(value) => setFilter((prev) => ({ ...prev, type: value, status: 0 }))}
             className={css`
               min-width: 20rem;
               min-height: 3.8rem;
             `}
           />
+          {filter.type === 1 && (
+            <Select
+              label={t('user.status')}
+              options={statusPaymentOption}
+              defaultValue={StatusEnum.active}
+              value={filter.status}
+              onChange={(value) => setFilter((prev) => ({ ...prev, status: value }))}
+              className={css`
+                min-width: 20rem;
+                min-height: 3.8rem;
+              `}
+            />
+          )}
+
           <Select
             label={t('payment.classes')}
             options={[defauOptions, ...dataClass]}
@@ -355,6 +386,7 @@ function PaymentApp() {
                   display: none !important;
                 }
               `}
+              value={filter.month}
             />
           </Space>
           <Space>
@@ -377,6 +409,7 @@ function PaymentApp() {
                 min-width: 20rem;
                 min-height: 3.8rem;
               `}
+              value={filter.year}
             />
           </Space>
         </Space>

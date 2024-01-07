@@ -388,5 +388,15 @@
   "button.send" : "Gửi",
   "required.field":"Field Required",
   "day":"Day",
-  "notification":"Notification"
+  "notification":"Notification",
+  "notication.no":"No Data",
+  "request.close.contact": "Request Contract Termination",
+  "closed.contact": "Contract Terminated",
+  "cancel.request.close.contact": "Cancel Request Contract Termination",
+  "close.contact.content": "Are you sure you want to terminate the contract? If you agree, your contract will end at the end of this month!",
+  "success.close.contact": "Confirm Contract Termination Request",
+  "confirm": "Agree",
+  "cancel": "Cancel",
+  "success": "Success",
+  "pay.profits": "Profits"
 }

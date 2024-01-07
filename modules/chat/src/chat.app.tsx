@@ -58,6 +58,7 @@ function ChatApp() {
 
   const [roomList, setRoomList] = useState<any>([]);
   const [roomBotID, setRoomBotID] = useState<number>(0);
+  console.log('🚀 ~ file: chat.app.tsx:61 ~ ChatApp ~ roomBotID:', roomBotID);
 
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -267,6 +268,7 @@ function ChatApp() {
                           setRoomData({
                             title: t('bot'),
                           });
+                          setRoomBotID(room?.id);
                         });
                     } else {
                       getMessages(roomBotID);

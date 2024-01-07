@@ -77,6 +77,12 @@ export const CollaborationAPI = baseAuthSplitApi.injectEndpoints({
         method: 'PUT',
       }),
     }),
+    cancelCollaboration: builder.mutation({
+      query: ({ id }) => ({
+        url: `/collaboration/cancel/${id}`,
+        method: 'PUT',
+      }),
+    }),
     deleteCollaboration: builder.mutation({
       query: (id) => ({
         url: `/collaboration/${id}`,
@@ -90,6 +96,8 @@ export const {
   useGetCollaborationQuery,
   useLazyGetCollaborationQuery,
   useUpdateCollaborationMutation,
+  useCancelCollaborationMutation,
+
   useCreateCollaborationMutation,
   useDeleteCollaborationMutation,
   useLazyFindCollaborationQuery,

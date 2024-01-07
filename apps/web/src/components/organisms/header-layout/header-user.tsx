@@ -14,6 +14,8 @@ import {
   Logo,
   AvatarUser,
   Popover,
+  BoxCenter,
+  BoxBetween,
 } from '@org/ui';
 import * as S from './styled';
 import { getNameLanguage, useTranslation } from '@org/i18n';
@@ -35,6 +37,7 @@ import { css, cx } from '@emotion/css';
 import { useEffect, useMemo } from 'react';
 import { isEmpty } from 'lodash';
 import dayjs from 'dayjs';
+import { Else, If, Then } from 'react-if';
 
 const LinkItem = ({ path, icon, title }: any) => {
   return (
@@ -181,47 +184,68 @@ function HeaderUser() {
               )}
             >
               <Space>
-                {dataNotifications?.data?.map((item: any) => (
-                  <Space
-                    className={css`
-                      width: 300px;
-                      padding: 5px 5px 5px 8px;
-                      background-color: ${item?.status === 1 ? '#eaeaea' : '#fff'};
-                      margin-bottom: 5px;
-                      border-radius: 5px;
-                      cursor: pointer;
-                      &:hover {
-                        background-color: ${COLOR.Primary};
-                        color: white !important;
-                        * {
-                          background-color: ${COLOR.Primary};
-                          color: white !important;
-                        }
-                      }
-                    `}
-                    onClick={() => {
-                      updateNotification({
-                        body: { status: 2 },
-                        id: item?.id,
-                      }).then(() => {
-                        refetch();
-                      });
-                      item?.path && navigate(item?.path);
-                    }}
-                  >
-                    {getNameLanguage(item?.['text_VI'], item?.['text_EN'])}
-                    <Space
-                      className={css`
-                        color: ${COLOR.Primary};
-                        font-size: 12px;
-                        display: flex;
-                        justify-content: flex-end;
-                      `}
-                    >
-                      {dayjs(item?.createdAt).format('DD-MM-YYYY')}
-                    </Space>
-                  </Space>
-                ))}
+                <If condition={!isEmpty(dataNotifications?.data)}>
+                  <Then>
+                    {dataNotifications?.data?.map((item: any) => (
+                      <Space
+                        className={css`
+                          width: 300px;
+                          padding: 5px 5px 5px 8px;
+                          background-color: ${item?.status === 1 ? '#eaeaea' : '#fff'};
+                          margin-bottom: 5px;
+                          border-radius: 5px;
+                          cursor: pointer;
+                          &:hover {
+                            background-color: ${COLOR.Primary};
+                            color: white !important;
+                            * {
+                              background-color: ${COLOR.Primary};
+                              color: white !important;
+                            }
+                            span {
+                              background-color: white !important;
+                            }
+                          }
+                        `}
+                        onClick={() => {
+                          updateNotification({
+                            body: { status: 2 },
+                            id: item?.id,
+                          }).then(() => {
+                            refetch();
+                          });
+                          item?.path && navigate(item?.path);
+                        }}
+                      >
+                        {getNameLanguage(item?.['text_VI'], item?.['text_EN'])}{' '}
+                        {item?.status === 1 && (
+                          <span
+                            className={css`
+                              height: 8px;
+                              width: 8px;
+                              background: ${COLOR.Primary};
+                              border-radius: 10px;
+                              display: inline-block;
+                            `}
+                          />
+                        )}
+                        <Space
+                          className={css`
+                            color: ${COLOR.Primary};
+                            font-size: 12px;
+                            display: flex;
+                            justify-content: flex-end;
+                          `}
+                        >
+                          {dayjs(item?.createdAt).format('DD-MM-YYYY')}
+                        </Space>
+                      </Space>
+                    ))}
+                  </Then>
+                  <Else>
+                    <BoxCenter>{t('notication.no')}</BoxCenter>
+                  </Else>
+                </If>
               </Space>
             </Space>
           }
@@ -261,12 +285,15 @@ function HeaderUser() {
               onClick: handlePerson,
             }}
           >
-            {/* <AvatarUser
-              // img={user?.photo?.path ? user?.photo?.path : ''}
-              title={user?.lastName}
-              id={user?.id}
-            /> */}
-            <Avatar className={`bg-purple-500 text-white cursor-pointer`}>T</Avatar>
+            <Space>
+              <AvatarUser
+                img={user?.photo?.path ? user?.photo?.path : ''}
+                title={user?.lastName}
+                id={user?.id}
+              />
+            </Space>
+
+            {/* <Avatar className={`bg-purple-500 text-white cursor-pointer`}>T</Avatar> */}
           </Dropdown>
         </Show>
       </Space>

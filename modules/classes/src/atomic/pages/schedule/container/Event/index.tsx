@@ -422,7 +422,7 @@ export const LessonAssigenment = ({ data, isCollap, isComplete }: any) => {
           margin: 0 0 2rem 0;
         `}
       >
-        {!isCollap && !isComplete && (
+        {!isCollap && !isComplete && ifAnyGranted([RolesEnum.PESONAL_TUTOR]) && (
           <Button
             $size={SIZE.ExtraSmall}
             onClick={handleNavigate}

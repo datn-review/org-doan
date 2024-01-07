@@ -16,7 +16,7 @@ import moment from 'dayjs';
 import dayjs from 'dayjs';
 import { css } from '@emotion/css';
 import { getNameLanguage, i18nContant, useTranslation } from '@org/i18n';
-import { COLOR } from '@org/utils';
+import { COLOR, RolesEnum } from '@org/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { createEventId } from '@org/ui/src/atomic/atoms/calendar/event-utils';
 import {
@@ -33,6 +33,7 @@ import { Editor } from '@org/editor';
 import { useMessage } from '@org/core';
 import { useNavigate } from 'react-router-dom';
 import qs from 'qs';
+import { ifAnyGranted } from '@org/auth';
 
 interface ClassTime {
   day?: number;
@@ -268,12 +269,12 @@ function Schedule({ data, refetch }: any) {
       >
         <H2>{t('class.create.schedule')}</H2>
 
-        {!isComplete && (
+        {!isComplete && ifAnyGranted([RolesEnum.PESONAL_TUTOR]) && (
           <Button
             onClick={handleSave}
             $size={SIZE.ExtraSmall}
           >
-            {t('class.save.schedule')}{' '}
+            {t('class.save.schedule')}
           </Button>
         )}
       </Space>
