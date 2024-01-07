@@ -3,7 +3,6 @@ name: Build API & Deploy
 on:
   push:
     branches: [prod-api]
-  workflow_dispatch:
 
 jobs:
   build:
