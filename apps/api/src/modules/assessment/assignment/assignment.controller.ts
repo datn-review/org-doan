@@ -70,27 +70,38 @@ export class AssignmentController {
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createAssignmentDto: any): Promise<Assignment[]> {
     IIFE(async () => {
-      const id = +createAssignmentDto?.lesson as number;
-      const lesson = await this.lessonsService.findOne(id, [
+      const id = Number(createAssignmentDto?.lesson) as number;
+      console.log('🚀 ~ file: assignment.controller.ts:74 ~ AssignmentController ~ IIFE ~ id:', id);
+      const lesson = await this.lessonsService.findOne(
         {
-          field: 'collaboration',
-          entity: 'collaboration',
+          id: id,
         },
-        {
-          field: 'collaboration.posts',
-          entity: 'posts',
-        },
-        {
-          field: 'posts.user',
-          entity: 'user',
-        },
-      ]);
+        [
+          {
+            field: 'collaboration',
+            entity: 'collaboration',
+          },
+          {
+            field: 'collaboration.posts',
+            entity: 'posts',
+          },
+          {
+            field: 'posts.user',
+            entity: 'user',
+          },
+        ],
+      );
+      console.log(
+        '🚀 ~ file: assignment.controller.ts:88 ~ AssignmentController ~ IIFE ~ lesson:',
+        lesson,
+      );
 
       if (lesson) {
         const data = {
           user: { id: lesson?.collaboration?.posts?.user?.id },
-          ['text_VI']: `<a href='/classes/${lesson.collaboration?.id}?lesson=${lesson.id}'>[${lesson?.collaboration?.nameClass}] Bạn có một bài tập mới được giao vào lúc ${createAssignmentDto?.startTime} đến  ${createAssignmentDto?.endTime}  </a>`,
-          ['text_EN']: `<a href='/classes/${lesson.collaboration?.id}?lesson=${lesson.id}'>[${lesson?.collaboration?.nameClass}] You have a new assignment due at ${createAssignmentDto?.startTime} to  ${createAssignmentDto?.endTime}  </a>`,
+          path: `/classes/${lesson.collaboration?.id}?tab=2&lesson=${lesson.id}&tabLesson=2`,
+          ['text_VI']: `(${lesson?.collaboration?.nameClass}) Bạn có một bài tập mới được giao vào lúc ${createAssignmentDto?.startTime} đến  ${createAssignmentDto?.endTime}`,
+          ['text_EN']: `(${lesson?.collaboration?.nameClass}) You have a new assignment due at ${createAssignmentDto?.startTime} to  ${createAssignmentDto?.endTime}`,
         };
         void this.notifications.create(data as Notifications);
       }

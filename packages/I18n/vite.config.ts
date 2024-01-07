@@ -12,6 +12,9 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src/"),
     },
   },
+  server: {
+    hmr: false,
+  },
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),

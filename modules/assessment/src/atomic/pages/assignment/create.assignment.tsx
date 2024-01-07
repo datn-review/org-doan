@@ -1,5 +1,12 @@
 import { css } from '@emotion/css';
-import { SelectGrade, SelectSubject, useCRUDContext, useMessageHook } from '@org/core';
+import {
+  SelectGrade,
+  SelectSubject,
+  useCRUDContext,
+  useMessageHook,
+  useMount,
+  useUnmount,
+} from '@org/core';
 import { i18next, useTranslation } from '@org/i18n';
 import {
   useCreateAssignmentMutation,
@@ -35,7 +42,7 @@ import { isEmpty } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import dayjs from 'dayjs';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ViewExercise } from '../exercise/container/view';
 
 type Status = {
@@ -89,7 +96,11 @@ export function CreateAssignment() {
   const gradeLevel = methods?.watch('gradeLevel');
   const subject = methods?.watch('subject');
   const exerciseIdDetails = methods?.watch('exercise');
-
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem('path-lesson');
+    };
+  }, []);
   const exerciseData = useMemo(() => {
     return (
       dataGetExercise?.data?.map((item: any) => ({
@@ -126,20 +137,8 @@ export function CreateAssignment() {
         });
     }
   }, [idEdit]);
+  const navigate = useNavigate();
   const handleSave = async (formData: any) => {
-    // if (idEdit) {
-    //   updateUser({ body: formData, id: idEdit })
-    //     .then(() => {
-    //       messageSuccess(t('user.edit.success'));
-    //     })
-    //     .catch(() => {
-    //       messageError(t('user.edit.error'));
-    //     })
-    //     .finally(() => {
-    //       close();
-    //       setIsFetch(true);
-    //     });
-    // } else {
     const startTime = dayjs(formData.time[0]).format('YYYY-MM-DD HH:mm');
     const endTime = dayjs(formData.time[1]).format('YYYY-MM-DD HH:mm');
 
@@ -152,14 +151,16 @@ export function CreateAssignment() {
       endTime,
     };
 
-    console.log(body);
-
     createData(body)
       .then(() => {
-        messageSuccess(t('create.assignment.success'));
+        messageSuccess(t('create.success'));
+        const pathname = localStorage.getItem('path-lesson') || '';
+        if (pathname) {
+          navigate(pathname);
+        }
       })
       .catch((err) => {
-        messageSuccess(t('create.assignment.erroe'));
+        messageSuccess(t('create..error'));
       })
       .finally(() => {
         close();
@@ -234,7 +235,7 @@ export function CreateAssignment() {
             className={css``}
           />
 
-          <SelectForm
+          {/* <SelectForm
             name='status'
             label={t('user.status')}
             options={statusOptionUpsert}
@@ -243,7 +244,7 @@ export function CreateAssignment() {
               min-width: 20rem;
               min-height: 3.8rem;
             `}
-          />
+          /> */}
           <Button
             $type={TYPE_BUTTON.Primary}
             $size={SIZE.ExtraSmall}

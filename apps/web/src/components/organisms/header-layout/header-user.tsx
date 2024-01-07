@@ -13,9 +13,12 @@ import {
   Table,
   Logo,
   AvatarUser,
+  Popover,
+  BoxCenter,
+  BoxBetween,
 } from '@org/ui';
 import * as S from './styled';
-import { useTranslation } from '@org/i18n';
+import { getNameLanguage, useTranslation } from '@org/i18n';
 import { Link, useNavigate } from 'react-router-dom';
 import { itemsLanguge, menuPerson } from './header-constant';
 import { IMenuIcon } from './header-type';
@@ -26,10 +29,15 @@ import {
   useAppSelector,
   useGetProfileMeQuery,
   setUserInfo,
+  useGetNotificationsQuery,
+  useUpdateNotificationsMutation,
 } from '@org/store';
 import { COLOR, SiteMap, getImage } from '@org/utils';
-import { css } from '@emotion/css';
-import { useEffect } from 'react';
+import { css, cx } from '@emotion/css';
+import { useEffect, useMemo } from 'react';
+import { isEmpty } from 'lodash';
+import dayjs from 'dayjs';
+import { Else, If, Then } from 'react-if';
 
 const LinkItem = ({ path, icon, title }: any) => {
   return (
@@ -82,6 +90,15 @@ function HeaderUser() {
       refetchOnMountOrArgChange: true,
     },
   );
+  const { data: dataNotifications, refetch } = useGetNotificationsQuery(
+    {},
+    {
+      skip: !isAuthenticated,
+      refetchOnMountOrArgChange: true,
+    },
+  );
+  const [updateNotification] = useUpdateNotificationsMutation();
+  console.log('🚀 ~ file: header-user.tsx:88 ~ HeaderUser ~ data:', dataNotifications);
   useEffect(() => {
     if (data) {
       dispatch(setUserInfo(data));
@@ -110,6 +127,12 @@ function HeaderUser() {
         break;
     }
   };
+
+  const countNoti = useMemo(() => {
+    if (isEmpty(dataNotifications)) return 0;
+    const notificationsFilter = dataNotifications?.data?.filter((item: any) => item?.status === 1);
+    return notificationsFilter?.length;
+  }, [dataNotifications]);
 
   return (
     <S.HeaderUser className='flex justify-between items-center '>
@@ -146,15 +169,98 @@ function HeaderUser() {
           </Space>
         </Dropdown>
 
-        <Badge
-          count={10}
-          overflowCount={9}
-          className={css`
-            cursor: pointer;
-          `}
+        <Popover
+          placement='bottomRight'
+          title={t('notification')}
+          trigger={['click']}
+          content={
+            <Space
+              className={cx(
+                css`
+                  max-height: 300px !important;
+                  overflow-y: auto;
+                `,
+                'scroll-customer-right',
+              )}
+            >
+              <Space>
+                <If condition={!isEmpty(dataNotifications?.data)}>
+                  <Then>
+                    {dataNotifications?.data?.map((item: any) => (
+                      <Space
+                        className={css`
+                          width: 300px;
+                          padding: 5px 5px 5px 8px;
+                          background-color: ${item?.status === 1 ? '#eaeaea' : '#fff'};
+                          margin-bottom: 5px;
+                          border-radius: 5px;
+                          cursor: pointer;
+                          &:hover {
+                            background-color: ${COLOR.Primary};
+                            color: white !important;
+                            * {
+                              background-color: ${COLOR.Primary};
+                              color: white !important;
+                            }
+                            span {
+                              background-color: white !important;
+                            }
+                          }
+                        `}
+                        onClick={() => {
+                          updateNotification({
+                            body: { status: 2 },
+                            id: item?.id,
+                          }).then(() => {
+                            refetch();
+                          });
+                          item?.path && navigate(item?.path);
+                        }}
+                      >
+                        {getNameLanguage(item?.['text_VI'], item?.['text_EN'])}{' '}
+                        {item?.status === 1 && (
+                          <span
+                            className={css`
+                              height: 8px;
+                              width: 8px;
+                              background: ${COLOR.Primary};
+                              border-radius: 10px;
+                              display: inline-block;
+                            `}
+                          />
+                        )}
+                        <Space
+                          className={css`
+                            color: ${COLOR.Primary};
+                            font-size: 12px;
+                            display: flex;
+                            justify-content: flex-end;
+                          `}
+                        >
+                          {dayjs(item?.createdAt).format('DD-MM-YYYY')}
+                        </Space>
+                      </Space>
+                    ))}
+                  </Then>
+                  <Else>
+                    <BoxCenter>{t('notication.no')}</BoxCenter>
+                  </Else>
+                </If>
+              </Space>
+            </Space>
+          }
         >
-          <NoticationIcon />
-        </Badge>
+          <Badge
+            count={countNoti || 0}
+            overflowCount={9}
+            className={css`
+              cursor: pointer;
+            `}
+          >
+            <NoticationIcon />
+          </Badge>
+        </Popover>
+
         <Show
           when={isAuthenticated}
           fallback={
@@ -179,12 +285,15 @@ function HeaderUser() {
               onClick: handlePerson,
             }}
           >
-            {/* <AvatarUser
-              // img={user?.photo?.path ? user?.photo?.path : ''}
-              title={user?.lastName}
-              id={user?.id}
-            /> */}
-            <Avatar className={`bg-purple-500 text-white cursor-pointer`}>T</Avatar>
+            <Space>
+              <AvatarUser
+                img={user?.photo?.path ? user?.photo?.path : ''}
+                title={user?.lastName}
+                id={user?.id}
+              />
+            </Space>
+
+            {/* <Avatar className={`bg-purple-500 text-white cursor-pointer`}>T</Avatar> */}
           </Dropdown>
         </Show>
       </Space>

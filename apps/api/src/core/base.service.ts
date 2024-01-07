@@ -337,6 +337,7 @@ export class BaseService<T extends BaseEntity, R extends Repository<T>, TP exten
   async createMany(data: any[]): Promise<any> {
     return this.repository.insert(data);
   }
+
   async save(data: any[]): Promise<any> {
     return this.repository.save(data);
   }

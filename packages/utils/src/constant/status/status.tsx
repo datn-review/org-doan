@@ -24,7 +24,7 @@ export const statusOptionUpsert: IStatus[] = [
 ];
 
 export const typePayment: IStatus[] = [
-  { value: 0, label: <Translation>{(t) => t('all')}</Translation> },
+  // { value: 0, label: <Translation>{(t) => t('all')}</Translation> },
   { value: 1, label: <Translation>{(t) => t('payment.type.student')}</Translation> },
   { value: 2, label: <Translation>{(t) => t('payment.type.tutor')}</Translation> },
 ];
