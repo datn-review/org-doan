@@ -10,6 +10,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Connect with SSH and Deploy
         uses: appleboy/ssh-action@master
         with:
