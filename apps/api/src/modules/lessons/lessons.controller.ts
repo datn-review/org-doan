@@ -159,10 +159,10 @@ export class LessonsController {
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [weeklyScheduleLessons, _, __, ___] = await Promise.all([
-        this.lessonsService.createMany(weeklySchedule),
-        this.lessonsService.delete(lessonsDelete),
-        this.schedule.delete(schedulesDelete),
-        this.schedule.createMany(classTimes),
+        !isEmpty(weeklySchedule) && this.lessonsService.createMany(weeklySchedule),
+        !isEmpty(lessonsDelete) && this.lessonsService.delete(lessonsDelete),
+        !isEmpty(schedulesDelete) && this.schedule.delete(schedulesDelete),
+        !isEmpty(classTimes) && this.schedule.createMany(classTimes),
       ]);
       return weeklyScheduleLessons;
     }

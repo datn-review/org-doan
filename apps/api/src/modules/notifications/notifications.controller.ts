@@ -11,6 +11,7 @@ import {
   Post,
   Put,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 
@@ -30,7 +31,7 @@ import { StatusEnum } from 'src/statuses/statuses.enum';
 
 @ApiBearerAuth()
 @ApiTags('Notifications')
-@Roles(RoleEnum.WEB_ADMIN)
+@Roles()
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'notifications',
@@ -58,13 +59,15 @@ export class NotificationsController {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(1000), ParseIntPipe) limit: number,
-    @Query('sortBy', new DefaultValuePipe('text_VI')) sortBy: string,
-    @Query('sortDirection', new DefaultValuePipe('ASC')) sortDirection: string,
+    @Query('sortBy', new DefaultValuePipe('createdAt')) sortBy: string,
+    @Query('sortDirection', new DefaultValuePipe('DESC')) sortDirection: string,
     @Query('status', new DefaultValuePipe(0), ParseIntPipe) status: number,
     @Query('fieldSearch', new DefaultValuePipe(['text_VI', 'text_EN']))
     fieldSearch: string | string[],
     @Query('searchName', new DefaultValuePipe('')) searchName: string,
+    @Request() request: any,
   ): Promise<InfinityPaginationResultType<Notifications>> {
+    const userId = request.user.id;
     if (limit > 50) {
       limit = 1000;
     }
@@ -78,6 +81,12 @@ export class NotificationsController {
       searchName,
       fieldSearch,
       relations: ['user'],
+      where: [
+        {
+          field: 'user',
+          value: userId,
+        },
+      ],
     });
   }
 

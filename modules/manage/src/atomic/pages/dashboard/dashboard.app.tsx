@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { useCRUDContext, useMessageHook, useUpdateEffect } from '@org/core';
+import { useCRUDContext, useMessageHook } from '@org/core';
 import { getNameLanguage, useTranslation } from '@org/i18n';
 import {
   clearActiveMenu,
@@ -11,52 +11,34 @@ import {
   useGetGradeLevelActiveQuery,
   useGetPostsActiveQuery,
   useGetSubjectActiveQuery,
-  useGetUserAdminQuery,
   useGetUsersQuery,
-  useLazyGetClassesAllQuery,
-  useLazyGetUserAdminQuery,
+  useLazyGetPaymentQuery,
 } from '@org/store';
-// import { useDeleteDashboardMutation, useLazyGetDashboardQuery } from '@org/store';
 import {
   BoxBetween,
   BoxCenter,
   BoxFlex,
   Button,
   CalculatorOutlined,
-  ClockCircleOutlined,
   Col,
+  DatePicker,
   DollarOutlined,
-  H2,
-  IconDeleteAction,
-  IconEditAction,
-  Input,
   PieChartOutlined,
   Row,
   Section,
-  Select,
-  SelectLimitTable,
   Space,
-  Table,
-  Tag,
   UsergroupAddOutlined,
   useTable,
 } from '@org/ui';
-import {
-  COLOR,
-  SiteMap,
-  StatusEnum,
-  StatusEnumColor,
-  StatusShowHide,
-  StatusShowHideColor,
-  formatMoney,
-  statusOption,
-} from '@org/utils';
+import { SiteMap, StatusEnum, formatMoney, statusOption } from '@org/utils';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 // import { Upsert } from './container/upsert';
+import { Link } from 'react-router-dom';
+import { BarChartBase } from './container/barChart';
 import { GradeApp } from './container/grade';
 import { SubjectApp } from './container/subject';
-import { Link } from 'react-router-dom';
+const month = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 function DashboardApp() {
   const tableInstance = useTable({
@@ -92,16 +74,38 @@ function DashboardApp() {
   const { data: gradeLevel } = useGetGradeLevelActiveQuery({});
   const { data: subjectActive } = useGetSubjectActiveQuery({});
 
-  const [deleteUser] = useDeleteAssessmentMutation();
+  const [getUser, { data, isLoading }] = useLazyGetPaymentQuery();
+  const [getCount, { data: dataCount }] = useLazyGetPaymentQuery();
 
+  const [deleteUser] = useDeleteAssessmentMutation();
+  const [year, setYear] = useState(dayjs());
   const query = {
-    page: tableInstance.values.pagination.currentPage,
-    limit: tableInstance.limit,
-    status: filter.status,
-    searchName: filter.name,
-    sortBy: tableInstance.values.sort.sortBy,
-    sortDirection: tableInstance.values.sort.sortDirection,
+    page: 1,
+    limit: 10000,
+    status: 0,
+    searchName: '',
+    type: 0,
+    year: year ? dayjs(year).format('YYYY') : null,
   };
+  useEffect(() => {
+    getUser(query);
+  }, [JSON.stringify(query)]);
+  useEffect(() => {
+    getCount({});
+  }, []);
+  const count = useMemo(() => {
+    const temp = dataCount?.data?.reduce((acc: any, current: any) => {
+      if (
+        !dayjs().isBefore(dayjs(data?.feeMonthDate), 'month') &&
+        (current?.status === 1 || current?.status === 2)
+      ) {
+        return (acc = acc + current.amount);
+      }
+      return acc;
+    }, 0);
+
+    return temp;
+  }, [dataCount?.data]);
 
   const dataGrade = useMemo(() => {
     return gradeLevel?.map((item: any) => {
@@ -116,12 +120,67 @@ function DashboardApp() {
       };
     });
   }, [gradeLevel, dataPost]);
+  // const date1 = dayjs('2022-01-07');
+  // const date2 = dayjs('2022-01-15');
+
+  // const isSameMonthAndYear = date1.isSame(date2, 'month') && date1.isSame(date2, 'year');
+  const amounts = useMemo(() => {
+    return month?.map((month, i) => {
+      // const amount =data?.data?.reduce((sum:any, amount:any) => sum + amount),0);
+      let thu = 0;
+      let hoahong = 0;
+      let chi = 0;
+      const monthYear = dayjs(`${year.format('YYYY')}-${month}-01`);
+      data?.data?.forEach((data: any) => {
+        console.log(
+          monthYear.isSame(dayjs(data?.feeMonthDate), 'month') &&
+            monthYear.isSame(dayjs(data?.feeMonthDate), 'year'),
+        );
+        if (
+          monthYear.isSame(dayjs(data?.feeMonthDate), 'month') &&
+          monthYear.isSame(dayjs(data?.feeMonthDate), 'year')
+        ) {
+          if (data?.receiver && data.status !== 4) {
+            chi = chi + data?.amount;
+            hoahong = hoahong + (data?.profits || 0);
+          }
+          if (data?.sender && data.status == 2) {
+            thu = thu + data?.amount;
+          }
+        }
+      });
+
+      if (!monthYear.isBefore(dayjs(), 'month')) {
+        thu = 0;
+        hoahong = 0;
+        chi = 0;
+      }
+      return {
+        name: month,
+        thu: thu,
+        chi: chi,
+        hoahong: hoahong,
+      };
+    });
+    // return data?.data?.map((item: any) => {
+    //   const day = 'year';
+    //   return {
+    //     name: getNameLanguage(item.nameVI, item.nameEN),
+    //     uv:
+    //       dataPost?.data?.filter((post: any) =>
+    //         post?.gradeLevels?.some((gradeLevel: any) => gradeLevel.id === item.id),
+    //       )?.length || 1,
+    //     pv: 2400,
+    //     amt: 2400,
+    //   };
+    // });
+  }, [data?.data]);
 
   const dataSubject = useMemo(() => {
     return subjectActive?.map((item: any) => {
       return {
         name: getNameLanguage(item.nameVI, item.nameEN),
-        uv: dataPost?.data?.filter((post: any) =>
+        sl: dataPost?.data?.filter((post: any) =>
           post?.subjects?.some((subject: any) => subject.id === item.id),
         )?.length,
         pv: 2400,
@@ -219,7 +278,7 @@ function DashboardApp() {
                   >
                     <BoxCenter
                       className={css`
-                        background-color: #99e59c;
+                        background-color: #a8f0ab;
                         border-radius: 50%;
                         height: 44px;
                         width: 44px;
@@ -229,7 +288,7 @@ function DashboardApp() {
                     </BoxCenter>
 
                     <Space>
-                      <h4>{formatMoney(1400000)}</h4>
+                      <h4>{formatMoney(Number(String(count)?.slice(0, -3)))}K</h4>
                       <h6>{t('Revenue')}</h6>
                     </Space>
                   </BoxFlex>
@@ -248,7 +307,7 @@ function DashboardApp() {
                   >
                     <BoxCenter
                       className={css`
-                        background-color: #b3cbdc;
+                        background-color: #d6e9f5;
                         border-radius: 50%;
                         height: 44px;
                         width: 44px;
@@ -277,7 +336,7 @@ function DashboardApp() {
                   >
                     <BoxCenter
                       className={css`
-                        background-color: #bbb6c9;
+                        background-color: #dcd7eb;
                         border-radius: 50%;
                         height: 44px;
                         width: 44px;
@@ -306,7 +365,7 @@ function DashboardApp() {
                   >
                     <BoxCenter
                       className={css`
-                        background-color: #f8c1c1;
+                        background-color: #f2d9d9;
                         border-radius: 50%;
                         height: 44px;
                         width: 44px;
@@ -358,6 +417,23 @@ function DashboardApp() {
           </Section>
         </Col>
       </Row>
+
+      <br />
+      <Section>
+        <DatePicker
+          label={t('year')}
+          picker={'year'}
+          format='YYYY'
+          options={statusOption}
+          onChange={(value) => setYear(value)}
+          className={css`
+            min-width: 20rem;
+            min-height: 3.8rem;
+          `}
+          value={year}
+        />
+        <BarChartBase data={amounts} />
+      </Section>
 
       {/* <Table
         tableInstance={tableInstance}

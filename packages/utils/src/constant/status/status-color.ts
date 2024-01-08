@@ -19,6 +19,8 @@ export const StatusRegistration = {
   [4]: 'pending_pay',
   [5]: 'collaboration',
   [6]: 'classes.success',
+  [7]: 'request.close.contact',
+  [8]: 'closed.contact',
 };
 
 export enum EnumStatusRegistration {
@@ -37,6 +39,8 @@ export enum EnumStatusCollap {
   PendingPay = 4,
   Collaboration = 5,
   Completed = 6,
+  ReqCloseContact = 7,
+  SuccessCloseContact = 8,
 }
 export enum EnumStatusAssignment {
   Pending = 1,
@@ -59,15 +63,19 @@ export const StatusRegistrationColor = {
   [1]: 'processing',
   [3]: 'warning',
   [4]: 'warning',
+  [7]: 'error',
+  [8]: 'warning',
 };
 export const StatusPayColor = {
   [2]: 'success',
   [1]: 'warning',
   [3]: 'error',
+  [4]: 'warning',
 };
 
 export const StatusPay = {
   [2]: 'pay.active',
   [1]: 'pay.inactive',
   [3]: 'pay.expired',
+  [4]: 'closed.contact',
 };

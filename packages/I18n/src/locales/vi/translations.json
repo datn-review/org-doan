@@ -200,7 +200,7 @@
     "content": "Nội Dung Buổi Học"
   },
   "assignment": {
-    "create": "Tạo Bài Tập",
+    "create": "Giao Bài Tập",
     "exercise": "Bộ Đề",
     "time.startEnd": "Thời Gian Bắt Đầu - Kết Thúc",
     "name": "Tiêu Đề Bài Tập",
@@ -213,7 +213,7 @@
   "list.tutor.register": "Danh Sách Gia Sư Đăng Kí Nhận Lớp",
   "tutor.name": "Tên Gia Sư",
   "list.tutor.register.post": "DS Gia Sư",
-  "contact.title.success": "Tiến Hành Hoán Tất Hợp đồng",
+  "contact.title.success": "Tiến Hành Hoàn Tất Hợp đồng",
   "contact.address.title": "Địa chỉ văn phòng",
   "contact.phone.title": "Địa chỉ văn phòng",
   "contact.title": "Hợp Đồng Giao(Nhận) Lớp",
@@ -397,6 +397,17 @@
   "start.conversation":"Bắt Đầu Cuộc Trò Chuyện",
   "button.send" : "Gửi",
   "required.field":"Trường bắt buộc nhập",
-  "day":"Ngày"
+  "day":"Ngày",
+  "notification":"Thông báo",
+  "notication.no":"Không có thông báo mới",
+  "request.close.contact":"Yêu cầu dừng hợp đồng",
+  "closed.contact":"Đã ngừng hợp tác",
+  "cancel.request.close.contact":"Hủy Yêu cầu dừng hợp đồng",
+  "close.contact.content":"Bạn có chắc muốn dừng hợp đồng không. Nếu đồng ý, hợp đồng của bạn sẽ kết thúc cuối tháng này!",
+  "success.close.contact":"Xác nhận yêu cầu dừng hợp đồng",
+  "confirm":"Đồng ý",
+  "cancel":"Từ chối",
+  "success":"Thành Công",
+  "pay.profits":"Hoa Hồng"
 }
 

@@ -53,6 +53,7 @@ export class LessonsService extends BaseService<Lessons, Repository<Lessons>, IP
       .createQueryBuilder('entity')
       .leftJoinAndSelect('entity.collaboration', 'collaboration')
       .leftJoinAndSelect('collaboration.posts', 'posts')
+      .leftJoinAndSelect('collaboration.user', 'user2')
       .leftJoinAndSelect('posts.user', 'user')
       .where('(entity.lessonStart BETWEEN :startDate AND :endDate)', {
         startDate: start.toLocaleString(),

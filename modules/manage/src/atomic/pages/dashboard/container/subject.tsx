@@ -1,5 +1,7 @@
+import { css, cx } from '@emotion/css';
+import { Space } from '@org/ui';
 import React from 'react';
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 const colors = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', 'red', 'pink'];
 
@@ -71,33 +73,49 @@ const TriangleBar = (props: any) => {
 
 export function SubjectApp({ data }: any) {
   return (
-    <BarChart
-      width={800}
-      height={400}
-      data={data}
-      margin={{
-        top: 20,
-        right: 10,
-        left: -20,
-        bottom: 5,
-      }}
+    <Space
+      className={cx(
+        'scroll-customer',
+        css`
+          width: 100%;
+          margin-top: 3rem;
+          overflow-x: auto;
+        `,
+      )}
     >
-      <CartesianGrid strokeDasharray='3 3' />
-      <XAxis dataKey='name' />
-      <YAxis />
-      <Bar
-        dataKey='uv'
-        fill='#8884d8'
-        shape={<TriangleBar />}
-        label={{ position: 'top' }}
+      <BarChart
+        width={800}
+        height={400}
+        data={data}
+        margin={{
+          top: 20,
+          right: 10,
+          left: -20,
+          bottom: 5,
+        }}
       >
-        {data?.map((entry: any, index: any) => (
-          <Cell
-            key={`cell-${index}`}
-            fill={colors[index % 20]}
-          />
-        ))}
-      </Bar>
-    </BarChart>
+        <CartesianGrid strokeDasharray='3 3' />
+        <Tooltip />
+        <XAxis
+          dataKey='name'
+          tick={false}
+        />
+        <YAxis />
+        <Bar
+          dataKey='sl'
+          fill='#8884d8'
+          shape={<TriangleBar />}
+          label={{ position: 'top' }}
+          name='Số Lượng'
+        >
+          {data?.map((entry: any, index: any) => (
+            <Cell
+              key={`cell-${index}`}
+              fill={colors[index % 20]}
+            />
+          ))}
+        </Bar>
+      </BarChart>
+    </Space>
   );
 }
