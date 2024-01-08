@@ -8,12 +8,9 @@ const URL_WS =
     ? import.meta.env.VITE_APP_API_WS_PROD
     : import.meta.env.VITE_APP_API_WS_DEV;
 class SocketService {
-  private readonly socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-    `ws://${URL_WS}`,
-    {
-      autoConnect: false,
-    },
-  );
+  private readonly socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(`${URL_WS}`, {
+    autoConnect: false,
+  });
 
   connectWithAuthToken(token: string) {
     this.socket.auth = { token };
