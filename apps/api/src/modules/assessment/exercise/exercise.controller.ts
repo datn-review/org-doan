@@ -185,6 +185,7 @@ export class ExerciseController {
       this.gradeLevelService.findManyActive(),
     ]);
     const linkRequest = createExerciseDto.link;
+
     //  'https://doctailieu.com/trac-nghiem/lop-6-l6452';
     if (!linkRequest) return null;
     request(`${linkRequest}`, (error, response, html) => {
@@ -270,13 +271,14 @@ export class ExerciseController {
                       await this.optionService.createMany(option);
                     });
 
-                    await this.exerciseService.create({
+                    const exercises = await this.exerciseService.create({
                       name: titleEx,
                       gradeLevel: Number(gradeLevelFind?.id),
                       subject: Number(subjectFind?.id),
                       isPublish: true,
                       questions: questionsIds,
                     });
+                    await this.exerciseService.save(exercises);
                     // resolve(exercises);
                     // console.log(exercises);
                   }
