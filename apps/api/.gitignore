@@ -38,4 +38,4 @@ lerna-debug.log*
 /files
 /ormconfig.json
 
-# ./env.prod
+./.env.prod
