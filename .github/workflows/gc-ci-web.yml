@@ -21,4 +21,4 @@ jobs:
             cd /home/pttam512/org-doan
             git checkout prod-web
             git pull
-            docker-compose sudo docker compose up -d web --build
+            docker compose up -d web --build
