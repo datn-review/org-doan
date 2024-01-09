@@ -216,7 +216,7 @@ export const menuCategory = (): MenuItem[] => {
     {
       name: <Translation>{(t) => t('assessment.name')}</Translation>,
       path: '',
-      id: SiteMap.Manage.menu,
+      id: SiteMap.Assessment.menu,
       icon: <IconAssessment />,
       isShow: ifAnyGranted([RolesEnum.WEB_ADMIN, RolesEnum.PESONAL_TUTOR]),
       subMenu: [

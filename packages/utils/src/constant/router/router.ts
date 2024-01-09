@@ -200,7 +200,7 @@ export const SiteMap = {
     },
   },
   Assessment: {
-    path: '/',
+    // path: '/',
     roles: [RolesEnum.PESONAL_TUTOR, RolesEnum.STUDENT],
     menu: 'assessments',
     Exercise: {
