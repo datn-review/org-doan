@@ -258,7 +258,7 @@ export class ExerciseController {
                       };
                       questions.push(question);
                     });
-                    const questionsIds: number[] = [];
+                    const questionsIds: any[] = [];
                     questions.forEach(async ({ options, ...question }) => {
                       const questionSave = (await this.questionService.create(
                         question,
@@ -267,7 +267,9 @@ export class ExerciseController {
                         ...option,
                         question: questionSave?.id,
                       }));
-                      questionsIds?.push(questionSave?.id);
+                      questionsIds?.push({
+                        id: questionSave?.id,
+                      });
                       await this.optionService.createMany(option);
                     });
 
