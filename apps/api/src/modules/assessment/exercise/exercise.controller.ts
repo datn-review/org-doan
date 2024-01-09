@@ -33,7 +33,7 @@ import { createReadStream, writeFileSync } from 'fs';
 import * as csv from 'csv-parser';
 import * as request from 'request-promise';
 import * as cheerio from 'cheerio';
-import { CreateExerciseDto } from './dto/create.dto';
+import { CrawlExerciseDto, CreateExerciseDto } from './dto/create.dto';
 import { QuestionService } from '../question/question.service';
 import { OptionService } from '../option/option.service';
 import { Question } from '../question/entities/question.entity';
@@ -179,7 +179,7 @@ export class ExerciseController {
 
   @Post('/crawl')
   @HttpCode(HttpStatus.CREATED)
-  async crawlData(@Body() createExerciseDto: any): Promise<Exercise[] | null> {
+  async crawlData(@Body() createExerciseDto: CrawlExerciseDto): Promise<Exercise[] | null> {
     const [subject, gradeLevel] = await Promise.all([
       this.subjectService.findManyActive(),
       this.gradeLevelService.findManyActive(),
@@ -250,7 +250,7 @@ export class ExerciseController {
                         gradeLevelId: Number(gradeLevelFind?.id),
                         subjectId: Number(subjectFind?.id),
                         content: content,
-                        type: 1,
+                        type: 0,
                         isPublish: true,
                         score: 0.25,
                         level: 1,
@@ -258,18 +258,22 @@ export class ExerciseController {
                       };
                       questions.push(question);
                     });
-                    const questionsIds: number[] = [];
-                    questions.forEach(async ({ options, ...question }) => {
-                      const questionSave = (await this.questionService.create(
-                        question,
-                      )) as unknown as Question;
-                      const option = options?.map((option) => ({
-                        ...option,
-                        question: questionSave?.id,
-                      }));
-                      questionsIds?.push(questionSave?.id);
-                      await this.optionService.createMany(option);
-                    });
+                    const questionsIds: any[] = [];
+                    await Promise.all(
+                      questions?.map(async ({ options, ...question }) => {
+                        const questionSave = (await this.questionService.create(
+                          question,
+                        )) as unknown as Question;
+                        const option = options?.map((option) => ({
+                          ...option,
+                          question: questionSave?.id,
+                        }));
+                        questionsIds?.push({
+                          id: questionSave?.id,
+                        });
+                        return this.optionService.createMany(option);
+                      }),
+                    );
 
                     const exercises = await this.exerciseService.create({
                       name: titleEx,
@@ -279,7 +283,7 @@ export class ExerciseController {
                       questions: questionsIds,
                     });
                     await this.exerciseService.save(exercises);
-                    // resolve(exercises);
+
                     // console.log(exercises);
                   }
                 });
