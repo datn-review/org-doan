@@ -26,7 +26,6 @@ import { GradeLevel } from './entities/grade-level.entity';
 import { CreateDto } from './dto/create.dto';
 import { UpdateDto } from './dto/update.dto';
 import { GradeLevelService } from './grade-level.service';
-import { StatusEnum } from 'src/statuses/statuses.enum';
 @ApiTags('Grade Level')
 @Controller({
   path: 'grade-level',
@@ -82,8 +81,17 @@ export class GradeLevelController {
 
   @Get('/active')
   @HttpCode(HttpStatus.OK)
-  getActive(): Promise<GradeLevel[]> {
-    return this.gradeLevelService.findManyActive(StatusEnum['active']);
+  async getActive(): Promise<GradeLevel[]> {
+    const data = await this.gradeLevelService.findManyWithPagination({
+      page: 1,
+      status: 1,
+      limit: 10000,
+      sortBy: 'updatedAt',
+      sortDirection: 'ASC',
+      searchName: '',
+      fieldSearch: 'nameVI',
+    });
+    return data?.data;
   }
 
   @Get('/:id')
