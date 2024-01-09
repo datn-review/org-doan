@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmpty } from 'class-validator';
+import { IsEmpty, IsOptional } from 'class-validator';
 
 export class CreateExerciseDto {
   @ApiProperty({
@@ -32,4 +32,12 @@ export class CreateExerciseDto {
   })
   @IsEmpty()
   isPublish?: boolean | null;
+}
+
+export class CrawlExerciseDto {
+  @ApiProperty({
+    type: 'string',
+  })
+  @IsOptional()
+  link?: string | null;
 }
