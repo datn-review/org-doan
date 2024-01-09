@@ -49,7 +49,7 @@ function ChatBotApp() {
   });
 
   useEffect(() => {
-    dispatch(setActiveGroup({ current: SiteMap.Settings.menu }));
+    dispatch(setActiveGroup({ current: SiteMap.Settings.ChatBot.menu }));
     dispatch(setActiveSubGroup({ current: SiteMap.Settings.ChatBot.menu }));
     return () => {
       dispatch(clearActiveMenu());
