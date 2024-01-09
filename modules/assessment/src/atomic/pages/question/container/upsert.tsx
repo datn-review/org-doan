@@ -43,8 +43,8 @@ import * as yup from 'yup';
 import { v4 as uuidv4 } from 'uuid';
 
 enum TypeQuestionEnum {
-  CheckBox = 0,
-  Radio = 1,
+  CheckBox = 1,
+  Radio = 0,
 }
 
 enum LevelEnum {
@@ -196,7 +196,7 @@ export function Upsert() {
           return;
         }
 
-        methods.setValue(recordName, recordData || '');
+        methods.setValue(recordName, recordData ?? '');
       });
 
       const optionsData = dataUpsert?.options.reduce(
