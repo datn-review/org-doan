@@ -23,7 +23,9 @@ const StatusPay = {
   ['05']: 'VNPAY đang xử lý giao dịch này (GD hoàn tiền)',
   ['06']: 'VNPAY đã gửi yêu cầu hoàn tiền sang Ngân hàng (GD hoàn tiền)',
   ['07']: 'Giao dịch bị nghi ngờ gian lận',
-  ['09']: 'GD Hoàn trả bị từ chối',
+  ['09']: 'Giao dịch Hoàn trả bị từ chối',
+  ['24']: 'Giao dịch Không Thành Công',
+  [97]: 'Giao dịch Không Thành Công',
 };
 export const ReturnPayPage = () => {
   const location = useLocation();

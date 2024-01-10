@@ -33,7 +33,7 @@ import {
 import { SiteMap, StatusRegistration, StatusRegistrationColor } from '@org/utils';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
 type IUpdate = {
@@ -60,6 +60,7 @@ export enum EnumTypeContact {
 export function Payment({ data, close, refetch }: IProps) {
   const { t } = useTranslation();
   console.log(data);
+  const navigate = useNavigate();
 
   const methods = useForm<IUpdate>({
     defaultValues: dataInit,
@@ -79,7 +80,7 @@ export function Payment({ data, close, refetch }: IProps) {
       .unwrap()
       .then((data: any) => {
         console.log(data);
-        window.open(data?.vnpUrl);
+        window.location.replace(data?.vnpUrl);
       });
   };
   return (
@@ -103,7 +104,7 @@ export function Payment({ data, close, refetch }: IProps) {
         <b> {t('payment.dead')}</b>: {dayjs(data?.deadPaymentDate).format('DD-MM-YYYY')}
       </Space>
       <Space>
-        <b>{t('money')}</b>:
+        <b>{t('money')}</b>:{' '}
         {data?.amount?.toLocaleString('vi', { style: 'currency', currency: 'VND' })}
       </Space>
       <br />

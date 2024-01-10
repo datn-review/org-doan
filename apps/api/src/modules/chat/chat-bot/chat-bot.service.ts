@@ -23,6 +23,7 @@ import { LessonsService } from 'src/modules/lessons/lessons.service';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { UsersService } from 'src/users/users.service';
 import { isEmpty } from 'lodash';
+import { PromptTemplate } from 'langchain/prompts';
 
 dayjs.extend(timezone);
 function addLeadingZero(number) {
@@ -258,7 +259,30 @@ export class ChatBotService
     );
 
     //  stringTrain = 'pham thanh tam';
+    const questionPromptTemplateString = `Với thông tin bối cảnh dưới đây.
+    ---------------------
+    {context}
+    ---------------------
+    Với thông tin ngữ cảnh và không có kiến thức trước đó, hãy trả lời câu hỏi bằng tiếng việt ngắn gọn nhất và đủ ý: {question}`;
 
+    const questionPrompt = new PromptTemplate({
+      inputVariables: ['context', 'question'],
+      template: questionPromptTemplateString,
+    });
+    const refinePromptTemplateString = `Câu hỏi ban đầu như sau: {question}
+    Chúng tôi đã cung cấp câu trả lời hiện có: {existing_answer}
+    Chúng tôi có cơ hội để tinh chỉnh câu trả lời hiện có
+    (chỉ khi cần thiết) với một số ngữ cảnh khác bên dưới.
+------------
+{context}
+------------
+Với bối cảnh mới, hãy tinh chỉnh câu trả lời ban đầu để trả lời câu hỏi tốt hơn.
+Bạn phải cung cấp câu trả lời, câu trả lời gốc hoặc câu trả lời tinh tế bằng tiếng việt ngắn gọn và đủ ý`;
+
+    const refinePrompt = new PromptTemplate({
+      inputVariables: ['question', 'existing_answer', 'context'],
+      template: refinePromptTemplateString,
+    });
     const splitter = new CharacterTextSplitter({
       separator: '\n',
       chunkSize: 5000,
@@ -272,7 +296,7 @@ export class ChatBotService
       new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY }),
     );
     this.chain = new RetrievalQAChain({
-      combineDocumentsChain: loadQARefineChain(this.model),
+      combineDocumentsChain: loadQARefineChain(this.model, { questionPrompt, refinePrompt }),
       retriever: this.vectorStore.asRetriever(),
       // prompt: chatPrompt,
     });
@@ -366,7 +390,7 @@ export class ChatBotService
       console.log(dayjs().format('HH:mm:ss'));
       const result = await this.chain.call({
         input_document: this.inputDocs,
-        query: `${userInput}, trả lời bằng tiếng việt`,
+        query: `${userInput}`,
         max_token_limit: 90,
         // timeout: 2000,
         // input_language: 'vietnamese',
