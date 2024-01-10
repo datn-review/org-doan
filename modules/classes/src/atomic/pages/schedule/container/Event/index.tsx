@@ -252,7 +252,7 @@ export const LessonAssigenment = ({ data, isCollap, isComplete }: any) => {
       dataIndex: 'startTime',
       sorter: true,
 
-      render: (startTime: string) => <>{dayjs(startTime).format('DD/MM/YYYY HH:mm')}</>,
+      render: (startTime: string) => <>{dayjs(startTime).format('DD-MM-YYYY HH:mm ')}</>,
     },
     {
       key: 'endTime',
