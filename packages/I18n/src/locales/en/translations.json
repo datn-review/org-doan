@@ -398,5 +398,7 @@
   "confirm": "Agree",
   "cancel": "Cancel",
   "success": "Success",
-  "pay.profits": "Profits"
+  "pay.profits": "Profits",
+  "exercise.name":"Exercise Name",
+  "submit": "Submit"
 }

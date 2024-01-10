@@ -60,6 +60,26 @@ const relations = [
     entity: 'user__O',
   },
   {
+    field: 'user_J.photo',
+    entity: 'file',
+  },
+  {
+    field: 'user.photo',
+    entity: 'file__',
+  },
+  {
+    field: 'user__O.photo',
+    entity: '_file',
+  },
+  {
+    field: 'user_.photo',
+    entity: '_file__',
+  },
+  {
+    field: 'photo',
+    entity: 'file_',
+  },
+  {
     field: 'room.messages',
     entity: 'message',
   },

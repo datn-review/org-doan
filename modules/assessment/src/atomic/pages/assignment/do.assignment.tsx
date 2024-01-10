@@ -20,8 +20,9 @@ import { isArray, isEmpty } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import dayjs from 'dayjs';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { css } from '@emotion/css';
+import { SiteMap } from '@org/utils';
 
 type Status = {
   id: string;
@@ -58,7 +59,7 @@ export function DoAssignment() {
   const { assignmentId } = useParams();
   const [answer, setAnswer] = useState<Record<number, any>>({});
   const { messageError, messageSuccess, contextHolder } = useMessageHook();
-
+  const navigate = useNavigate();
   const [updateUser, { isLoading: isLoadingUpdate }] = useUpdateAssignmentMutation();
   const [submission, { isLoading: isLoadingSubmission }] = useSubmissionMutation();
 
@@ -79,10 +80,12 @@ export function DoAssignment() {
       body: { answers },
     })
       .then(() => {
-        messageSuccess(t('assignment.submit.success'));
+        messageSuccess(t('Nộp Bài Thành Công'));
+        navigate(SiteMap.Manage.Classes.path);
       })
       .catch(() => {
-        messageError(t('assignment.submit.error'));
+        messageError(t('Nộp Bài Thất Bại'));
+        navigate(SiteMap.Manage.Classes.path);
       });
   };
 

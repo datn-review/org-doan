@@ -77,12 +77,15 @@ export class ExerciseController {
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createExerciseDto: any): Promise<Exercise[]> {
+  create(@Body() createExerciseDto: any, @Request() request: any): Promise<Exercise[]> {
+    const userId = request?.user?.id;
+
     const questions = createExerciseDto?.questions?.map((item) => ({
       id: item,
     }));
     return this.exerciseService.create({
       ...createExerciseDto,
+      author: userId,
       questions,
     });
   }

@@ -34,6 +34,7 @@ import {
   Space,
   Input,
   CheckBox,
+  CheckBoxForm,
 } from '@org/ui';
 
 import { StatusEnum, getImage, statusOptionUpsert } from '@org/utils';
@@ -93,6 +94,7 @@ type IUpdate = {
   score?: number;
   gradeLevel?: number | undefined;
   subject?: number | undefined;
+  isPublish?: boolean;
 };
 
 const schema = (idEdit: number) =>
@@ -109,6 +111,7 @@ const dataInit: IUpdate = {
   gradeLevel: undefined,
   subject: undefined,
   score: 0.25,
+  isPublish: true,
 };
 type OptionRecord = Record<number, any>;
 
@@ -350,15 +353,9 @@ export function Upsert() {
                 `}
               />
 
-              <SelectForm
-                name='status'
-                label={t('user.status')}
-                options={statusOptionUpsert}
-                defaultValue={StatusEnum.active}
-                className={css`
-                  min-width: 20rem;
-                  min-height: 3.8rem;
-                `}
+              <CheckBoxForm
+                name={'isPublish'}
+                labelCB={t('publish')}
               />
             </FormProvider>
           </Spin>
