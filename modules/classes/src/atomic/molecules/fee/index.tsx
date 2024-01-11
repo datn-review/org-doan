@@ -41,7 +41,7 @@ export function FeeInfomation({ payments = [] }: any) {
       title: t('fee.deadPaymentDate'),
       dataIndex: 'deadPaymentDate',
       render: (deadPaymentDate: string, record: any) => (
-        <>{dayjs(deadPaymentDate).format('DD/MM/YYYY')}</>
+        <> {deadPaymentDate ? dayjs(deadPaymentDate).format('DD/MM/YYYY') : null}</>
       ),
     },
     {

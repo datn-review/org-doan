@@ -155,7 +155,7 @@ export class PaymentController {
         ],
       );
       console.log(paymentInfo);
-      if (paymentInfo) {
+      if (paymentInfo && vnp_Params['vnp_ResponseCode'] === '00') {
         await this.paymentService.update(paymentInfo.id, {
           status: 2,
         });

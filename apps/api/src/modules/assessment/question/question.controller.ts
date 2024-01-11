@@ -64,7 +64,8 @@ export class QuestionController {
 
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createQuestionDto: any): Promise<Question[]> {
+  async create(@Body() createQuestionDto: any, @Request() request: any): Promise<Question[]> {
+    const userId = request?.user?.id;
     const question = await this.questionService.create({
       content: createQuestionDto.content,
       type: createQuestionDto.type,
@@ -73,6 +74,8 @@ export class QuestionController {
       score: createQuestionDto.score,
       gradeLevelId: createQuestionDto.gradeLevel,
       subjectId: createQuestionDto.subject,
+      author: userId,
+      isPublish: createQuestionDto.isPublish,
     });
     const questionId = (question as unknown as Question)?.id;
 
@@ -118,6 +121,7 @@ export class QuestionController {
       limit = 1000;
     }
     const userId = request?.user?.id;
+    console.log('🚀 ~ file: question.controller.ts:123 ~ QuestionController ~ userId:', userId);
 
     let where: IWhere[] = [];
     if (author === 0) {

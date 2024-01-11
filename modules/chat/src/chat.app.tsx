@@ -104,7 +104,7 @@ function ChatApp() {
   const userData = useMemo(() => {
     return users
       ?.map((user: any) => ({
-        label: `${user?.lastName} ${user?.lastName}`,
+        label: `${user?.lastName} ${user?.firstName}`,
         value: user.id,
       }))
       .filter((user: any) => user?.value !== userId);
