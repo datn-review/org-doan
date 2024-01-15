@@ -18,6 +18,7 @@ import {
 } from '@org/ui';
 import { COLOR, SiteMap, colorById, colorByIdUser, getImage } from '@org/utils';
 import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 import { Else, If, Then } from 'react-if';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -25,7 +26,14 @@ type Props = {};
 export const CardTutor = ({ item }: any) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [image, setImage] = useState(item?.photo?.path);
 
+  useEffect(() => {
+    setImage(image);
+  }, [item?.photo?.path]);
+  const handleError = () => {
+    setImage('');
+  };
   return (
     <Col
       span={24}
@@ -54,7 +62,7 @@ export const CardTutor = ({ item }: any) => {
             position: relative;
             cursor: pointer;
             flex-direction: column;
-            background-color: ${colorByIdUser(item?.id, true)};
+            background-color: ${colorByIdUser(item?.id - 1, true)};
             border-radius: 18px;
             padding: 10px 0;
             .ant-tag {
@@ -67,7 +75,7 @@ export const CardTutor = ({ item }: any) => {
           `}
         >
           <Link to={SiteMap.Profile.generate(item?.id)}>
-            <If condition={!!item?.photo?.path}>
+            <If condition={!!image}>
               <Then>
                 <img
                   className={css`
@@ -79,8 +87,9 @@ export const CardTutor = ({ item }: any) => {
                     border-radius: 50%;
                     border: 2px solid white;
                   `}
-                  src={getImage(item?.photo?.path)}
-                  alt={item?.photo?.path}
+                  onError={handleError}
+                  src={getImage(image)}
+                  alt={image}
                 />
               </Then>
               <Else>

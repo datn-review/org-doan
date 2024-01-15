@@ -163,7 +163,14 @@ function ChatApp() {
                 `}
               >
                 <Space>
-                  <img
+                  <AvatarUser
+                    title={user?.lastName}
+                    img={getImage(user?.photo?.path)}
+                    id={user?.id}
+                  />
+
+                  {/* <img
+                  
                     src={getImage(user?.photo?.path)}
                     alt={''}
                     className={css`
@@ -172,7 +179,7 @@ function ChatApp() {
                       width: 4rem;
                       object-fit: cover;
                     `}
-                  />
+                  /> */}
                 </Space>
                 <Space
                   className={css`
