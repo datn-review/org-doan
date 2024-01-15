@@ -6,6 +6,8 @@ import {
   useUpdateAssignmentMutation,
 } from '@org/store';
 import {
+  BoxBetween,
+  BoxCenter,
   Button,
   CheckboxGroup,
   Radio,
@@ -23,6 +25,7 @@ import dayjs from 'dayjs';
 import { useNavigate, useParams } from 'react-router-dom';
 import { css } from '@emotion/css';
 import { SiteMap } from '@org/utils';
+import { Else, If, Then } from 'react-if';
 
 type Status = {
   id: string;
@@ -150,62 +153,106 @@ export function DoAssignment() {
     // Can not select days before today and today
     return current && current < dayjs().endOf('day');
   };
+  const [countdown, setCountdown] = useState('');
+  useEffect(() => {
+    const endTime = dataAssignment?.endTime ? dayjs(dataAssignment?.endTime) : dayjs();
+    const calculateCountdown = () => {
+      const diff = endTime.diff(dayjs());
 
+      const formattedCountdown = dayjs(diff).format('HH:mm:ss');
+
+      setCountdown(formattedCountdown);
+
+      if (diff <= 0 && dataAssignment?.endTime) {
+        handleSubmit();
+        clearInterval(interval);
+      }
+    };
+
+    calculateCountdown();
+
+    const interval = setInterval(calculateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, [dataAssignment?.endTime]);
   return (
     <Section>
       {contextHolder}
 
       <Spin spinning={isLoadingAssignment}>
-        <Space
-          className={css`
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          `}
+        <If
+          condition={
+            dayjs(dataAssignment?.endTime).isBefore(dayjs()) ||
+            dayjs(dataAssignment?.startTime).isAfter(dayjs())
+          }
         >
-          <TextSection left>
-            {t('exercise.name')}: {dataAssignment?.exercise?.name}
-          </TextSection>
-          <Button onClick={handleSubmit}>{t('submit')}</Button>
-        </Space>
-
-        {dataAssignment?.exercise?.questions?.map((question: any, index: number) => {
-          return (
+          <Then>
+            <If condition={dayjs(dataAssignment?.startTime).isAfter(dayjs())}>
+              <Then>
+                <h3>Bài Tập Chưa Bắt Đầu</h3>
+              </Then>
+            </If>
+            <If condition={dayjs(dataAssignment?.endTime).isBefore(dayjs())}>
+              <Then>
+                <h3>Đã Hết Hạn Làm Bài</h3>
+              </Then>
+            </If>
+          </Then>
+          <Else>
             <Space
               className={css`
-                font-size: 1.6rem;
-                font-weight: 500;
-                padding-bottom: 2rem;
-                //padding-bottom: 0.5rem;
-                .ant-checkbox-group,
-                .ant-radio-group {
-                  display: block;
-                }
-                .ant-checkbox-group-item,
-                .ant-radio-wrapper {
-                  display: flex;
-                  padding: 0.5rem 1.4rem;
-                }
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
               `}
             >
-              <Space>
-                {index + 1}. {question.content} ({question.score} {t('point')})
-                <Space>
-                  <Question
-                    question={question}
-                    value={answer?.[question.id] || undefined}
-                    onChange={(value: any) => {
-                      setAnswer((prev) => ({
-                        ...prev,
-                        [question.id]: value,
-                      }));
-                    }}
-                  />
-                </Space>
-              </Space>
+              <TextSection left>
+                {t('exercise.name')}: {dataAssignment?.exercise?.name}
+              </TextSection>
+              <BoxCenter className='gap-2'>
+                <div>{countdown}</div>
+                <Button onClick={handleSubmit}>{t('submit')}</Button>
+              </BoxCenter>
             </Space>
-          );
-        })}
+            {dataAssignment?.exercise?.questions?.map((question: any, index: number) => {
+              return (
+                <Space
+                  className={css`
+                    font-size: 1.6rem;
+                    font-weight: 500;
+                    padding-bottom: 2rem;
+                    //padding-bottom: 0.5rem;
+                    .ant-checkbox-group,
+                    .ant-radio-group {
+                      display: block;
+                    }
+                    .ant-checkbox-group-item,
+                    .ant-radio-wrapper {
+                      display: flex;
+                      padding: 0.5rem 1.4rem;
+                    }
+                  `}
+                >
+                  <Space>
+                    {index + 1}. {question.content} ({question.score} {t('point')})
+                    <Space>
+                      <Question
+                        question={question}
+                        value={answer?.[question.id] || undefined}
+                        onChange={(value: any) => {
+                          setAnswer((prev) => ({
+                            ...prev,
+                            [question.id]: value,
+                          }));
+                        }}
+                      />
+                    </Space>
+                  </Space>
+                </Space>
+              );
+            })}
+          </Else>
+        </If>
       </Spin>
     </Section>
   );
