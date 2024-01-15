@@ -400,5 +400,6 @@
   "success": "Success",
   "pay.profits": "Profits",
   "exercise.name":"Exercise Name",
-  "submit": "Submit"
+  "submit": "Submit",
+  "question":"Question"
 }
