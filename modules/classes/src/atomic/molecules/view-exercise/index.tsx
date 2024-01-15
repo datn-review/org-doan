@@ -45,6 +45,7 @@ export function ViewExercise({ id, close }: any) {
       open={true}
       width={'90%'}
       footer={<></>}
+      zIndex={999999999}
     >
       <Section>
         <Spin spinning={isLoading}>

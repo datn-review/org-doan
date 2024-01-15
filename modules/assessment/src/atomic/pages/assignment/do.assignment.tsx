@@ -61,6 +61,8 @@ export function DoAssignment() {
   });
   const { assignmentId } = useParams();
   const [answer, setAnswer] = useState<Record<number, any>>({});
+  const [isSubmit, setIsSubmit] = useState<boolean>(false);
+
   const { messageError, messageSuccess, contextHolder } = useMessageHook();
   const navigate = useNavigate();
   const [updateUser, { isLoading: isLoadingUpdate }] = useUpdateAssignmentMutation();
@@ -77,7 +79,6 @@ export function DoAssignment() {
       questionId: key,
       answer: isArray(value) ? value?.join(',') : `${value}`,
     }));
-    console.log(answers);
     submission({
       id: dataAssignment.id,
       body: { answers },
@@ -91,6 +92,11 @@ export function DoAssignment() {
         navigate(SiteMap.Manage.Classes.path);
       });
   };
+  useEffect(() => {
+    if (isSubmit) {
+      handleSubmit();
+    }
+  }, [isSubmit]);
 
   useEffect(() => {
     getAssignment({ id: assignmentId });
@@ -157,14 +163,20 @@ export function DoAssignment() {
   useEffect(() => {
     const endTime = dataAssignment?.endTime ? dayjs(dataAssignment?.endTime) : dayjs();
     const calculateCountdown = () => {
-      const diff = endTime.diff(dayjs());
-
-      const formattedCountdown = dayjs(diff).format('HH:mm:ss');
-
+      const diff = endTime.diff(dayjs(), 'second');
+      // console.log('🚀 ~ calculateCountdown ~ diff:', dayjs.duration(diff, 'seconds'););
+      // const formattedCountdown = dayjs(diff).format('HH:mm:ss');
+      const hours = Math.floor(diff / 3600);
+      const remainingSecondsAfterHours = diff % 3600;
+      const minutes = Math.floor(remainingSecondsAfterHours / 60);
+      const seconds = remainingSecondsAfterHours % 60;
+      const formattedCountdown = `${hours > 9 ? hours : '0' + hours}:${
+        minutes > 9 ? minutes : '0' + minutes
+      }:${seconds > 9 ? seconds : '0' + seconds} `;
       setCountdown(formattedCountdown);
 
       if (diff <= 0 && dataAssignment?.endTime) {
-        handleSubmit();
+        setIsSubmit(true);
         clearInterval(interval);
       }
     };
@@ -210,7 +222,7 @@ export function DoAssignment() {
                 {t('exercise.name')}: {dataAssignment?.exercise?.name}
               </TextSection>
               <BoxCenter className='gap-2'>
-                <div>{countdown}</div>
+                <h3>{countdown}</h3>
                 <Button onClick={handleSubmit}>{t('submit')}</Button>
               </BoxCenter>
             </Space>
