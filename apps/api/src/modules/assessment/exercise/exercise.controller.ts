@@ -112,13 +112,13 @@ export class ExerciseController {
           .on('data', (data) => results.push(data))
           .on('end', async () => {
             const questions = results?.map((question: any) => {
-              const optionIsCorrect = question?.isCorrect;
+              const optionIsCorrect = question?.isCorrect?.split(';');
               const options: any[] = [];
               Object.entries(question).forEach(([key, value]) => {
                 if (key?.includes('option')) {
                   options.push({
                     content: value,
-                    isCorrect: key === optionIsCorrect,
+                    isCorrect: optionIsCorrect?.includes(key),
                   });
                 }
               });
