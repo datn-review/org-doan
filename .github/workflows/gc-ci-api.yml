@@ -22,4 +22,4 @@ jobs:
             cd /home/pttam512/org-doan
             git checkout prod-api
             git pull
-            docker compose up -d api
+            docker compose up -d api --build
