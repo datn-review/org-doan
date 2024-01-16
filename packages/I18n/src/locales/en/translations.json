@@ -36,19 +36,19 @@
     "action": "Action",
     "add": {
       "title": "Add New User",
-      "success": "User Added Successfully!",
-      "error": "User Added Error!"
+      "success": "Added Successfully!",
+      "error": "Added Error!"
     },
     "edit": {
       "title": "Edit User",
-      "success": "User Updated Successfully!",
-      "error": "User Updated Error!"
+      "success": "Updated Successfully!",
+      "error": "Updated Error!"
     },
     "Certification": "Certification",
     "delete": {
       "title": "Detete User",
-      "success": "User Deleted Successfully!",
-      "error": "User Deleted Error!"
+      "success": "Deleted Successfully!",
+      "error": "Deleted Error!"
     },
     "firstName": "First Name",
     "lastName": "Last Name",
@@ -400,5 +400,6 @@
   "success": "Success",
   "pay.profits": "Profits",
   "exercise.name":"Exercise Name",
-  "submit": "Submit"
+  "submit": "Submit",
+  "question":"Question"
 }

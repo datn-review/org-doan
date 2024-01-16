@@ -72,6 +72,11 @@ export function ReviewAssignment() {
   useEffect(() => {
     getAssignment({ id: assignmentId });
   }, [assignmentId]);
+  const maxScore = useMemo(() => {
+    return dataAssignment?.exercise?.questions?.reduce((acc: any, question: any) => {
+      return acc + question?.score;
+    }, 0);
+  }, [dataAssignment]);
 
   // useEffect(() => {
   //   if (idEdit) {
@@ -144,13 +149,13 @@ export function ReviewAssignment() {
           <TextSection left>
             {t('assignment.review')}: {dataAssignment?.exercise?.name}
           </TextSection>
-          <h3
+          <h4
             className={css`
               padding-top: 2rem;
             `}
           >
-            {t('point')} : {dataAssignment?.score}
-          </h3>
+            {t('point')} : {dataAssignment?.score} / {maxScore}
+          </h4>
         </Space>
 
         {contextHolder}

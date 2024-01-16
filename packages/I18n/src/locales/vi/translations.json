@@ -37,18 +37,18 @@
     "password": "Mật Khẩu",
     "add": {
       "title": "Thêm Người Dùng",
-      "success": "Thêm Người Dùng Thành Công!",
-      "error": "Thêm Người Dùng Lỗi!"
+      "success": "Thêm Thành Công!",
+      "error": "Thêm Lỗi!"
     },
     "edit": {
       "title": "Chỉnh Sửa Người Dùng",
-      "success": "Cập Nhật Người Dùng Thành Công!",
-      "error": "Cập Nhật Người Dùng Lỗi!"
+      "success": "Cập Nhật Thành Công!",
+      "error": "Cập Nhật Lỗi!"
     },
     "delete": {
       "title": "Xóa Người Dùng",
-      "success": "Xóa Người Dùng Thành Công!",
-      "error": "Xóa Người Dùng Lỗi!"
+      "success": "Xóa Thành Công!",
+      "error": "Xóa Lỗi!"
     },
     "firstName": "Tên",
     "lastName": "Họ",
@@ -410,6 +410,7 @@
   "success":"Thành Công",
   "pay.profits":"Hoa Hồng",
   "exercise.name":"Bài Tập",
-  "submit":"Nộp"
+  "submit":"Nộp",
+  "question":"Câu Hỏi"
 }
 

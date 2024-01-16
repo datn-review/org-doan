@@ -5,8 +5,13 @@ import { css } from '@emotion/css';
 import { COLOR, colorById, colorByIdUser, getImage, SiteMap } from '@org/utils';
 import { Link } from 'react-router-dom';
 import { Else, If, Then } from 'react-if';
+import { useState } from 'react';
 type Props = { user: any };
 export const UserHeaderProfile = ({ user }: Props) => {
+  const [image, setImage] = useState(user?.photo?.path);
+  const handleError = () => {
+    setImage('');
+  };
   return (
     <Space
       className={css`
@@ -23,7 +28,7 @@ export const UserHeaderProfile = ({ user }: Props) => {
             object-fit: cover;
           `}
         >
-          <If condition={!!user?.photo?.path}>
+          <If condition={!!image}>
             <Then>
               <img
                 className={css`
@@ -34,8 +39,9 @@ export const UserHeaderProfile = ({ user }: Props) => {
                   border: 2px solid ${COLOR.Primary};
                   padding: 0.1rem;
                 `}
-                src={getImage(user?.photo?.path)}
-                alt={user?.photo?.path}
+                onError={handleError}
+                src={getImage(image)}
+                alt={image}
               />
             </Then>
             <Else>
@@ -51,7 +57,7 @@ export const UserHeaderProfile = ({ user }: Props) => {
                   color: white;
                 `}
               >
-                {user?.firstName?.substring(0, 1) || ''}
+                {user?.lastName?.substring(0, 1) || ''}
               </BoxCenter>
             </Else>
           </If>
@@ -73,6 +79,10 @@ export const UserHeaderProfile = ({ user }: Props) => {
   );
 };
 export const AvatarUser = ({ title, img, id }: any) => {
+  const [imgage, setImage] = useState(img);
+  const handleError = () => {
+    setImage('');
+  };
   return (
     <Space
       className={css`
@@ -90,7 +100,7 @@ export const AvatarUser = ({ title, img, id }: any) => {
           object-fit: cover;
         `}
       >
-        <If condition={!!img}>
+        <If condition={!!imgage}>
           <Then>
             <img
               className={css`
@@ -101,8 +111,9 @@ export const AvatarUser = ({ title, img, id }: any) => {
                 border: 2px solid ${COLOR.White};
                 /* padding: 0.1rem; */
               `}
-              src={getImage(img)}
-              alt={img}
+              src={getImage(imgage)}
+              onError={handleError}
+              alt={imgage}
             />
           </Then>
           <Else>
