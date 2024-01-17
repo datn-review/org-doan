@@ -79,7 +79,7 @@ function App(): JSX.Element {
           }}>
           <Section title="Step One">
             Edit <Text style={styles.highlight}>App.tsx</Text>
-            Tam Ne test
+            Tam Ne test build
             {COLOR.Primary}
           </Section>
           <Section title="See Your Changes">
