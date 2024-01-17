@@ -556,6 +556,7 @@ export class CollaborationController {
           amountX = weeks * Number(collaboration?.posts?.dayWeek);
           amount = Number(collaboration?.posts?.fee) * amountX;
         }
+        amount = Math.round(amount);
 
         const amountProfits = amount * 0.1;
         const amountTutor = amount - amountProfits;
@@ -570,9 +571,9 @@ export class CollaborationController {
         payment.push({
           collaboration: +id,
           receiver,
-          amount: amountTutor,
+          amount: Math.round(amountTutor),
           feeMonthDate,
-          profits: amountProfits,
+          profits: Math.round(amountProfits),
         });
       });
       await this.paymentService.createMany(payment);
