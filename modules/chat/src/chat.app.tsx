@@ -165,7 +165,7 @@ function ChatApp() {
                 <Space>
                   <AvatarUser
                     title={user?.lastName}
-                    img={getImage(user?.photo?.path)}
+                    img={user?.photo?.path}
                     id={user?.id}
                   />
 
