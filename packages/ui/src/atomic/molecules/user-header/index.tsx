@@ -5,10 +5,14 @@ import { css } from '@emotion/css';
 import { COLOR, colorById, colorByIdUser, getImage, SiteMap } from '@org/utils';
 import { Link } from 'react-router-dom';
 import { Else, If, Then } from 'react-if';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 type Props = { user: any };
 export const UserHeaderProfile = ({ user }: Props) => {
   const [image, setImage] = useState(user?.photo?.path);
+
+  useEffect(() => {
+    setImage(user?.photo?.path);
+  }, [user?.photo?.path]);
   const handleError = () => {
     setImage('');
   };
@@ -79,10 +83,13 @@ export const UserHeaderProfile = ({ user }: Props) => {
   );
 };
 export const AvatarUser = ({ title, img, id }: any) => {
-  const [imgage, setImage] = useState(img);
+  const [image, setImage] = useState(img);
   const handleError = () => {
     setImage('');
   };
+  useEffect(() => {
+    setImage(img);
+  }, [img]);
   return (
     <Space
       className={css`
@@ -100,7 +107,7 @@ export const AvatarUser = ({ title, img, id }: any) => {
           object-fit: cover;
         `}
       >
-        <If condition={!!imgage}>
+        <If condition={!!image}>
           <Then>
             <img
               className={css`
@@ -111,9 +118,9 @@ export const AvatarUser = ({ title, img, id }: any) => {
                 border: 2px solid ${COLOR.White};
                 /* padding: 0.1rem; */
               `}
-              src={getImage(imgage)}
+              src={getImage(image)}
               onError={handleError}
-              alt={imgage}
+              alt={image}
             />
           </Then>
           <Else>
