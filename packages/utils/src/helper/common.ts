@@ -18,7 +18,7 @@ export const handleExecuteEvent = <T>(isExecute: unknown, fn: T): T | VoidFuncti
   return () => null;
 };
 export const getImage = (id: string) => {
-  return `https://lh3.google.com/u/0/d/${id}`;
+  return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
 };
 export const formatData = ({ data, name = 'name' }: any) => {
   if (!data) return [];

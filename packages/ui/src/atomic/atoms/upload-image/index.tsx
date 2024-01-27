@@ -83,7 +83,7 @@ export const UploadImage: React.FC<IUploadImage> = ({
       </Upload>
       <Modal
         open={previewOpen}
-        title={previewTitle}
+        title={''}
         footer={null}
         onCancel={handleCancel}
       >
