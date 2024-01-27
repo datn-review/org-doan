@@ -214,9 +214,9 @@ export const CardClassNew = ({ item, registerForClass }: any) => {
                 border-top-left-radius: 20px;
                 border-top: 4px solid ${COLOR.Primary};
                 box-shadow: -2px 0 4px rgba(0, 0, 0, 0.6);
-                gap: 1rem;
+                gap: 0.7rem;
                 button {
-                  padding: 9px !important;
+                  padding: 6px !important;
                 }
                 left: 0;
                 /* width: calc(100% - 32px); */
